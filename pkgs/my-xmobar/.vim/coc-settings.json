@@ -1,0 +1,21 @@
+{
+  "languageserver": {
+    "haskell": {
+      "args": ["--lsp", "-d", "-l", "/tmp/LanguageServer.log"],
+      "command": "haskell-language-server-wrapper",
+      "filetypes": ["haskell", "lhaskell"],
+      "initializationOptions": {
+        "haskell": {
+          "formattingProvider": "fourmolu"
+        }
+      },
+      "rootPatterns": [
+        "*.cabal",
+        "stack.yaml",
+        "cabal.project",
+        "package.yaml",
+        "hie.yaml"
+      ]
+    }
+  }
+}

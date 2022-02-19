@@ -1,0 +1,63 @@
+
+snippet     parser
+options     head
+    fn ${1:func}<'b>(&'b self${2:args}) -> impl Parser<Input=I,Output=${3:O}> + Captures<'a> + 'b {
+        ${0:body}
+    }
+
+snippet     pubfn
+abbr        pubfn () {}
+options     head
+    pub fn ${1:#:func_name}(${2:#:args}) {
+        ${0:TARGET}
+    }
+
+snippet     pubfn-
+abbr        pubfn () {}
+options     head
+    pub fn ${1:#:func_name}(${2:#:args}) -> ${3:#:()} {
+        ${0:TARGET}
+    }
+
+snippet     pln
+abbr        println!
+    println!("${1:\{:?\}}", ${0:TARGET});
+
+snippet     derive
+abbr        #derive[Debug,Clone]
+options     head
+    #[derive(${1:#:Debug,Clone})]
+
+snippet     panic
+abbr        panic!("")
+    panic!("${1}")${0}
+
+snippet     unimplemented
+abbr        unimplemented!();
+    unimplemented!();
+
+snippet     unreachable
+abbr        unreachable!();
+    unreachable!();
+
+snippet     impl
+abbr        impl
+options     head
+    impl ${1} {
+        ${2}
+    }
+
+snippet     defmacro
+abbr        macro_rules!
+options     head
+	macro_rules! ${1:TARGET} {
+		(${2:TARGET}) => (
+			${3:TARGET}
+		)
+	}
+
+snippet     inline
+abbr        #[inline]
+options     head
+    #[inline]
+

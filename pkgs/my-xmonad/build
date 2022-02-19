@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+nix build
+rm -rf "$1"
+cp ./result/bin/xmonad-x86_64-linux "$1"

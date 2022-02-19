@@ -1,0 +1,54 @@
+snippet     variable
+abbr        ${}
+alias       v var
+options     word
+	\${${1}}${0}
+
+snippet     command-substiturion
+abbr        $()
+alias       cs
+options     word
+	\$(${1})${0}
+
+snippet     parsearg
+options     head
+	while [ $# -gt 0 ]; do
+	  case \$1 in
+	    ${1})
+	      ${2}
+	      ;;
+	    ${0}
+	    *)
+	      ;;
+	  esac
+	  shift
+	done
+
+snippet     branch
+abbr        ${1})..
+alias       br
+options     head
+	${1})
+	  ${2}
+	  ;;
+	${0}
+
+snippet     template-bash
+options     head
+	#!/usr/bin/env bash
+	set -euo pipefail
+	
+	log() {
+	  printf "%s\\n" "$*"
+	}
+	
+	while [ $# -gt 0 ]; do
+	  case \$1 in
+	    --help)
+	      log "not implemented"
+	      ;;
+	    *)
+	      ;;
+	  esac
+	  shift
+	done
