@@ -80,7 +80,7 @@ in
       ".local/bin/myclip".source = ./files/.local/bin/myclip;
       ".local/bin/my-xmonad-borderwidth".source = ./files/.local/bin/my-xmonad-borderwidth;
       # wall paper
-      "Pictures/reflextion.jpg".source = ./files/Pictures/reflexion.jpg;
+      "Pictures/reflexion.jpg".source = ./files/Pictures/reflexion.jpg;
     } // (if env.type == "nix-package-manager" then {
       # font
       ".config/fontconfig/conf.d/20-illusion-fonts.conf".source = ./files/.config/fontconfig/conf.d/20-illusion-fonts.conf;

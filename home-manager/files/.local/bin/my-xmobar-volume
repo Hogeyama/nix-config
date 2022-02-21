@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+VALUE=$(amixer sget Master | grep -oe "[0-9]*%" | head -n 1)
+if [[ "$VALUE" == "0%" ]]; then
+  echo "Vol: $VALUE"
+else
+  echo "Vol: <fc=green>$VALUE</fc>"
+fi

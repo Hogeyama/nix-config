@@ -1,0 +1,548 @@
+#!/usr/bin/env bash
+set -eu
+set -o pipefail
+
+# TODO
+# - menu
+
+# Globals:
+#   $PROG:            full path of this program
+#   $MYFZF_STATE_DIR: directory where execution state is saved
+# State saved in $MYFZF_STATE_DIR
+#   dir:              current directory
+#   mode:             current mode. eg. 'fd', 'rg', 'mru', or 'chrome-history'
+#   log:              log
+
+on_exit() {
+  CODE=$?
+  LAST_COMMAND="${PREVIOUS_COMMAND:-}"
+  if [[ "${CODE}" -ne 0 ]]; then
+    log "exit ${CODE} due to '${LAST_COMMAND}' at ${PWD}"
+  fi
+  if [[ -n "${IS_ORIGINAL:-}" ]]; then
+    rm -rf "$MYFZF_STATE_DIR"
+    true
+  fi
+}
+
+setup() {
+  readonly PROG="$(realpath "$0")"
+  if [[ -z "${MYFZF_STATE_DIR:-}" ]]; then
+    # MYFZF_STATE_DIR="/tmp/myfzf.d"
+    MYFZF_STATE_DIR="$(mktemp -d "/tmp/myfzf.XXXXXX.d")"
+    IS_ORIGINAL=1
+    export MYFZF_STATE_DIR
+    set_dir "$(realpath .)"
+    log "setup: PROG=$PROG"
+    log "setup: MYFZF_STATE_DIR=$MYFZF_STATE_DIR"
+  fi
+  cd "$(get_dir)"
+  trap 'PREVIOUS_COMMAND=${THIS_COMMAND:-}; THIS_COMMAND=${BASH_COMMAND:-}' DEBUG
+  trap on_exit EXIT
+
+  EXA_OPTS=(
+    --all
+    --sort name
+    --tree
+    --level 1
+    --classify
+    --git
+    --color=always
+  )
+  BAT_OPTS=(
+    --color always
+    --wrap never
+    --pager never
+    --style='numbers,changes'
+  )
+  FD_OPTS=(
+    --hidden
+    --no-ignore
+    --exclude .git
+    --exclude .hg
+    --exclude .hie
+    --exclude .direnv
+    --exclude dist-newstyle
+    --exclude .stack-work
+    --exclude .aws-sam
+    --exclude .next
+    --exclude node_modules
+    --exclude api-cache
+    --exclude cache
+    .
+  )
+  RG_OPTS=(
+    --column
+    --line-number
+    --no-heading
+    --color=never
+    --smart-case
+  )
+  FZF_OPTS=(
+    --preview "myfzf preview {}"
+    --preview-window right:50%:noborder
+    --header-lines=1
+    --prompt "files>"
+    --bind  "enter:execute['$PROG' run default  {}]"
+    --bind "ctrl-o:execute['$PROG' run nvim     {}]"
+    --bind "ctrl-t:execute['$PROG' run nvim-tab {}]"
+    --bind "ctrl-q:execute['$PROG' run ask      {}]"
+    --bind "ctrl-n:execute['$PROG' run nvim-cd  {}]"
+    --bind "ctrl-v:execute['$PROG' run vifm     {}]"
+    --bind "ctrl-p:execute['$PROG' pwd]"
+    --bind  "ctrl-f:reload['$PROG' reload fd]+change-prompt[files>]"
+    --bind  "ctrl-u:reload['$PROG' reload fd --cd-up]+change-prompt[files>]"
+    --bind  "ctrl-l:reload['$PROG' reload fd --cd {}]+change-prompt[files>]+clear-query"
+    --bind  "ctrl-e:reload['$PROG' reload fd --cd-last-file]+change-prompt[files>]+clear-query"
+    --bind  "ctrl-b:reload['$PROG' reload buffer]+change-prompt[buffer>]"
+    --bind  "ctrl-h:reload['$PROG' reload mru]+change-prompt[mru>]"
+    --bind  "ctrl-d:reload['$PROG' reload mru-dir]+change-prompt[mru-dir>]"
+    --bind  "ctrl-r:reload['$PROG' reload rg {q}]+clear-query+change-prompt[grep>]"
+    --bind  "ctrl-g:reload['$PROG' reload chrome-history {q}]+clear-query+change-prompt[chrome-history>]"
+  )
+}
+
+log() {
+  printf "%s\n" "$*" >> "${MYFZF_STATE_DIR}/log"
+}
+
+with-log() {
+  log "$@"
+  "$@"
+}
+
+set_dir() {
+  cd "$1"
+  printf "%s" "$1" > "${MYFZF_STATE_DIR}/dir"
+}
+get_dir() {
+  cat "${MYFZF_STATE_DIR}/dir"
+}
+set_mode() {
+  printf "%s" "$1" > "${MYFZF_STATE_DIR}/mode"
+}
+get_mode() {
+  cat "${MYFZF_STATE_DIR}/mode"
+}
+
+################################################################################
+# Util
+################################################################################
+
+change_directory() {
+  log "change_directory: $*"
+  DIR="$(realpath "$1")"
+  if [[ -f "${DIR}" ]]; then
+    DIR="$(dirname "${DIR}")"
+  fi
+  set_dir "${DIR}"
+}
+
+# ARG: conditional expression over 'url', 'title', and 'date'
+chrome_history() {
+  log "chrome-history: $*"
+  declare COND="${1:-1=1}"
+  echo "$COND" >> /tmp/fuga
+  cp ~/.config/google-chrome/Default/History "$MYFZF_STATE_DIR/History"
+  sqlite3 -batch -readonly "$MYFZF_STATE_DIR/History" <<EOF
+SELECT
+  url,
+  title,
+  DATETIME(last_visit_time / 1000000 + (strftime('%s', '1601-01-01') ), 'unixepoch', '+9 hours') AS date
+FROM
+  urls
+WHERE
+  $COND
+GROUP BY
+  title
+ORDER BY
+  date DESC
+LIMIT
+  10000
+;
+EOF
+}
+
+print_header() {
+  declare EMPTY
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --empty)
+        EMPTY=1
+        ;;
+      *)
+        ;;
+    esac
+    shift
+  done
+  if [[ -n "${EMPTY:-}" ]] && false ; then
+    echo
+  else
+    echo "[$PWD]"
+  fi
+}
+
+nvim_open() {
+  log "nvim_open: $*"
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --tab)
+        TAB=1
+        ;;
+      --line)
+        shift
+        LINE_OPT="+$1"
+        ;;
+      --buf)
+        shift
+        BUF="$1"
+        ;;
+      --leave)
+        LEAVE_FZF=1
+        ;;
+      --raw)
+        RAW=1
+        ;;
+      --*)
+        log "nvim_open: unknown option: $1"
+        exit 1
+        ;;
+      *)
+        if [[ -n "${RAW:-}" ]]; then
+          FILE="$1"
+        else
+          FILE="$(realpath $1)"
+        fi
+        ;;
+    esac
+    shift
+  done
+  if [[ -n "${BUF:-}" ]]; then
+    if [[ -n "${LEAVE_FZF:-}" ]]; then
+      nvr -c "stopinsert"
+      nvr -c "MoveToLastWin"
+      nvr -c "buffer ${LINE_OPT:-} ${BUF}"
+      nvr -c "FloatermHide! fzf"
+      nvr -c "lua fterm_myfzf_close()"
+    elif [[ -n "${TAB:-}" ]]; then
+      with-log nvr -c "tabnew | buffer ${LINE_OPT:-} ${BUF} | MoveToLastTab"
+    else
+      nvr -c "stopinsert"
+      nvr -c "MoveToLastWin"
+      nvr -c "buffer ${LINE_OPT:-} ${BUF}"
+      nvr -c "MoveToLastWin"
+      nvr -c "startinsert"
+    fi
+  else
+    if [[ -n "${LEAVE_FZF:-}" ]]; then
+      nvr -c "stopinsert"
+      nvr -c "MoveToLastWin"
+      nvr -c "execute 'edit ${LINE_OPT:-} '.fnameescape('$FILE')"
+      nvr -c "FloatermHide! fzf"
+      nvr -c "lua fterm_myfzf_close()"
+    elif [[ -n "${TAB:-}" ]]; then
+      with-log nvr -c "execute 'tabedit ${LINE_OPT:-} '.fnameescape('$FILE') | MoveToLastTab"
+    else
+      nvr -c "stopinsert"
+      nvr -c "MoveToLastWin"
+      nvr -c "execute 'edit ${LINE_OPT:-} '.fnameescape('$FILE')"
+      nvr -c "MoveToLastWin"
+      nvr -c "startinsert"
+    fi
+  fi
+}
+
+nvim_oldfiles() {
+  nvr -c "call writefile(v:oldfiles,'$MYFZF_STATE_DIR/mru')"
+  # term:// などを grep で排除
+  cat "$MYFZF_STATE_DIR/mru" | grep -e ^/
+}
+
+nvim_buffers() {
+  nvr -c "redir! >$MYFZF_STATE_DIR/buffers | silent buffers | redir END"
+  # 先頭に空行がある
+  cat "$MYFZF_STATE_DIR/buffers" | tail -n+2
+}
+
+nvim_cd() {
+  DIR="$(realpath "$1")"
+  if [[ -f "${DIR}" ]]; then
+    DIR="$(dirname "${DIR}")"
+  fi
+  nvr -c "execute 'cd '.fnameescape('$DIR')"
+}
+
+zdirs() {
+  # ~/.z をrank順に出力
+  sort -rn -k2 -t'|' ~/.z | cut -d'|' -f1
+}
+
+################################################################################
+# Commands
+################################################################################
+
+do_init() {
+  set_mode fd
+  # [$PWD] is a header. See '--header-lines=1' option.
+  FZF_DEFAULT_COMMAND="echo '[$PWD]' && fd ${FD_OPTS[*]} ." fzf "${FZF_OPTS[@]}"
+}
+
+do_preview() {
+  log "preview: $*"
+  case "$(get_mode)" in
+    fd|mru)
+      declare TARGET="$1"
+      if [[ -d "$TARGET" ]]; then
+        exa "${EXA_OPTS[@]}" "${TARGET}"
+      elif [[ -f "$TARGET" ]]; then
+        bat "${BAT_OPTS[@]}" "${TARGET}"
+      fi
+      ;;
+    rg)
+      declare FILE
+      declare LINE
+      declare BAT_EXTRA_OPTS
+      FILE="$(printf "%s" "$1" | awk -F: '{ print $1 }')"
+      LINE="$(printf "%s" "$1" | awk -F: '{ print $2 }')"
+      BAT_EXTRA_OPTS=()
+      if [[ -n "${LINE}" ]]; then
+        BAT_EXTRA_OPTS+=(
+          -H "${LINE}"
+          -r "$((LINE > 15 ? LINE - 15 : 0)):"
+        )
+      fi
+      bat "${BAT_OPTS[@]}" "${BAT_EXTRA_OPTS[@]}" "${FILE}"
+      ;;
+    chrome-history)
+      declare URL
+      declare TITLE
+      URL="$(printf "%s" "$1" | awk -F'|' '{ print $1 }')"
+      TITLE="$(printf "%s" "$1" | awk -F'|' '{ print $2 }')"
+      echo "URL:   $URL"
+      echo "TITLE: $TITLE"
+      ;;
+  esac
+}
+
+do_reload() {
+  log "reload: $*"
+  case "${1:-fd}" in
+    fd|rg|mru|mru-dir|buffer|chrome-history)
+      set_mode "${1:-fd}"
+      ;;
+    *)
+      log "reload: unknown command $1" >&2
+      exit 1
+      ;;
+  esac
+  shift || true
+  case "$(get_mode)" in
+    fd)
+      while [[ $# -gt 0 ]]; do
+        case "$1" in
+          # TODO 単独のコマンドにしたほうが良さそう
+          --cd)
+            shift
+            change_directory "$1"
+            ;;
+          --cd-up)
+            change_directory ..
+            ;;
+          --cd-last-file)
+            local _file
+            _file=$(realpath -e "$(nvr --remote-expr 'g:last_file')" 2>/dev/null)
+            if [[ -n "$_file" ]]; then
+              change_directory "$(dirname "$_file")"
+            fi
+            ;;
+          *)
+            echo "$PROG: reload: fd: unknown option $1" >&2
+            exit 1
+            ;;
+        esac
+        shift
+      done
+      print_header
+      fd "${FD_OPTS[@]}" .
+      ;;
+    rg)
+      declare PATTERN="${1:-.}"
+      print_header
+      rg "${RG_OPTS[@]}" "${PATTERN}" . || true
+      ;;
+    mru)
+      print_header --empty
+      nvim_oldfiles
+      ;;
+    mru-dir)
+      print_header --empty
+      zdirs
+      ;;
+    buffer)
+      print_header --empty
+      nvim_buffers
+      ;;
+    chrome-history)
+      # TODO '--url %youtube.com% --title ...' みたいな指定も検討する
+      declare PATTERN="${1:-%}"
+      print_header --empty
+      chrome_history "url LIKE '%$PATTERN%' OR title LIKE '%$PATTERN%'"
+      ;;
+  esac
+}
+
+do_pwd() {
+  echo "$PWD" | less
+}
+
+do_run() {
+  log "run: $*"
+  declare CMD="${1:-default}"
+  case "${CMD}" in
+    default|nvim|nvim-tab|nvim-cd|vifm|chrome)
+      ;;
+    ask)
+      # TODO メンテがむずいからやめようかな
+      declare CMDS
+      case "$(get_mode)" in
+        fd)
+          CMDS=(nvim nvim-tab)
+          ;;
+        rg)
+          CMDS=(nvim nvim-tab)
+          ;;
+        chrome-history)
+          CMDS=(chrome)
+          ;;
+      esac
+      CMD=$(printf '%s\n' "${CMDS[@]}" | fzf)
+      shift
+      do_run "$CMD" "$@"
+      ;;
+    *)
+      log "run: unknown command $CMD" >&2
+      exit 1
+      ;;
+  esac
+  shift || true
+  log "run @$(get_mode): $CMD $*"
+  case "$(get_mode)" in
+    fd|mru)
+      case "$CMD" in
+        default)
+          nvim_open --leave "$1"
+          ;;
+        nvim)
+          nvim_open "$1"
+          ;;
+        nvim-tab)
+          nvim_open --tab "$1"
+          ;;
+        nvim-cd)
+          nvim_cd "$PWD"
+          ;;
+        vifm)
+          vifm "$PWD"
+          ;;
+        *)
+          log "invalid cmd: $CMD"
+          ;;
+      esac
+      ;;
+    rg)
+      declare FILE
+      declare LINE
+      FILE="$(printf "%s" "$1" | awk -F: '{ print $1 }')"
+      LINE="$(printf "%s" "$1" | awk -F: '{ print $2 }')"
+      case "$CMD" in
+        default)
+          nvim_open --leave --line "$LINE" "$FILE"
+          ;;
+        nvim)
+          nvim_open --line "$LINE" "$FILE"
+          ;;
+        nvim-tab)
+          nvim_open --tab --line "$LINE" "$FILE"
+          ;;
+        nvim-cd)
+          nvim_cd "$PWD"
+          ;;
+        vifm)
+          vifm "$PWD"
+          ;;
+        *)
+          log "invalid cmd: $CMD"
+          ;;
+      esac
+      ;;
+    mru-dir)
+      declare DIR
+      DIR="${1}"
+      case "$CMD" in
+        default)
+          change_directory "${DIR}"
+          ;;
+        nvim-cd)
+          nvim_cd "$DIR"
+          ;;
+        *)
+          log "invalid cmd: $CMD"
+          ;;
+      esac
+      ;;
+    buffer)
+      declare BUF
+      BUF="$(printf "%s" "$1" | awk '{ print $1 }')"
+      case  "$CMD" in
+        default)
+          nvim_open --leave --buf "$BUF"
+          ;;
+        nvim)
+          nvim_open --buf "$BUF"
+          ;;
+        nvim-cd)
+          nvim_open --tab --buf "$BUF"
+          ;;
+        *)
+          log "invalid cmd: $CMD"
+          ;;
+      esac
+      ;;
+    chrome-history)
+      declare URL
+      URL="$(printf "%s" "$1" | awk -F'|' '{ print $1 }')"
+      case "$CMD" in
+        chrome|default)
+          google-chrome "$URL"
+          ;;
+        *)
+          log "invalid cmd: $CMD"
+          ;;
+      esac
+      ;;
+    *)
+      log "run: unknown mode: $(get_mode)"
+      ;;
+  esac
+}
+
+################################################################################
+# Main
+################################################################################
+
+main() {
+  setup
+  declare CMD="${1:-init}"
+  case "${CMD}" in
+    init|preview|reload|run|pwd)
+      ;;
+    *)
+      echo "$PROG: unknown command $CMD" >&2
+      exit 1
+      ;;
+  esac
+  shift || true
+  "do_${CMD}" "$@"
+}
+
+main "$@"

@@ -1,4 +1,3 @@
 .direnv
 result
-.local
 hardware-configuration.nix

@@ -22,9 +22,14 @@ in
   };
 
   # Use the systemd-boot EFI boot loader.
-  boot.loader = {
-    systemd-boot.enable = true;
-    efi.canTouchEfiVariables = true;
+  boot = {
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+    };
+    kernelModules = [
+      "uhid"
+    ];
   };
 
   # networking
@@ -44,10 +49,19 @@ in
 
   # Enable sound.
   sound.enable = true;
-  # Enable bluetooth.
   hardware.bluetooth.enable = true;
-  # No pulseaudio.
-  # hardware.pulseaudio.enable = true;
+  hardware.pulseaudio = {
+    # Sound config
+    enable = true;
+    package = pkgs.pulseaudioFull;
+    extraModules = [ pkgs.pulseaudio-modules-bt ];
+    support32Bit = true;
+    extraConfig = "
+        load-module module-switch-on-connect
+      ";
+  };
+  services.blueman.enable = true;
+
 
   time.timeZone = "Asia/Tokyo";
 
@@ -98,6 +112,7 @@ in
       fuse
       fzf
       git
+      gnumake
       go
       golangci-lint
       google-cloud-sdk

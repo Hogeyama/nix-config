@@ -3,7 +3,7 @@
   type = "nixos";
 
   # required only if type="nixos"
-  hostName = "nixos-hogeyama-laptop";
+  hostName = "nixos";
 
   # required
   user =
