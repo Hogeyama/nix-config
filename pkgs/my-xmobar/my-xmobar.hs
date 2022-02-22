@@ -14,14 +14,14 @@ import System.Environment (
  )
 import Xmobar
 
-config :: Config
-config =
+mkConfig :: XPosition -> Config
+mkConfig position =
   defaultConfig
     { font = "xft:Rounded Mgen+ 1mn:size=12"
     , bgColor = "#1a1e1b"
     , fgColor = "#676767"
     , lowerOnStart = True
-    , position = undefined -- overwritten later
+    , position
     , commands =
         [ Run $
             Network
@@ -101,13 +101,7 @@ config =
 
 run :: X.Display -> IO ()
 run display = do
-  log' . show =<< getFileSystemEncoding
-  log' . show =<< getLocaleEncoding
-  log' . show =<< getForeignEncoding
   rs <- X.getScreenInfo display
-  x <- getEnvironment
-  forM_ x $ \(k, v) -> do
-    appendFile "/tmp/fuga" $ show k <> " = " <> show v <> "\n"
   let xpos = 0
       ypos = 0
       width = fromIntegral $ foldl max 0 $ map rect_width rs
@@ -115,16 +109,13 @@ run display = do
         3840 -> 40
         2560 -> 30
         1920 -> 20
-        _ -> undefined
-      config' = config {position = Static {xpos, ypos, width, height}}
-  tryAnyDeep (xmobar config') >>= \case
+        _ -> 20
+      config = mkConfig $ Static {xpos, ypos, width, height}
+  tryAnyDeep (xmobar config) >>= \case
     Right () -> pure ()
     Left e -> do
       print e
-      log' (show e)
-
-log' :: String -> IO ()
-log' = appendFile "/tmp/xmobar.error"
+      appendFile "/tmp/xmobar.error" (show e)
 
 main :: IO ()
 main = Main.run =<< X.openDisplay ""

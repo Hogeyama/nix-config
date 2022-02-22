@@ -144,11 +144,8 @@ xmobar' ::
   LayoutClass l Window =>
   XConfig l ->
   IO (XConfig (ModifiedLayout AvoidStruts l))
-xmobar' = statusBar cmd xmobarPP {ppLayout = ppLayout'} defToggleStrutsKey
+xmobar' = statusBar "my-xmobar" xmobarPP {ppLayout = ppLayout'} defToggleStrutsKey
   where
-    -- printcmd = "$HOME/.xmonad.bak/xmobar-x86_64-linux"
-    -- cmd = "$HOME/.xmonad.bak/result/bin/xmobar-x86_64-linux"
-    cmd = "$HOME/.local/bin/my-xmobar"
     ppLayout' s = case parseLayoutType s of
       LayoutFull -> "Full"
       LayoutTabbed -> "Tabbed"
