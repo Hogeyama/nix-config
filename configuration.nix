@@ -32,20 +32,26 @@ in
     ];
   };
 
-  # networking
   networking = {
     # Define your hostname.
     hostName = env.hostName;
     # Enables wireless support via wpa_supplicant.
     # TODO
-    wireless.enable = false;
+    wireless = {
+      enable = false;
+    };
+    networkmanager = {
+      enable = true;
+    };
     # Configure network proxy if necessary
     # networking.proxy.default = "http://user:password@proxy:port/";
     # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
     useDHCP = false;
-    interfaces.enp0s20f0u4u3c2.useDHCP = true;
-    interfaces.wlp2s0.useDHCP = true;
+    interfaces.enp0s20f0u1c2.useDHCP = true;
+    interfaces.wlp2s0.useDHCP = false;
   };
+  # gui application for
+  programs.nm-applet.enable = true;
 
   # Enable sound.
   sound.enable = true;
@@ -203,10 +209,11 @@ in
       isNormalUser = true;
       home = "/home/${env.user.name}";
       shell = pkgs.zsh;
-      extraGroups = [ "wheel" ];
+      extraGroups = [ "wheel" "networkmanager" ];
       hashedPassword = env.user.hashedPassword;
     };
   };
+  security.sudo.wheelNeedsPassword = false;
 
   home-manager.users.${env.user.name} = { config, pkgs, ... }:
     import ./home-manager/home.nix {

@@ -96,7 +96,7 @@ config =
     , sepChar = "%"
     , alignSep = "}{"
     , template =
-        " %StdinReader% }{ %cpu% | %memory% | %default:Master% | %battery% | %date% "
+        " %StdinReader% }{ %wlp2s0% | %cpu% | %memory% | %default:Master% | %battery% | %date% "
     }
 
 run :: X.Display -> IO ()

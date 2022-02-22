@@ -18,6 +18,7 @@ in
   };
   home = {
     packages = with pkgs; [
+      ulauncher
       # for firefox
       tridactyl-native
       ### my packages
@@ -34,7 +35,6 @@ in
         fd
         feh
         fuse
-        fzf
         go
         golangci-lint
         google-cloud-sdk
@@ -96,6 +96,9 @@ in
     direnv = {
       enable = true;
       nix-direnv.enable = true;
+    };
+    fzf = {
+      enable = true;
     };
     neovim = {
       enable = true;
