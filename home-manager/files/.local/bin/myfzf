@@ -83,7 +83,7 @@ setup() {
     --bind  "ctrl-e:reload['$PROG' load fd --cd-last-file]+change-prompt[files>]+clear-query"
     --bind  "ctrl-b:reload['$PROG' load buffer]+change-prompt[buffer>]"
     --bind  "ctrl-h:reload['$PROG' load mru]+change-prompt[mru>]"
-    --bind  "ctrl-d:reload['$PROG' load zoxide {q}]+change-prompt[zoxide>]"
+    --bind  "ctrl-d:reload['$PROG' load zoxide]+change-prompt[zoxide>]"
     --bind  "ctrl-r:reload['$PROG' load rg {q}]+clear-query+change-prompt[grep>]"
     --bind  "ctrl-g:reload['$PROG' load browser-history {q}]+clear-query+change-prompt[browser-history>]"
   )
@@ -269,7 +269,6 @@ load_rg() {
 }
 
 load_zoxide() {
-  # ~/.z をrank順に出力
   zoxide query -l "${1:-}"
 }
 

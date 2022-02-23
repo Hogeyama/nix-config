@@ -122,15 +122,14 @@ in
       go
       golangci-lint
       google-cloud-sdk
+      gthumb
       htop
       jq
       mercurial
       neovim-remote
-      nodejs
-      nodePackages.bash-language-server
-      nodePackages.npm
       ripgrep
       rnix-lsp
+      scrot
       unar
       vifm
       wget
@@ -138,6 +137,9 @@ in
       yq
       # unstable packages
       unstablePkgs.deno
+      unstablePkgs.nodejs
+      unstablePkgs.nodePackages.bash-language-server
+      unstablePkgs.nodePackages.npm
       unstablePkgs.neovim
     ];
   };

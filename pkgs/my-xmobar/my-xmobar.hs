@@ -17,7 +17,7 @@ import Xmobar
 mkConfig :: XPosition -> Config
 mkConfig position =
   defaultConfig
-    { font = "xft:Rounded Mgen+ 1mn:size=12"
+    { font = "xft:Rounded Mgen+ 1mn:size=18"
     , bgColor = "#1a1e1b"
     , fgColor = "#676767"
     , lowerOnStart = True
@@ -36,7 +36,7 @@ mkConfig position =
               , "#d3d7cf"
               , "--high"
               , "#88b986"
-              --, "-S"       , "True"
+              -- , "-S"       , "True"
               ]
               10
         , Run $
