@@ -19,6 +19,7 @@ in
   home = {
     packages = with pkgs; [
       ulauncher
+      unstablePkgs.sqlite
       # for firefox
       tridactyl-native
       ### my packages

@@ -108,7 +108,6 @@ in
       aws-sam-cli
       bat
       curl
-      deno
       docker
       docker-compose
       fd
@@ -137,6 +136,7 @@ in
       xsel
       yq
       # unstable packages
+      unstablePkgs.deno
       unstablePkgs.neovim
     ];
   };

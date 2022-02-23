@@ -3,23 +3,24 @@ set -eu
 set -o pipefail
 
 # TODO
-# - menu
+# - rewrite in modern script language
+#   - deno?
 
 # Globals:
 #   $PROG:            full path of this program
 #   $MYFZF_STATE_DIR: directory where execution state is saved
 # State saved in $MYFZF_STATE_DIR
 #   dir:              current directory
-#   mode:             current mode. eg. 'fd', 'rg', 'mru', or 'chrome-history'
+#   mode:             current mode. eg. 'fd', 'rg', 'mru', or 'browser-history'
 #   log:              log
 
 on_exit() {
-  CODE=$?
-  LAST_COMMAND="${PREVIOUS_COMMAND:-}"
+  local -r CODE=$?
+  local -r LAST_COMMAND="${PREVIOUS_COMMAND:-}"
   if [[ "${CODE}" -ne 0 ]]; then
     log "exit ${CODE} due to '${LAST_COMMAND}' at ${PWD}"
   fi
-  if [[ -n "${IS_ORIGINAL:-}" ]]; then
+  if ((${IS_ORIGINAL:-})); then
     rm -rf "$MYFZF_STATE_DIR"
     true
   fi
@@ -29,8 +30,8 @@ setup() {
   readonly PROG="$(realpath "$0")"
   if [[ -z "${MYFZF_STATE_DIR:-}" ]]; then
     # MYFZF_STATE_DIR="/tmp/myfzf.d"
-    MYFZF_STATE_DIR="$(mktemp -d "/tmp/myfzf.XXXXXX.d")"
-    IS_ORIGINAL=1
+    readonly MYFZF_STATE_DIR="$(mktemp -d "/tmp/myfzf.XXXXXX.d")"
+    readonly IS_ORIGINAL=1
     export MYFZF_STATE_DIR
     set_dir "$(realpath .)"
     log "setup: PROG=$PROG"
@@ -40,7 +41,7 @@ setup() {
   trap 'PREVIOUS_COMMAND=${THIS_COMMAND:-}; THIS_COMMAND=${BASH_COMMAND:-}' DEBUG
   trap on_exit EXIT
 
-  EXA_OPTS=(
+  readonly EXA_OPTS=(
     --all
     --sort name
     --tree
@@ -49,13 +50,13 @@ setup() {
     --git
     --color=always
   )
-  BAT_OPTS=(
+  readonly BAT_OPTS=(
     --color always
     --wrap never
     --pager never
     --style='numbers,changes'
   )
-  FD_OPTS=(
+  readonly FD_OPTS=(
     --hidden
     --no-ignore
     --exclude .git
@@ -71,22 +72,21 @@ setup() {
     --exclude cache
     .
   )
-  RG_OPTS=(
+  readonly RG_OPTS=(
     --column
     --line-number
     --no-heading
     --color=never
     --smart-case
   )
-  FZF_OPTS=(
-    --preview "myfzf preview {}"
+  readonly FZF_OPTS=(
+    --preview "'$PROG' preview {}"
     --preview-window right:50%:noborder
     --header-lines=1
     --prompt "files>"
     --bind  "enter:execute['$PROG' run default  {}]"
     --bind "ctrl-o:execute['$PROG' run nvim     {}]"
     --bind "ctrl-t:execute['$PROG' run nvim-tab {}]"
-    --bind "ctrl-q:execute['$PROG' run ask      {}]"
     --bind "ctrl-n:execute['$PROG' run nvim-cd  {}]"
     --bind "ctrl-v:execute['$PROG' run vifm     {}]"
     --bind "ctrl-p:execute['$PROG' pwd]"
@@ -98,7 +98,7 @@ setup() {
     --bind  "ctrl-h:reload['$PROG' reload mru]+change-prompt[mru>]"
     --bind  "ctrl-d:reload['$PROG' reload mru-dir]+change-prompt[mru-dir>]"
     --bind  "ctrl-r:reload['$PROG' reload rg {q}]+clear-query+change-prompt[grep>]"
-    --bind  "ctrl-g:reload['$PROG' reload chrome-history {q}]+clear-query+change-prompt[chrome-history>]"
+    --bind  "ctrl-g:reload['$PROG' reload browser-history {q}]+clear-query+change-prompt[browser-history>]"
   )
 }
 
@@ -139,47 +139,55 @@ change_directory() {
 }
 
 # ARG: conditional expression over 'url', 'title', and 'date'
-chrome_history() {
-  log "chrome-history: $*"
-  declare COND="${1:-1=1}"
-  echo "$COND" >> /tmp/fuga
-  cp ~/.config/google-chrome/Default/History "$MYFZF_STATE_DIR/History"
-  sqlite3 -batch -readonly "$MYFZF_STATE_DIR/History" <<EOF
-SELECT
-  url,
-  title,
-  DATETIME(last_visit_time / 1000000 + (strftime('%s', '1601-01-01') ), 'unixepoch', '+9 hours') AS date
-FROM
-  urls
-WHERE
-  $COND
-GROUP BY
-  title
-ORDER BY
-  date DESC
-LIMIT
-  10000
-;
+browser_history() {
+  log "browser-history: $*"
+  local -r COND="${1:-1=1}"
+  case "${BROWSER:-firefox}" in
+    firefox)
+      cp ~/.mozilla/firefox/*.default/places.sqlite "$MYFZF_STATE_DIR/firefox_history.sqlite"
+      sqlite3 -batch -separator $'\t' -readonly "$MYFZF_STATE_DIR/firefox_history.sqlite" <<EOF
+        .separator ,;
+        SELECT
+          url,
+          title,
+          DATETIME(last_visit_date / 1000000, 'unixepoch', '+9 hours') AS date
+        FROM
+          moz_places
+        WHERE
+          $COND
+        ORDER BY
+          date DESC
+        LIMIT
+          10000
+        ;
+        EOF
 EOF
+      ;;
+    *chrome*)
+      cp ~/.config/google-chrome/Default/History "$MYFZF_STATE_DIR/chrome_history.sqlite"
+      sqlite3 -batch -readonly "$MYFZF_STATE_DIR/chrome_history.sqlite" <<EOF
+        SELECT
+          url,
+          title,
+          DATETIME(last_visit_time / 1000000 + (strftime('%s', '1601-01-01') ), 'unixepoch', '+9 hours') AS date
+        FROM
+          urls
+        WHERE
+          $COND
+        GROUP BY
+          title
+        ORDER BY
+          date DESC
+        LIMIT
+          10000
+        ;
+EOF
+      ;;
+  esac
 }
 
 print_header() {
-  declare EMPTY
-  while [[ $# -gt 0 ]]; do
-    case "$1" in
-      --empty)
-        EMPTY=1
-        ;;
-      *)
-        ;;
-    esac
-    shift
-  done
-  if [[ -n "${EMPTY:-}" ]] && false ; then
-    echo
-  else
-    echo "[$PWD]"
-  fi
+  echo "[$PWD]"
 }
 
 nvim_open() {
@@ -223,7 +231,6 @@ nvim_open() {
       nvr -c "MoveToLastWin"
       nvr -c "buffer ${LINE_OPT:-} ${BUF}"
       nvr -c "FloatermHide! fzf"
-      nvr -c "lua fterm_myfzf_close()"
     elif [[ -n "${TAB:-}" ]]; then
       with-log nvr -c "tabnew | buffer ${LINE_OPT:-} ${BUF} | MoveToLastTab"
     else
@@ -239,7 +246,6 @@ nvim_open() {
       nvr -c "MoveToLastWin"
       nvr -c "execute 'edit ${LINE_OPT:-} '.fnameescape('$FILE')"
       nvr -c "FloatermHide! fzf"
-      nvr -c "lua fterm_myfzf_close()"
     elif [[ -n "${TAB:-}" ]]; then
       with-log nvr -c "execute 'tabedit ${LINE_OPT:-} '.fnameescape('$FILE') | MoveToLastTab"
     else
@@ -283,15 +289,14 @@ zdirs() {
 
 do_init() {
   set_mode fd
-  # [$PWD] is a header. See '--header-lines=1' option.
-  FZF_DEFAULT_COMMAND="echo '[$PWD]' && fd ${FD_OPTS[*]} ." fzf "${FZF_OPTS[@]}"
+  ( print_header; fd ${FD_OPTS[*]} . ) | fzf "${FZF_OPTS[@]}"
 }
 
 do_preview() {
   log "preview: $*"
   case "$(get_mode)" in
     fd|mru)
-      declare TARGET="$1"
+      local -r TARGET="$1"
       if [[ -d "$TARGET" ]]; then
         exa "${EXA_OPTS[@]}" "${TARGET}"
       elif [[ -f "$TARGET" ]]; then
@@ -299,9 +304,9 @@ do_preview() {
       fi
       ;;
     rg)
-      declare FILE
-      declare LINE
-      declare BAT_EXTRA_OPTS
+      local FILE
+      local LINE
+      local BAT_EXTRA_OPTS
       FILE="$(printf "%s" "$1" | awk -F: '{ print $1 }')"
       LINE="$(printf "%s" "$1" | awk -F: '{ print $2 }')"
       BAT_EXTRA_OPTS=()
@@ -313,13 +318,10 @@ do_preview() {
       fi
       bat "${BAT_OPTS[@]}" "${BAT_EXTRA_OPTS[@]}" "${FILE}"
       ;;
-    chrome-history)
-      declare URL
-      declare TITLE
-      URL="$(printf "%s" "$1" | awk -F'|' '{ print $1 }')"
-      TITLE="$(printf "%s" "$1" | awk -F'|' '{ print $2 }')"
-      echo "URL:   $URL"
-      echo "TITLE: $TITLE"
+    browser-history)
+      echo "URL:   $(printf "%s" "$1" | awk -F'\t' '{ print $1 }')"
+      echo "TITLE: $(printf "%s" "$1" | awk -F'\t' '{ print $2 }')"
+      echo "DATE:  $(printf "%s" "$1" | awk -F'\t' '{ print $3 }')"
       ;;
   esac
 }
@@ -327,7 +329,7 @@ do_preview() {
 do_reload() {
   log "reload: $*"
   case "${1:-fd}" in
-    fd|rg|mru|mru-dir|buffer|chrome-history)
+    fd|rg|mru|mru-dir|buffer|browser-history)
       set_mode "${1:-fd}"
       ;;
     *)
@@ -366,27 +368,27 @@ do_reload() {
       fd "${FD_OPTS[@]}" .
       ;;
     rg)
-      declare PATTERN="${1:-.}"
+      local PATTERN="${1:-.}"
       print_header
       rg "${RG_OPTS[@]}" "${PATTERN}" . || true
       ;;
     mru)
-      print_header --empty
+      print_header
       nvim_oldfiles
       ;;
     mru-dir)
-      print_header --empty
+      print_header
       zdirs
       ;;
     buffer)
-      print_header --empty
+      print_header
       nvim_buffers
       ;;
-    chrome-history)
+    browser-history)
       # TODO '--url %youtube.com% --title ...' みたいな指定も検討する
-      declare PATTERN="${1:-%}"
-      print_header --empty
-      chrome_history "url LIKE '%$PATTERN%' OR title LIKE '%$PATTERN%'"
+      local PATTERN="${1:-%}"
+      print_header
+      browser_history "url LIKE '%$PATTERN%' OR title LIKE '%$PATTERN%'"
       ;;
   esac
 }
@@ -397,27 +399,9 @@ do_pwd() {
 
 do_run() {
   log "run: $*"
-  declare CMD="${1:-default}"
+  local CMD="${1:-default}"
   case "${CMD}" in
-    default|nvim|nvim-tab|nvim-cd|vifm|chrome)
-      ;;
-    ask)
-      # TODO メンテがむずいからやめようかな
-      declare CMDS
-      case "$(get_mode)" in
-        fd)
-          CMDS=(nvim nvim-tab)
-          ;;
-        rg)
-          CMDS=(nvim nvim-tab)
-          ;;
-        chrome-history)
-          CMDS=(chrome)
-          ;;
-      esac
-      CMD=$(printf '%s\n' "${CMDS[@]}" | fzf)
-      shift
-      do_run "$CMD" "$@"
+    default|nvim|nvim-tab|nvim-cd|vifm)
       ;;
     *)
       log "run: unknown command $CMD" >&2
@@ -450,8 +434,8 @@ do_run() {
       esac
       ;;
     rg)
-      declare FILE
-      declare LINE
+      local FILE
+      local LINE
       FILE="$(printf "%s" "$1" | awk -F: '{ print $1 }')"
       LINE="$(printf "%s" "$1" | awk -F: '{ print $2 }')"
       case "$CMD" in
@@ -476,7 +460,7 @@ do_run() {
       esac
       ;;
     mru-dir)
-      declare DIR
+      local DIR
       DIR="${1}"
       case "$CMD" in
         default)
@@ -491,7 +475,7 @@ do_run() {
       esac
       ;;
     buffer)
-      declare BUF
+      local BUF
       BUF="$(printf "%s" "$1" | awk '{ print $1 }')"
       case  "$CMD" in
         default)
@@ -508,12 +492,12 @@ do_run() {
           ;;
       esac
       ;;
-    chrome-history)
-      declare URL
+    browser-history)
+      local URL
       URL="$(printf "%s" "$1" | awk -F'|' '{ print $1 }')"
       case "$CMD" in
-        chrome|default)
-          google-chrome "$URL"
+        default)
+          "${BROWSER:-firefox}" "$URL"
           ;;
         *)
           log "invalid cmd: $CMD"
@@ -532,17 +516,21 @@ do_run() {
 
 main() {
   setup
-  declare CMD="${1:-init}"
-  case "${CMD}" in
+  local command="init"
+  if [[ $# -gt 0 ]]; then
+    command="$1"
+    shift
+  fi
+  log "here"
+  case "${command:-}" in
     init|preview|reload|run|pwd)
       ;;
     *)
-      echo "$PROG: unknown command $CMD" >&2
+      echo "$PROG: unknown command $command" >&2
       exit 1
       ;;
   esac
-  shift || true
-  "do_${CMD}" "$@"
+  "do_${command}" "$@"
 }
 
 main "$@"
