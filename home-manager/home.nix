@@ -33,6 +33,7 @@ in
         deno
         docker
         docker-compose
+        exa
         fd
         feh
         fuse

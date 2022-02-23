@@ -110,6 +110,7 @@ in
       curl
       docker
       docker-compose
+      exa
       fd
       feh
       file
