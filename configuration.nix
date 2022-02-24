@@ -89,8 +89,8 @@ in
     enable = true;
     layout = "jp";
     # TODO
-    # displayManager.lightdm.enable = true;
-    displayManager.sddm.enable = true;
+    displayManager.lightdm.enable = true;
+    # displayManager.sddm.enable = true;
     desktopManager.plasma5.enable = true;
     windowManager = {
       xmonad = {
@@ -106,9 +106,10 @@ in
   };
 
   # Remenber display layout
-  services.autorandr = {
-    enable = true;
-  };
+  services.autorandr.enable = true;
+
+  # Enable docker
+  virtualisation.docker.enable = true;
 
   environment = {
     systemPackages = with pkgs; [
@@ -220,7 +221,7 @@ in
       isNormalUser = true;
       home = "/home/${env.user.name}";
       shell = pkgs.zsh;
-      extraGroups = [ "wheel" "networkmanager" ] ++
+      extraGroups = [ "wheel" "networkmanager" "docker" ] ++
         (if env.type == "nixos-virtualbox" then [ "vboxsf" ] else [ ]);
       hashedPassword = env.user.hashedPassword;
     };
