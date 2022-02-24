@@ -3,7 +3,7 @@
   # * nixos
   # * nixos-virtualbox
   # * nix-package-manager
-  type = "nixos-virtualbox";
+  type = "nixos";
 
   # required only if type="nixos"
   hostName = "nixos";
