@@ -9,10 +9,16 @@ let
   };
 in
 {
-  imports = [
-    <home-manager/nixos>
-    ./hardware-configuration.nix
-  ];
+  imports =
+    if env.type == "nixos-virtualbox" then [
+      <home-manager/nixos>
+      <nixpkgs/nixos/modules/profiles/graphical.nix>
+      <nixpkgs/nixos/modules/installer/cd-dvd/channel.nix>
+      <nixpkgs/nixos/modules/virtualisation/virtualbox-image.nix>
+    ] else [
+      <home-manager/nixos>
+      ./hardware-configuration.nix
+    ];
 
   nix = {
     package = pkgs.nixUnstable; # or versioned attributes like nix_2_4
@@ -22,7 +28,7 @@ in
   };
 
   # Use the systemd-boot EFI boot loader.
-  boot = {
+  boot = if env.type == "nixos-virtualbox" then { } else {
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
@@ -32,7 +38,7 @@ in
     ];
   };
 
-  networking = {
+  networking = if env.type == "nixos-virtualbox" then { } else {
     # Define your hostname.
     hostName = env.hostName;
     # Enables wireless support via wpa_supplicant.
@@ -47,8 +53,8 @@ in
     # networking.proxy.default = "http://user:password@proxy:port/";
     # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
     useDHCP = false;
-    interfaces.enp0s20f0u1c2.useDHCP = true;
-    interfaces.wlp2s0.useDHCP = false;
+    interfaces.enp0s20f0u1c2.useDHCP = false;
+    interfaces.wlp2s0.useDHCP = true;
   };
   # gui application for
   programs.nm-applet.enable = true;
@@ -82,7 +88,9 @@ in
   services.xserver = {
     enable = true;
     layout = "jp";
-    displayManager.lightdm.enable = true;
+    # TODO
+    # displayManager.lightdm.enable = true;
+    displayManager.sddm.enable = true;
     desktopManager.plasma5.enable = true;
     windowManager = {
       xmonad = {
@@ -212,7 +220,8 @@ in
       isNormalUser = true;
       home = "/home/${env.user.name}";
       shell = pkgs.zsh;
-      extraGroups = [ "wheel" "networkmanager" ];
+      extraGroups = [ "wheel" "networkmanager" ] ++
+        (if env.type == "nixos-virtualbox" then [ "vboxsf" ] else [ ]);
       hashedPassword = env.user.hashedPassword;
     };
   };

@@ -1,6 +1,9 @@
 {
-  # nixos or nix-package-manager
-  type = "nixos";
+  # Choose one of
+  # * nixos
+  # * nixos-virtualbox
+  # * nix-package-manager
+  type = "nixos-virtualbox";
 
   # required only if type="nixos"
   hostName = "nixos";
