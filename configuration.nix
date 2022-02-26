@@ -89,8 +89,9 @@ in
     enable = true;
     layout = "jp";
     # TODO
-    displayManager.lightdm.enable = true;
+    # displayManager.lightdm.enable = true;
     # displayManager.sddm.enable = true;
+    displayManager.gdm.enable = true;
     desktopManager.plasma5.enable = true;
     windowManager = {
       xmonad = {
