@@ -297,13 +297,30 @@ in
       oh-my-zsh = {
         enable = true;
         plugins = [
+          # [tool]
           "git"
+          "git-auto-fetch"
+          "fd"
+          "fzf"
+          "ripgrep"
+          "rsync"
           "docker"
           "docker-compose"
-          # "z"
+          "tmux"
+          # [cloud]
+          "aws"
+          "gcloud"
+          # [language]
+          "cabal"
+          "stack"
+          "rust"
+          "cargo"
+          "node"
+          "npm"
+          "deno"
+          "zoxide"
         ];
         theme = "frisk";
-        # theme = "kphoen";
       };
       loginExtra = ''
         export LOCALE_ARCHIVE=/usr/lib/locale/locale-archive
@@ -377,7 +394,6 @@ in
         source-if-exists $HOME/.fzf.zsh
         source-if-exists $HOME/.zshrc.local
         source-if-exists $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh
-        which direnv 2>&1 > /dev/null && eval "$(direnv hook zsh)" || true
       '';
     };
     git = {
