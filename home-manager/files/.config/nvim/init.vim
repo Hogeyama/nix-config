@@ -1,17 +1,4 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"" LSP
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" Either 'nvim-hs-lsp' or 'coc'
-let g:lsp_plugin = 'coc'
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"" Python3
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" let g:python3_host_prog = '/usr/local/bin/python3.8'
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "" General
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "Plug{{{
@@ -21,12 +8,15 @@ if empty(glob('~/.config/nvim/autoload/plug.vim'))
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 endif
 call plug#begin('~/.config/nvim/plugged')
+" otameshi
+Plug 'vim-denops/denops.vim'
+Plug 'vim-denops/denops-helloworld.vim'
+" LOVE
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'Shougo/neosnippet'
 Plug 'Shougo/neosnippet-snippets'
 Plug 'kana/vim-submode'
 Plug 'editorconfig/editorconfig-vim'
-Plug '~/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'voldikss/vim-floaterm'
 """便利
@@ -232,213 +222,81 @@ nnoremap [lsp] <nop>
 xnoremap [lsp] <nop>
 nmap     <C-l> [lsp]
 xmap     <C-l> [lsp]
-if g:lsp_plugin is 'coc'
-  nmap     <C-j>  <Plug>(coc-definition)
-  nmap     [lsp]j <Plug>(coc-definition)
-  nmap     [lsp]r <Plug>(coc-references)
-  nmap     [lsp]f <Plug>(coc-format)
-  xmap     [lsp]f <Plug>(coc-format-selected)
-  nmap     [lsp]a <Plug>(coc-codeaction)
-  nmap     <F2>   <Plug>(coc-rename)
-  nmap     [lsp]l <Plug>(coc-codelens-action)
-  nmap     [lsp]n <Plug>(coc-diagnostics-next)
-  nmap     [lsp]p <Plug>(coc-diagnostics-prev)
-  nnoremap [lsp]c :CocCommand<CR>
-  nnoremap [lsp]d :CocDiagnostics<CR>
-  nnoremap [lsp]D :call CocActionAsync("diagnosticList", {err,res -> SetQf(err,res)})<CR>
-  nnoremap [lsp]h :call CocActionAsync('doHover')<CR>
-  nnoremap <C-h>  :call CocActionAsync('doHover')<CR>
-elseif g:lsp_plugin is 'nvim-hs-lsp'
-  setlocal omnifunc=NvimHsLspComplete
-  nnoremap [lsp]i :NvimHsLspInitialize<CR>
-  nnoremap [lsp]s :NvimHsLspStartServer<CR>
-  nnoremap [lsp]q :NvimHsLspStopServer<CR>
-  nnoremap <C-j>  :NvimHsLspDefinition<CR>
-  nnoremap [lsp]j :NvimHsLspDefinition<CR>
-  nnoremap [lsp]h :NvimHsLspInfo<CR>
-  nnoremap [lsp]H :NvimHsLspHover<CR>
-  nnoremap <C-h>  :NvimHsLspHoverFloat<CR>
-  nnoremap [lsp]w :NvimHsLspLoadQuickfix<CR>
-  nnoremap [lsp]r :NvimHsLspReferences<CR>
-  nnoremap [lsp]f :NvimHsLspFormatting!<CR>
-  xnoremap [lsp]f :NvimHsLspFormatting<CR>
-  nnoremap [lsp]a :NvimHsLspCodeAction<CR>
-  nnoremap [lsp]r :NvimHsLspRename 
-  inoremap <C-o>  <C-x><C-o>
-endif
+nmap     <C-j>  <Plug>(coc-definition)
+nmap     [lsp]j <Plug>(coc-definition)
+nmap     [lsp]r <Plug>(coc-references)
+nmap     [lsp]f <Plug>(coc-format)
+xmap     [lsp]f <Plug>(coc-format-selected)
+nmap     [lsp]a <Plug>(coc-codeaction)
+nmap     <F2>   <Plug>(coc-rename)
+nmap     [lsp]l <Plug>(coc-codelens-action)
+nmap     [lsp]n <Plug>(coc-diagnostics-next)
+nmap     [lsp]p <Plug>(coc-diagnostics-prev)
+nnoremap [lsp]c :CocCommand<CR>
+nnoremap [lsp]d :CocDiagnostics<CR>
+nnoremap [lsp]D :call CocActionAsync("diagnosticList", {err,res -> SetQf(err,res)})<CR>
+nnoremap [lsp]h :call CocActionAsync('doHover')<CR>
+nnoremap <C-h>  :call CocActionAsync('doHover')<CR>
 "}}}
 
 "coc.nvim {{{
-if g:lsp_plugin is 'coc'
-  set updatetime=300
-  let g:coc_start_at_startup=1
-  let g:coc_global_extensions = [
-    \ 'coc-json',
-    \ 'coc-yaml',
-    \ 'coc-pairs',
-    \ 'coc-prettier',
-    \ 'coc-lists',
-    \ 'coc-snippets',
-    \ 'coc-neosnippet',
-    \ ]
-    " \ 'coc-git'
-    " \ 'coc-highlight'
-    " \ 'coc-java',
-    " \ 'coc-pyright',
-  function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~ '\s'
-  endfunction
-  inoremap <expr> <CR>
-    \ pumvisible() ? coc#refresh()."\<C-y>" : "\<CR>"
-  inoremap <silent><expr> <Tab>
-    \ pumvisible() ? "\<C-n>" :
-    \ <SID>check_back_space() ? "\<Tab>" :
-    \ coc#refresh()
-  inoremap <silent><expr> <S-Tab>
-    \ pumvisible() ? "\<C-p>" :
-    \ <SID>check_back_space() ? "\<S-Tab>" :
-    \ coc#refresh()
-  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-  autocmd CursorHold * silent call CocActionAsync('highlight')
-  nnoremap <Space>e :CocCommand explorer<CR>
+set updatetime=300
+let g:coc_start_at_startup=1
+let g:coc_global_extensions = [
+  \ 'coc-json',
+  \ 'coc-yaml',
+  \ 'coc-prettier',
+  \ 'coc-lists',
+  \ 'coc-snippets',
+  \ 'coc-neosnippet',
+  \ 'coc-tsserver',
+  \ 'coc-deno',
+  \ ]
+  " \ 'coc-git'
+  " \ 'coc-pairs',
+  " \ 'coc-highlight'
+  " \ 'coc-java',
+  " \ 'coc-pyright',
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+inoremap <expr> <CR>
+  \ pumvisible() ? coc#refresh()."\<C-y>" : "\<CR>"
+inoremap <silent><expr> <Tab>
+  \ pumvisible() ? "\<C-n>" :
+  \ <SID>check_back_space() ? "\<Tab>" :
+  \ coc#refresh()
+inoremap <silent><expr> <S-Tab>
+  \ pumvisible() ? "\<C-p>" :
+  \ <SID>check_back_space() ? "\<S-Tab>" :
+  \ coc#refresh()
+nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+autocmd CursorHold * silent call CocActionAsync('highlight')
+nnoremap <Space>e :CocCommand explorer<CR>
 
-  function! SetQf(cocList) abort
-    let qfList = map(a:cocList, { ->
-        \ { 'filename': v:val.file
-        \ , 'lnum'    : v:val.lnum
-        \ , 'col'     : v:val.col
-        \ , 'text'    : v:val.message
-        \ , 'type'    : v:val.severity is 'Error'       ? 'E'
-        \             : v:val.severity is 'Hint'        ? 'H'
-        \             : v:val.severity is 'Warning'     ? 'W'
-        \             : v:val.severity is 'Information' ? 'I'
-        \             : "I"
-        \ , 'vcol'    : 0
-        \ }
-        \ })
-    call setqflist(qfList, "r")
-  endfunction
-  autocmd User CocDiagnosticChange :call CocActionAsync("diagnosticList", {err,res -> SetQf(res)})<CR>
-endif
-"}}}
-
-" nvim-hs-lsp"{{{
-" g:NvimHsLsp_languageConfig {{{
-let g:NvimHsLsp_languageConfig = {}
-let g:NvimHsLsp_languageConfig['_'] = {
-      \ 'settingsPath': expand("$HOME/.config/nvim/settings.json"),
-      \ 'autoloadQuickfix': v:true,
-      \}
-let g:NvimHsLsp_languageConfig['haskell'] = {
-      \ 'serverCommand':
-      \     ['haskell-language-server-wrapper', '--lsp', '-d', '-l', '/tmp/LanguageServer.log'],
-      \ 'formattingOptions': {
-      \     'tabSize': 2,
-      \     'insertSpaces': v:true,
-      \   },
-      \}
-let g:NvimHsLsp_languageConfig['tex'] = {
-      \ 'serverCommand':
-      \     ['texlab'],
-      \ 'formattingOptions': {
-      \     'tabSize': 2,
-      \     'insertSpaces': v:true,
-      \   },
-      \}
-let g:NvimHsLsp_languageConfig['rust'] = {
-      \ 'serverCommand':
-      \     ['rust-analyzer-linux'],
-      \ 'formattingOptions': {
-      \     'tabSize': 4,
-      \     'insertSpaces': v:true,
-      \   },
+function! SetQf(cocList) abort
+  let qfList = map(a:cocList, { ->
+      \ { 'filename': v:val.file
+      \ , 'lnum'    : v:val.lnum
+      \ , 'col'     : v:val.col
+      \ , 'text'    : v:val.message
+      \ , 'type'    : v:val.severity is 'Error'       ? 'E'
+      \             : v:val.severity is 'Hint'        ? 'H'
+      \             : v:val.severity is 'Warning'     ? 'W'
+      \             : v:val.severity is 'Information' ? 'I'
+      \             : "I"
+      \ , 'vcol'    : 0
       \ }
-      " \     ['rustup', 'run', 'stable', 'rls'],
-let g:NvimHsLsp_languageConfig['ocaml'] = {
-      \ 'serverCommand':
-      \     ['ocaml-language-server', '--stdio'],
-      \ 'formattingOptions': {
-      \     'tabSize': 2,
-      \     'insertSpaces': v:true,
-      \   },
-      \ 'autoloadQuickfix': v:true,
-      \ }
-      " \     ['ocamllsp'],
-      " \     ['ocaml_lsp_server'],
-      " \     ['ocamlmerlin-lsp'],
-      " \     ['ocaml-language-server', '--stdio'],
-      " \     ['ocamlmerlin-server'],
-let g:NvimHsLsp_languageConfig['elm'] = {
-      \ 'serverCommand':
-      \   [ 'elm-language-server', '-l', '/tmp/LanguageServer.log'],
-      \ 'formattingOptions': {
-      \   'tabSize': 2,
-      \   'insertSpaces': v:true,
-      \   },
-      \ }
-let g:NvimHsLsp_languageConfig['python'] = {
-      \ 'serverCommand':
-      \     ['pyls', '-v', '--log-file', '/tmp/pyls.log'],
-      \ 'formattingOptions': {
-      \     'tabSize': 4,
-      \     'insertSpaces': v:true,
-      \   },
-      \ }
-let g:NvimHsLsp_languageConfig['erlang'] = {
-      \ 'serverCommand':
-      \     ['erlang_ls', '-t', 'stdio', '-v', '10'],
-      \ 'formattingOptions': {
-      \     'tabSize': 2,
-      \     'insertSpaces': v:true,
-      \   },
-      \ }
-let g:NvimHsLsp_languageConfig['scala'] = {
-      \ 'serverCommand':
-      \     ['metals'],
-      \ 'formattingOptions': {
-      \     'tabSize': 2,
-      \     'insertSpaces': v:true,
-      \   },
-      \ }
-let g:NvimHsLsp_languageConfig['typescript'] = {
-      \ 'serverCommand':
-      \     ['typescript-language-server', '--stdio'],
-      \ 'formattingOptions': {
-      \     'tabSize': 2,
-      \     'insertSpaces': v:true,
-      \   },
-      \ }
-"}}}
-if g:lsp_plugin is 'nvim-hs-lsp'
-  let g:nvimhsPluginStarter=nvimhs#cabal#pluginstarter()
-endif
-"}}}
-
-"deoplete{{{
-let g:deoplete#enable_at_startup = g:lsp_plugin isnot 'coc'
-if g:lsp_plugin isnot 'coc'
-  call deoplete#custom#option('ignore_case', v:false)
-  call deoplete#custom#option('camel_case', v:true)
-  call deoplete#custom#var('terminal', 'require_same_tab', v:false)
-  inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-  function! s:my_cr_function() abort
-    return deoplete#close_popup() . "\<CR>"
-  endfunction
-
-  "<Tab>で選ぶ
-  inoremap <expr><Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-  inoremap <expr><S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-  "BS
-  " inoremap <expr><BS> deoplete#smart_close_popup()."\<C-h>"
-  "cancel completion
-  inoremap <C-c> <C-e>
-endif
+      \ })
+  call setqflist(qfList, "r")
+endfunction
+autocmd User CocDiagnosticChange :call CocActionAsync("diagnosticList", {err,res -> SetQf(res)})<CR>
 "}}}
 
 "neosnippet{{{
