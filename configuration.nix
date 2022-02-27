@@ -26,6 +26,7 @@ in
       experimental-features = nix-command flakes
     '';
   };
+  nixpkgs.config.allowUnfree = true;
 
   # Use the systemd-boot EFI boot loader.
   boot = if env.type == "nixos-virtualbox" then { } else {
@@ -53,7 +54,6 @@ in
     # networking.proxy.default = "http://user:password@proxy:port/";
     # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
     useDHCP = false;
-    interfaces.enp0s20f0u1c2.useDHCP = false;
     interfaces.wlp2s0.useDHCP = true;
   };
   # gui application for

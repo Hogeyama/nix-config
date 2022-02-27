@@ -89,6 +89,7 @@ in
     } else { });
     sessionVariables = {
       EDITOR = "nvim";
+      BROWSER = "firefox";
     };
   };
   programs = {
@@ -306,7 +307,6 @@ in
           "rsync"
           "docker"
           "docker-compose"
-          "tmux"
           # [cloud]
           "aws"
           "gcloud"

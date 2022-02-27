@@ -206,7 +206,7 @@ function! ToggleFloatermFzfFun() abort
     let g:floaterm_fzf_exists=1
   endif
 endfunction
-
+hi FloatermBorder guibg=None guifg=cyan
 "}}}
 
 "sandwich{{{
@@ -742,7 +742,8 @@ nnoremap <M-n> :LNextRecursive<CR>
 nnoremap <M-p> :LPreviousRecursive<CR>
 "}}}
 
-
-command! PasteClipboard r!xsel -b
+if !empty(glob('~/.config/nvim/local-init.vim'))
+  source '~/.config/nvim/local-init.vim'
+endif
 
 "vim: set et ts=1 sts=2 tw=2:
