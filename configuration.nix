@@ -88,10 +88,11 @@ in
   services.xserver = {
     enable = true;
     layout = "jp";
-    # TODO
-    # displayManager.lightdm.enable = true;
-    # displayManager.sddm.enable = true;
-    displayManager.gdm.enable = true;
+    displayManager =
+      if env.type == "nixos-virtualbox" then
+        { gdm.enable = true; }
+      else
+        { sddm.enable = true; };
     desktopManager.plasma5.enable = true;
     windowManager = {
       xmonad = {
