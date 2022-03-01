@@ -47,6 +47,7 @@ setup() {
   readonly FD_OPTS=(
     --hidden
     --no-ignore
+    --type f
     --exclude .git
     --exclude .hg
     --exclude .hie

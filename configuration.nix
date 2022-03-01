@@ -112,6 +112,10 @@ in
   # Enable docker
   virtualisation.docker.enable = true;
 
+  # Enable docker
+  virtualisation.docker.enable = true;
+  services.syslog-ng.enable = true;
+
   environment = {
     systemPackages = with pkgs; [
       awscli2
