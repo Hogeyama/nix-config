@@ -150,17 +150,17 @@ function! MyClipboard(lines,regtype) abort
   call extend(g:, {'my_clipboard': [a:lines, a:regtype]})
   call system("myclip", a:lines)
 endfunction
-let g:clipboard = {
-      \   'name': 'myClipboard',
-      \   'copy': {
-      \      '+': function("MyClipboard"),
-      \      '*': function("MyClipboard")
-      \    },
-      \   'paste': {
-      \      '+': {-> get(g:, 'my_clipboard', [])},
-      \      '*': {-> get(g:, 'my_clipboard', [])},
-      \   },
-      \ }
+" let g:clipboard = {
+"       \   'name': 'myClipboard',
+"       \   'copy': {
+"       \      '+': function("MyClipboard"),
+"       \      '*': function("MyClipboard")
+"       \    },
+"       \   'paste': {
+"       \      '+': {-> get(g:, 'my_clipboard', [])},
+"       \      '*': {-> get(g:, 'my_clipboard', [])},
+"       \   },
+"       \ }
 "}}}
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

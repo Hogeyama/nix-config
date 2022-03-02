@@ -14,10 +14,10 @@ import System.Environment (
  )
 import Xmobar
 
-mkConfig :: XPosition -> Config
-mkConfig position =
+mkConfig :: XPosition -> String -> Config
+mkConfig position font =
   defaultConfig
-    { font = "xft:Rounded Mgen+ 1mn:size=18"
+    { font = font
     , bgColor = "#1a1e1b"
     , fgColor = "#676767"
     , lowerOnStart = True
@@ -110,7 +110,10 @@ run display = do
         2560 -> 30
         1920 -> 20
         _ -> 20
-      config = mkConfig $ Static {xpos, ypos, width, height}
+      font = case width of
+        3840 -> "xft:Rounded Mgen+ 1mn:size=18"
+        _ -> "xft:Rounded Mgen+ 1mn:size=12"
+      config = mkConfig Static {xpos, ypos, width, height} font
   tryAnyDeep (xmobar config) >>= \case
     Right () -> pure ()
     Left e -> do
