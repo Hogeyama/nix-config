@@ -118,6 +118,7 @@ in
       awscli2
       aws-sam-cli
       bat
+      bind
       curl
       docker
       docker-compose
@@ -131,16 +132,20 @@ in
       git
       gnumake
       go
+      gopls
       golangci-lint
       google-cloud-sdk
       gthumb
       htop
       jq
+      libreoffice
+      lsof
       mercurial
       neovim-remote
       ripgrep
       rnix-lsp
       scrot
+      textql
       unar
       vifm
       wget

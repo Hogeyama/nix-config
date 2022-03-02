@@ -29,6 +29,7 @@ in
         awscli2
         aws-sam-cli
         bat
+        bind
         curl
         deno
         docker
@@ -38,10 +39,13 @@ in
         feh
         fuse
         go
+        gopls
         golangci-lint
         google-cloud-sdk
         htop
         jq
+        libreoffice
+        lsof
         mercurial
         neovim-remote
         nodejs
@@ -49,6 +53,8 @@ in
         nodePackages.npm
         ripgrep
         rnix-lsp
+        scrot
+        textql
         unar
         vifm
         wget

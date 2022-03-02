@@ -249,6 +249,7 @@ let g:coc_global_extensions = [
   \ 'coc-lists',
   \ 'coc-snippets',
   \ 'coc-neosnippet',
+  \ 'coc-go',
   \ 'coc-tsserver',
   \ 'coc-deno',
   \ ]
