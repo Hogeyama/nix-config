@@ -624,11 +624,6 @@ function! CRecursive(cmd) abort "{{{
     echomsg "no more items"
   endtry
 endfunction "}}}
-let g:init_vim = $XDG_CONFIG_HOME != ""
-                  \ ? $XDG_CONFIG_HOME   . "/nvim/init.vim"
-                  \ : $HOME . "/.config" . "/nvim/init.vim"
-command! EditInitVim   execute "e " .  g:init_vim
-command! SourceInitVim execute "so " .  g:init_vim
 au WinLeave * let g:last_win = winnr() | let g:last_file = expand("%:p")
 au TabLeave * let g:last_tab = tabpagenr()
 command! -nargs=0 MoveToLastWin execute "normal! ".g:last_win."<C-w><C-w>"
@@ -742,8 +737,8 @@ nnoremap <M-n> :LNextRecursive<CR>
 nnoremap <M-p> :LPreviousRecursive<CR>
 "}}}
 
-if !empty(glob('~/.config/nvim/local-init.vim'))
-  source '~/.config/nvim/local-init.vim'
+if filereadable(expand("~/.config/nvim/local-init.vim'))
+  source ~/.config/nvim/local-init.vim
 endif
 
 "vim: set et ts=1 sts=2 tw=2:
