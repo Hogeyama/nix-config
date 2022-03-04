@@ -737,7 +737,7 @@ nnoremap <M-n> :LNextRecursive<CR>
 nnoremap <M-p> :LPreviousRecursive<CR>
 "}}}
 
-if filereadable(expand("~/.config/nvim/local-init.vim'))
+if filereadable(expand("~/.config/nvim/local-init.vim"))
   source ~/.config/nvim/local-init.vim
 endif
 
