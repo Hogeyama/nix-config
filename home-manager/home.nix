@@ -38,6 +38,7 @@ in
         fd
         feh
         fuse
+        gcc
         go
         gopls
         golangci-lint
@@ -48,6 +49,7 @@ in
         lsof
         mercurial
         neovim-remote
+        python3
         nodejs
         nodePackages.bash-language-server
         nodePackages.npm
@@ -342,9 +344,6 @@ in
         test -z "''${ZSHENV_LOADED}" || return
         export ZSHENV_LOADED=1
         export PATH="$PATH:$HOME/.local/bin"
-        export PATH="$PATH:$HOME/.deno/bin"
-        export PATH="$PATH:/usr/local/go/bin"
-        export PATH="$PATH:/usr/local/google-cloud-sdk/bin"
         source-if-exists "$HOME/.ghcup/env"
         source-if-exists "$HOME/.cargo/env"
         source-if-exists "$HOME/.opam/opam-init/init.zsh"

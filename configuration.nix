@@ -129,6 +129,7 @@ in
       firefox
       fuse
       fzf
+      gcc
       git
       gnumake
       go
@@ -142,6 +143,7 @@ in
       lsof
       mercurial
       neovim-remote
+      python3
       ripgrep
       rnix-lsp
       scrot
