@@ -88,10 +88,10 @@ in
   services.xserver = {
     enable = true;
     layout = "jp";
-    displayManager =
-      if env.type == "nixos-virtualbox"
-      then { }
-      else { sddm.enable = true; };
+    # TODO
+    # displayManager.lightdm.enable = true;
+    # displayManager.sddm.enable = true;
+    displayManager.gdm.enable = true;
     desktopManager.plasma5.enable = true;
     windowManager = {
       xmonad = {
@@ -111,14 +111,12 @@ in
 
   # Enable docker
   virtualisation.docker.enable = true;
-  services.syslog-ng.enable = true;
 
   environment = {
     systemPackages = with pkgs; [
       awscli2
       aws-sam-cli
       bat
-      bind
       curl
       docker
       docker-compose
@@ -233,24 +231,6 @@ in
       extraGroups = [ "wheel" "networkmanager" "docker" ] ++
         (if env.type == "nixos-virtualbox" then [ "vboxsf" ] else [ ]);
       hashedPassword = env.user.hashedPassword;
-      # users = {
-      #   users = {
-      #     ${env.user.name} = {
-      #       uid = 1001;
-      #       isNormalUser = true;
-      #       home = "/home/${env.user.name}";
-      #       group = env.user.name;
-      #       extraGroups = [ "wheel" "networkmanager" "docker" ] ++
-      #         (if env.type == "nixos-virtualbox" then [ "vboxsf" ] else [ ]);
-      #       hashedPassword = env.user.hashedPassword;
-      #       shell = pkgs.zsh;
-      #     };
-      #   };
-      #   groups = {
-      #     # singleton group
-      #     ${env.user.name} = {
-      #       gid = 1000;
-      #     };
     };
   };
   security.sudo.wheelNeedsPassword = false;
