@@ -91,7 +91,7 @@ in
     displayManager =
       if env.type == "nixos-virtualbox"
       then { }
-      else { sddm.enable = true; };
+      else { gdm.enable = true; };
     desktopManager.plasma5.enable = true;
     windowManager = {
       xmonad = {
@@ -111,7 +111,6 @@ in
 
   # Enable docker
   virtualisation.docker.enable = true;
-  services.syslog-ng.enable = true;
 
   environment = {
     systemPackages = with pkgs; [
@@ -228,7 +227,7 @@ in
   users = {
     users = {
       ${env.user.name} = {
-        uid = 1001;
+        uid = 1000;
         isNormalUser = true;
         home = "/home/${env.user.name}";
         group = env.user.name;
@@ -242,6 +241,7 @@ in
       # singleton group
       ${env.user.name} = {
         gid = 1000;
+        members = [ env.user.name ];
       };
     };
   };
