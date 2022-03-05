@@ -224,14 +224,25 @@ in
     };
   };
 
-  users.users = {
-    ${env.user.name} = {
-      isNormalUser = true;
-      home = "/home/${env.user.name}";
-      shell = pkgs.zsh;
-      extraGroups = [ "wheel" "networkmanager" "docker" ] ++
-        (if env.type == "nixos-virtualbox" then [ "vboxsf" ] else [ ]);
-      hashedPassword = env.user.hashedPassword;
+  users = {
+    users = {
+      ${env.user.name} = {
+        uid = 1000;
+        isNormalUser = true;
+        home = "/home/${env.user.name}";
+        group = env.user.name;
+        extraGroups = [ "wheel" "networkmanager" "docker" ] ++
+          (if env.type == "nixos-virtualbox" then [ "vboxsf" ] else [ ]);
+        hashedPassword = env.user.hashedPassword;
+        shell = pkgs.zsh;
+      };
+    };
+    groups = {
+      # singleton group
+      ${env.user.name} = {
+        gid = 1000;
+        members = [ env.user.name ];
+      };
     };
   };
   security.sudo.wheelNeedsPassword = false;
