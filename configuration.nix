@@ -88,10 +88,10 @@ in
   services.xserver = {
     enable = true;
     layout = "jp";
-    # TODO
-    # displayManager.lightdm.enable = true;
-    # displayManager.sddm.enable = true;
-    displayManager.gdm.enable = true;
+    displayManager =
+      if env.type == "nixos-virtualbox"
+      then { }
+      else { gdm.enable = true; };
     desktopManager.plasma5.enable = true;
     windowManager = {
       xmonad = {
@@ -117,6 +117,7 @@ in
       awscli2
       aws-sam-cli
       bat
+      bind
       curl
       docker
       docker-compose
