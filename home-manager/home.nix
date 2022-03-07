@@ -315,6 +315,7 @@ in
           "rsync"
           "docker"
           "docker-compose"
+          "gh"
           # [cloud]
           "aws"
           "gcloud"
