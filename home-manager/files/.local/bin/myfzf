@@ -87,6 +87,7 @@ setup() {
     --bind  "ctrl-d:reload['$PROG' load zoxide]+change-prompt[zoxide>]"
     --bind  "ctrl-r:reload['$PROG' load rg {q}]+clear-query+change-prompt[grep>]"
     --bind  "ctrl-g:reload['$PROG' load browser-history {q}]+clear-query+change-prompt[browser-history>]"
+    --bind  "ctrl-s:toggle-sort"
   )
 }
 
