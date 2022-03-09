@@ -106,7 +106,7 @@ in
     };
     direnv = {
       enable = true;
-      nix-direnv.enable = true;
+      nix-direnv.enable = false;
     };
     fzf = {
       enable = true;
@@ -305,20 +305,22 @@ in
       history.extended = true;
       oh-my-zsh = {
         enable = true;
+        theme = "frisk";
         plugins = [
           # [tool]
-          "git"
-          "git-auto-fetch"
-          "fd"
-          "fzf"
-          "ripgrep"
-          "rsync"
+          "aws"
           "docker"
           "docker-compose"
-          "gh"
-          # [cloud]
-          "aws"
+          "fd"
+          "fzf"
           "gcloud"
+          "git"
+          "git-auto-fetch"
+          "gh"
+          "ripgrep"
+          "rsync"
+          "ssh-agent"
+          "zoxide"
           # [language]
           "cabal"
           "stack"
@@ -327,9 +329,11 @@ in
           "node"
           "npm"
           "deno"
-          "zoxide"
         ];
-        theme = "frisk";
+        extraConfig = ''
+          # do not load any identities on start
+          zstyle :omz:plugins:ssh-agent lazy yes
+        '';
       };
       loginExtra = ''
         export LOCALE_ARCHIVE=/usr/lib/locale/locale-archive
