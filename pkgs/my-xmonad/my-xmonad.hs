@@ -12,6 +12,7 @@ import RIO hiding (Const)
 import RIO.List qualified as List
 
 import Data.List.Split qualified as List
+import System.Environment qualified as Env
 import XMonad
 import XMonad.Hooks.DynamicLog (
   PP (..),
@@ -64,12 +65,10 @@ main = do
     myConfig =
       def
         { modMask = mod4Mask
-        , -- , terminal = "konsole"
-          terminal = "konsole"
+        , terminal = "konsole"
         , workspaces = myWorkspaces
         , focusedBorderColor = "#00FF00"
-        , --
-          normalBorderColor = "#EEEEEE"
+        , normalBorderColor = "#EEEEEE"
         , manageHook = manageDocks <+> manageHook def
         , layoutHook = myLayoutHook
         , startupHook =
@@ -90,8 +89,8 @@ main = do
                 }
         }
         `additionalKeysP`
-        -- [ ("M-g"          , spawn "google-chrome")
-        [ ("M-g", spawn "firefox")
+        --
+        [ ("M-g", spawn =<< io (Env.lookupEnv "BROWSER" <&> fromMaybe "firefox"))
         , ("M-p", spawn "ulauncher")
         , ("M-S-d", spawn "konsole")
         , ("M-S-q", kill)
@@ -105,7 +104,6 @@ main = do
         , ("M-s", swapScreen)
         , ("M-a", sendMessage SwapWindow)
         , ("M-S-a", hoge) -- なんか動作の確認に
-        -- , ("M-S-d"        , killXmobar)
         , ("M-S-r", restart "xmonad" True)
         , ("M-k", focusUpOrAnotherPane)
         , ("M-j", focusDownOrAnotherPane)
@@ -113,22 +111,28 @@ main = do
         , ("M-S-j", focusDown)
         , ("M-S-o", spawn "amixer sset Master mute")
         , ("M-S-t", spawn "amixer sset Master toggle")
-        , ("M-S-s", spawn $ unwords ["scrot ", screenShotName])
+        , ("M-S-s", spawn $ unwords ["scrot", screenShotName])
         , ("M-S-b", spawn "$HOME/.local/bin/bttoggle")
         , ("M-m", toggleTouchPad)
         , ("M-b", sendMessage ToggleStruts) -- xmobar
         ]
-        `additionalKeysP` [ ("<XF86AudioRaiseVolume>", spawn "amixer sset Master 2%+")
-                          , ("<XF86AudioLowerVolume>", spawn "amixer sset Master 2%-")
-                          , ("<XF86AudioMute>", spawn "amixer sset Master 0%")
-                          , ("M-<XF86AudioRaiseVolume>", spawn "xbacklight -inc 10")
-                          , ("M-<XF86AudioLowerVolume>", spawn "xbacklight -dec 10")
-                          ]
-        `additionalKeys` [ ((m .|. mod4Mask, k), windows $ f i)
-                         | (i, k) <- zip myWorkspaces [xK_1 .. xK_9]
-                         , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]
-                         ]
-        `removeKeysP` ["S-C-n"]
+        `additionalKeysP`
+        --
+        [ ("<XF86AudioRaiseVolume>", spawn "amixer sset Master 2%+")
+        , ("<XF86AudioLowerVolume>", spawn "amixer sset Master 2%-")
+        , ("<XF86AudioMute>", spawn "amixer sset Master 0%")
+        , ("M-<XF86AudioRaiseVolume>", spawn "xbacklight -inc 10")
+        , ("M-<XF86AudioLowerVolume>", spawn "xbacklight -dec 10")
+        ]
+        `additionalKeys`
+        --
+        [ ((m .|. mod4Mask, k), windows $ f i)
+        | (i, k) <- zip myWorkspaces [xK_1 .. xK_9]
+        , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]
+        ]
+        `removeKeysP`
+        --
+        ["S-C-n"]
 
     screenShotName :: String
     screenShotName = "$HOME/Dropbox/ScreenShots/Screenshot%Y-%m-%d-%H-%M-%S.png"

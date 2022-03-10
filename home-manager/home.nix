@@ -97,7 +97,7 @@ in
     } else { });
     sessionVariables = {
       EDITOR = "nvim";
-      BROWSER = "firefox";
+      BROWSER = env.user.browser;
     };
   };
   programs = {
