@@ -21,5 +21,6 @@
         userName = "Hogeyama";
         userEmail = "gan13027830@gmail.com";
       };
+      browser = "google-chrome-stable";
     };
 }
