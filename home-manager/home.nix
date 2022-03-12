@@ -369,8 +369,6 @@ in
         bindkey "^K" up-line-or-history
         bindkey "^J" down-line-or-history
         bindkey "^I" expand-or-complete-prefix
-        # nix home-manager
-        # export NIX_PATH=$HOME/.nix-defexpr/channels:/nix/var/nix/profiles/per-user/root/channels''${NIX_PATH:+:$NIX_PATH}
         # functions
         cd-ls(){
           \cd $* && exa -s Name
