@@ -371,7 +371,7 @@ in
         bindkey "^I" expand-or-complete-prefix
         # functions
         cd-ls(){
-          \cd $* && exa -s Name
+          \cd $* && exa -s name
         }
         mkcd(){
           mkdir -p "$1" && cd "$1"
@@ -391,7 +391,7 @@ in
         source-if-exists $HOME/.zshrc.local
       '';
       shellAliases = {
-        ls = "exa -s Name";
+        ls = "exa -s name";
         cd = "cd-ls";
         mv = "mv -i";
         cp = "cp -iL";
