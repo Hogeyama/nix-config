@@ -360,7 +360,9 @@ in
         export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
       '';
       initExtra = ''
-        zstyle ':completion:*:*:nvim:*' file-patterns '^*.(aux|log|pdf|cmo|cmi|cmt|cmx):source-files' '*:all-files'
+        zstyle ':completion:*' verbose yes
+        zstyle ':completion:*' format '%B%d%b'
+        zstyle ':completion:*:warnings' format 'No matches for: %d'
         # drwxrwxrwxなるディレクトリ(other writable)が見にくいのを直す
         eval $(dircolors | sed 's/ow=[^:]*:/ow=01;34:/') #青背景白文字
         # bindkey
@@ -368,13 +370,13 @@ in
         bindkey "^J" down-line-or-history
         bindkey "^I" expand-or-complete-prefix
         # nix home-manager
-        export NIX_PATH=$HOME/.nix-defexpr/channels:/nix/var/nix/profiles/per-user/root/channels''${NIX_PATH:+:$NIX_PATH}
-        # functions & aliases
+        # export NIX_PATH=$HOME/.nix-defexpr/channels:/nix/var/nix/profiles/per-user/root/channels''${NIX_PATH:+:$NIX_PATH}
+        # functions
         cd-ls(){
-          \cd $* && \ls --group-directories-first --color=always
+          \cd $* && exa -s Name
         }
         mkcd(){
-          mkdir $1 && cd $1
+          mkdir -p "$1" && cd "$1"
         }
         neovim(){
           if [[ -z "$NVIM_LISTEN_ADDRESS" ]]
@@ -387,24 +389,24 @@ in
         ncd() {
           nvr -c "cd '$(realpath $1)'"
         }
-        alias ls='ls --color=always'
-        alias cd='cd-ls'
-        alias mv='mv -i'
-        alias cp='cp -iL'
-        alias l='ls -CF'
-        alias ll='ls -ahlF'
-        alias la='ls -A'
-        alias DU='du -hd1 | sort -h'
-        alias open=xdg-open
-        alias v='neovim'
-        alias vi='neovim'
-        alias vim='neovim'
-        alias gs='git status'
-        # extra source
-        source-if-exists $HOME/.fzf.zsh
+        # source machine local configuration
         source-if-exists $HOME/.zshrc.local
-        source-if-exists $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh
       '';
+      shellAliases = {
+        ls = "exa -s Name";
+        cd = "cd-ls";
+        mv = "mv -i";
+        cp = "cp -iL";
+        l = "ls -CF";
+        ll = "ls -ahlF";
+        la = "ls -A";
+        DU = "du -hd1 | sort -h";
+        open = "xdg-open";
+        v = "neovim";
+        vi = "neovim";
+        vim = "neovim";
+        gs = "git status";
+      };
     };
     git = {
       enable = true;
