@@ -335,14 +335,10 @@ in
           zstyle :omz:plugins:ssh-agent lazy yes
         '';
       };
-      loginExtra = ''
-        export LOCALE_ARCHIVE=/usr/lib/locale/locale-archive
-      '';
       profileExtra = ''
         export LOCALE_ARCHIVE=/usr/lib/locale/locale-archive
       '';
       envExtra = ''
-        export LOCALE_ARCHIVE=/usr/lib/locale/locale-archive
         source-if-exists() {
           [ -e $1 ] && . $1
         }
@@ -363,6 +359,8 @@ in
         zstyle ':completion:*' verbose yes
         zstyle ':completion:*' format '%B%d%b'
         zstyle ':completion:*:warnings' format 'No matches for: %d'
+        # https://stackoverflow.com/questions/24226685
+        zstyle ':completion:*' matcher-list "" 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
         # drwxrwxrwxなるディレクトリ(other writable)が見にくいのを直す
         eval $(dircolors | sed 's/ow=[^:]*:/ow=01;34:/') #青背景白文字
         # bindkey
