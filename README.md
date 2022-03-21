@@ -11,6 +11,7 @@ nix-shell -p git
 mv /etc/nixos /etc/nixos.bak
 git clone https://github.com/Hogeyama/nixos-config.git /etc/nixos
 cp /etx/nixos.bak/hardware-configuration.nix /etc/nixos/hardware-configuration.nix
+cp /etc/nixos/env-example.nix /etc/nixos/env.nix
 nano /etc/nixos/env.nix
 nixos-rebuild switch
 ```
