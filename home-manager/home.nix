@@ -162,7 +162,7 @@ in
                 };
               };
             };
-            "ocaml-language-server" = {
+            ocaml-language-server = {
               command = "ocamllsp";
               args = [
                 "--log-file"
@@ -172,7 +172,7 @@ in
                 "ocaml"
               ];
             };
-            "bash-language-server" = {
+            bash-language-server = {
               command = "bash-language-server";
               args = [
                 "start"
@@ -188,21 +188,6 @@ in
               ];
             };
           };
-          "java.home" = "/usr/lib/jvm/java11";
-          "java.jdt.ls.home" = "/usr/local/share/jdt-language-server";
-          "java.signatureHelp.enabled" = true;
-          "java.import.gradle.enabled" = true;
-          "java.configuration.runtimes" = [
-            {
-              name = "JavaSE-1.8";
-              path = "/usr/lib/jvm/java8";
-              default = true;
-            }
-            {
-              name = "JavaSE-11";
-              path = "/usr/lib/jvm/java11";
-            }
-          ];
           "yaml.customTags" = [
             "!Ref"
             "!Sub"
