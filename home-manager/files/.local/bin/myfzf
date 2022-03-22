@@ -396,7 +396,7 @@ do_preview() {
       preview_file_or_dir "$1"
       ;;
     *)
-      echo "No preview command found for mode ${get_mode}"
+      echo "No preview command found for mode $(get_mode)"
       ;;
   esac
 }
