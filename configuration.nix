@@ -14,7 +14,7 @@ in
     ];
 
   nix = {
-    package = pkgs.nixUnstable; # or versioned attributes like nix_2_4
+    package = pkgs.unstable.nixUnstable; # or versioned attributes like nix_2_4
     # [unstable]
     # settings = {
     #   substituters = [
