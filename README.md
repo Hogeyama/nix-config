@@ -1,4 +1,11 @@
 
+## TODO
+
+### flakes
+
+* /home/flake.nix と /flake.nix の統合
+* env.nix の扱いをいい感じに
+
 ## NixOS
 
 多分こんな感じで動くはず
