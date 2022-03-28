@@ -1,7 +1,6 @@
 # https://rycee.gitlab.io/home-manager/options.html
 { config
 , pkgs
-, unstablePkgs ? pkgs # 新しいパッケージを使いたい場合に指定する
 , ...
 }:
 let
@@ -120,7 +119,7 @@ in
     };
     neovim = {
       enable = true;
-      package = unstablePkgs.neovim-unwrapped;
+      package = pkgs.unstable.neovim-unwrapped;
       withNodeJs = true;
       withPython3 = true;
       extraConfig = ''
