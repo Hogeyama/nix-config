@@ -1,15 +1,7 @@
 # https://rycee.gitlab.io/home-manager/options.html
-{ config
-, pkgs
-, ...
-}:
+{ config, pkgs, ... }:
 let
-  env = import ../env.nix;
-  myPkgs = {
-    my-xmobar = import ../pkgs/my-xmobar { inherit pkgs; };
-    my-xmonad = import ../pkgs/my-xmonad { inherit pkgs; };
-    illusion = import ../pkgs/illusion { inherit (pkgs) fetchzip unzip; };
-  };
+  env = import ./env.nix;
 in
 {
   nixpkgs.config = {
@@ -68,9 +60,9 @@ in
       tridactyl-native
       ### font
       rounded-mgenplus
-      myPkgs.illusion
+      illusion
       ### my packages
-      myPkgs.my-xmobar
+      my-xmobar
     ];
     file = {
       # neovim
@@ -169,7 +161,7 @@ in
         recursive = true;
       };
       # xmonad
-      ".xmonad/xmonad-x86_64-linux".source = "${myPkgs.my-xmonad}/bin/xmonad-x86_64-linux";
+      ".xmonad/xmonad-x86_64-linux".source = "${pkgs.my-xmonad}/bin/xmonad-x86_64-linux";
       ".xmonad/build" = {
         executable = true;
         text = ''echo "Nothing to do"'';

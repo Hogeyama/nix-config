@@ -11,20 +11,27 @@
   outputs = { nixpkgs, nixpkgs-unstable, home-manager, ... }:
     let
       system = "x86_64-linux";
+
       env = import ./env.nix;
+      hostName = env.hostName;
+      username = env.user.name;
+
       overlay = final: prev: {
         # unstable packages are available as pkgs.unstable.${package}
-        unstable = nixpkgs-unstable.legacyPackages.${prev.system};
-        # illusion font
+        unstable = builtins.getAttr system nixpkgs-unstable.outputs.legacyPackages;
+        # my packages
         illusion = import ./pkgs/illusion { inherit (prev) fetchzip unzip; };
+        my-xmobar = import ./pkgs/my-xmobar { pkgs = final; };
+        my-xmonad = import ./pkgs/my-xmonad { pkgs = final; };
       };
     in
     {
-      nixosConfigurations.${env.hostName} = nixpkgs.lib.nixosSystem rec {
-        system = "x86_64-linux";
+      # For NixOS
+      nixosConfigurations.${hostName} = nixpkgs.lib.nixosSystem {
+        inherit system;
         modules = [
           # overlay
-          ({ config, pkgs, ... }: { nixpkgs.overlays = [ overlay ]; })
+          ({ pkgs, ... }: { nixpkgs.overlays = [ overlay ]; })
           # system configuration
           ./configuration.nix
           # home-manager configuration
@@ -32,9 +39,20 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.${env.user.name} = import ./home-manager/home.nix;
+            home-manager.users.${username} = import ./home.nix;
           }
         ];
+      };
+
+      # For Nix package manager only
+      homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
+        pkgs = builtins.getAttr system nixpkgs.outputs.legacyPackages // {
+          overlays = [ overlay ];
+        };
+        inherit system username;
+        configuration = import ./home.nix;
+        homeDirectory = "/home/${username}";
+        stateVersion = "21.11";
       };
     };
 }

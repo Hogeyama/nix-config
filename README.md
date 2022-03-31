@@ -1,26 +1,14 @@
 
-## TODO
-
-### flakes
-
-* /home/flake.nix と /flake.nix の統合
-* env.nix の扱いをいい感じに
-
 ## NixOS
 
 多分こんな感じで動くはず
 
 ```
-nix-channel --add https://nixos.org/channels/nixos-unstable nixos-unstable
-nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
-nix-channel --update
-nix-shell -p git
-mv /etc/nixos /etc/nixos.bak
-git clone https://github.com/Hogeyama/nixos-config.git /etc/nixos
-cp /etx/nixos.bak/hardware-configuration.nix /etc/nixos/hardware-configuration.nix
-cp /etc/nixos/env-example.nix /etc/nixos/env.nix
-nano /etc/nixos/env.nix
-nixos-rebuild switch
+git clone https://github.com/Hogeyama/nixos-config.git
+cd ./nixos-config
+cp /etx/nixos/hardware-configuration.nix ./
+nano env.nix
+nixos-rebuild switch --flake .
 ```
 
 * konsole, fcitx5, firefox, モニターなどの設定は手動でやる必要がある
