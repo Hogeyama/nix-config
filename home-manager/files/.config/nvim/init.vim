@@ -20,6 +20,7 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'junegunn/fzf.vim'
 Plug 'voldikss/vim-floaterm'
 """便利
+Plug 'godlygeek/tabular'
 Plug 'junegunn/vim-easy-align'
 Plug 'tomtom/tcomment_vim'
 Plug 'machakann/vim-sandwich'
@@ -50,8 +51,7 @@ Plug 'vmchale/dhall-vim'
 """Python
 Plug 'vim-python/python-syntax'
 ""MarkDown
-Plug 'vim-pandoc/vim-pandoc'
-Plug 'vim-pandoc/vim-pandoc-syntax'
+Plug 'preservim/vim-markdown'
 Plug 'vim-voom/VOoM'
 ""Textile
 Plug 's3rvac/vim-syntax-redminewiki'
@@ -537,34 +537,7 @@ autocmd FileType go setlocal tabstop=8 shiftwidth=8 softtabstop=8 noexpandtab
 "}}}
 
 "MarkDown/Pandoc{{{
-augroup pandoc_syntax
-  autocmd! BufNewFile,BufFilePRe,BufRead *.md set filetype=pandoc
-augroup END
-autocmd FileType pandoc setlocal et ts=2 sw=2 sts=2 foldmethod=marker
-autocmd FileType pandoc let &spell = 0
-" TODO errorformat
-autocmd FileType pandoc let g:neomake_enabled_makers = ['pandoc'] "b:だと効かない
-let g:neomake_pandoc_pandoc_maker = {
-    \ 'exe': 'pandoc-wrapper',
-    \ 'args': ['%t'],
-    \ 'errorformat': '',
-    \ 'process_output': {-> []},
-    \ }
-let g:pandoc#filetypes#handled = ["pandoc"]
-
-let g:previm_enable_realtime = 1
-let g:vim_markdown_math = 1
-let g:pandoc#syntax#codeblocks#embeds#use = 1
-" let g:pandoc#syntax#codeblocks#embeds#langs = ["ocaml","haskell","python3"]
-let g:pandoc#folding#mode = 'marker'
-let g:pandoc#syntax#conceal#use = 0
-let g:pandoc#modules#disabled = ["folding", "chdir"]
-
-"markdown-composer
-let g:markdown_composer_open_browser = 0
-"let g:markdown_composer_autostart = 0
-"let g:markdown_composer_external_renderer =
-"    \ 'pandoc -s -f markdown+lists_without_preceding_blankline+ignore_line_breaks -t html'
+let g:vim_markdown_folding_disabled = 1
 "}}}
 
 "Scheme{{{
