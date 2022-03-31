@@ -75,6 +75,8 @@ in
   };
   # gui application for
   programs.nm-applet.enable = true;
+  # enable sshd
+  services.sshd.enable = true;
 
   # Enable sound.
   sound.enable = true;
