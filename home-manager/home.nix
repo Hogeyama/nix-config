@@ -18,54 +18,61 @@ in
   };
   home = {
     packages = with pkgs; [
+      awscli2
+      aws-sam-cli
+      bat
+      bind
+      curl
+      deno
+      docker
+      docker-compose
+      exa
+      fd
+      feh
+      fuse
+      gcc
+      gh
+      git-remote-codecommit
+      gitflow
+      go
+      gopls
+      golangci-lint
+      google-cloud-sdk
+      htop
+      jq
+      libreoffice
+      lsof
+      mercurial
+      navi
+      neovim-remote
+      python3
+      nodejs
+      nodePackages.bash-language-server
+      nodePackages.npm
+      openssl
+      pandoc
+      ripgrep
+      rnix-lsp
+      shellcheck
+      scrot
+      sqlite
+      textql
+      time
+      tldr
+      unar
       ulauncher
-      unstablePkgs.sqlite
+      vifm
+      wget
+      yq
+      zip
       # for firefox
       tridactyl-native
+      ### font
+      rounded-mgenplus
+      myPkgs.illusion
       ### my packages
       myPkgs.my-xmobar
-    ] ++ (if env.type == "nix-package-manager" then
-      [
-        awscli2
-        aws-sam-cli
-        bat
-        bind
-        curl
-        deno
-        docker
-        docker-compose
-        exa
-        fd
-        feh
-        fuse
-        gcc
-        go
-        gopls
-        golangci-lint
-        google-cloud-sdk
-        htop
-        jq
-        libreoffice
-        lsof
-        mercurial
-        neovim-remote
-        python3
-        nodejs
-        nodePackages.bash-language-server
-        nodePackages.npm
-        ripgrep
-        rnix-lsp
-        scrot
-        textql
-        unar
-        vifm
-        wget
-        yq
-        ### font
-        rounded-mgenplus
-        myPkgs.illusion
-      ] else [ ] # installed by configuration.nix
-    );
+    ];
     file = {
       # neovim
       ".config/nvim/real-init.vim".source = ./files/.config/nvim/init.vim;
@@ -135,7 +142,8 @@ in
             "typescriptreact"
             "haskell"
           ];
-          "codeLens.enable" = false;
+          "codeLens.enable" = true;
+          "codeLens.position" = "eol";
           languageserver = {
             haskell = {
               command = "haskell-language-server-wrapper";
@@ -194,6 +202,22 @@ in
             "!ImportValue"
             "!GetAtt"
           ];
+          "java.configuration.runtimes" = [
+            {
+              "name" = "JavaSE-11";
+              "path" = "${pkgs.openjdk11}/lib/openjdk";
+            }
+            {
+              "name" = "JavaSE-1.8";
+              "path" = "${pkgs.openjdk8}/lib/openjdk";
+              default = true;
+            }
+          ];
+          "java.home" = "${pkgs.openjdk11}/lib/openjdk";
+          "java.signatureHelp.enabled" = true;
+          "java.import.gradle.enabled" = true;
+          # Use jdtls installed by coc-java
+          # "java.jdt.ls.home" = "/usr/local/share/jdt-language-server";
         };
       };
     };
@@ -339,6 +363,8 @@ in
         source-if-exists "$HOME/.zshenv.local"
         export FZF_DEFAULT_COMMAND='fd --hidden --follow --exclude .git'
         export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+        export JAVA8=${pkgs.openjdk8}/lib/openjdk
+        export JAVA11=${pkgs.openjdk11}/lib/openjdk
       '';
       initExtra = ''
         zstyle ':completion:*' verbose yes
