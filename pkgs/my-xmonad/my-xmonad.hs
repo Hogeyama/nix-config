@@ -90,7 +90,8 @@ main = do
         }
         `additionalKeysP`
         --
-        [ ("M-g", spawn =<< io (Env.lookupEnv "BROWSER" <&> fromMaybe "firefox"))
+        [ ("M-g", spawn =<< io (Env.lookupEnv "BROWSER" <&> fromMaybe "google-chrome-stable"))
+        --
         , ("M-p", spawn "ulauncher")
         , ("M-S-d", spawn "konsole")
         , ("M-S-q", kill)
