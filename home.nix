@@ -189,6 +189,7 @@ in
     } else { });
     sessionVariables = {
       EDITOR = "nvim";
+      JAVA_HOME = "${pkgs.openjdk8}/lib/openjdk";
       BROWSER = env.user.browser;
     };
   };
@@ -354,8 +355,9 @@ in
         source-if-exists "$HOME/.zshenv.local"
         export FZF_DEFAULT_COMMAND='fd --hidden --follow --exclude .git'
         export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-        export JAVA8=${pkgs.openjdk8}/lib/openjdk
-        export JAVA11=${pkgs.openjdk11}/lib/openjdk
+        export JAVA8_HOME=${pkgs.openjdk8}/lib/openjdk
+        export JAVA11_HOME=${pkgs.openjdk11}/lib/openjdk
+        export JAVA_HOME="''$JAVA8_HOME"
       '';
       initExtra = ''
         zstyle ':completion:*' verbose yes
