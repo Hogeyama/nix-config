@@ -1,16 +1,7 @@
 # https://rycee.gitlab.io/home-manager/options.html
-{ config
-, pkgs
-, unstablePkgs ? pkgs # 新しいパッケージを使いたい場合に指定する
-, ...
-}:
+{ config, pkgs, ... }:
 let
-  env = import ../env.nix;
-  myPkgs = {
-    my-xmobar = import ../pkgs/my-xmobar { inherit pkgs; };
-    my-xmonad = import ../pkgs/my-xmonad { inherit pkgs; };
-    illusion = import ../pkgs/illusion { inherit (pkgs) fetchzip unzip; };
-  };
+  env = import ./env.nix;
 in
 {
   nixpkgs.config = {
@@ -69,27 +60,112 @@ in
       tridactyl-native
       ### font
       rounded-mgenplus
-      myPkgs.illusion
+      illusion
       ### my packages
-      myPkgs.my-xmobar
+      my-xmobar
     ];
     file = {
       # neovim
       ".config/nvim/real-init.vim".source = ./files/.config/nvim/init.vim;
+      ".config/nvim/coc-settings.json".source = (pkgs.formats.json { }).generate "coc-settings.json" {
+        "suggest.keepCompleteopt" = true;
+        "diagnostic.virtualText" = true;
+        "diagnostic.virtualTextPrefix" = "-- ";
+        "diagnostic.enableSign" = false;
+        "coc.preferences.useQuickfixForLocations" = false;
+        "coc.preferences.formatOnSaveFiletypes" = [
+          "nix"
+          "json"
+          "javascript"
+          "typescript"
+          "typescriptreact"
+          "haskell"
+        ];
+        "codeLens.enable" = true;
+        "codeLens.position" = "eol";
+        languageserver = {
+          haskell = {
+            command = "haskell-language-server-wrapper";
+            args = [
+              "--lsp"
+              "-d"
+              "-l"
+              "/tmp/LanguageServer.log"
+            ];
+            rootPatterns = [
+              "*.cabal"
+              "stack.yaml"
+              "cabal.project"
+              "package.yaml"
+              "hie.yaml"
+            ];
+            filetypes = [
+              "haskell"
+              "lhaskell"
+            ];
+            initializationOptions = {
+              haskell = {
+                formattingProvider = "fourmolu";
+              };
+            };
+          };
+          ocaml-language-server = {
+            command = "ocamllsp";
+            args = [
+              "--log-file"
+              "/tmp/LanguageServer.log"
+            ];
+            filetypes = [
+              "ocaml"
+            ];
+          };
+          bash-language-server = {
+            command = "bash-language-server";
+            args = [
+              "start"
+            ];
+            filetypes = [
+              "sh"
+            ];
+          };
+          nix = {
+            command = "rnix-lsp";
+            filetypes = [
+              "nix"
+            ];
+          };
+        };
+        "yaml.customTags" = [
+          "!Ref"
+          "!Sub"
+          "!ImportValue"
+          "!GetAtt"
+        ];
+        "java.configuration.runtimes" = [
+          {
+            "name" = "JavaSE-11";
+            "path" = "${pkgs.openjdk11}/lib/openjdk";
+          }
+          {
+            "name" = "JavaSE-1.8";
+            "path" = "${pkgs.openjdk8}/lib/openjdk";
+            default = true;
+          }
+        ];
+        "java.home" = "${pkgs.openjdk11}/lib/openjdk";
+        "java.signatureHelp.enabled" = true;
+        "java.import.gradle.enabled" = true;
+      };
       ".config/nvim/snippets" = {
         source = ./files/.config/nvim/snippets;
         recursive = true;
       };
       # xmonad
-      ".xmonad/xmonad-x86_64-linux".source = "${myPkgs.my-xmonad}/bin/xmonad-x86_64-linux";
+      ".xmonad/xmonad-x86_64-linux".source = "${pkgs.my-xmonad}/bin/xmonad-x86_64-linux";
       ".xmonad/build" = {
         executable = true;
         text = ''echo "Nothing to do"'';
       };
-      # ".xmonad" = {
-      #   source = ./files/.xmonad;
-      #   recursive = true;
-      # };
       # firefox
       ".local/share/tridactyl/native_main".source = ./files/.local/share/tridactyl/native_main;
       # my script
@@ -120,106 +196,12 @@ in
     };
     neovim = {
       enable = true;
-      package = unstablePkgs.neovim-unwrapped;
+      package = pkgs.unstable.neovim-unwrapped;
       withNodeJs = true;
       withPython3 = true;
       extraConfig = ''
         source  ~/.config/nvim/real-init.vim
       '';
-      coc = {
-        enable = true;
-        settings = {
-          "suggest.keepCompleteopt" = true;
-          "diagnostic.virtualText" = true;
-          "diagnostic.virtualTextPrefix" = "-- ";
-          "diagnostic.enableSign" = false;
-          "coc.preferences.useQuickfixForLocations" = false;
-          "coc.preferences.formatOnSaveFiletypes" = [
-            "nix"
-            "json"
-            "javascript"
-            "typescript"
-            "typescriptreact"
-            "haskell"
-          ];
-          "codeLens.enable" = true;
-          "codeLens.position" = "eol";
-          languageserver = {
-            haskell = {
-              command = "haskell-language-server-wrapper";
-              args = [
-                "--lsp"
-                "-d"
-                "-l"
-                "/tmp/LanguageServer.log"
-              ];
-              rootPatterns = [
-                "*.cabal"
-                "stack.yaml"
-                "cabal.project"
-                "package.yaml"
-                "hie.yaml"
-              ];
-              filetypes = [
-                "haskell"
-                "lhaskell"
-              ];
-              initializationOptions = {
-                haskell = {
-                  formattingProvider = "fourmolu";
-                };
-              };
-            };
-            ocaml-language-server = {
-              command = "ocamllsp";
-              args = [
-                "--log-file"
-                "/tmp/LanguageServer.log"
-              ];
-              filetypes = [
-                "ocaml"
-              ];
-            };
-            bash-language-server = {
-              command = "bash-language-server";
-              args = [
-                "start"
-              ];
-              filetypes = [
-                "sh"
-              ];
-            };
-            nix = {
-              command = "rnix-lsp";
-              filetypes = [
-                "nix"
-              ];
-            };
-          };
-          "yaml.customTags" = [
-            "!Ref"
-            "!Sub"
-            "!ImportValue"
-            "!GetAtt"
-          ];
-          "java.configuration.runtimes" = [
-            {
-              "name" = "JavaSE-11";
-              "path" = "${pkgs.openjdk11}/lib/openjdk";
-            }
-            {
-              "name" = "JavaSE-1.8";
-              "path" = "${pkgs.openjdk8}/lib/openjdk";
-              default = true;
-            }
-          ];
-          "java.home" = "${pkgs.openjdk11}/lib/openjdk";
-          "java.signatureHelp.enabled" = true;
-          "java.import.gradle.enabled" = true;
-          # Use jdtls installed by coc-java
-          # "java.jdt.ls.home" = "/usr/local/share/jdt-language-server";
-        };
-      };
     };
     tmux = {
       enable = true;

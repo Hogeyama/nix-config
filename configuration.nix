@@ -1,27 +1,20 @@
 { config, pkgs, ... }:
 let
   env = import ./env.nix;
-  unstablePkgs = import <nixos-unstable> { };
-  myPkgs = {
-    illusion = import ./pkgs/illusion {
-      inherit (pkgs) fetchzip unzip;
-    };
-  };
 in
 {
   imports =
     if env.type == "nixos-virtualbox" then [
-      <home-manager/nixos>
+      # --impure が必要
       <nixpkgs/nixos/modules/profiles/graphical.nix>
       <nixpkgs/nixos/modules/installer/cd-dvd/channel.nix>
       <nixpkgs/nixos/modules/virtualisation/virtualbox-image.nix>
     ] else [
-      <home-manager/nixos>
       ./hardware-configuration.nix
     ];
 
   nix = {
-    package = pkgs.nixUnstable; # or versioned attributes like nix_2_4
+    package = pkgs.unstable.nixUnstable; # or versioned attributes like nix_2_4
     # [unstable]
     # settings = {
     #   substituters = [
@@ -172,11 +165,11 @@ in
       xsel
       yq
       # unstable packages
-      unstablePkgs.deno
-      unstablePkgs.nodejs
-      unstablePkgs.nodePackages.bash-language-server
-      unstablePkgs.nodePackages.npm
-      unstablePkgs.neovim
+      unstable.deno
+      unstable.nodejs
+      unstable.nodePackages.bash-language-server
+      unstable.nodePackages.npm
+      unstable.neovim
     ];
   };
 
@@ -185,7 +178,7 @@ in
       pkgs.ipafont
       pkgs.dejavu_fonts
       pkgs.rounded-mgenplus
-      myPkgs.illusion
+      pkgs.illusion
     ];
     fontconfig = {
       #ultimate.enable = true;
@@ -265,11 +258,6 @@ in
     };
   };
   security.sudo.wheelNeedsPassword = false;
-
-  home-manager.users.${env.user.name} = { config, pkgs, ... }:
-    import ./home-manager/home.nix {
-      inherit config pkgs unstablePkgs;
-    };
 
   nix.trustedUsers = [ env.user.name ];
 }
