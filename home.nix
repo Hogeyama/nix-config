@@ -152,7 +152,8 @@ in
             default = true;
           }
         ];
-        "java.home" = "${pkgs.openjdk11}/lib/openjdk";
+        "java.jdt.ls.home" = "${pkgs.openjdk11}/lib/openjdk";
+        "java.jdt.ls.vmargs" = "-Xms512m -Xmx512m -XX:+UseG1GC -XX:+UseStringDeduplication";
         "java.signatureHelp.enabled" = true;
         "java.import.gradle.enabled" = true;
       };
