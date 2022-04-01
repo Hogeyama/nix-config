@@ -31,9 +31,9 @@
         inherit system;
         modules = [
           # overlay
-          ({ pkgs, ... }: { nixpkgs.overlays = [ overlay ]; })
+          ({ pkgs, ... }@args: { nixpkgs.overlays = [ overlay ]; })
           # system configuration
-          ./configuration.nix
+          ({ pkgs, ... }@args: import ./configuration.nix (args // { inherit nixpkgs; }))
           # home-manager configuration
           home-manager.nixosModules.home-manager
           {

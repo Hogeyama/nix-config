@@ -1,14 +1,13 @@
-{ config, pkgs, ... }:
+{ config, pkgs, nixpkgs, ... }:
 let
   env = import ./env.nix;
 in
 {
   imports =
     if env.type == "nixos-virtualbox" then [
-      # --impure が必要
-      <nixpkgs/nixos/modules/profiles/graphical.nix>
-      <nixpkgs/nixos/modules/installer/cd-dvd/channel.nix>
-      <nixpkgs/nixos/modules/virtualisation/virtualbox-image.nix>
+      "${nixpkgs.outPath}/nixos/modules/profiles/graphical.nix"
+      "${nixpkgs.outPath}/nixos/modules/installer/cd-dvd/channel.nix"
+      "${nixpkgs.outPath}/nixos/modules/virtualisation/virtualbox-image.nix"
     ] else [
       ./hardware-configuration.nix
     ];
