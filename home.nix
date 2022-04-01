@@ -110,7 +110,7 @@ in
                 };
               };
             };
-            ocaml-language-server = {
+            ocaml = {
               command = "ocamllsp";
               args = [
                 "--log-file"
@@ -120,7 +120,7 @@ in
                 "ocaml"
               ];
             };
-            bash-language-server = {
+            bash = {
               command = "bash-language-server";
               args = [
                 "start"
