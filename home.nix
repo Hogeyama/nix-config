@@ -135,12 +135,19 @@ in
             ];
           };
         };
+        # coc-diagnostic
+        "diagnostic-languageserver.filetypes" = {
+          "sh" = "shellcheck";
+          "bash" = "shellcheck";
+        };
+        # coc-yaml
         "yaml.customTags" = [
           "!Ref"
           "!Sub"
           "!ImportValue"
           "!GetAtt"
         ];
+        # coc-java
         "java.configuration.runtimes" = [
           {
             "name" = "JavaSE-11";

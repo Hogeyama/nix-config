@@ -252,6 +252,7 @@ let g:coc_global_extensions = [
   \ 'coc-go',
   \ 'coc-tsserver',
   \ 'coc-deno',
+  \ 'coc-diagnostic',
   \ ]
   " \ 'coc-git'
   " \ 'coc-pairs',
