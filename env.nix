@@ -8,6 +8,8 @@
   # required only if type="nixos"
   hostName = "nixos";
 
+  interface = "enp0s31f6";
+
   # required
   user =
     {
