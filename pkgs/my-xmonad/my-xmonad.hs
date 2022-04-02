@@ -65,7 +65,7 @@ main = do
     myConfig =
       def
         { modMask = mod4Mask
-        , terminal = "konsole"
+        , terminal = "alacritty"
         , workspaces = myWorkspaces
         , focusedBorderColor = "#00FF00"
         , normalBorderColor = "#EEEEEE"
@@ -90,10 +90,10 @@ main = do
         }
         `additionalKeysP`
         --
-        [ ("M-g", spawn =<< io (Env.lookupEnv "BROWSER" <&> fromMaybe "google-chrome-stable"))
+        [ ("M-g", spawn =<< io (Env.lookupEnv "BROWSER" <&> fromMaybe "firefox"))
         --
         , ("M-p", spawn "ulauncher")
-        , ("M-S-d", spawn "konsole")
+        , ("M-S-d", spawn "alacritty")
         , ("M-S-q", kill)
         , ("M-S-C-q", io exitSuccess)
         , ("M-x", spawn "sudo pm-suspend")
