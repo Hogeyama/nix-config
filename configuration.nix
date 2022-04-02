@@ -59,11 +59,8 @@ in
     networkmanager = {
       enable = true;
     };
-    # Configure network proxy if necessary
-    # networking.proxy.default = "http://user:password@proxy:port/";
-    # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
     useDHCP = false;
-    interfaces.wlp2s0.useDHCP = true;
+    interfaces.${env.interface}.useDHCP = true;
   };
   # gui application for
   programs.nm-applet.enable = true;
