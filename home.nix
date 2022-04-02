@@ -177,6 +177,8 @@ in
       };
       # firefox
       ".local/share/tridactyl/native_main".source = ./files/.local/share/tridactyl/native_main;
+      # alacritty
+      ".config/alacritty.yml".source = ./files/.config/alacritty.yml;
       # my script
       ".local/bin/myfzf".source = ./files/.local/bin/myfzf;
       ".local/bin/myclip".source = ./files/.local/bin/myclip;
@@ -424,6 +426,7 @@ in
         pull.rebase = true;
         init.defaultBranch = "main";
         alias.stash-all = "stash save --include-untracked";
+        credential."https://github.com".helper = "!${pkgs.gh}/bin/gh auth git-credential";
       };
       delta.enable = true;
     };
