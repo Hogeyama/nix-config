@@ -63,6 +63,8 @@ in
       illusion
       ### my packages
       my-xmobar
+      ### unstable
+      unstable.alacritty
     ];
     file = {
       # neovim
