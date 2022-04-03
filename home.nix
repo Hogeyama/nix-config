@@ -179,6 +179,7 @@ in
       };
       # firefox
       ".local/share/tridactyl/native_main".source = ./files/.local/share/tridactyl/native_main;
+      ".config/tridactyl/tridactylrc".source = ./files/.config/tridactyl/tridactylrc;
       # alacritty
       ".config/alacritty.yml".source = ./files/.config/alacritty.yml;
       # my script
