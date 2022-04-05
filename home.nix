@@ -153,6 +153,10 @@ in
           # coc-java
           "java.configuration.runtimes" = [
             {
+              "name" = "JavaSE-17";
+              "path" = "${pkgs.openjdk17}/lib/openjdk";
+            }
+            {
               "name" = "JavaSE-11";
               "path" = "${pkgs.openjdk11}/lib/openjdk";
             }
@@ -162,7 +166,7 @@ in
               default = true;
             }
           ];
-          "java.jdt.ls.home" = "${pkgs.openjdk11}/lib/openjdk";
+          "java.home" = "${pkgs.openjdk11}/lib/openjdk";
           "java.jdt.ls.vmargs" = "-Xms512m -Xmx512m -XX:+UseG1GC -XX:+UseStringDeduplication";
           "java.signatureHelp.enabled" = true;
           "java.import.gradle.enabled" = true;
@@ -194,7 +198,7 @@ in
     } else { });
     sessionVariables = {
       EDITOR = "nvim";
-      JAVA_HOME = "${pkgs.openjdk8}/lib/openjdk";
+      JAVA_HOME = "${pkgs.openjdk11}/lib/openjdk";
       BROWSER = env.user.browser;
     };
   };
@@ -362,6 +366,7 @@ in
         export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
         export JAVA8_HOME=${pkgs.openjdk8}/lib/openjdk
         export JAVA11_HOME=${pkgs.openjdk11}/lib/openjdk
+        export JAVA17_HOME=${pkgs.openjdk17}/lib/openjdk
         export JAVA_HOME="''$JAVA8_HOME"
       '';
       initExtra = ''
