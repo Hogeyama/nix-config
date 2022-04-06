@@ -15,10 +15,10 @@ set -o pipefail
 #   log:              log
 
 setup() {
-  readonly PROG="$(realpath "$0")"
+  PROG="$(realpath "$0")"
   if [[ -z "${MYFZF_STATE_DIR:-}" ]]; then
     # MYFZF_STATE_DIR="/tmp/myfzf.d"
-    readonly MYFZF_STATE_DIR="$(mktemp -d "/tmp/myfzf.XXXXXX.d")"
+    MYFZF_STATE_DIR="$(mktemp -d "/tmp/myfzf.XXXXXX.d")"
     readonly IS_ORIGINAL=1
     export MYFZF_STATE_DIR
     set_dir "$(realpath .)"
@@ -176,7 +176,7 @@ run_nvim_open() {
         if [[ -n "${RAW:-}" ]]; then
           FILE="$1"
         else
-          FILE="$(realpath $1)"
+          FILE="$(realpath "$1")"
         fi
         ;;
     esac
@@ -295,7 +295,6 @@ load_browser_history() {
         LIMIT
           10000
         ;
-        EOF
 EOF
       ;;
     *chrome*)
@@ -324,13 +323,13 @@ EOF
 load_nvim_buffers() {
   nvr -c "redir! >$MYFZF_STATE_DIR/buffers | silent buffers | redir END"
   # 先頭に空行がある
-  cat "$MYFZF_STATE_DIR/buffers" | tail -n+2
+  tail -n+2 <"$MYFZF_STATE_DIR/buffers"
 }
 
 load_nvim_oldfiles() {
   nvr -c "call writefile(v:oldfiles,'$MYFZF_STATE_DIR/mru')"
   # term:// などを grep で排除
-  cat "$MYFZF_STATE_DIR/mru" | grep -e ^/
+  grep -e ^/ <"$MYFZF_STATE_DIR/mru"
 }
 
 ################################################################################
@@ -389,9 +388,6 @@ do_preview() {
     browser-history)
       preview_browser_history_item "$1"
       ;;
-    browser-history)
-      preview_browser_history_item "$1"
-      ;;
     zoxide)
       preview_file_or_dir "$1"
       ;;
@@ -403,6 +399,7 @@ do_preview() {
 
 do_load() {
   log "load: $*"
+  #shellcheck disable=SC2015
   set_mode "${1:-fd}" && shift || true
   print_header
   case "$(get_mode)" in
