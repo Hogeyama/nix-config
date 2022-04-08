@@ -23,6 +23,7 @@
         illusion = import ./pkgs/illusion { inherit (prev) fetchzip unzip; };
         my-xmobar = import ./pkgs/my-xmobar { pkgs = final; };
         my-xmonad = import ./pkgs/my-xmonad { pkgs = final; };
+        my-fzf = import ./pkgs/my-fzf { pkgs = final; };
       };
     in
     {
