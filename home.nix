@@ -63,6 +63,7 @@ in
       illusion
       ### my packages
       my-xmobar
+      my-fzf
       ### unstable
       unstable.alacritty
     ];
@@ -187,7 +188,7 @@ in
       # alacritty
       ".config/alacritty.yml".source = ./files/.config/alacritty.yml;
       # my script
-      ".local/bin/myfzf".source = ./files/.local/bin/myfzf;
+      #".local/bin/myfzf".source = ./files/.local/bin/myfzf;
       ".local/bin/myclip".source = ./files/.local/bin/myclip;
       ".local/bin/my-xmonad-borderwidth".source = ./files/.local/bin/my-xmonad-borderwidth;
       # wall paper
