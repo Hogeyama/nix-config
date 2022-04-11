@@ -69,6 +69,7 @@ Plug 'chriskempson/base16-vim'
 """otameshi
 Plug 'github/copilot.vim'
 Plug 'preservim/nerdtree'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 call plug#end()
 "}}}
 
