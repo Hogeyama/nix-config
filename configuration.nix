@@ -98,9 +98,9 @@ in
     enable = true;
     layout = "jp";
     displayManager =
-      if env.type == "nixos-virtualbox"
-      then { }
-      else { gdm.enable = true; };
+      if env.type == "nixos"
+      then { sddm.enable = true; }
+      else { };
     desktopManager.plasma5.enable = true;
     windowManager = {
       xmonad = {
