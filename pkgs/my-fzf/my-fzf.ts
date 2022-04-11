@@ -123,10 +123,11 @@ type Opt = flags.Args;
 // Command
 ////////////
 
-type Command = "load" | "preview" | "run";
+type Command = "load" | "reload" | "preview" | "run";
 const isCommand = (s: string): s is Command => {
   return (
     s === "load" || //
+    s === "reload" ||
     s === "preview" ||
     s === "run"
   );
@@ -227,6 +228,10 @@ const changeDirectory = (s: State, path: Path) => {
 
 const setMode = (mode: Mode) => {
   modifyState((s) => Object.assign(s, { mode }));
+};
+
+const setCurrentLoader = (currentLoader: Opt) => {
+  modifyState((s) => Object.assign(s, { currentLoader }));
 };
 
 // Load
@@ -646,14 +651,19 @@ const rg: ModeImpl<"rg"> = {
 
 const loadMru: LoadImpl = async (s, _opts) => {
   printHeader(s);
-  const tmp = Deno.makeTempFileSync();
-  await nvrCommand(s, `call writefile(v:oldfiles,'${tmp}')`);
-  const rawMru = new TextDecoder().decode(Deno.readFileSync(tmp));
-  const files = rawMru
-    .split("\n")
-    .filter((x: string) => pathExists(s, RelPath(x)));
-  log({ files });
-  print(files.join("\n"));
+  let tmp: string | undefined = undefined;
+  try {
+    tmp = Deno.makeTempFileSync();
+    await nvrCommand(s, `call writefile(v:oldfiles,'${tmp}')`);
+    const rawMru = new TextDecoder().decode(Deno.readFileSync(tmp));
+    const files = rawMru
+      .split("\n")
+      .filter((x: string) => pathExists(s, RelPath(x)));
+    log({ files });
+    print(files.join("\n"));
+  } finally {
+    tmp && Deno.removeSync(tmp);
+  }
 };
 
 const mru: ModeImpl<"mru"> = {
@@ -671,15 +681,20 @@ const mru: ModeImpl<"mru"> = {
 
 const loadBuffer: LoadImpl = async (s, _opts) => {
   printHeader(s);
-  const tmp = Deno.makeTempFileSync();
-  await nvrCommand(s, `redir! >${tmp} | silent buffers | redir END`);
-  const rawBuffers = new TextDecoder().decode(Deno.readFileSync(tmp));
-  print(
-    rawBuffers
-      .split("\n")
-      .filter((x) => x)
-      .join("\n")
-  );
+  let tmp: string | undefined = undefined;
+  try {
+    tmp = Deno.makeTempFileSync();
+    await nvrCommand(s, `redir! >${tmp} | silent buffers | redir END`);
+    const rawBuffers = new TextDecoder().decode(Deno.readFileSync(tmp));
+    print(
+      rawBuffers
+        .split("\n")
+        .filter((x) => x)
+        .join("\n")
+    );
+  } finally {
+    tmp && Deno.removeSync(tmp);
+  }
 };
 
 type BufferItem = { bufnum: number; state: string; path: string; line: number };
@@ -765,12 +780,14 @@ const loadBrowserHistory: LoadImpl = async (s, opt) => {
   const pat = opt.pattern || "%";
   const cond = `url LIKE '%${pat}%' OR title LIKE '%${pat}%'`;
   const browser = Deno.env.get("BROWSER") || "firefox";
-  const copyDb = Deno.makeTempFileSync({ suffix: ".sqlite" });
-  let sql: string;
-  if (browser.match("firefox")) {
-    const origDb = getFirefoxDb(s);
-    Deno.copyFileSync(origDb, copyDb);
-    sql = `
+  let copyDb: string | undefined = undefined;
+  try {
+    copyDb = Deno.makeTempFileSync({ suffix: ".sqlite" });
+    let sql: string;
+    if (browser.match("firefox")) {
+      const origDb = getFirefoxDb(s);
+      Deno.copyFileSync(origDb, copyDb);
+      sql = `
       SELECT
         url,
         title,
@@ -785,10 +802,10 @@ const loadBrowserHistory: LoadImpl = async (s, opt) => {
         10000
       ;
     `;
-  } else if (browser.match("chrome")) {
-    const origDb = getChromeDb(s);
-    Deno.copyFileSync(origDb, copyDb);
-    sql = `
+    } else if (browser.match("chrome")) {
+      const origDb = getChromeDb(s);
+      Deno.copyFileSync(origDb, copyDb);
+      sql = `
       SELECT
         url,
         title,
@@ -805,26 +822,29 @@ const loadBrowserHistory: LoadImpl = async (s, opt) => {
         10000
       ;
     `;
-  } else {
-    throw `browser: ${browser} is not supported`;
+    } else {
+      throw `browser: ${browser} is not supported`;
+    }
+    const p = Deno.run({
+      cmd: ["sqlite3"].concat([
+        "-batch",
+        "-batch",
+        "-readonly",
+        "-separator",
+        sqliteRecordSep,
+        copyDb,
+      ]),
+      stdin: "piped",
+      env: {
+        MYFZF_STATE_FILE: stateFile,
+        FZF_DEFAULT_COMMAND: `${prog} load`,
+      },
+    });
+    p.stdin.write(new TextEncoder().encode(sql));
+    await p.status();
+  } finally {
+    copyDb && Deno.removeSync(copyDb);
   }
-  const p = Deno.run({
-    cmd: ["sqlite3"].concat([
-      "-batch",
-      "-batch",
-      "-readonly",
-      "-separator",
-      sqliteRecordSep,
-      copyDb,
-    ]),
-    stdin: "piped",
-    env: {
-      MYFZF_STATE_FILE: stateFile,
-      FZF_DEFAULT_COMMAND: `${prog} load`,
-    },
-  });
-  p.stdin.write(new TextEncoder().encode(sql));
-  await p.status();
 };
 
 type BrowserItem = {
@@ -897,6 +917,7 @@ const init = async () => {
 };
 
 const load = async (s: State, opt: Opt) => {
+  setCurrentLoader(opt);
   const mode = opt._.shift()?.toString() || "fd";
   if (isMode(mode)) {
     setMode(mode);
@@ -942,6 +963,10 @@ const dispatch = async (command: Command, opt: Opt) => {
   switch (command) {
     case "load": {
       await load(state, opt);
+      break;
+    }
+    case "reload": {
+      await load(state, state.currentLoader);
       break;
     }
     case "preview": {
