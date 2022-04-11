@@ -97,6 +97,10 @@ in
   services.xserver = {
     enable = true;
     layout = "jp";
+
+    videoDrivers = [ "modesetting" ];
+    useGlamor = true;
+
     displayManager =
       if env.type == "nixos"
       then { sddm.enable = true; }
