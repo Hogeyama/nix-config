@@ -168,7 +168,7 @@ in
             }
           ];
           "java.home" = "${pkgs.openjdk11}/lib/openjdk";
-          "java.jdt.ls.vmargs" = "-Xms512m -Xmx512m -XX:+UseG1GC -XX:+UseStringDeduplication";
+          "java.jdt.ls.vmargs" = "-Xms512m -Xmx512m -XX:+UseG1GC -XX:+UseStringDeduplication -javaagent:${pkgs.lombok}/share/java/lombok.jar";
           "java.signatureHelp.enabled" = true;
           "java.import.gradle.enabled" = true;
         };
