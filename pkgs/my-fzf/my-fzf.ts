@@ -263,6 +263,8 @@ type AllModeImpls = {
 // Common
 ///////////
 
+const print = (s: string) => console.log(s);
+
 // deno-lint-ignore no-explicit-any
 const log = (s: any) => {
   const logFile = "/tmp/myfzf.log";
@@ -291,7 +293,7 @@ const xlog = (...x: any[]) => x;
 xlog();
 
 const printHeader = (s: State) => {
-  console.log(`[${s.cwd}]`);
+  print(`[${s.cwd}]`);
 };
 
 // Path
@@ -365,6 +367,7 @@ const previewFileOrDir: PreviewImpl = async (s: State, opt: Opt) => {
     throw `previewFile_or_dir: No path given`;
   }
   log({ context: "previewFileOrDir", cwd: s.cwd, rawPath });
+  print(`  [${rawPath}]`);
   switch (typeOfPath(s, { kind: "relative", val: rawPath })) {
     case "file": {
       await Deno.run({
@@ -614,6 +617,7 @@ const previewRgItem = async (s: State, opt: Opt) => {
     `${line}`,
   ];
   // log({ context: "previewRgItem", file, line });
+  print(`  [${file}]`);
   await Deno.run({
     cmd: ["bat"].concat(batOpts, batExtraOpts, [file]),
     cwd: s.cwd,
@@ -649,7 +653,7 @@ const loadMru: LoadImpl = async (s, _opts) => {
     .split("\n")
     .filter((x: string) => pathExists(s, RelPath(x)));
   log({ files });
-  console.log(files.join("\n"));
+  print(files.join("\n"));
 };
 
 const mru: ModeImpl<"mru"> = {
@@ -670,7 +674,7 @@ const loadBuffer: LoadImpl = async (s, _opts) => {
   const tmp = Deno.makeTempFileSync();
   await nvrCommand(s, `redir! >${tmp} | silent buffers | redir END`);
   const rawBuffers = new TextDecoder().decode(Deno.readFileSync(tmp));
-  console.log(
+  print(
     rawBuffers
       .split("\n")
       .filter((x) => x)
@@ -840,9 +844,9 @@ const previewUrl: PreviewImpl = async (_s, opt) => {
     throw `browser: No item given`;
   }
   const { url, title, date } = parseBrowserItem(rawItem);
-  console.log(`URL:    ${url}`);
-  console.log(`Title:  ${title}`);
-  console.log(`Access: ${date}`);
+  print(`URL:    ${url}`);
+  print(`Title:  ${title}`);
+  print(`Access: ${date}`);
 };
 
 const browserHistory: ModeImpl<"browser-history"> = {
