@@ -123,11 +123,10 @@ type Opt = flags.Args;
 // Command
 ////////////
 
-type Command = "init" | "load" | "preview" | "run";
+type Command = "load" | "preview" | "run";
 const isCommand = (s: string): s is Command => {
   return (
-    s === "init" || //
-    s === "load" ||
+    s === "load" || //
     s === "preview" ||
     s === "run"
   );
@@ -182,6 +181,13 @@ type AllRunners = {
 type State = {
   mode: Mode;
   cwd: string; // absolute path to the (virtual) current directory
+  currentLoader: Opt;
+};
+
+const initialState: State = {
+  mode: "fd",
+  cwd: Deno.cwd(),
+  currentLoader: { _: [] },
 };
 
 const stateFile =
@@ -198,12 +204,6 @@ const writeState = (s: State) => {
 
 const modifyState = (f: (_: State) => State) => {
   writeState(f(readState()));
-};
-
-const initializeStateIfNot = () => {
-  if (!Deno.env.get("MYFZF_STATE_FILE")) {
-    writeState({ mode: "fd", cwd: Deno.cwd() });
-  }
 };
 
 const changeDirectory = (s: State, path: Path) => {
@@ -877,6 +877,7 @@ const allModes: AllModeImpls = {
 
 const init = async () => {
   try {
+    writeState(initialState);
     await Deno.run({
       cmd: ["fzf"].concat(fzfOpts),
       stdin: "inherit",
@@ -935,10 +936,6 @@ const run = (s: State, opt: Opt) => {
 const dispatch = async (command: Command, opt: Opt) => {
   const state = readState();
   switch (command) {
-    case "init": {
-      await init();
-      break;
-    }
     case "load": {
       await load(state, opt);
       break;
@@ -959,11 +956,14 @@ const dispatch = async (command: Command, opt: Opt) => {
 ////////////////////////////////////////////////////////////////////////////////
 
 const main = async () => {
-  const opt = flags.parse(Deno.args);
-  const command = opt._.shift()?.toString() || "init";
   try {
+    if (!Deno.env.get("MYFZF_STATE_FILE")) {
+      init();
+      return;
+    }
+    const opt = flags.parse(Deno.args);
+    const command = opt._.shift()?.toString() || "init";
     if (isCommand(command)) {
-      initializeStateIfNot();
       await dispatch(command, opt);
     } else {
       console.error(`Unknown command: ${command}`);
