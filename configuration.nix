@@ -46,6 +46,7 @@ in
     kernelModules = [
       "uhid"
     ];
+    kernelPackages = pkgs.linuxPackages_latest;
   };
 
   networking = if env.type == "nixos-virtualbox" then { } else {
