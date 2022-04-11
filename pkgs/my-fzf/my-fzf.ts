@@ -63,10 +63,6 @@ const fzfOpts = ([] as string[]) // {{{
   ])
   .concat([
     `--bind`, //
-    `ctrl-n:execute[${prog} run nvim-cd {}]`,
-  ])
-  .concat([
-    `--bind`, //
     `ctrl-v:execute[${prog} run vifm {}]`,
   ])
   .concat([
@@ -83,7 +79,7 @@ const fzfOpts = ([] as string[]) // {{{
   ])
   .concat([
     `--bind`, //
-    `ctrl-e:reload[${prog} load fd --cd-last-file]+change-prompt[files>]+clear-query`,
+    `ctrl-n:reload[${prog} load fd --cd-last-file]+change-prompt[files>]+clear-query`,
   ])
   .concat([
     `--bind`, //
@@ -99,11 +95,19 @@ const fzfOpts = ([] as string[]) // {{{
   ])
   .concat([
     `--bind`, //
-    `ctrl-r:reload[${prog} load rg {q}]+clear-query+change-prompt[grep>]`,
+    `ctrl-d:reload[${prog} load zoxide]+change-prompt[zoxide>]`,
   ])
   .concat([
     `--bind`, //
-    `ctrl-g:reload[${prog} load browser-history {q}]+clear-query+change-prompt[browser-history>]`,
+    `ctrl-g:reload[${prog} load rg {q}]+clear-query+change-prompt[grep>]`,
+  ])
+  .concat([
+    `--bind`, //
+    `ctrl-b:reload[${prog} load browser-history {q}]+clear-query+change-prompt[browser-history>]`,
+  ])
+  .concat([
+    `--bind`, //
+    `ctrl-r:reload[${prog} reload]`,
   ])
   .concat([
     `--bind`, //
@@ -995,7 +999,7 @@ const main = async () => {
     if (isCommand(command)) {
       await dispatch(command, opt);
     } else {
-      console.error(`Unknown command: ${command}`);
+      throw `Unknown command: ${command}`;
     }
   } catch (exception) {
     log({ exception });
