@@ -995,7 +995,7 @@ const main = async () => {
       return;
     }
     const opt = flags.parse(Deno.args);
-    const command = opt._.shift()?.toString() || "init";
+    const command = opt._.shift()?.toString() || "";
     if (isCommand(command)) {
       await dispatch(command, opt);
     } else {
