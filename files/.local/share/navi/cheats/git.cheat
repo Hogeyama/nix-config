@@ -3,9 +3,16 @@
 # Add worktree
 git worktree add -B {,,<remote>/}<remote-branch-no-prefix>
 
-# Run auto squash/fixup
-GIT_SEQUENCE_EDITOR=: git rebase --autosquash -i <remote-branch>
+# Squash/fixup automatically
+GIT_SEQUENCE_EDITOR=: git rebase --autosquash -i <commit>
 
+# Commit and fixup
+git commit --fixup=<commit> && GIT_SEQUENCE_EDITOR=: git rebase --autosquash -i <commit>^
+
+# Commit all and fixup
+git commit -a --fixup=<commit> && GIT_SEQUENCE_EDITOR=: git rebase --autosquash -i <commit>^
+
+$ commit:                  git log --oneline --- --column 1 --delimiter '\s+'
 $ remote:                  git remote show
 $ remote-branch:           git branch -r | sed -e 's/\(.*->\)//' -e 's/^\s*//'
 $ remote-branch-no-prefix: git branch -r | sed -e 's/\(.*->\)//' -e 's/^[^\/]*\///'
