@@ -426,20 +426,20 @@ in
       enable = true;
       inherit (env.user.git) userName userEmail;
       extraConfig = {
-        #core.editor = "nvr-git";
+        alias.stash-all = "stash save --include-untracked";
         core.autoCRLF = false;
         core.autoLF = false;
         fetch.prune = true;
-        rebase.autoStash = true;
-        rebase.autoSquash = true;
-        rebase.missingCommitsCheck = "warn";
+        init.defaultBranch = "main";
         merge.ff = false;
         merge.conflictstyle = "diff3";
         merge.tool = "my-nvimdiff3";
         mergetool.my-nvimdiff3.cmd = "nvim -d -c 'wincmd J' $MERGED $LOCAL $BASE $REMOTE";
         pull.rebase = true;
-        init.defaultBranch = "main";
-        alias.stash-all = "stash save --include-untracked";
+        rebase.autoStash = true;
+        rebase.autoSquash = true;
+        rebase.missingCommitsCheck = "warn";
+        rerere.enable = true;
         credential."https://github.com".helper = "!${pkgs.gh}/bin/gh auth git-credential";
       };
       delta.enable = true;
