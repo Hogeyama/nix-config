@@ -179,6 +179,11 @@ in
       # vifm
       ".config/vifm/vifmrc".source = ./files/.config/vifm/vifmrc;
       ".config/vifm/colors/onedark.vifm".source = ./files/.config/vifm/colors/onedark.vifm;
+      # navi
+      ".local/share/navi/cheats" = {
+        source = ./files/.local/share/navi/cheats;
+        recursive = true;
+      };
       # xmonad
       ".xmonad/xmonad-x86_64-linux".source = "${pkgs.my-xmonad}/bin/xmonad-x86_64-linux";
       ".xmonad/build" = {
@@ -374,6 +379,7 @@ in
         export JAVA_HOME="''$JAVA8_HOME"
       '';
       initExtra = ''
+        eval "$(navi widget zsh)"
         zstyle ':completion:*' verbose yes
         zstyle ':completion:*' format '%B%d%b'
         zstyle ':completion:*:warnings' format 'No matches for: %d'
