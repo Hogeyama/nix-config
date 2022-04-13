@@ -1,0 +1,11 @@
+% git
+
+# Add worktree
+git worktree add -B {,,<remote>/}<remote-branch-no-prefix>
+
+# Run auto squash/fixup
+GIT_SEQUENCE_EDITOR=: git rebase --autosquash -i <remote-branch>
+
+$ remote:                  git remote show
+$ remote-branch:           git branch -r | sed -e 's/\(.*->\)//' -e 's/^\s*//'
+$ remote-branch-no-prefix: git branch -r | sed -e 's/\(.*->\)//' -e 's/^[^\/]*\///'
