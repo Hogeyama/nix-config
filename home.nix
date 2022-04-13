@@ -430,6 +430,8 @@ in
         core.autoCRLF = false;
         core.autoLF = false;
         fetch.prune = true;
+        rebase.autoStash = true;
+        rebase.autoSquash = true;
         rebase.missingCommitsCheck = "warn";
         merge.ff = false;
         merge.conflictstyle = "diff3";
