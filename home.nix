@@ -417,7 +417,7 @@ in
         cd = "cd-ls";
         mv = "mv -i";
         cp = "cp -iL";
-        l = "ls -CF";
+        l = "ls -F";
         ll = "ls -ahlF";
         la = "ls -A";
         DU = "du -hd1 | sort -h";
