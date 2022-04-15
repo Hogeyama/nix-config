@@ -1,5 +1,8 @@
 % git
 
+# Informative log (graph)
+git log --pretty=format:"%C(yellow)%h%Creset %C(green)%ad%Creset %s %Cred%d%Creset %Cblue[%an]" --date=short --graph
+
 # Add worktree
 git worktree add -B {,,<remote>/}<remote-branch-no-prefix>
 
