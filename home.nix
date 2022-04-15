@@ -363,7 +363,7 @@ in
         }
         test -z "''${ZSHENV_LOADED}" || return
         export ZSHENV_LOADED=1
-        export PATH="$PATH:$HOME/.local/bin"
+        export PATH="$HOME/.local/bin:$PATH" # prefer .local/bin
         source-if-exists "$HOME/.ghcup/env"
         source-if-exists "$HOME/.cargo/env"
         source-if-exists "$HOME/.opam/opam-init/init.zsh"
