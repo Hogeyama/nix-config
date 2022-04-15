@@ -4,6 +4,30 @@ import * as flags from "https://deno.land/std@0.133.0/flags/mod.ts";
 
 const prog = Path.fromFileUrl(import.meta.url);
 
+const fdExcludePaths = (() => {
+  // {{{
+  const def = [
+    ".git",
+    ".hg",
+    ".hie",
+    ".direnv",
+    ".stack-work",
+    ".aws-sam",
+    ".next",
+    "dist-newstyle",
+    "node_modules",
+    "api-cache",
+    "cache",
+  ];
+  const env = Deno.env.get("MYFZF_FD_EXCLUDE_PATHS");
+  if (env) {
+    return env.split(",").concat(def);
+  } else {
+    return def;
+  }
+})();
+// }}}
+
 // TODO このへんいい感じにする
 const exaOpts = ([] as string[]) // {{{
   .concat(["--all"])
@@ -24,18 +48,7 @@ const fdOpts = ([] as string[]) // {{{
   .concat(["--hidden"])
   .concat(["--no-ignore"])
   .concat(["--type", "f"])
-  .concat(["--exclude", ".git"])
-  .concat(["--exclude", ".hg"])
-  .concat(["--exclude", ".hie"])
-  .concat(["--exclude", ".direnv"])
-  .concat(["--exclude", "dist-newstyle"])
-  .concat(["--exclude", ".stack-work"])
-  .concat(["--exclude", ".aws-sam"])
-  .concat(["--exclude", ".next"])
-  .concat(["--exclude", "node_modules"])
-  .concat(["--exclude", "api-cache"])
-  .concat(["--exclude", "cache"])
-  .concat(["."]);
+  .concat(fdExcludePaths.flatMap((p) => ["--exclude", p]));
 // }}}
 const rgOpts = ([] as string[]) // {{{
   .concat(["--column"])
