@@ -1,0 +1,4 @@
+% utils
+
+# dig in JSON format
+dig <host> +nocomments +noquestion +noauthority +noadditional +nostats  | awk '{if (NR>3){print}}'| tr -s '\t' |  jq -R 'split("\t") |{Name:.[0],TTL:.[1],Class:.[2],Type:.[3],IpAddress:.[4]}'
