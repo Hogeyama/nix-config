@@ -253,6 +253,9 @@ in
         }
         {
           plugin = tmuxPlugins.jump;
+          extraConfig = ''
+            set -g @jump-key 's'
+          '';
         }
         {
           plugin = tmuxPlugins.nord;
