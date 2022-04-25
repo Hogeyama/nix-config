@@ -13,6 +13,7 @@ Plug 'vim-denops/denops.vim'
 Plug 'vim-denops/denops-helloworld.vim'
 " LOVE
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'Shougo/deol.nvim'
 Plug 'Shougo/neosnippet'
 Plug 'Shougo/neosnippet-snippets'
 Plug 'kana/vim-submode'
@@ -20,6 +21,7 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'junegunn/fzf.vim'
 Plug 'voldikss/vim-floaterm'
 """便利
+Plug 'easymotion/vim-easymotion'
 Plug 'godlygeek/tabular'
 Plug 'junegunn/vim-easy-align'
 Plug 'tomtom/tcomment_vim'
