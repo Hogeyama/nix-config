@@ -1,18 +1,18 @@
 % git
 
-# Informative log (graph)
+# informative log (graph)
 git log --pretty=format:"%C(yellow)%h%Creset %C(green)%ad%Creset %s %Cred%d%Creset %Cblue[%an]" --date=short --graph
 
-# Add worktree
+# add worktree
 git worktree add -B {,,<remote>/}<remote-branch-no-prefix>
 
-# Squash/fixup automatically
+# squash/fixup automatically
 GIT_SEQUENCE_EDITOR=: git rebase --autosquash -i <commit>
 
-# Commit and fixup
+# commit and fixup
 git commit --fixup=<commit> && GIT_SEQUENCE_EDITOR=: git rebase --autosquash -i <commit>^
 
-# Commit all and fixup
+# commit all and fixup
 git commit -a --fixup=<commit> && GIT_SEQUENCE_EDITOR=: git rebase --autosquash -i <commit>^
 
 $ commit:                  git log --oneline --- --column 1 --delimiter '\s+'
