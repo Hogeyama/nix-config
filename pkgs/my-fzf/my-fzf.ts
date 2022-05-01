@@ -228,18 +228,18 @@ const modifyState = (f: (_: State) => State) => {
 
 const changeDirectory = (s: State, path: Path) => {
   const absPath = resolve(s, path);
-  log({ absPath });
+  log({ context: "changeDirectory", absPath });
   switch (typeOfPath(s, absPath)) {
     case "file": {
       const nextCwd = Path.resolve(absPath.val, "..");
       modifyState((s) => Object.assign(s, { cwd: nextCwd }));
-      log({ file: absPath, nextCwd });
+      log({ context: "changeDirectory", file: absPath, nextCwd });
       break;
     }
     case "dir": {
       const nextCwd = absPath.val;
       modifyState((s) => Object.assign(s, { cwd: nextCwd }));
-      log({ dir: absPath, nextCwd });
+      log({ context: "changeDirectory", dir: absPath, nextCwd });
       break;
     }
   }
@@ -377,14 +377,13 @@ const nvrCommand = async (s: State, command: string) => {
   const status = await p.status();
   const out = new TextDecoder().decode(await p.output());
   const err = new TextDecoder().decode(await p.stderrOutput());
-  log({ command, status, out, err });
+  log({ context: "nvrCommand", command, status, out, err });
 };
 
 // File and dir
 /////////////////
 
 const previewFileOrDir: PreviewImpl = async (s: State, opt: Opt) => {
-  log({ opt });
   const rawPath = opt._.shift()?.toString();
   const line = Number(opt.line || 0);
   if (!rawPath) {
@@ -465,7 +464,6 @@ const defaultNvimOpts = { leave: true };
 const runNvim: RunnerImpl<"nvim"> = async (s: State, _opt: NvimOpt) => {
   const opt = Object.assign({}, defaultNvimOpts, _opt);
   const lOpt = opt.line ? `+${opt.line}` : "";
-  xlog({ opt });
   // TODO init.vim にコマンドを定義したほうがよいかも
   if (opt.buf) {
     const buf = opt.buf;
@@ -640,7 +638,6 @@ const previewRgItem = async (s: State, opt: Opt) => {
     "--highlight-line",
     `${line}`,
   ];
-  // log({ context: "previewRgItem", file, line });
   print(`  [${file}]`);
   await Deno.run({
     cmd: ["bat"].concat(batOpts, batExtraOpts, [file]),
@@ -678,7 +675,7 @@ const loadMru: LoadImpl = async (s, _opts) => {
     const files = rawMru
       .split("\n")
       .filter((x: string) => pathExists(s, RelPath(x)));
-    log({ files });
+    log({ context: "loadMru", files });
     print(files.join("\n"));
   } finally {
     tmp && Deno.removeSync(tmp);
@@ -720,7 +717,7 @@ type BufferItem = { bufnum: number; state: string; path: string; line: number };
 
 const parseBufferItem = (item: string): BufferItem => {
   const [bufnum, state, path, _, line] = item.trim().split(/\s+/);
-  log({ item });
+  log({ context: "parseBufferItem", item });
   return {
     bufnum: Number(bufnum),
     state: state,
