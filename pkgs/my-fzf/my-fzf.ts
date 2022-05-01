@@ -380,6 +380,23 @@ const nvrCommand = async (s: State, command: string) => {
   log({ context: "nvrCommand", command, status, out, err });
 };
 
+const nvrExpr = async (s: State, expr: string): Promise<string> => {
+  const p = Deno.run({
+    cmd: ["nvr", "--remote-expr", expr],
+    cwd: s.cwd,
+    stdout: "piped",
+    stderr: "piped",
+    env: {
+      MYFZF_STATE_FILE: stateFile,
+    },
+  });
+  const status = await p.status();
+  const out = new TextDecoder().decode(await p.output());
+  const err = new TextDecoder().decode(await p.stderrOutput());
+  log({ context: "nvrExpr", expr, status, out, err });
+  return out;
+};
+
 // File and dir
 /////////////////
 
@@ -560,11 +577,17 @@ const allRunners: AllRunners = {
 
 // Loader
 
+const nvrLastFile = async (s: State): Promise<string> => {
+  return await nvrExpr(s, "g:last_file");
+};
+
 const loadFd: LoadImpl = async (s, opts) => {
   const nextDir: string = opts["cd"]
     ? opts["cd"]
     : opts["cd-up"]
     ? s.cwd + "/.."
+    : opts["cd-last-file"]
+    ? (await nvrLastFile(s)) + "/.."
     : s.cwd;
   changeDirectory(s, { kind: "relative", val: nextDir });
   const sNew = readState();
