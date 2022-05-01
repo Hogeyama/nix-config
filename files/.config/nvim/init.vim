@@ -18,7 +18,6 @@ Plug 'Shougo/neosnippet'
 Plug 'Shougo/neosnippet-snippets'
 Plug 'kana/vim-submode'
 Plug 'editorconfig/editorconfig-vim'
-Plug 'junegunn/fzf.vim'
 Plug 'voldikss/vim-floaterm'
 """便利
 Plug 'easymotion/vim-easymotion'
@@ -309,23 +308,6 @@ smap <C-f> <Plug>(neosnippet_expand_or_jump)
 xmap <C-f> <Plug>(neosnippet_expand_target)
 let g:neosnippet#enable_conceal_markers = 0
 let g:neosnippet#snippets_directory = '~/.config/nvim/snippets'
-"}}}
-
-"fzf{{{
-set rtp+=~/.fzf
-let g:fzf_command_prefix = 'Fzf'
-" let g:fzf_layout = { 'down': '40%' }
-let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
-let g:fzf_preview_window = ['right:50%:noborder', 'ctrl-/']
-nmap <C-u> [fzf]
-nnoremap [fzf]b :FzfBuffers<CR>
-nnoremap [fzf]h :FzfHistory<CR>
-nnoremap [fzf]c :FzfFiles %:p:h<CR>
-nnoremap [fzf]f :FzfFiles<CR>
-nnoremap [fzf]g :FzfGFiles<CR>
-nnoremap [fzf]G :FzfGFiles?<CR>
-nnoremap [fzf]/ :FzfRg 
-nnoremap <C-c>  :FzfCommands<CR>
 "}}}
 
 "lightline{{{
