@@ -2,7 +2,9 @@
 import * as Path from "https://deno.land/std@0.133.0/path/mod.ts";
 import * as flags from "https://deno.land/std@0.133.0/flags/mod.ts";
 
-const prog = Path.fromFileUrl(import.meta.url);
+// `env -S` requires coreutils >= 8.30. If your coreutils is older,
+// wrap this script and path as MY_FZF_PROG environment variable.
+const prog = Deno.env.get("MY_FZF_PROG") || Path.fromFileUrl(import.meta.url);
 
 const fdExcludePaths = (() => {
   // {{{
