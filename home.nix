@@ -71,6 +71,7 @@ in
     file = {
       # neovim
       ".config/nvim/real-init.vim".source = ./files/.config/nvim/init.vim;
+      ".config/nvim/lua/plugins.lua".source = ./files/.config/nvim/lua/plugins.lua;
       ".config/nvim/coc-settings.json".source =
         (pkgs.formats.json { }).generate "coc-settings.json" {
           "suggest.keepCompleteopt" = true;
@@ -191,6 +192,12 @@ in
         executable = true;
         text = ''echo "Nothing to do"'';
       };
+      ".xmonad/xmonad-session-rc" = {
+        executable = false;
+        text = ''
+          export BROWSER=${env.user.browser}
+        '';
+      };
       # firefox
       ".local/share/tridactyl/native_main".source = ./files/.local/share/tridactyl/native_main;
       ".config/tridactyl/tridactylrc".source = ./files/.config/tridactyl/tridactylrc;
@@ -208,7 +215,6 @@ in
     } else { });
     sessionVariables = {
       EDITOR = "nvim";
-      JAVA_HOME = "${pkgs.openjdk11}/lib/openjdk";
       BROWSER = env.user.browser;
     };
   };
@@ -380,7 +386,8 @@ in
         export JAVA8_HOME=${pkgs.openjdk8}/lib/openjdk
         export JAVA11_HOME=${pkgs.openjdk11}/lib/openjdk
         export JAVA17_HOME=${pkgs.openjdk17}/lib/openjdk
-        export JAVA_HOME="''$JAVA8_HOME"
+        export JAVA_HOME="''$JAVA17_HOME"
+        export PATH="''$PATH:JAVA_HOME/bin"
       '';
       initExtra = ''
         eval "$(navi widget zsh)"
