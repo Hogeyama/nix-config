@@ -180,6 +180,7 @@ in
       pkgs.dejavu_fonts
       pkgs.rounded-mgenplus
       pkgs.illusion
+      pkgs.Cica
     ];
     fontconfig = {
       #ultimate.enable = true;
