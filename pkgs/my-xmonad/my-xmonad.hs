@@ -91,8 +91,8 @@ main = do
         `additionalKeysP`
         --
         [ ("M-g", spawn =<< io (Env.lookupEnv "BROWSER" <&> fromMaybe "firefox"))
-        --
-        , ("M-p", spawn "ulauncher")
+        , --
+          ("M-p", spawn "ulauncher")
         , ("M-S-d", spawn "alacritty")
         , ("M-S-q", kill)
         , ("M-S-C-q", io exitSuccess)
@@ -110,6 +110,8 @@ main = do
         , ("M-j", focusDownOrAnotherPane)
         , ("M-S-k", focusUp)
         , ("M-S-j", focusDown)
+        , ("M-S-h", sendMessage Shrink)
+        , ("M-S-l", sendMessage Expand)
         , ("M-S-o", spawn "amixer sset Master mute")
         , ("M-S-t", spawn "amixer sset Master toggle")
         , ("M-S-s", spawn $ unwords ["scrot", screenShotName])
@@ -206,9 +208,10 @@ myLayoutHook =
 hoge :: X ()
 hoge = do
   log' "==="
+  log' . show =<< io Env.getEnvironment
 
 log' :: MonadIO m => String -> m ()
-log' s = liftIO $ appendFile "/home/hogeyama/xmonad.mylog" (s <> "\n")
+log' s = liftIO $ appendFile "/home/cq2n-iwym/xmonad.mylog" (s <> "\n")
 
 -------------------------------------------------------------------------------
 -- Command
