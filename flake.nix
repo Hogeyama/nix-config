@@ -21,6 +21,7 @@
         unstable = builtins.getAttr system nixpkgs-unstable.outputs.legacyPackages;
         # my packages
         illusion = import ./pkgs/illusion { inherit (prev) fetchzip unzip; };
+        Cica = import ./pkgs/Cica { inherit (prev) fetchzip unzip; };
         my-xmobar = import ./pkgs/my-xmobar { pkgs = final; };
         my-xmonad = import ./pkgs/my-xmonad { pkgs = final; };
         my-fzf = import ./pkgs/my-fzf { pkgs = final; };

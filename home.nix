@@ -61,6 +61,7 @@ in
       ### font
       rounded-mgenplus
       illusion
+      Cica
       ### my packages
       my-xmobar
       my-fzf
