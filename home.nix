@@ -72,6 +72,10 @@ in
       # neovim
       ".config/nvim/real-init.vim".source = ./files/.config/nvim/init.vim;
       ".config/nvim/lua/plugins.lua".source = ./files/.config/nvim/lua/plugins.lua;
+      ".config/nvim/ftplugin" = {
+        source = ./files/.config/nvim/ftplugin;
+        recursive = true;
+      };
       ".config/nvim/coc-settings.json".source =
         (pkgs.formats.json { }).generate "coc-settings.json" {
           "suggest.keepCompleteopt" = true;
