@@ -66,7 +66,7 @@ use {'stevearc/dressing.nvim', --{{{
         enabled = true,
 
         -- Priority list of preferred vim.select implementations
-        backend = { 'telescope', 'fzf_lua', 'fzf', 'nui', 'builtin' },
+        backend = { 'fzf_lua', 'telescope', 'nui', 'builtin' },
 
         -- Options for telescope selector
         -- These are passed into the telescope picker directly. Can be used like:
@@ -141,6 +141,8 @@ use {'stevearc/dressing.nvim', --{{{
   end
 } --}}}
 use {'nvim-telescope/telescope.nvim' --{{{
+} --}}}
+use {'ibhagwan/fzf-lua', --{{{
 } --}}}
 -- [Love]
 use {'github/copilot.vim', --{{{
