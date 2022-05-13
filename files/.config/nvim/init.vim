@@ -10,6 +10,11 @@ endif
 
 " Load plugins
 lua require('plugins')
+
+augroup packer_user_config
+  autocmd!
+  autocmd BufWritePost plugins.lua source <afile> | PackerCompile
+augroup end
 "}}}
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -67,7 +72,6 @@ set backspace=indent,eol,start
 set wildoptions=pum
 set showtabline=2
 set switchbuf="split"
-set conceallevel=0
 set updatetime=300
 "}}}
 
