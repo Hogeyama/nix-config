@@ -328,7 +328,7 @@ use {'jreybert/vimagit', --{{{
 }--}}}
 use {'lambdalisue/gina.vim', --{{{
 }--}}}
--- [LSP,DAP]
+-- [LSP]
 use {'neovim/nvim-lspconfig', --{{{
   after = "nvim-lsp-installer",
   config = function()
@@ -554,11 +554,24 @@ use {'j-hui/fidget.nvim', --{{{
 } --}}}
 use {'mfussenegger/nvim-jdtls', --{{{
 } --}}}
+-- [DAP]
 use {'mfussenegger/nvim-dap', --{{{
   config = function()
     vim.cmd[[
       autocmd FileType dap-repl lua require('dap.ext.autocompl').attach()
     ]]
+  end
+} --}}}
+use {'theHamsta/nvim-dap-virtual-text', --{{{
+  after = 'nvim-dap',
+  config = function()
+    require("nvim-dap-virtual-text").setup()
+  end
+} --}}}
+use { "rcarriga/nvim-dap-ui", --{{{
+  after = 'nvim-dap',
+  config = function()
+    require("dapui").setup()
   end
 } --}}}
 -- [Completion]
