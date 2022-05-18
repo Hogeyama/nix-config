@@ -376,8 +376,7 @@ use {'neovim/nvim-lspconfig', --{{{
     -- }}}
     -- [[capabilities]] --{{{
     -- enable completion
-    vim.g.lsp_default_capabilities =
-      require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
+    vim.g.lsp_default_capabilities = vim.lsp.protocol.make_client_capabilities()
     -- enable snippet support
     vim.g.lsp_default_capabilities.textDocument.completion.completionItem.snippetSupport = true
     -- [[set default]]
@@ -502,108 +501,201 @@ use { "rcarriga/nvim-dap-ui", --{{{
   end
 } --}}}
 -- [Completion]
-use {'hrsh7th/nvim-cmp', -- {{{
+use { 'Shougo/ddc.vim', --{{{
+  after = {
+    'ddc-fuzzy',
+    'ddc-matcher_head',
+    'ddc-sorter_rank',
+    'ddc-around',
+    'ddc-buffer',
+    'ddc-cmdline',
+    'ddc-cmdline-history',
+    'ddc-file',
+    'ddc-input',
+    'ddc-nvim-lsp',
+    'denops-popup-preview.vim',
+    'neosnippet',
+    'pum.vim',
+  },
   config = function()
-    local cmp = require'cmp'
-    cmp.setup({
-      snippet = {
-        expand = function(args)
-          vim.fn['vsnip#anonymous'](args.body)
-        end,
-      },
-      window = {
-        completion = cmp.config.window.bordered(),
-        documentation = cmp.config.window.bordered(),
-      },
-      mapping = {
-        ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-        ['<C-f>'] = cmp.mapping.scroll_docs(4),
-        ['<C-Space>'] = cmp.mapping.complete(),
-        ['<C-e>'] = cmp.mapping.close(),
-        ['<CR>'] = cmp.mapping.confirm({ select = false }),
-        ['<Tab>'] = function(fallback)
-            if cmp.visible() then
-              cmp.select_next_item()
-            else
-              fallback()
-            end
-          end,
-        ['<Down>'] = function(fallback)
-            if cmp.visible() then
-              cmp.select_next_item()
-            else
-              fallback()
-            end
-          end,
-        ['<S-Tab>'] = function(fallback)
-            if cmp.visible() then
-              cmp.select_prev_item()
-            else
-              fallback()
-            end
-          end,
-        ['<Up>'] = function(fallback)
-            if cmp.visible() then
-              cmp.select_prev_item()
-            else
-              fallback()
-            end
-          end,
-      },
-      sources = cmp.config.sources({
-        { name = 'nvim_lsp' },
-        { name = 'vsnip' },
-      }, {
-        { name = 'buffer' },
-        { name = 'path',
-          options = {
-            trailing_slash = false,
-          },
-        },
-      })
-    })
+    vim.cmd[[
+      call ddc#custom#patch_global('completionMenu', 'pum.vim')
+      call ddc#custom#patch_global('autoCompleteEvents', [
+            \ 'InsertEnter',
+            \ 'TextChangedI',
+            \ 'TextChangedP',
+            \ 'CmdlineChanged',
+            \ ])
+      call ddc#custom#patch_global('sources', [
+            \ 'nvim-lsp',
+            \ 'around',
+            \ 'neosnippet',
+            \ 'buffer',
+            \ 'input',
+            \ 'file',
+            \ ])
+      call ddc#custom#patch_global('sourceOptions', {
+            \ '_': {
+            \   'matchers': ['matcher_fuzzy'],
+            \   'sorters': ['sorter_fuzzy'],
+            \   'converter': ['converter_fuzzy'],
+            \ },
+            \ 'around': {
+            \   'mark': 'A'
+            \ },
+            \ 'buffer': {
+            \   'mark': 'B'
+            \ },
+            \ 'cmdline': {
+            \   'mark': 'C',
+            \ },
+            \ 'path': {
+            \   'mark': 'P',
+            \ },
+            \ 'file': {
+            \   'mark': 'F',
+            \   'isVolatile': v:true,
+            \   'forceCompletionPattern': '\S/\S*',
+            \ },
+            \ 'nvim-lsp': {
+            \   'mark': 'lsp',
+            \   'forceCompletionPattern': '\.\w*|:\w*|->\w*'
+            \ },
+            \ })
+      call ddc#custom#patch_global('sourceParams', {
+            \ 'around': {
+            \   'maxSize': 500
+            \ },
+            \ 'buffer': {
+            \   'requireSameFiletype': v:false,
+            \   'limitBytes': 5000000,
+            \   'fromAltBuf': v:true,
+            \   'forceCollect': v:true,
+            \ },
+            \ 'path': {
+            \   'cmd': ['fd', '--max-depth', '5'],
+            \ },
+            \ })
 
-    cmp.setup.cmdline('/', {
-      mapping = cmp.mapping.preset.cmdline(),
-      sources = {
-        { name = 'buffer' }
-      }
-    })
+      " Mappings
+      " <TAB>: completion.
+      inoremap <silent><expr><TAB> pum#visible() ?
+            \ '<Cmd>call pum#map#select_relative(+1)<CR>' :
+            \ '<TAB>'
+      inoremap <S-Tab> <Cmd>call pum#map#select_relative(-1)<CR>
+      inoremap <silent><expr><Down> pum#visible() ?
+            \ '<Cmd>call pum#map#select_relative(+1)<CR>' :
+            \ '<Down>'
+      inoremap <silent><expr><Up> pum#visible() ?
+            \ '<Cmd>call pum#map#select_relative(-1)<CR>' :
+            \ '<Up>'
+      inoremap <silent><expr><Right> pum#visible() ?
+            \ '<Cmd>call pum#map#confirm()<CR>' :
+            \ '<Right>'
 
-    cmp.setup.cmdline(':', {
-      mapping = cmp.mapping.preset.cmdline(),
-      enabled = function() return true end,
-      sources = {
-        { name = 'cmdline' }
-      }
-    })
+      " Enable command line completion
+      nnoremap /       <Cmd>call CommandlinePre()<CR>/
+      function! CommandlinePre() abort
+        cnoremap <silent><expr><TAB> pum#visible() ?
+              \ '<Cmd>call pum#map#select_relative(+1)<CR>' :
+              \ ddc#manual_complete()
+        cnoremap <silent><expr><Right> pum#visible() ?
+              \ '<Cmd>call pum#map#confirm()<CR>' :
+              \ '<Right>'
+        cnoremap <S-Tab> <Cmd>call pum#map#select_relative(-1)<CR>
+        cnoremap <Down>  <Cmd>call pum#map#select_relative(+1)<CR>
+        cnoremap <Up>    <Cmd>call pum#map#select_relative(-1)<CR>
+
+        " Overwrite sources
+        if !exists('b:prev_buffer_config')
+          let b:prev_buffer_config = ddc#custom#get_buffer()
+        endif
+        if getcmdtype() == '/'
+          call ddc#custom#patch_buffer('cmdlineSources', [
+              \ 'buffer',
+              \ ])
+        elseif getcmdtype() == '@'
+          call ddc#custom#patch_buffer('cmdlineSources', [
+              \ 'buffer',
+              \ ])
+        else
+          call ddc#custom#patch_buffer('cmdlineSources', [
+              \ 'cmdline',
+              \ 'file',
+              \ ])
+        endif
+
+        autocmd User DDCCmdlineLeave ++once call CommandlinePost()
+        autocmd InsertEnter <buffer> ++once call CommandlinePost()
+
+        " Enable command line completion
+        call ddc#enable_cmdline_completion()
+      endfunction
+      function! CommandlinePost() abort
+        silent! cunmap <Right>
+        silent! cunmap <Tab>
+        silent! cunmap <S-Tab>
+        silent! cunmap <Down>
+        silent! cunmap <Up>
+
+        " Restore sources
+        if exists('b:prev_buffer_config')
+          call ddc#custom#set_buffer(b:prev_buffer_config)
+          unlet b:prev_buffer_config
+        else
+          call ddc#custom#set_buffer({})
+        endif
+      endfunction
+
+      call ddc#enable()
+    ]]
   end
 } --}}}
-use {'hrsh7th/cmp-nvim-lsp', --{{{
+use { 'Shougo/ddc-around', --{{{
+} -- }}}
+use { 'Shougo/ddc-matcher_head', --{{{
+} -- }}}
+use { 'Shougo/ddc-sorter_rank', --{{{
+} -- }}}
+use { 'Shougo/ddc-cmdline', --{{{
+} -- }}}
+use { 'Shougo/ddc-cmdline-history', --{{{
+} -- }}}
+use { 'Shougo/ddc-input', --{{{
+} -- }}}
+use { 'Shougo/ddc-nvim-lsp', --{{{
+} -- }}}
+use { 'Shougo/pum.vim', --{{{
   config = function()
-  end,
-} --}}}
-use {'hrsh7th/cmp-nvim-lsp-signature-help', -- {{{
-} -- }}}
-use {'hrsh7th/cmp-nvim-lsp-document-symbol', -- {{{
-} -- }}}
-use {'hrsh7th/cmp-buffer', -- {{{
-} -- }}}
-use {'hrsh7th/cmp-path', -- {{{
-} -- }}}
-use {'hrsh7th/cmp-emoji', -- {{{
-} -- }}}
-use {'hrsh7th/cmp-cmdline', -- {{{
-} -- }}}
-use {'hrsh7th/cmp-vsnip', -- {{{
-} -- }}}
-use {'hrsh7th/vim-vsnip', -- {{{
-} -- }}}
-use {'petertriho/cmp-git', -- {{{
-  config = function()
-    require('cmp_git').setup{}
+    vim.cmd[[
+      call pum#set_option({
+          \ 'border': 'rounded',
+          \ })
+      hi Pmenu ctermbg=None guibg=None
+    ]]
   end
-} -- }}}
+} --}}}
+use { 'LumaKernel/ddc-file', --{{{
+} --}}}
+use { 'tani/ddc-fuzzy', --{{{
+} --}}}
+use { 'matsui54/ddc-buffer', --{{{
+} --}}}
+use { 'matsui54/denops-popup-preview.vim', --{{{
+  config = function()
+    vim.cmd[[
+      call popup_preview#enable()
+    ]]
+  end
+} --}}}
+use { 'matsui54/denops-signature_help', --{{{
+  config = function()
+    vim.cmd[[
+      call signature_help#enable()
+      let g:signature_help_config = { 'style': 'virtual' }
+    ]]
+  end
+} --}}}
 -- [Filetype]
 -- [[Haskell]]
 use {'neovimhaskell/haskell-vim', --{{{
