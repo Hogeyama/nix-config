@@ -102,15 +102,11 @@ const fzfOpts = ([] as string[]) // {{{
   ])
   .concat([
     `--bind`, //
-    `ctrl-h:reload[${prog} load mru]+change-prompt[mru>]`,
+    `ctrl-h:reload[${prog} load mru]+change-prompt[file-history>]`,
   ])
   .concat([
     `--bind`, //
-    `ctrl-d:reload[${prog} load zoxide]+change-prompt[zoxide>]`,
-  ])
-  .concat([
-    `--bind`, //
-    `ctrl-d:reload[${prog} load zoxide]+change-prompt[zoxide>]`,
+    `ctrl-d:reload[${prog} load zoxide]+change-prompt[dir-history>]`,
   ])
   .concat([
     `--bind`, //
@@ -118,7 +114,7 @@ const fzfOpts = ([] as string[]) // {{{
   ])
   .concat([
     `--bind`, //
-    `ctrl-b:reload[${prog} load browser-history {q}]+clear-query+change-prompt[browser-history>]`,
+    `ctrl-u:reload[${prog} load browser-history {q}]+clear-query+change-prompt[browser-history>]`,
   ])
   .concat([
     `--bind`, //
