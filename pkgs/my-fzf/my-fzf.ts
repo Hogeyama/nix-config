@@ -1,6 +1,10 @@
 #!/usr/bin/env -S deno run --allow-run --allow-read --allow-write --allow-env
 import * as Path from "https://deno.land/std@0.133.0/path/mod.ts";
 import * as flags from "https://deno.land/std@0.133.0/flags/mod.ts";
+import {
+  isLike,
+  isString,
+} from "https://deno.land/x/unknownutil@v2.0.0/mod.ts";
 
 // `env -S` requires coreutils >= 8.30. If your coreutils is older,
 // wrap this script and path as MY_FZF_PROG environment variable.
@@ -184,7 +188,7 @@ type RunnerOpt<R extends Runner> = RunnerOpts[R];
 
 type RunnerImpl<R extends Runner> = (
   s: State,
-  opts: RunnerOpt<R>
+  opts: RunnerOpt<R>,
 ) => Promise<void>;
 
 type AllRunners = {
@@ -206,8 +210,7 @@ const initialState: State = {
   currentLoader: { _: [] },
 };
 
-const stateFile =
-  Deno.env.get("MYFZF_STATE_FILE") ||
+const stateFile = Deno.env.get("MYFZF_STATE_FILE") ||
   Deno.makeTempFileSync({ prefix: "myfzf", suffix: ".json" });
 
 const readState = () => {
@@ -300,14 +303,6 @@ const log = (s: any) => {
   }
 };
 
-const unquote = (s: string): string => {
-  if (s.startsWith('"') && s.endsWith('"')) {
-    return JSON.parse(s);
-  } else {
-    return s;
-  }
-};
-
 // deno-lint-ignore no-explicit-any
 const xlog = (...x: any[]) => x;
 xlog();
@@ -324,6 +319,8 @@ type RelPath = { kind: "relative"; val: string }; // Posiblly relative path. Can
 type Path = AbsPath | RelPath;
 
 const RelPath = (val: string): RelPath => ({ kind: "relative", val });
+
+const unsafeAbsPath = (val: string): AbsPath => ({ kind: "absolute", val });
 
 const resolve = (s: State, path: Path): AbsPath => {
   return {
@@ -410,7 +407,7 @@ const previewFileOrDir: PreviewImpl = async (s: State, opt: Opt) => {
         cmd: ["bat"].concat(
           batOpts, //
           ["--line-range", `${line}:`],
-          [rawPath]
+          [rawPath],
         ),
         cwd: s.cwd,
       }).status();
@@ -689,13 +686,11 @@ const loadMru: LoadImpl = async (s, _opts) => {
   let tmp: string | undefined = undefined;
   try {
     tmp = Deno.makeTempFileSync();
-    await nvrCommand(s, `call writefile(v:oldfiles,'${tmp}')`);
-    const rawMru = new TextDecoder().decode(Deno.readFileSync(tmp));
-    const files = rawMru
-      .split("\n")
-      .filter((x: string) => pathExists(s, RelPath(x)));
-    log({ context: "loadMru", files });
-    print(files.join("\n"));
+    const rawMru = await nvrExpr(s, "json_encode(v:oldfiles)");
+    (JSON.parse(rawMru) as unknown[])
+      .filter(isString)
+      .filter((x: string) => pathExists(s, RelPath(x)))
+      .forEach(print);
   } finally {
     tmp && Deno.removeSync(tmp);
   }
@@ -714,46 +709,73 @@ const mru: ModeImpl<"mru"> = {
 // buffer
 ////////////////////////////////////////
 
-const loadBuffer: LoadImpl = async (s, _opts) => {
-  printHeader(s);
-  let tmp: string | undefined = undefined;
-  try {
-    tmp = Deno.makeTempFileSync();
-    await nvrCommand(s, `redir! >${tmp} | silent buffers | redir END`);
-    const rawBuffers = new TextDecoder().decode(Deno.readFileSync(tmp));
-    print(
-      rawBuffers
-        .split("\n")
-        .filter((x) => x)
-        .join("\n")
-    );
-  } finally {
-    tmp && Deno.removeSync(tmp);
-  }
+// 必要そうなフィールドだけ定義する。
+// 各フィールドについては :h getbufinfo() を参照。
+type NvimBuffer = {
+  bufnr: number;
+  changed: number;
+  lastused: number;
+  lnum: number;
+  name: string;
+  // changedtick: number;
+  // hidden: number;
+  // linecount: number;
+  // listed: number;
+  // loaded: number;
+  // signs: unknown[];
+  // variables: unknown[];
+  // windows: number[];
 };
 
-type BufferItem = { bufnum: number; state: string; path: string; line: number };
+const bufferExample: NvimBuffer = {
+  "bufnr": 2,
+  "changed": 0,
+  "lastused": 16528747810,
+  "lnum": 1,
+  "name": "/tmp/foo.md",
+};
+
+function isNvimBuffer(v: unknown): v is NvimBuffer {
+  return isLike(bufferExample, v);
+}
+
+const loadBuffer: LoadImpl = async (s, _opts) => {
+  printHeader(s);
+  const rawBuffers = await nvrExpr(s, "json_encode(getbufinfo())");
+  (JSON.parse(rawBuffers) as unknown[])
+    .filter(isNvimBuffer)
+    .filter((b) =>
+      !b.name.startsWith("term://") &&
+      b.name != "" &&
+      JSON.stringify(b.name) == `"${b.name}"`
+    ).forEach((b) => {
+      const bufnr = b.bufnr.toString().padStart(3);
+      const name = b.name;
+      const lnum = b.lnum;
+      print(`${bufnr}:${name}:${lnum}`);
+    });
+};
+
+type BufferItem = { path: AbsPath; bufnum: number; line: number };
 
 const parseBufferItem = (item: string): BufferItem => {
-  const [bufnum, state, path, _, line] = item.trim().split(/\s+/);
   log({ context: "parseBufferItem", item });
-  return {
-    bufnum: Number(bufnum),
-    state: state,
-    path: unquote(path),
-    line: Number(line),
-  };
+  const delim = ":";
+  const firstIx = item.indexOf(delim);
+  const lastIx = item.lastIndexOf(delim);
+  const bufnum = Number(item.slice(0, firstIx));
+  // getbufinfo() が full path を返すことは保証されている
+  const path = unsafeAbsPath(item.slice(firstIx + 1, lastIx));
+  const line = Number(item.slice(lastIx + 1));
+  return { bufnum, path, line };
 };
 
 const previewBuffer: PreviewImpl = async (s, opt) => {
   const rawItem = opt._.at(0)?.toString();
   if (rawItem) {
     const { path, line } = parseBufferItem(rawItem);
-    const absPath = resolve(s, RelPath(path));
-    // TODO nvim の pwd と myfzf の cwd が異なる場合にはずれる。
-    // parseBufferItem で nvim の pwd 基準でパスを解決する。
-    if (pathExists(s, absPath)) {
-      await previewFileOrDir(s, { _: [absPath.val], line });
+    if (pathExists(s, path)) {
+      await previewFileOrDir(s, { _: [path.val], line });
     }
   }
 };
@@ -784,7 +806,7 @@ const loadZoxide: LoadImpl = async (s, opt) => {
   const p = Deno.run({
     cmd: ["zoxide"].concat(
       ["query", "-l"],
-      opt._.map((x) => x.toString())
+      opt._.map((x) => x.toString()),
     ),
     cwd: s.cwd,
     env: {
