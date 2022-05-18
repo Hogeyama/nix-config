@@ -399,7 +399,12 @@ use {'neovim/nvim-lspconfig', --{{{
         '/tmp/LanguageServer.log',
       },
     }
-    require'lspconfig'['denols'].setup{}
+    require'lspconfig'['denols'].setup{
+      root_dir = require'lspconfig'.util.root_pattern("deno.json"),
+      init_options = {
+        lint = true,
+      },
+    }
     require'lspconfig'['diagnosticls'].setup{
       filetypes = {'sh', 'bash'},
       init_options = {
@@ -438,7 +443,12 @@ use {'neovim/nvim-lspconfig', --{{{
     require'lspconfig'['jsonls'].setup{}
     require'lspconfig'['rls'].setup{}
     require'lspconfig'['rnix'].setup{}
-    require'lspconfig'['tsserver'].setup{}
+    require'lspconfig'['tsserver'].setup{
+      root_dir = require'lspconfig'.util.root_pattern("package.json"),
+      init_options = {
+        lint = true,
+      },
+    }
     require'lspconfig'['yamlls'].setup{}
     -- }}}
   end
