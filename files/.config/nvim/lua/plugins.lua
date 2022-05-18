@@ -338,13 +338,13 @@ use {'neovim/nvim-lspconfig', --{{{
     -- [[configure LSP installer]] {{{
     require'nvim-lsp-installer'.setup({
       ensure_installed = {
+        -- 'hls', -- managed by nix
+        -- 'rls', -- managed by nix
         'denols',
         'diagnosticls',
         'gopls',
         'jdtls',
         'jsonls',
-        'rls',
-        'rnix',
         'tsserver',
         'yamlls',
       },
