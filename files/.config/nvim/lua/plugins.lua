@@ -235,6 +235,8 @@ use {'rhysd/clever-f.vim', --{{{
 }--}}}
 use {'haya14busa/vim-asterisk', --{{{
 }--}}}
+use {'Hogeyama/metarw-redmine', --{{{
+}--}}}
 -- [Git]
 use {'tpope/vim-fugitive', --{{{
 }--}}}
