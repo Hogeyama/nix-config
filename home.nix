@@ -178,8 +178,8 @@ in
           "java.signatureHelp.enabled" = true;
           "java.import.gradle.enabled" = true;
         };
-      ".config/nvim/snippets" = {
-        source = ./files/.config/nvim/snippets;
+      ".config/nvim/vsnip" = {
+        source = ./files/.config/nvim/vsnip;
         recursive = true;
       };
       # vifm

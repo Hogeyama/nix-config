@@ -1,0 +1,10 @@
+{
+  "clipboard": {
+    "prefix": [
+      "paste"
+    ],
+    "body": [
+      "${CLIPBOARD}"
+    ]
+  }
+}

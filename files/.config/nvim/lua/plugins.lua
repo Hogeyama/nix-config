@@ -81,19 +81,6 @@ use {'github/copilot.vim', --{{{
 use {'nvim-treesitter/nvim-treesitter', --{{{
   run = ':TSUpdate'
 } --}}}
-use {'Shougo/neosnippet', --{{{
-  config = function()
-    vim.cmd[[
-      imap <C-f> <Plug>(neosnippet_expand_or_jump)
-      smap <C-f> <Plug>(neosnippet_expand_or_jump)
-      xmap <C-f> <Plug>(neosnippet_expand_target)
-      let g:neosnippet#enable_conceal_markers = 0
-      let g:neosnippet#snippets_directory = '~/.config/nvim/snippets'
-    ]]
-  end
-}--}}}
-use {'Shougo/neosnippet-snippets', --{{{
-}--}}}
 use {'kana/vim-submode', --{{{
   config = function()
     vim.cmd[[
@@ -524,7 +511,8 @@ use { 'Shougo/ddc.vim', --{{{
     'ddc-input',
     'ddc-nvim-lsp',
     'denops-popup-preview.vim',
-    'neosnippet',
+    'vim-vsnip',
+    'vim-vsnip-integ',
     'pum.vim',
   },
   config = function()
@@ -537,9 +525,9 @@ use { 'Shougo/ddc.vim', --{{{
             \ 'CmdlineChanged',
             \ ])
       call ddc#custom#patch_global('sources', [
+            \ 'vsnip',
             \ 'nvim-lsp',
             \ 'around',
-            \ 'neosnippet',
             \ 'buffer',
             \ 'input',
             \ 'file',
@@ -570,6 +558,9 @@ use { 'Shougo/ddc.vim', --{{{
             \ 'nvim-lsp': {
             \   'mark': 'lsp',
             \   'forceCompletionPattern': '\.\w*|:\w*|->\w*'
+            \ },
+            \ 'vsnip': {
+            \   'mark': 'snip'
             \ },
             \ })
       call ddc#custom#patch_global('sourceParams', {
@@ -703,6 +694,24 @@ use { 'matsui54/denops-signature_help', --{{{
     vim.cmd[[
       call signature_help#enable()
       let g:signature_help_config = { 'style': 'virtual' }
+    ]]
+  end
+} --}}}
+-- [Snippet]
+use { 'hrsh7th/vim-vsnip', --{{{
+  config = function()
+    vim.cmd[[
+      let g:vsnip_snippet_dir = expand('~/.config/nvim/vsnip')
+      imap <expr> <C-f> vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-f>'
+      smap <expr> <C-f> vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-f>'
+      xmap        <C-f> <Plug>(vsnip-cut-text)
+    ]]
+  end
+} --}}}
+use { 'hrsh7th/vim-vsnip-integ', --{{{
+  config = function()
+    vim.cmd[[
+      autocmd User PumCompleteDone call vsnip_integ#on_complete_done(g:pum#completed_item)
     ]]
   end
 } --}}}
