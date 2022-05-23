@@ -721,6 +721,9 @@ use { 'hrsh7th/vim-vsnip-integ', --{{{
 -- [[Haskell]]
 use {'neovimhaskell/haskell-vim', --{{{
 }--}}}
+-- [[dhall]]
+use {'vmchale/dhall-vim', --{{{
+}--}}}
 -- [[Rust]]
 use {'rust-lang/rust.vim', --{{{
 }--}}}
