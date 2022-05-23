@@ -6,6 +6,7 @@ let
     set -eu
     export MY_FZF_PROG=$(realpath "$0")
     ${pkgs.deno}/bin/deno run \
+      --no-check \
       --allow-run \
       --allow-env \
       --allow-read \
