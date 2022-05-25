@@ -239,6 +239,8 @@ use {'rhysd/clever-f.vim', --{{{
 }--}}}
 use {'haya14busa/vim-asterisk', --{{{
 }--}}}
+use {'Shougo/deol.nvim', --{{{
+}--}}}
 use {'Hogeyama/metarw-redmine', --{{{
 }--}}}
 -- [Git]
