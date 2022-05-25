@@ -333,9 +333,10 @@ use {'neovim/nvim-lspconfig', --{{{
           vim.diagnostic.open_float(nil, opts)
         end
       })
-      vim.cmd [[
-        autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_seq_sync()
-      ]]
+      -- No auto formatting
+      -- vim.cmd [[
+      --   autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_seq_sync()
+      -- ]]
       -- Highlight symbol under cursor
       -- https://github.com/neovim/nvim-lspconfig/wiki/UI-customization#highlight-symbol-under-cursor
       if client.resolved_capabilities.document_highlight then
