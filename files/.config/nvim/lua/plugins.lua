@@ -130,6 +130,10 @@ use {'easymotion/vim-easymotion', --{{{
       let g:EasyMotion_do_mapping = 0
       let g:EasyMotion_smartcase = 1
       let g:EasyMotion_enter_jump_first = 1
+      map w <Plug>(easymotion-bd-w)
+      map W <Plug>(easymotion-bd-W)
+      map e <Plug>(easymotion-bd-e)
+      map E <Plug>(easymotion-bd-E)
     ]]
   end
 }--}}}
