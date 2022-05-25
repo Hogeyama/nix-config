@@ -18,22 +18,10 @@ augroup end
 "}}}
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"" Color{{{
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-syntax on
-set background=dark
-set termguicolors
-colorscheme deep-space
-hi Folded     ctermbg=None guibg=None
-hi LineNr     ctermbg=None guibg=None
-hi MatchParen ctermfg=253  guifg=#dadada ctermbg=0 guibg=#000000
-"}}}
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "" Options{{{
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+syntax on
 filetype plugin indent on
 set fileencodings=utf-8,cp932
 set termencoding=utf-8

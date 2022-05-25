@@ -119,7 +119,6 @@ use {'voldikss/vim-floaterm', --{{{
           let g:floaterm_fzf_exists=1
         endif
       endfunction
-      hi FloatermBorder guibg=None guifg=cyan
     ]]
   end
 }--}}}
@@ -302,7 +301,6 @@ use {'neovim/nvim-lspconfig', --{{{
     -- [[code lens]] {{{
     vim.cmd [[
       autocmd CursorHold,InsertLeave <buffer> lua vim.lsp.codelens.refresh()
-      hi LspCodeLens guibg=None guifg=#555555
     ]]
     --}}}
     -- [[on_attach]] {{{
@@ -341,9 +339,6 @@ use {'neovim/nvim-lspconfig', --{{{
       -- https://github.com/neovim/nvim-lspconfig/wiki/UI-customization#highlight-symbol-under-cursor
       if client.resolved_capabilities.document_highlight then
         vim.cmd [[
-          hi! LspReferenceRead  ctermbg=red guibg=black
-          hi! LspReferenceText  ctermbg=red guibg=black
-          hi! LspReferenceWrite ctermbg=red guibg=black
         ]]
         vim.api.nvim_create_augroup('lsp_document_highlight', {
           clear = false
@@ -686,9 +681,8 @@ use { 'Shougo/pum.vim', --{{{
   config = function()
     vim.cmd[[
       call pum#set_option({
-          \ 'border': 'rounded',
+          \ 'border': 'none',
           \ })
-      hi Pmenu ctermbg=None guibg=None
     ]]
   end
 } --}}}
@@ -763,5 +757,23 @@ use {'leafgarland/typescript-vim', --{{{
 }--}}}
 -- [[Color scheme]]
 use {'tyrannicaltoucan/vim-deep-space', --{{{
+}--}}}
+use {'cocopon/iceberg.vim', --{{{
+  config = function()
+    vim.cmd[[
+      set background=dark
+      set termguicolors
+      colorscheme iceberg
+      hi Folded            guibg=None
+      hi LineNr            guibg=None
+      hi MatchParen        guibg=black guifg=#dadada
+      hi FloatermBorder    guibg=None  guifg=cyan     " floaterm
+      hi Pmenu             guibg=None                 " pum.vim
+      hi LspCodeLens       guibg=None  guifg=#555555  " lsp
+      hi LspReferenceRead  guibg=black
+      hi LspReferenceText  guibg=black
+      hi LspReferenceWrite guibg=black
+    ]]
+  end
 }--}}}
 end)
