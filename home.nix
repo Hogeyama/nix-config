@@ -202,13 +202,14 @@ in
           export BROWSER=${env.user.browser}
         '';
       };
+      # starship
+      ".config/starship.toml".source = ./files/.config/starship.toml;
       # firefox
       ".local/share/tridactyl/native_main".source = ./files/.local/share/tridactyl/native_main;
       ".config/tridactyl/tridactylrc".source = ./files/.config/tridactyl/tridactylrc;
       # alacritty
       ".config/alacritty.yml".source = ./files/.config/alacritty.yml;
       # my script
-      #".local/bin/myfzf".source = ./files/.local/bin/myfzf;
       ".local/bin/myclip".source = ./files/.local/bin/myclip;
       ".local/bin/my-xmonad-borderwidth".source = ./files/.local/bin/my-xmonad-borderwidth;
       # wall paper
@@ -508,6 +509,9 @@ in
           };
         };
       };
+    };
+    starship = {
+      enable = true;
     };
   };
   services.dropbox.enable = true;

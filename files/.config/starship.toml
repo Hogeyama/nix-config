@@ -1,0 +1,112 @@
+# See https://starship.rs/config/
+format = """
+$directory\
+$git_branch\
+$git_commit\
+$git_status\
+$git_state\
+$git_metrics\
+$hg_branch\
+$docker_context\
+$package\
+$container\
+$deno\
+$golang\
+$haskell\
+$java\
+$nodejs\
+$python\
+$rust\
+$scala\
+$terraform\
+$nix_shell\
+$memory_usage\
+$aws\
+$openstack\
+$env_var\
+$custom\
+$sudo\
+$cmd_duration\
+$status\
+$username\
+$hostname\
+$time\
+$line_break\
+$jobs\
+$battery\
+$shell\
+$character\
+"""
+
+# Inserts a blank line between shell prompts
+add_newline = true
+
+[aws]
+format = '[($symbol$profile)]($style)'
+
+[directory]
+format = '[$path]($style)[$read_only]($read_only_style) '
+style = 'bold blue'
+truncation_length = 10
+truncate_to_repo = false
+
+[character]
+success_symbol = '[\$](bold white)'
+error_symbol = '[\$](bold white)'
+
+[git_branch]
+format = '[$symbol$branch(:$remote_branch)]($style)'
+symbol = ' '
+style = 'green'
+
+[git_commit]
+format = '[\($hash$tag\)]($style)'
+style = 'green'
+
+[git_status]
+format = '([\[$all_status$ahead_behind\]]($style)) '
+up_to_date = '👍'
+deleted = '🚮'
+modified = ' '
+untracked = '❓'
+conflicted = '✘ '
+staged = '💨'
+stashed = ''
+style = 'green'
+
+[git_state]
+format = '[\($state( $progress_current/$progress_total)\)]($style) '
+style = 'green'
+
+[nix_shell]
+format = '[$symbol$state]($style) '
+disabled = true
+
+[lua]
+disabled = true
+
+[package]
+disabled = false
+
+[cmd_duration]
+format = '[took $duration]($style) '
+style = 'dimmed white'
+
+[status]
+disabled = false
+format = '[$symbol $status]($style) '
+
+[username]
+format = '[$user]($style)'
+show_always = true
+style_user = 'dimmed white'
+
+[hostname]
+format = '[@$ssh_symbol$hostname ]($style)'
+ssh_only = false
+style = 'dimmed white'
+
+[time]
+disabled = false
+format = '[\[$time\]]($style) '
+style = 'dimmed white'
