@@ -366,6 +366,7 @@ in
         extraConfig = ''
           # do not load any identities on start
           zstyle :omz:plugins:ssh-agent lazy yes
+          zmodload zsh/zpty
         '';
       };
       profileExtra = ''
