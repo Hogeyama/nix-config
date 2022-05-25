@@ -34,7 +34,6 @@ in
       libreoffice
       lsof
       mercurial
-      navi
       neovim-remote
       python3
       nodejs
@@ -395,7 +394,6 @@ in
         export PATH="''$PATH:JAVA_HOME/bin"
       '';
       initExtra = ''
-        eval "$(navi widget zsh)"
         zstyle ':completion:*' verbose yes
         zstyle ':completion:*' format '%B%d%b'
         zstyle ':completion:*:warnings' format 'No matches for: %d'
@@ -509,6 +507,9 @@ in
           };
         };
       };
+    };
+    navi = {
+      enable = true;
     };
     starship = {
       enable = true;
