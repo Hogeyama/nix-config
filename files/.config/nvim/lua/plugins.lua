@@ -519,6 +519,7 @@ use { 'Shougo/ddc.vim', --{{{
     'ddc-file',
     'ddc-input',
     'ddc-nvim-lsp',
+    'ddc-zsh',
     'denops-popup-preview.vim',
     'vim-vsnip',
     'vim-vsnip-integ',
@@ -540,6 +541,7 @@ use { 'Shougo/ddc.vim', --{{{
             \ 'buffer',
             \ 'input',
             \ 'file',
+            \ 'zsh',
             \ ])
       call ddc#custom#patch_global('sourceOptions', {
             \ '_': {
@@ -570,6 +572,9 @@ use { 'Shougo/ddc.vim', --{{{
             \ },
             \ 'vsnip': {
             \   'mark': 'snip'
+            \ },
+            \ 'zsh': {
+            \   'mark': 'Z'
             \ },
             \ })
       call ddc#custom#patch_global('sourceParams', {
@@ -674,6 +679,8 @@ use { 'Shougo/ddc-cmdline-history', --{{{
 use { 'Shougo/ddc-input', --{{{
 } -- }}}
 use { 'Shougo/ddc-nvim-lsp', --{{{
+} -- }}}
+use { 'Shougo/ddc-zsh', --{{{
 } -- }}}
 use { 'Shougo/pum.vim', --{{{
   config = function()
