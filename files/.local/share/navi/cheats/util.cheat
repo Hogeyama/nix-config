@@ -1,0 +1,4 @@
+% tmp
+
+# jq REPL with fzf
+( tee /tmp/jq-repl.json >/dev/null && fzf --print-query --bind up:preview-up,down:preview-down --preview-window='up:90%' --preview 'jq -C {q} /tmp/jq-repl.json' )
