@@ -366,6 +366,9 @@ in
         extraConfig = ''
           # do not load any identities on start
           zstyle :omz:plugins:ssh-agent lazy yes
+          # home-manager's module seems broken. Manually set fpath
+          fpath+=(${pkgs.watson}/share/zsh/site-functions)
+          # for ddc-zsh
           zmodload zsh/zpty
         '';
       };
