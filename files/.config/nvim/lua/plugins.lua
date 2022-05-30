@@ -133,6 +133,8 @@ use {'easymotion/vim-easymotion', --{{{
       map W <Plug>(easymotion-bd-W)
       map e <Plug>(easymotion-bd-e)
       map E <Plug>(easymotion-bd-E)
+      map s <Plug>(easymotion-s2)
+      nnoremap cw cw
     ]]
   end
 }--}}}
