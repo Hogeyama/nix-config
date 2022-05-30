@@ -15,7 +15,7 @@ git commit --fixup=<commit> && GIT_SEQUENCE_EDITOR=: git rebase --autosquash -i 
 # commit all and fixup
 git commit -a --fixup=<commit> && GIT_SEQUENCE_EDITOR=: git rebase --autosquash -i <commit>^
 
-$ commit:                  git log --oneline --- --column 1 --delimiter '\s+'
+$ commit:                  git log --oneline --color=always --- --map "awk '{print $1}'"
 $ remote:                  git remote show
 $ remote-branch:           git branch -r | sed -e 's/\(.*->\)//' -e 's/^\s*//'
 $ remote-branch-no-prefix: git branch -r | sed -e 's/\(.*->\)//' -e 's/^[^\/]*\///'
