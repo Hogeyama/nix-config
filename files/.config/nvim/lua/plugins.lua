@@ -127,6 +127,16 @@ use {'lukas-reineke/indent-blankline.nvim', --{{{
     require("indent_blankline").setup{}
   end
 }--}}}
+use {'phaazon/hop.nvim', --{{{
+  config = function()
+    require'hop'.setup()
+    -- TODO configure mappping
+    vim.cmd[[
+      map w <Cmd>HopWord<CR>
+      map s <Cmd>HopChar2<CR>
+    ]]
+  end
+}--}}}
 use {'easymotion/vim-easymotion', --{{{
   config = function()
     vim.cmd[[
@@ -134,11 +144,11 @@ use {'easymotion/vim-easymotion', --{{{
       let g:EasyMotion_do_mapping = 0
       let g:EasyMotion_smartcase = 1
       let g:EasyMotion_enter_jump_first = 1
-      map w <Plug>(easymotion-bd-w)
-      map W <Plug>(easymotion-bd-W)
-      map e <Plug>(easymotion-bd-e)
-      map E <Plug>(easymotion-bd-E)
-      map s <Plug>(easymotion-s2)
+      "map w <Plug>(easymotion-bd-w)
+      "map W <Plug>(easymotion-bd-W)
+      "map e <Plug>(easymotion-bd-e)
+      "map E <Plug>(easymotion-bd-E)
+      "map s <Plug>(easymotion-s2)
       nnoremap cw cw
     ]]
   end
