@@ -256,7 +256,7 @@ use {'lambdalisue/gina.vim', --{{{
 }--}}}
 -- [LSP]
 use {'neovim/nvim-lspconfig', --{{{
-  after = "nvim-lsp-installer",
+  after = {"nvim-lsp-installer", "lsp-format.nvim"},
   config = function()
     -- [Common config]
     -- [[configure LSP installer]] {{{
@@ -336,10 +336,8 @@ use {'neovim/nvim-lspconfig', --{{{
           vim.diagnostic.open_float(nil, opts)
         end
       })
-      -- No auto formatting
-      -- vim.cmd [[
-      --   autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_seq_sync()
-      -- ]]
+      -- Format
+      require "lsp-format".on_attach(client, bufnr)
       -- Highlight symbol under cursor
       -- https://github.com/neovim/nvim-lspconfig/wiki/UI-customization#highlight-symbol-under-cursor
       if client.resolved_capabilities.document_highlight then
@@ -486,6 +484,12 @@ use {'j-hui/fidget.nvim', --{{{
 } --}}}
 use {'mfussenegger/nvim-jdtls', --{{{
 } --}}}
+use {'lukas-reineke/lsp-format.nvim', --{{{
+  config = function()
+    -- TODO configure
+    require "lsp-format".setup{}
+  end
+}--}}}
 -- [DAP]
 use {'mfussenegger/nvim-dap', --{{{
   config = function()
