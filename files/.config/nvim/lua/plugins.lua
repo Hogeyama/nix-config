@@ -217,18 +217,6 @@ use {'glidenote/memolist.vim', --{{{
 }--}}}
 use {'kana/vim-metarw', --{{{
 }--}}}
-use {'mattn/vim-metarw-redmine', --{{{
-  config = function()
-    vim.cmd[[
-      if filereadable(expand("~/.redmine_api_key"))
-        let g:metarw_redmine_server = readfile(expand("~/.redmine_api_key"))[0]
-        let g:metarw_redmine_apikey = readfile(expand("~/.redmine_api_key"))[1]
-      endif
-      au BufNewFile,BufRead             *.redmine  set filetype=redminewiki
-      au BufNewFile,BufRead,InsertLeave redmine:/* set filetype=redminewiki ro
-    ]]
-  end
-}--}}}
 use {'mattn/webapi-vim', --{{{
 }--}}}
 use {'rhysd/clever-f.vim', --{{{
@@ -751,6 +739,11 @@ use {'vim-voom/VOoM', --{{{
 }--}}}
 -- [[Textile]]
 use {'s3rvac/vim-syntax-redminewiki', --{{{
+  config = function()
+    vim.cmd[[
+      autocmd BufEnter *.redmine set ft=redminewiki
+    ]]
+  end
 }--}}}
 -- [[JavaScript/TypeScript]]
 use {'jelera/vim-javascript-syntax', --{{{
