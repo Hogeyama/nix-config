@@ -11,7 +11,7 @@ let
       --allow-env \
       --allow-read \
       --allow-write \
-      ${src}/my-fzf.ts "$@"
+      ${src}/src/main.ts "$@"
   '';
 in
 myfzf
