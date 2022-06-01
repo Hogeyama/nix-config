@@ -1,13 +1,10 @@
 import { previewFileOrDir, printHeader } from "../lib.ts";
 import { LoadImpl, ModeImpl } from "../types.ts";
 
-const loadZoxide: LoadImpl = async (s, opt) => {
+const loadZoxide: LoadImpl = async (s, _) => {
   printHeader(s);
   const p = Deno.run({
-    cmd: ["zoxide"].concat(
-      ["query", "-l"],
-      opt._.map((x) => x.toString()),
-    ),
+    cmd: ["zoxide"].concat(["query", "-l"]),
     cwd: s.cwd,
   });
   await p.status();
@@ -25,4 +22,3 @@ export const zoxide: ModeImpl<"zoxide"> = {
     },
   },
 };
-

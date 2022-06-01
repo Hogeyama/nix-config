@@ -16,7 +16,7 @@ const init = async () => {
   const stateFile = getOrCreateStateFile();
   try {
     const prog = Deno.env.get("MY_FZF_PROG");
-    if (!prog) throw "MY_FZF_PROG not defined"
+    if (!prog) throw "MY_FZF_PROG not defined";
 
     writeState({
       mode: "fd",
@@ -32,7 +32,7 @@ const init = async () => {
         {},
         Deno.env.toObject(),
         {
-          FZF_DEFAULT_COMMAND: `${prog} load`,
+          FZF_DEFAULT_COMMAND: `${prog} load fd`,
         },
       ),
     }).status();

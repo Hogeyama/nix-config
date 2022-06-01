@@ -63,11 +63,11 @@ export const fzfOpts = (myfzf: string) => ([] as string[])
   ])
   .concat([
     `--bind`, //
-    `ctrl-g:reload[${myfzf} load rg {q}]+clear-query+change-prompt[grep>]`,
+    `ctrl-g:reload[${myfzf} load rg --query {q}]+clear-query+change-prompt[grep>]`,
   ])
   .concat([
     `--bind`, //
-    `ctrl-w:reload[${myfzf} load browser-history {q}]+clear-query+change-prompt[browser-history>]`,
+    `ctrl-i:reload[${myfzf} load browser-history {q}]+clear-query+change-prompt[browser-history>]`,
   ])
   .concat([
     `--bind`, //

@@ -1,4 +1,10 @@
-import { changeDirectory, nvrExpr, previewFileOrDir, printHeader, readState } from "../lib.ts";
+import {
+  changeDirectory,
+  nvrExpr,
+  previewFileOrDir,
+  printHeader,
+  readState,
+} from "../lib.ts";
 import { LoadImpl, ModeImpl, PreviewImpl, State } from "../types.ts";
 
 const fdExcludePaths = (() => {
@@ -64,4 +70,3 @@ export const fd: ModeImpl<"fd"> = {
     },
   },
 };
-

@@ -1,7 +1,7 @@
 import { Mode, Opt, PreviewImpl, State } from "./types.ts";
 import * as Path_ from "https://deno.land/std@0.133.0/path/mod.ts";
 
-export const prog = Deno.env.get("MY_FZF_PROG")
+export const prog = Deno.env.get("MY_FZF_PROG");
 
 // deno-lint-ignore no-explicit-any
 export const log = (s: any) => {
