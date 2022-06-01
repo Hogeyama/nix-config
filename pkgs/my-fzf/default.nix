@@ -1,6 +1,6 @@
 { pkgs }:
 let
-  src = pkgs.lib.sourceByRegex ./. [ "my-fzf.ts" ];
+  src = pkgs.lib.sourceByRegex ./. [ "src.*" ];
   myfzf = pkgs.writeScriptBin "myfzf" ''
     #!/usr/bin/env bash
     set -eu
