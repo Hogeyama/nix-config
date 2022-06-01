@@ -48,4 +48,3 @@ export const runNvim: RunnerImpl = async (s: State, args: Args) => {
     }
   }
 };
-

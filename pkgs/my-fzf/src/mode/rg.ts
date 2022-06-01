@@ -1,5 +1,5 @@
 import { batOpts, log, print, printHeader } from "../lib.ts";
-import { LoadImpl, ModeImpl, Args, State } from "../types.ts";
+import { Args, LoadImpl, ModeImpl, State } from "../types.ts";
 
 const parseRgItem = (args: Args) => {
   const item = args._.at(0)?.toString();

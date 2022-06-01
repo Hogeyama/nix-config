@@ -1,4 +1,3 @@
-
 import * as flags from "https://deno.land/std@0.133.0/flags/mod.ts";
 
 // Common
@@ -31,11 +30,8 @@ export type ModeImpl = {
   load: LoadImpl;
   preview: PreviewImpl;
   defaultRunner: string;
-  modifyRunnerArgs: {
-    [key in string]?: (s: State, _: Args) => Args;
-  };
+  modifyRunnerArgs: Record<string, ((s: State, _: Args) => Args)>;
 };
-
 
 export type RunnerImpl = (
   s: State,
@@ -45,4 +41,3 @@ export type RunnerImpl = (
 export type LoadImpl = (s: State, args: Args) => Promise<void>;
 
 export type PreviewImpl = (s: State, args: Args) => Promise<void>;
-

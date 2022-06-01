@@ -1,7 +1,7 @@
 #!/usr/bin/env -S deno run --no-check --allow-run --allow-read --allow-write --allow-env
 import * as flags from "https://deno.land/std@0.133.0/flags/mod.ts";
 
-import { Command, isCommand, Args, State } from "./types.ts";
+import { Args, Command, isCommand, State } from "./types.ts";
 import {
   getOrCreateStateFile,
   log,
@@ -67,9 +67,7 @@ const run = (s: State, args: Args) => {
   })();
   const modifyRunnerargs = currentMode.modifyRunnerArgs[runner];
   if (modifyRunnerargs) {
-    // union distribution のせいで推論できない。敗北
-    // deno-lint-ignore no-explicit-any
-    allRunners[runner](s, modifyRunnerargs(s, args) as any);
+    allRunners[runner](s, modifyRunnerargs(s, args));
   } else {
     throw `run: Runner '${runner}' unavailable for mode '${s.mode}'`;
   }

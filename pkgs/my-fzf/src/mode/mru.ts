@@ -1,5 +1,12 @@
 import { isString } from "https://deno.land/x/unknownutil@v2.0.0/is.ts";
-import { nvrExpr, pathExists, previewFileOrDir, print, printHeader, RelPath } from "../lib.ts";
+import {
+  nvrExpr,
+  pathExists,
+  previewFileOrDir,
+  print,
+  printHeader,
+  RelPath,
+} from "../lib.ts";
 import { LoadImpl, ModeImpl } from "../types.ts";
 
 const loadMru: LoadImpl = async (s, _opts) => {
@@ -26,4 +33,3 @@ export const mru: ModeImpl = {
     nvim: (_, args) => args,
   },
 };
-

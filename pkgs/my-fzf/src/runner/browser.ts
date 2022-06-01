@@ -10,4 +10,3 @@ export const runBrowser: RunnerImpl = async (_: State, args: Args) => {
     cmd: [browser].concat([url]),
   }).status();
 };
-
