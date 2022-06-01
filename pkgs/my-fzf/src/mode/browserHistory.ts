@@ -32,9 +32,9 @@ const getChromeDb = (s: State): string => {
 const sqliteRecordSep = String.fromCodePoint(0x2009); // U+2009: Thin space
 
 
-const loadBrowserHistory: LoadImpl = async (s, opt) => {
+const loadBrowserHistory: LoadImpl = async (s, args) => {
   printHeader(s);
-  const pat = opt.pattern || "%";
+  const pat = args.pattern || "%";
   const cond = `url LIKE '%${pat}%' OR title LIKE '%${pat}%'`;
   const browser = Deno.env.get("BROWSER") || "firefox";
   let copyDb: string | undefined = undefined;
@@ -111,8 +111,8 @@ const parseBrowserItem = (item: string): BrowserItem => {
 };
 
 // deno-lint-ignore require-await
-const previewUrl: PreviewImpl = async (_s, opt) => {
-  const rawItem = opt._.at(0)?.toString();
+const previewUrl: PreviewImpl = async (_s, args) => {
+  const rawItem = args._.at(0)?.toString();
   if (!rawItem) {
     throw `browser: No item given`;
   }
@@ -127,14 +127,14 @@ export const browserHistory: ModeImpl<"browser-history"> = {
   load: loadBrowserHistory,
   preview: previewUrl,
   defaultRunner: "browser",
-  modifyRunnerOpt: {
-    browser: (_, opt) => {
-      const rawItem = opt._.at(0)?.toString();
+  modifyRunnerArgs: {
+    browser: (_, args) => {
+      const rawItem = args._.at(0)?.toString();
       if (!rawItem) {
         throw `browser: No item given`;
       }
       const { url } = parseBrowserItem(rawItem);
-      return Object.assign(opt, { _: [url] });
+      return Object.assign(args, { _: [url] });
     },
   },
 };

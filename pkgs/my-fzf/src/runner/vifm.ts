@@ -1,7 +1,7 @@
-import { Opt, RunnerImpl, State } from "../types.ts";
+import { Args, RunnerImpl, State } from "../types.ts";
 
-export const runVifm: RunnerImpl = async (s: State, opt: Opt) => {
-  const dir = opt._.shift()?.toString();
+export const runVifm: RunnerImpl = async (s: State, args: Args) => {
+  const dir = args._.shift()?.toString();
   if (!dir) {
     throw `runVifm: No dir specified`;
   }

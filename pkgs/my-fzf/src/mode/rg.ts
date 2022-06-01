@@ -1,8 +1,8 @@
 import { batOpts, log, print, printHeader } from "../lib.ts";
-import { LoadImpl, ModeImpl, Opt, State } from "../types.ts";
+import { LoadImpl, ModeImpl, Args, State } from "../types.ts";
 
-const parseRgItem = (opt: Opt) => {
-  const item = opt._.at(0)?.toString();
+const parseRgItem = (args: Args) => {
+  const item = args._.at(0)?.toString();
   if (!item) {
     throw `parseRgItem: No item given`;
   }
@@ -19,19 +19,19 @@ const parseRgItem = (opt: Opt) => {
 };
 
 // Loader
-const rgOpts = ([] as string[])
+const rgargss = ([] as string[])
   .concat(["--column"])
   .concat(["--line-number"])
   .concat(["--no-heading"])
   .concat(["--color=never"])
   .concat(["--smart-case"]);
 
-const loadRg: LoadImpl = async (s, opts) => {
+const loadRg: LoadImpl = async (s, argss) => {
   printHeader(s);
-  const query = opts.query.toString();
+  const query = argss.query.toString();
   try {
     const p = Deno.run({
-      cmd: ["rg"].concat(rgOpts, query),
+      cmd: ["rg"].concat(rgargss, query),
       cwd: s.cwd,
     });
     await p.status();
@@ -41,19 +41,19 @@ const loadRg: LoadImpl = async (s, opts) => {
   }
 };
 
-const previewRgItem = async (s: State, opt: Opt) => {
-  const { file, line } = parseRgItem(opt);
+const previewRgItem = async (s: State, args: Args) => {
+  const { file, line } = parseRgItem(args);
   const start = Math.max(Number(line) - 15, 0);
-  const batExtraOpts = [
+  const batExtraargss = [
     "--line-range",
     `${start}:`,
     "--highlight-line",
     `${line}`,
   ];
   print(`  [${file}]`);
-  log(["bat"].concat(batOpts, batExtraOpts, [file]));
+  log(["bat"].concat(batOpts, batExtraargss, [file]));
   await Deno.run({
-    cmd: ["bat"].concat(batOpts, batExtraOpts, [file]),
+    cmd: ["bat"].concat(batOpts, batExtraargss, [file]),
     cwd: s.cwd,
   }).status();
   return;
@@ -64,12 +64,12 @@ export const rg: ModeImpl<"rg"> = {
   load: loadRg,
   preview: previewRgItem,
   defaultRunner: "nvim",
-  modifyRunnerOpt: {
-    nvim: (_, opt) => {
-      const { file, line } = parseRgItem(opt);
-      return Object.assign(opt, { _: [file], line });
+  modifyRunnerArgs: {
+    nvim: (_, args) => {
+      const { file, line } = parseRgItem(args);
+      return Object.assign(args, { _: [file], line });
     },
-    vifm: (s, _opt) => {
+    vifm: (s, _args) => {
       return { _: [s.cwd] };
     },
   },

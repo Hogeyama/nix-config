@@ -1,7 +1,7 @@
 #!/usr/bin/env -S deno run --no-check --allow-run --allow-read --allow-write --allow-env
 import * as flags from "https://deno.land/std@0.133.0/flags/mod.ts";
 
-import { Command, isCommand, Opt, Runner, State } from "./types.ts";
+import { Command, isCommand, Args, Runner, State } from "./types.ts";
 import {
   getOrCreateStateFile,
   log,
@@ -21,7 +21,7 @@ const init = async () => {
     writeState({
       mode: "fd",
       cwd: Deno.cwd(),
-      currentLoader: { _: [] },
+      currentLoaderArgs: { _: [] },
     });
 
     await Deno.run({
@@ -41,57 +41,57 @@ const init = async () => {
   }
 };
 
-const load = async (s: State, opt: Opt) => {
-  setCurrentLoader(opt);
-  const mode = opt._.shift()?.toString() || "fd";
+const load = async (s: State, args: Args) => {
+  setCurrentLoader(args);
+  const mode = args._.shift()?.toString() || "fd";
   if (mode in allModes) {
     setMode(mode);
-    await allModes[mode].load(s, opt);
+    await allModes[mode].load(s, args);
   }
 };
 
-const preview = async (s: State, opt: Opt) => {
+const preview = async (s: State, args: Args) => {
   setMode(s.mode);
-  await allModes[s.mode].preview(s, opt);
+  await allModes[s.mode].preview(s, args);
 };
 
-const run = (s: State, opt: Opt) => {
+const run = (s: State, args: Args) => {
   const currentMode = allModes[s.mode];
   const runner: Runner = (() => {
-    const c = opt._.shift()?.toString() || "default";
+    const c = args._.shift()?.toString() || "default";
     if (c == "default") {
       return currentMode.defaultRunner;
     } else {
       return c;
     }
   })();
-  const modifyRunnerOpt = currentMode.modifyRunnerOpt[runner];
-  if (modifyRunnerOpt) {
+  const modifyRunnerargs = currentMode.modifyRunnerArgs[runner];
+  if (modifyRunnerargs) {
     // union distribution のせいで推論できない。敗北
     // deno-lint-ignore no-explicit-any
-    allRunners[runner](s, modifyRunnerOpt(s, opt) as any);
+    allRunners[runner](s, modifyRunnerargs(s, args) as any);
   } else {
     throw `run: Runner '${runner}' unavailable for mode '${s.mode}'`;
   }
 };
 
-const dispatch = async (command: Command, opt: Opt) => {
+const dispatch = async (command: Command, args: Args) => {
   const state = readState();
   switch (command) {
     case "load": {
-      await load(state, opt);
+      await load(state, args);
       break;
     }
     case "reload": {
-      await load(state, state.currentLoader);
+      await load(state, state.currentLoaderArgs);
       break;
     }
     case "preview": {
-      await preview(state, opt);
+      await preview(state, args);
       break;
     }
     case "run": {
-      run(state, opt); // non-blocking
+      run(state, args); // non-blocking
       break;
     }
   }
@@ -107,10 +107,10 @@ const main = async () => {
       init();
       return;
     }
-    const opt = flags.parse(Deno.args);
-    const command = opt._.shift()?.toString() || "";
+    const args = flags.parse(Deno.args);
+    const command = args._.shift()?.toString() || "";
     if (isCommand(command)) {
-      await dispatch(command, opt);
+      await dispatch(command, args);
     } else {
       throw `Unknown command: ${command}`;
     }

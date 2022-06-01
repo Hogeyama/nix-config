@@ -15,9 +15,9 @@ export const zoxide: ModeImpl<"zoxide"> = {
   load: loadZoxide,
   preview: previewFileOrDir,
   defaultRunner: "vifm",
-  modifyRunnerOpt: {
-    nvim: (_, opt) => opt,
-    vifm: (s, _opt) => {
+  modifyRunnerArgs: {
+    nvim: (_, args) => args,
+    vifm: (s, _args) => {
       return { _: [s.cwd] };
     },
   },

@@ -73,8 +73,8 @@ const parseBufferItem = (item: string): BufferItem => {
   return { bufnum, path, line };
 };
 
-const previewBuffer: PreviewImpl = async (s, opt) => {
-  const rawItem = opt._.at(0)?.toString();
+const previewBuffer: PreviewImpl = async (s, args) => {
+  const rawItem = args._.at(0)?.toString();
   if (rawItem) {
     const { path, line } = parseBufferItem(rawItem);
     if (pathExists(s, path)) {
@@ -88,12 +88,12 @@ export const buffer: ModeImpl<"buffer"> = {
   load: loadBuffer,
   preview: previewBuffer,
   defaultRunner: "nvim",
-  modifyRunnerOpt: {
-    nvim: (_, opt) => {
-      const rawItem = opt._.at(0)?.toString();
+  modifyRunnerArgs: {
+    nvim: (_, args) => {
+      const rawItem = args._.at(0)?.toString();
       if (rawItem) {
         const item = parseBufferItem(rawItem);
-        return Object.assign(opt, { buf: item.bufnum });
+        return Object.assign(args, { buf: item.bufnum });
       } else {
         throw `buffer: No item given`;
       }

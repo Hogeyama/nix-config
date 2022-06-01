@@ -8,7 +8,7 @@ import * as flags from "https://deno.land/std@0.133.0/flags/mod.ts";
 // Common
 ///////////
 
-export type Opt = flags.Args;
+export type Args = flags.Args;
 
 // Command
 ////////////
@@ -43,12 +43,10 @@ export type NvimOpt = {
 
 export type VifmOpt = { _: [string] };
 
-export type RunnerOpt = Opt
-
 export type State = {
   mode: Mode;
   cwd: string; // absolute path to the (virtual) current directory
-  currentLoader: Opt;
+  currentLoaderArgs: Args;
 };
 
 export type ModeImpl<M extends Mode> = {
@@ -56,15 +54,15 @@ export type ModeImpl<M extends Mode> = {
   load: LoadImpl;
   preview: PreviewImpl;
   defaultRunner: Runner;
-  modifyRunnerOpt: {
-    [key in Runner]?: (s: State, _: Opt) => RunnerOpt;
+  modifyRunnerArgs: {
+    [key in Runner]?: (s: State, _: Args) => Args;
   };
 };
 
 
 export type RunnerImpl = (
   s: State,
-  opts: RunnerOpt,
+  args: Args,
 ) => Promise<void>;
 
 export type AllRunners = {
@@ -72,6 +70,6 @@ export type AllRunners = {
 };
 
 
-export type LoadImpl = (s: State, opts: Opt) => Promise<void>;
+export type LoadImpl = (s: State, opts: Args) => Promise<void>;
 
-export type PreviewImpl = (s: State, o: Opt) => Promise<void>;
+export type PreviewImpl = (s: State, o: Args) => Promise<void>;

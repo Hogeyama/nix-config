@@ -39,12 +39,12 @@ const nvrLastFile = async (s: State): Promise<string> => {
   return await nvrExpr(s, "g:last_file");
 };
 
-const loadFd: LoadImpl = async (s, opts) => {
-  const nextDir: string = opts["cd"]
-    ? opts["cd"]
-    : opts["cd-up"]
+const loadFd: LoadImpl = async (s, args) => {
+  const nextDir: string = args["cd"]
+    ? args["cd"]
+    : args["cd-up"]
     ? s.cwd + "/.."
-    : opts["cd-last-file"]
+    : args["cd-last-file"]
     ? (await nvrLastFile(s)) + "/.."
     : s.cwd;
   changeDirectory(s, { kind: "relative", val: nextDir });
@@ -63,8 +63,8 @@ export const fd: ModeImpl<"fd"> = {
   load: loadFd,
   preview: previewFd,
   defaultRunner: "nvim",
-  modifyRunnerOpt: {
-    nvim: (_, opt) => opt,
+  modifyRunnerArgs: {
+    nvim: (_, args) => args,
     vifm: (s, _) => {
       return { _: [s.cwd] };
     },

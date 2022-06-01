@@ -22,8 +22,8 @@ export const mru: ModeImpl<"mru"> = {
   load: loadMru,
   preview: previewFileOrDir,
   defaultRunner: "nvim",
-  modifyRunnerOpt: {
-    nvim: (_, opt) => opt,
+  modifyRunnerArgs: {
+    nvim: (_, args) => args,
   },
 };
 

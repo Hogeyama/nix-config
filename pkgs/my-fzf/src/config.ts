@@ -9,9 +9,6 @@ import { runNvim } from "./runner/nvim.ts";
 import { runVifm } from "./runner/vifm.ts";
 import { AllRunners, ModeImpl } from "./types.ts";
 
-// TODO
-// * loader とかの型をまともにする
-
 export const fzfOpts = (myfzf: string) => ([] as string[])
   .concat(["--preview", `${myfzf} preview {}`])
   .concat(["--preview-window", "right:50%:noborder"])

@@ -1,4 +1,4 @@
-import { Mode, Opt, PreviewImpl, State } from "./types.ts";
+import { Mode, Args, PreviewImpl, State } from "./types.ts";
 import * as Path_ from "https://deno.land/std@0.133.0/path/mod.ts";
 
 export const prog = Deno.env.get("MY_FZF_PROG");
@@ -142,9 +142,9 @@ export const printHeader = (s: State) => {
   print(`[${s.cwd}]`);
 };
 
-export const previewFileOrDir: PreviewImpl = async (s: State, opt: Opt) => {
-  const rawPath = opt._.shift()?.toString();
-  const line = Number(opt.line || 0);
+export const previewFileOrDir: PreviewImpl = async (s: State, args: Args) => {
+  const rawPath = args._.shift()?.toString();
+  const line = Number(args.line || 0);
   if (!rawPath) {
     throw `previewFile_or_dir: No path given`;
   }
@@ -189,6 +189,6 @@ export const setMode = (mode: Mode) => {
   modifyState((s) => Object.assign(s, { mode }));
 };
 
-export function setCurrentLoader(currentLoader: Opt) {
+export function setCurrentLoader(currentLoader: Args) {
   modifyState((s) => Object.assign(s, { currentLoader }));
 }
