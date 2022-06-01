@@ -28,11 +28,10 @@ const rgOpts = ([] as string[])
 
 const loadRg: LoadImpl = async (s, opts) => {
   printHeader(s);
-  const rgArgs = opts._.map((x) => x.toString());
-  log({ rgArgs });
+  const query = opts.query.toString();
   try {
     const p = Deno.run({
-      cmd: ["rg"].concat(rgOpts, rgArgs),
+      cmd: ["rg"].concat(rgOpts, query),
       cwd: s.cwd,
     });
     await p.status();
