@@ -1,19 +1,13 @@
 
 import * as flags from "https://deno.land/std@0.133.0/flags/mod.ts";
 
-////////////////////////////////////////////////////////////////////////////////
-// Types
-////////////////////////////////////////////////////////////////////////////////
-
 // Common
-///////////
+////////////////////////////////////////////////////////////////////////////////
 
 export type Args = flags.Args;
 
-// Command
-////////////
-
 export type Command = "load" | "reload" | "preview" | "run";
+
 export const isCommand = (s: string): s is Command => {
   return (
     s === "load" || //
@@ -23,39 +17,22 @@ export const isCommand = (s: string): s is Command => {
   );
 };
 
-// Mode
-/////////
-
-export type Mode = string
-
-// Runner
-///////////
-
-export type Runner = string
-
-export type NvimOpt = {
-  leave?: boolean;
-  tab?: boolean;
-  line?: number;
-  buf?: number;
-  _: (string | number)[];
-};
-
-export type VifmOpt = { _: [string] };
-
 export type State = {
-  mode: Mode;
+  mode: string;
   cwd: string; // absolute path to the (virtual) current directory
   currentLoaderArgs: Args;
 };
 
-export type ModeImpl<M extends Mode> = {
-  mode: M;
+// Interfaces
+////////////////////////////////////////////////////////////////////////////////
+
+export type ModeImpl = {
+  mode: string;
   load: LoadImpl;
   preview: PreviewImpl;
-  defaultRunner: Runner;
+  defaultRunner: string;
   modifyRunnerArgs: {
-    [key in Runner]?: (s: State, _: Args) => Args;
+    [key in string]?: (s: State, _: Args) => Args;
   };
 };
 
@@ -65,11 +42,7 @@ export type RunnerImpl = (
   args: Args,
 ) => Promise<void>;
 
-export type AllRunners = {
-  [key in Runner]: RunnerImpl;
-};
+export type LoadImpl = (s: State, args: Args) => Promise<void>;
 
+export type PreviewImpl = (s: State, args: Args) => Promise<void>;
 
-export type LoadImpl = (s: State, opts: Args) => Promise<void>;
-
-export type PreviewImpl = (s: State, o: Args) => Promise<void>;

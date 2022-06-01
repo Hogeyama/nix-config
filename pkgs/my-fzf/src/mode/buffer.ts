@@ -83,7 +83,7 @@ const previewBuffer: PreviewImpl = async (s, args) => {
   }
 };
 
-export const buffer: ModeImpl<"buffer"> = {
+export const buffer: ModeImpl = {
   mode: "buffer",
   load: loadBuffer,
   preview: previewBuffer,

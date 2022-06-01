@@ -1,16 +1,10 @@
 import { nvrCommand, RelPath, resolve } from "../lib.ts";
-import { RunnerImpl, State } from "../types.ts";
+import { Args, RunnerImpl, State } from "../types.ts";
 
-type NvimOpt = {
-  leave?: boolean;
-  tab?: boolean;
-  line?: number;
-  buf?: number;
-  _: (string | number)[];
-};
 const defaultNvimOpts = { leave: true };
-export const runNvim: RunnerImpl = async (s: State, _opt: NvimOpt) => {
-  const opt = Object.assign({}, defaultNvimOpts, _opt);
+
+export const runNvim: RunnerImpl = async (s: State, args: Args) => {
+  const opt = Object.assign({}, defaultNvimOpts, args);
   const lOpt = opt.line ? `+${opt.line}` : "";
   // TODO init.vim にコマンドを定義したほうがよいかも
   if (opt.buf) {

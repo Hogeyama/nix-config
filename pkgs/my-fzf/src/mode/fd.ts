@@ -58,7 +58,7 @@ const loadFd: LoadImpl = async (s, args) => {
 
 const previewFd: PreviewImpl = previewFileOrDir;
 
-export const fd: ModeImpl<"fd"> = {
+export const fd: ModeImpl = {
   mode: "fd",
   load: loadFd,
   preview: previewFd,

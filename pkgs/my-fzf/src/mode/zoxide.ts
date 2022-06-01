@@ -10,7 +10,7 @@ const loadZoxide: LoadImpl = async (s, _) => {
   await p.status();
 };
 
-export const zoxide: ModeImpl<"zoxide"> = {
+export const zoxide: ModeImpl = {
   mode: "zoxide",
   load: loadZoxide,
   preview: previewFileOrDir,

@@ -59,7 +59,7 @@ const previewRgItem = async (s: State, args: Args) => {
   return;
 };
 
-export const rg: ModeImpl<"rg"> = {
+export const rg: ModeImpl = {
   mode: "rg",
   load: loadRg,
   preview: previewRgItem,

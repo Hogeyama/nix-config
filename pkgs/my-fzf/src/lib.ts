@@ -1,4 +1,4 @@
-import { Mode, Args, PreviewImpl, State } from "./types.ts";
+import { Args, PreviewImpl, State } from "./types.ts";
 import * as Path_ from "https://deno.land/std@0.133.0/path/mod.ts";
 
 export const prog = Deno.env.get("MY_FZF_PROG");
@@ -185,7 +185,7 @@ export const pathExists = (s: State, path: Path): boolean => {
   }
 };
 
-export const setMode = (mode: Mode) => {
+export const setMode = (mode: string) => {
   modifyState((s) => Object.assign(s, { mode }));
 };
 

@@ -122,7 +122,7 @@ const previewUrl: PreviewImpl = async (_s, args) => {
   print(`Access: ${date}`);
 };
 
-export const browserHistory: ModeImpl<"browser-history"> = {
+export const browserHistory: ModeImpl = {
   mode: "browser-history",
   load: loadBrowserHistory,
   preview: previewUrl,

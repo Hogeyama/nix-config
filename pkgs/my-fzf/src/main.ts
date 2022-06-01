@@ -1,7 +1,7 @@
 #!/usr/bin/env -S deno run --no-check --allow-run --allow-read --allow-write --allow-env
 import * as flags from "https://deno.land/std@0.133.0/flags/mod.ts";
 
-import { Command, isCommand, Args, Runner, State } from "./types.ts";
+import { Command, isCommand, Args, State } from "./types.ts";
 import {
   getOrCreateStateFile,
   log,
@@ -57,7 +57,7 @@ const preview = async (s: State, args: Args) => {
 
 const run = (s: State, args: Args) => {
   const currentMode = allModes[s.mode];
-  const runner: Runner = (() => {
+  const runner: string = (() => {
     const c = args._.shift()?.toString() || "default";
     if (c == "default") {
       return currentMode.defaultRunner;

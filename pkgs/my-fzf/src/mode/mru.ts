@@ -17,7 +17,7 @@ const loadMru: LoadImpl = async (s, _opts) => {
   }
 };
 
-export const mru: ModeImpl<"mru"> = {
+export const mru: ModeImpl = {
   mode: "mru",
   load: loadMru,
   preview: previewFileOrDir,
