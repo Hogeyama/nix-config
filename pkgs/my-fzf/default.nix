@@ -1,6 +1,6 @@
 { pkgs }:
 let
-  src = pkgs.lib.sourceByRegex ./. [ "my-fzf.ts" ];
+  src = pkgs.lib.sourceByRegex ./. [ "src.*" ];
   myfzf = pkgs.writeScriptBin "myfzf" ''
     #!/usr/bin/env bash
     set -eu
@@ -11,7 +11,7 @@ let
       --allow-env \
       --allow-read \
       --allow-write \
-      ${src}/my-fzf.ts "$@"
+      ${src}/src/main.ts "$@"
   '';
 in
 myfzf
