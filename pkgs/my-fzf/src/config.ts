@@ -77,9 +77,9 @@ export const fzfOpts = (myfzf: string) =>
     ]);
 
 export const allRunners: Record<string, Runner> = {
-  nvim: runNvim,
-  vifm: runVifm,
-  browser: runBrowser,
+  [runNvim.name]: runNvim,
+  [runVifm.name]: runVifm,
+  [runBrowser.name]: runBrowser,
 };
 
 export const allModes: Record<string, Mode> = {

@@ -2,10 +2,14 @@ import {
   changeDirectory,
   nvrExpr,
   previewFileOrDir,
+  print,
   printHeader,
   readState,
+  RelPath,
+  resolve,
+  typeOfPath,
 } from "../lib.ts";
-import { Load, Mode, Preview, State } from "../types.ts";
+import { Args, Load, Mode, Preview, State } from "../types.ts";
 
 const fdExcludePaths = (() => {
   const def = [
@@ -39,20 +43,29 @@ const nvrLastFile = async (s: State): Promise<string> => {
   return await nvrExpr(s, "g:last_file");
 };
 
-const loadFd: Load = async (s, args) => {
-  const nextDir: string = args["cd"]
+const getNextCwd = async (s: State, args: Args) => {
+  const nextDirBase: string = args["cd"]
     ? args["cd"]
     : args["cd-up"]
     ? s.cwd + "/.."
     : args["cd-last-file"]
     ? (await nvrLastFile(s)) + "/.."
     : s.cwd;
-  changeDirectory(s, { kind: "relative", val: nextDir });
-  const sNew = readState();
-  printHeader(sNew);
+  switch (typeOfPath(s, RelPath(nextDirBase))) {
+    case "file":
+      return resolve(s, RelPath(nextDirBase + "/.."));
+    case "dir":
+      return resolve(s, RelPath(nextDirBase));
+  }
+};
+
+const loadFd: Load = async (s, args) => {
+  const nextCwd = await getNextCwd(s, args);
+  changeDirectory(s, nextCwd);
+  print(`[${nextCwd}]`); // header
   await Deno.run({
     cmd: ["fd"].concat(fdOpts),
-    cwd: sNew.cwd,
+    cwd: nextCwd.val,
   }).status();
 };
 

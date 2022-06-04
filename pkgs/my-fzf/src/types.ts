@@ -33,10 +33,10 @@ export type Mode = {
   modifyRunnerArgs: Record<string, ((s: State, _: Args) => Args)>;
 };
 
-export type Runner = (
-  s: State,
-  args: Args,
-) => Promise<void>;
+export type Runner = {
+  name: string;
+  run(s: State, args: Args): Promise<void>;
+};
 
 export type Load = (s: State, args: Args) => Promise<void>;
 

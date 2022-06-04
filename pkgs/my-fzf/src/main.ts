@@ -3,91 +3,61 @@ import * as flags from "https://deno.land/std@0.133.0/flags/mod.ts";
 
 import { Args, Command, isCommand, State } from "./types.ts";
 import {
+  execLoader,
+  execPreviewer,
+  execRunner,
   getOrCreateStateFile,
-  getProgName,
   log,
   readState,
-  setCurrentLoaderArgs,
-  setMode,
-  writeState,
+  spawnFzf,
 } from "./lib.ts";
 import { allModes, allRunners, fzfOpts } from "./config.ts";
 
-const spawnFzf = async () => {
-  const prog = getProgName();
-
-  writeState({
-    mode: "fd",
-    cwd: Deno.cwd(),
-    currentLoaderArgs: { _: [] },
-  });
-
-  await Deno.run({
-    cmd: ["fzf"].concat(fzfOpts(prog)),
-    stdin: "inherit",
-    stdout: "piped",
-    env: Object.assign(
-      {},
-      Deno.env.toObject(),
-      {
-        FZF_DEFAULT_COMMAND: `${prog} load fd`,
-      },
-    ),
-  }).status();
-  log("spawnFzf");
-};
-
 const load = async (s: State, args: Args) => {
-  log({ context: "load", args });
-  setCurrentLoaderArgs(args);
   const mode = args._.shift()?.toString() || "fd";
-  log({ args, mode });
   if (mode in allModes) {
-    setMode(mode);
-    await allModes[mode].load(s, args);
+    await execLoader(allModes[mode], s, args);
   }
 };
 
+const reload = async (s: State) => {
+  await execLoader(allModes[s.mode], s, s.currentLoaderArgs);
+};
+
 const preview = async (s: State, args: Args) => {
-  setMode(s.mode);
-  await allModes[s.mode].preview(s, args);
+  await execPreviewer(allModes[s.mode], s, args);
 };
 
 const run = (s: State, args: Args) => {
-  const currentMode = allModes[s.mode];
+  const mode = allModes[s.mode];
   const runner: string = (() => {
     const c = args._.shift()?.toString() || "default";
     if (c == "default") {
-      return currentMode.defaultRunner;
+      return mode.defaultRunner;
     } else {
       return c;
     }
   })();
-  const modifyRunnerargs = currentMode.modifyRunnerArgs[runner];
-  if (modifyRunnerargs) {
-    allRunners[runner](s, modifyRunnerargs(s, args));
-  } else {
-    throw `run: Runner '${runner}' unavailable for mode '${s.mode}'`;
-  }
+  execRunner(mode, allRunners[runner], s, args);
 };
 
 const dispatch = async (command: Command, args: Args) => {
-  const state = readState();
+  const s = readState();
   switch (command) {
     case "load": {
-      await load(state, args);
+      await load(s, args);
       break;
     }
     case "reload": {
-      await load(state, state.currentLoaderArgs);
+      await reload(s);
       break;
     }
     case "preview": {
-      await preview(state, args);
+      await preview(s, args);
       break;
     }
     case "run": {
-      run(state, args); // non-blocking
+      run(s, args); // non-blocking
       break;
     }
   }
@@ -102,7 +72,7 @@ const main = async () => {
     const { stateFile, created } = getOrCreateStateFile();
     if (created) {
       try {
-        await spawnFzf();
+        await spawnFzf(fzfOpts);
       } finally {
         Deno.removeSync(stateFile);
       }
