@@ -23,6 +23,9 @@ export const log = (s: any, raw = false) => {
   }
 };
 
+// deno-lint-ignore no-explicit-any
+export const xlog = (_s: any, _raw = false) => {};
+
 export const getOrCreateStateFile = (): {
   stateFile: string;
   created: boolean;
@@ -50,7 +53,7 @@ export const nvrCommand = async (s: State, command: string) => {
   const status = await p.status();
   const out = new TextDecoder().decode(await p.output());
   const err = new TextDecoder().decode(await p.stderrOutput());
-  log({ context: "nvrCommand", command, status, out, err });
+  xlog({ context: "nvrCommand", command, status, out, err });
 };
 
 export const nvrExpr = async (s: State, expr: string): Promise<string> => {
@@ -103,13 +106,13 @@ export const changeDirectory = (s: State, path: Path) => {
     case "file": {
       const nextCwd = Path_.resolve(absPath.val, "..");
       modifyState((s) => Object.assign(s, { cwd: nextCwd }));
-      log({ context: "changeDirectory", file: absPath, nextCwd });
+      xlog({ context: "changeDirectory", file: absPath, nextCwd });
       break;
     }
     case "dir": {
       const nextCwd = absPath.val;
       modifyState((s) => Object.assign(s, { cwd: nextCwd }));
-      log({ context: "changeDirectory", dir: absPath, nextCwd });
+      xlog({ context: "changeDirectory", dir: absPath, nextCwd });
       break;
     }
   }
@@ -157,7 +160,7 @@ export const previewFileOrDir: Preview = async (s: State, args: Args) => {
   if (!rawPath) {
     throw `previewFile_or_dir: No path given`;
   }
-  log({ context: "previewFileOrDir", cwd: s.cwd, rawPath });
+  xlog({ context: "previewFileOrDir", cwd: s.cwd, rawPath });
   print(`  [${rawPath}]`);
   switch (typeOfPath(s, { kind: "relative", val: rawPath })) {
     case "file": {
