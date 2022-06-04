@@ -4,46 +4,44 @@ import * as flags from "https://deno.land/std@0.133.0/flags/mod.ts";
 import { Args, Command, isCommand, State } from "./types.ts";
 import {
   getOrCreateStateFile,
+  getProgName,
   log,
   readState,
-  setCurrentLoader,
+  setCurrentLoaderArgs,
   setMode,
   writeState,
 } from "./lib.ts";
 import { allModes, allRunners, fzfOpts } from "./config.ts";
 
-const init = async () => {
-  const stateFile = getOrCreateStateFile();
-  try {
-    const prog = Deno.env.get("MY_FZF_PROG");
-    if (!prog) throw "MY_FZF_PROG not defined";
+const spawnFzf = async () => {
+  const prog = getProgName();
 
-    writeState({
-      mode: "fd",
-      cwd: Deno.cwd(),
-      currentLoaderArgs: { _: [] },
-    });
+  writeState({
+    mode: "fd",
+    cwd: Deno.cwd(),
+    currentLoaderArgs: { _: [] },
+  });
 
-    await Deno.run({
-      cmd: ["fzf"].concat(fzfOpts(prog)),
-      stdin: "inherit",
-      stdout: "piped",
-      env: Object.assign(
-        {},
-        Deno.env.toObject(),
-        {
-          FZF_DEFAULT_COMMAND: `${prog} load fd`,
-        },
-      ),
-    }).status();
-  } finally {
-    Deno.remove(stateFile);
-  }
+  await Deno.run({
+    cmd: ["fzf"].concat(fzfOpts(prog)),
+    stdin: "inherit",
+    stdout: "piped",
+    env: Object.assign(
+      {},
+      Deno.env.toObject(),
+      {
+        FZF_DEFAULT_COMMAND: `${prog} load fd`,
+      },
+    ),
+  }).status();
+  log("spawnFzf");
 };
 
 const load = async (s: State, args: Args) => {
-  setCurrentLoader(args);
+  log({ context: "load", args });
+  setCurrentLoaderArgs(args);
   const mode = args._.shift()?.toString() || "fd";
+  log({ args, mode });
   if (mode in allModes) {
     setMode(mode);
     await allModes[mode].load(s, args);
@@ -101,20 +99,25 @@ const dispatch = async (command: Command, args: Args) => {
 
 const main = async () => {
   try {
-    if (!Deno.env.get("MY_FZF_STATE_FILE")) {
-      init();
-      return;
-    }
-    const args = flags.parse(Deno.args);
-    const command = args._.shift()?.toString() || "";
-    if (isCommand(command)) {
-      await dispatch(command, args);
+    const { stateFile, created } = getOrCreateStateFile();
+    if (created) {
+      try {
+        await spawnFzf();
+      } finally {
+        Deno.removeSync(stateFile);
+      }
     } else {
-      throw `Unknown command: ${command}`;
+      const args = flags.parse(Deno.args);
+      const command = args._.shift()?.toString() || "";
+      if (isCommand(command)) {
+        await dispatch(command, args);
+      } else {
+        throw `Unknown command: ${command}`;
+      }
     }
-  } catch (exception) {
-    log({ exception });
-    throw exception;
+  } catch (e) {
+    log({ e, stack: e.stack });
+    Deno.exit(1);
   }
 };
 

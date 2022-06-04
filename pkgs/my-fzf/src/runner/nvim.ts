@@ -1,9 +1,9 @@
 import { nvrCommand, RelPath, resolve } from "../lib.ts";
-import { Args, RunnerImpl, State } from "../types.ts";
+import { Args, Runner, State } from "../types.ts";
 
 const defaultNvimOpts = { leave: true };
 
-export const runNvim: RunnerImpl = async (s: State, args: Args) => {
+export const runNvim: Runner = async (s: State, args: Args) => {
   const opt = Object.assign({}, defaultNvimOpts, args);
   const lOpt = opt.line ? `+${opt.line}` : "";
   // TODO init.vim にコマンドを定義したほうがよいかも

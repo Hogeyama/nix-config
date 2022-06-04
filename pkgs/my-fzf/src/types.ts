@@ -25,19 +25,19 @@ export type State = {
 // Interfaces
 ////////////////////////////////////////////////////////////////////////////////
 
-export type ModeImpl = {
+export type Mode = {
   mode: string;
-  load: LoadImpl;
-  preview: PreviewImpl;
+  load: Load;
+  preview: Preview;
   defaultRunner: string;
   modifyRunnerArgs: Record<string, ((s: State, _: Args) => Args)>;
 };
 
-export type RunnerImpl = (
+export type Runner = (
   s: State,
   args: Args,
 ) => Promise<void>;
 
-export type LoadImpl = (s: State, args: Args) => Promise<void>;
+export type Load = (s: State, args: Args) => Promise<void>;
 
-export type PreviewImpl = (s: State, args: Args) => Promise<void>;
+export type Preview = (s: State, args: Args) => Promise<void>;

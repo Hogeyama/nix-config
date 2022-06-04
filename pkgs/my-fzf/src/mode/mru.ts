@@ -7,9 +7,9 @@ import {
   printHeader,
   RelPath,
 } from "../lib.ts";
-import { LoadImpl, ModeImpl } from "../types.ts";
+import { Load, Mode } from "../types.ts";
 
-const loadMru: LoadImpl = async (s, _opts) => {
+const loadMru: Load = async (s, _opts) => {
   printHeader(s);
   let tmp: string | undefined = undefined;
   try {
@@ -24,7 +24,7 @@ const loadMru: LoadImpl = async (s, _opts) => {
   }
 };
 
-export const mru: ModeImpl = {
+export const mru: Mode = {
   mode: "mru",
   load: loadMru,
   preview: previewFileOrDir,

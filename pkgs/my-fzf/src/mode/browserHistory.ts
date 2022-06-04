@@ -1,5 +1,5 @@
 import { pathExists, print, printHeader, RelPath } from "../lib.ts";
-import { LoadImpl, ModeImpl, PreviewImpl, State } from "../types.ts";
+import { Load, Mode, Preview, State } from "../types.ts";
 
 const getFirefoxDb = (s: State): string => {
   const home = Deno.env.get("HOME");
@@ -31,8 +31,7 @@ const getChromeDb = (s: State): string => {
 
 const sqliteRecordSep = String.fromCodePoint(0x2009); // U+2009: Thin space
 
-
-const loadBrowserHistory: LoadImpl = async (s, args) => {
+const loadBrowserHistory: Load = async (s, args) => {
   printHeader(s);
   const pat = args.pattern || "%";
   const cond = `url LIKE '%${pat}%' OR title LIKE '%${pat}%'`;
@@ -111,7 +110,7 @@ const parseBrowserItem = (item: string): BrowserItem => {
 };
 
 // deno-lint-ignore require-await
-const previewUrl: PreviewImpl = async (_s, args) => {
+const previewUrl: Preview = async (_s, args) => {
   const rawItem = args._.at(0)?.toString();
   if (!rawItem) {
     throw `browser: No item given`;
@@ -122,7 +121,7 @@ const previewUrl: PreviewImpl = async (_s, args) => {
   print(`Access: ${date}`);
 };
 
-export const browserHistory: ModeImpl = {
+export const browserHistory: Mode = {
   mode: "browser-history",
   load: loadBrowserHistory,
   preview: previewUrl,
@@ -138,4 +137,3 @@ export const browserHistory: ModeImpl = {
     },
   },
 };
-

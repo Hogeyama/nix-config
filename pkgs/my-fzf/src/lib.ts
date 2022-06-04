@@ -1,10 +1,14 @@
-import { Args, PreviewImpl, State } from "./types.ts";
+import { Args, Preview, State } from "./types.ts";
 import * as Path_ from "https://deno.land/std@0.133.0/path/mod.ts";
 
-export const prog = Deno.env.get("MY_FZF_PROG");
+export const getProgName = () => {
+  return Deno.env.get("MY_FZF_PROG") || (() => {
+    throw "MY_FZF_PROG";
+  })();
+};
 
 // deno-lint-ignore no-explicit-any
-export const log = (s: any) => {
+export const log = (s: any, raw = false) => {
   const logFile = "/tmp/myfzf.log";
   const fp = Deno.openSync(logFile, {
     write: true,
@@ -12,23 +16,27 @@ export const log = (s: any) => {
     create: true,
   });
   try {
-    fp.writeSync(new TextEncoder().encode(JSON.stringify(s) + "\n"));
+    const str = raw ? s : new TextEncoder().encode(JSON.stringify(s) + "\n");
+    fp.writeSync(str);
   } finally {
     fp.close();
   }
 };
 
-export const getOrCreateStateFile = (): string => {
+export const getOrCreateStateFile = (): {
+  stateFile: string;
+  created: boolean;
+} => {
   const stateFile = Deno.env.get("MY_FZF_STATE_FILE");
   if (stateFile) {
-    return stateFile;
+    return { stateFile, created: false };
   } else {
     const stateFile = Deno.makeTempFileSync({
       prefix: "myfzf",
       suffix: ".json",
     });
     Deno.env.set("MY_FZF_STATE_FILE", stateFile);
-    return stateFile;
+    return { stateFile, created: true };
   }
 };
 
@@ -108,12 +116,13 @@ export const changeDirectory = (s: State, path: Path) => {
 };
 
 export const readState = () => {
-  const stateFile = getOrCreateStateFile();
+  const { stateFile } = getOrCreateStateFile();
+  log({ stateFile });
   return JSON.parse(Deno.readTextFileSync(stateFile)) as State;
 };
 
 export const writeState = (s: State) => {
-  const stateFile = getOrCreateStateFile();
+  const { stateFile } = getOrCreateStateFile();
   Deno.writeFileSync(stateFile, new TextEncoder().encode(JSON.stringify(s)));
 };
 
@@ -142,7 +151,7 @@ export const printHeader = (s: State) => {
   print(`[${s.cwd}]`);
 };
 
-export const previewFileOrDir: PreviewImpl = async (s: State, args: Args) => {
+export const previewFileOrDir: Preview = async (s: State, args: Args) => {
   const rawPath = args._.shift()?.toString();
   const line = Number(args.line || 0);
   if (!rawPath) {
@@ -189,6 +198,6 @@ export const setMode = (mode: string) => {
   modifyState((s) => Object.assign(s, { mode }));
 };
 
-export function setCurrentLoader(currentLoader: Args) {
-  modifyState((s) => Object.assign(s, { currentLoader }));
+export function setCurrentLoaderArgs(currentLoaderArgs: Args) {
+  modifyState((s) => Object.assign(s, { currentLoaderArgs }));
 }

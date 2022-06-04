@@ -1,5 +1,5 @@
 import { batOpts, log, print, printHeader } from "../lib.ts";
-import { Args, LoadImpl, ModeImpl, State } from "../types.ts";
+import { Args, Load, Mode, State } from "../types.ts";
 
 const parseRgItem = (args: Args) => {
   const item = args._.at(0)?.toString();
@@ -26,7 +26,7 @@ const rgargss = ([] as string[])
   .concat(["--color=never"])
   .concat(["--smart-case"]);
 
-const loadRg: LoadImpl = async (s, argss) => {
+const loadRg: Load = async (s, argss) => {
   printHeader(s);
   const query = argss.query.toString();
   try {
@@ -59,7 +59,7 @@ const previewRgItem = async (s: State, args: Args) => {
   return;
 };
 
-export const rg: ModeImpl = {
+export const rg: Mode = {
   mode: "rg",
   load: loadRg,
   preview: previewRgItem,

@@ -11,7 +11,7 @@ import {
   printHeader,
   unsafeAbsPath,
 } from "../lib.ts";
-import { LoadImpl, ModeImpl, PreviewImpl } from "../types.ts";
+import { Load, Mode, Preview } from "../types.ts";
 
 // 各フィールドについては :h getbufinfo() を参照。
 type NvimBuffer = {
@@ -42,7 +42,7 @@ function isNvimBuffer(v: unknown): v is NvimBuffer {
   return isLike(bufferExample, v);
 }
 
-const loadBuffer: LoadImpl = async (s, _opts) => {
+const loadBuffer: Load = async (s, _opts) => {
   printHeader(s);
   const rawBuffers = await nvrExpr(s, "json_encode(getbufinfo())");
   (JSON.parse(rawBuffers) as unknown[])
@@ -73,7 +73,7 @@ const parseBufferItem = (item: string): BufferItem => {
   return { bufnum, path, line };
 };
 
-const previewBuffer: PreviewImpl = async (s, args) => {
+const previewBuffer: Preview = async (s, args) => {
   const rawItem = args._.at(0)?.toString();
   if (rawItem) {
     const { path, line } = parseBufferItem(rawItem);
@@ -83,7 +83,7 @@ const previewBuffer: PreviewImpl = async (s, args) => {
   }
 };
 
-export const buffer: ModeImpl = {
+export const buffer: Mode = {
   mode: "buffer",
   load: loadBuffer,
   preview: previewBuffer,

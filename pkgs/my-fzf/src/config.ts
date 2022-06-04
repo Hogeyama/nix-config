@@ -7,7 +7,7 @@ import { zoxide } from "./mode/zoxide.ts";
 import { runBrowser } from "./runner/browser.ts";
 import { runNvim } from "./runner/nvim.ts";
 import { runVifm } from "./runner/vifm.ts";
-import { ModeImpl, RunnerImpl } from "./types.ts";
+import { Mode, Runner } from "./types.ts";
 
 export const fzfOpts = (myfzf: string) =>
   ([] as string[])
@@ -76,13 +76,13 @@ export const fzfOpts = (myfzf: string) =>
       `ctrl-s:toggle-sort`,
     ]);
 
-export const allRunners: Record<string, RunnerImpl> = {
+export const allRunners: Record<string, Runner> = {
   nvim: runNvim,
   vifm: runVifm,
   browser: runBrowser,
 };
 
-export const allModes: Record<string, ModeImpl> = {
+export const allModes: Record<string, Mode> = {
   fd,
   rg,
   mru,

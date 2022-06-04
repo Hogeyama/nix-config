@@ -5,7 +5,7 @@ import {
   printHeader,
   readState,
 } from "../lib.ts";
-import { LoadImpl, ModeImpl, PreviewImpl, State } from "../types.ts";
+import { Load, Mode, Preview, State } from "../types.ts";
 
 const fdExcludePaths = (() => {
   const def = [
@@ -39,7 +39,7 @@ const nvrLastFile = async (s: State): Promise<string> => {
   return await nvrExpr(s, "g:last_file");
 };
 
-const loadFd: LoadImpl = async (s, args) => {
+const loadFd: Load = async (s, args) => {
   const nextDir: string = args["cd"]
     ? args["cd"]
     : args["cd-up"]
@@ -56,9 +56,9 @@ const loadFd: LoadImpl = async (s, args) => {
   }).status();
 };
 
-const previewFd: PreviewImpl = previewFileOrDir;
+const previewFd: Preview = previewFileOrDir;
 
-export const fd: ModeImpl = {
+export const fd: Mode = {
   mode: "fd",
   load: loadFd,
   preview: previewFd,
