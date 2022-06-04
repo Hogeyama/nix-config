@@ -86,7 +86,7 @@ const main = async () => {
       }
     }
   } catch (e) {
-    log({ e, stack: e.stack });
+    log({ exception: e, stack: e.stack });
     Deno.exit(1);
   }
 };

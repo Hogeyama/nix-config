@@ -60,7 +60,6 @@ export const execRunner = (
 
 export const readState = () => {
   const { stateFile } = getOrCreateStateFile();
-  log({ stateFile });
   return JSON.parse(Deno.readTextFileSync(stateFile)) as State;
 };
 

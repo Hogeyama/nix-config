@@ -1,6 +1,6 @@
 import { Args, Runner, State } from "../types.ts";
 
-export const runBrowser: Runner = {
+export const runner: Runner = {
   name: "browser",
   run: async (_: State, args: Args) => {
     const url = args._.shift()?.toString();

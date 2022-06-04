@@ -1,6 +1,6 @@
 import { Args, Runner, State } from "../types.ts";
 
-export const runVifm: Runner = {
+export const runner: Runner = {
   name: "vifm",
   run: async (s: State, args: Args) => {
     const dir = args._.shift()?.toString();
@@ -12,4 +12,8 @@ export const runVifm: Runner = {
       cwd: s.cwd,
     }).status();
   },
+};
+
+export const cmd = {
+  default: (prog: string) => `${prog} run vifm {}`,
 };

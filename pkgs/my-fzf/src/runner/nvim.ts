@@ -3,7 +3,7 @@ import { Args, Runner, State } from "../types.ts";
 
 const defaultNvimOpts = { leave: true };
 
-export const runNvim: Runner = {
+export const runner: Runner = {
   name: "nvim",
   run: async (s: State, args: Args) => {
     const opt = Object.assign({}, defaultNvimOpts, args);
@@ -53,4 +53,9 @@ export const runNvim: Runner = {
       }
     }
   },
+};
+
+export const cmd = {
+  default: (prog: string) => `${prog} run nvim {}`,
+  tabEdit: (prog: string) => `${prog} run nvim {} --tab`,
 };

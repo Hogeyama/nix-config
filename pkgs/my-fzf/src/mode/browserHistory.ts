@@ -121,7 +121,7 @@ const previewUrl: Preview = async (_s, args) => {
   print(`Access: ${date}`);
 };
 
-export const browserHistory: Mode = {
+export const mode: Mode = {
   mode: "browser-history",
   load: loadBrowserHistory,
   preview: previewUrl,
@@ -136,4 +136,8 @@ export const browserHistory: Mode = {
       return Object.assign(args, { _: [url] });
     },
   },
+};
+
+export const cmd = {
+  default: (prog: string) => `${prog} load browser-history {q}`,
 };

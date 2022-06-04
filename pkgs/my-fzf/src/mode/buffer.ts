@@ -83,7 +83,7 @@ const previewBuffer: Preview = async (s, args) => {
   }
 };
 
-export const buffer: Mode = {
+export const mode: Mode = {
   mode: "buffer",
   load: loadBuffer,
   preview: previewBuffer,
@@ -99,4 +99,8 @@ export const buffer: Mode = {
       }
     },
   },
+};
+
+export const cmd = {
+  default: (prog: string) => `${prog} load buffer`,
 };

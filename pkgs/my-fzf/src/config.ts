@@ -1,92 +1,71 @@
-import { browserHistory } from "./mode/browserHistory.ts";
-import { buffer } from "./mode/buffer.ts";
-import { fd } from "./mode/fd.ts";
-import { mru } from "./mode/mru.ts";
-import { rg } from "./mode/rg.ts";
-import { zoxide } from "./mode/zoxide.ts";
-import { runBrowser } from "./runner/browser.ts";
-import { runNvim } from "./runner/nvim.ts";
-import { runVifm } from "./runner/vifm.ts";
+import { log } from "./lib.ts";
+import * as browser from "./mode/browserHistory.ts";
+import * as buffer from "./mode/buffer.ts";
+import * as fd from "./mode/fd.ts";
+import * as mru from "./mode/mru.ts";
+import * as rg from "./mode/rg.ts";
+import * as zoxide from "./mode/zoxide.ts";
+import * as browserR from "./runner/browser.ts";
+import * as nvimR from "./runner/nvim.ts";
+import * as vifmR from "./runner/vifm.ts";
 import { Mode, Runner } from "./types.ts";
 
-export const fzfOpts = (myfzf: string) =>
-  ([] as string[])
-    .concat(["--preview", `${myfzf} preview {}`])
+const prompt = (s: string) => `change-prompt[${s}>]`;
+const clQuery = "clear-query";
+
+export const fzfOpts = (prog: string) => {
+  const mkBind = (ty: "execute" | "reload") =>
+    (
+      key: string,
+      command: string | ((prog: string) => string),
+      extraActions: string[],
+    ): string[] => {
+      const cmd = typeof command == "string" ? command : command(prog);
+      const extra = extraActions.map((s) => `+${s}`).join("");
+      return [`--bind`, `${key}:${ty}[${cmd}]${extra}`];
+    };
+  const simple = (xs: string[]) => xs;
+  const exec = mkBind("execute");
+  const reload = mkBind("reload");
+
+  const binds = [
+    simple([`--bind`, `ctrl-s:toggle-sort`]),
+    exec("enter", `${prog} run default {}`, []),
+    exec("ctrl-r", `${prog} reload`, []),
+    exec("ctrl-o", nvimR.cmd.default, []),
+    exec("ctrl-t", nvimR.cmd.tabEdit, []),
+    exec("ctrl-v", vifmR.cmd.default, []),
+    reload("ctrl-f", fd.cmd.default, [prompt("files")]),
+    reload("ctrl-u", fd.cmd.cdUp, [prompt("files")]),
+    reload("ctrl-l", fd.cmd.cdArg, [prompt("files"), clQuery]),
+    reload("ctrl-n", fd.cmd.cdLastFile, [prompt("files"), clQuery]),
+    reload("ctrl-b", buffer.cmd.default, [prompt("buffer")]),
+    reload("ctrl-h", mru.cmd.default, [prompt("file-history")]),
+    reload("ctrl-d", zoxide.cmd.default, [prompt("dir-history")]),
+    reload("ctrl-g", rg.cmd.default, [prompt("grep"), clQuery]),
+    reload("ctrl-i", browser.cmd.default, [prompt("browser-history"), clQuery]),
+  ];
+  log(binds);
+
+  return ([] as string[])
+    .concat(["--preview", `${prog} preview {}`])
     .concat(["--preview-window", "right:50%:noborder"])
     .concat(["--header-lines=1"])
     .concat(["--prompt", "files>"])
-    .concat([
-      `--bind`, //
-      `enter:execute[${myfzf} run default {}]`,
-    ])
-    .concat([
-      `--bind`, //
-      `ctrl-o:execute[${myfzf} run nvim {}]`,
-    ])
-    .concat([
-      `--bind`, //
-      `ctrl-t:execute[${myfzf} run nvim {} --tab ]`,
-    ])
-    .concat([
-      `--bind`, //
-      `ctrl-v:execute[${myfzf} run vifm {}]`,
-    ])
-    .concat([
-      `--bind`, //
-      `ctrl-f:reload[${myfzf} load fd]+change-prompt[files>]`,
-    ])
-    .concat([
-      `--bind`, //
-      `ctrl-u:reload[${myfzf} load fd --cd-up]+change-prompt[files>]`,
-    ])
-    .concat([
-      `--bind`, //
-      `ctrl-l:reload[${myfzf} load fd --cd {}]+change-prompt[files>]+clear-query`,
-    ])
-    .concat([
-      `--bind`, //
-      `ctrl-n:reload[${myfzf} load fd --cd-last-file]+change-prompt[files>]+clear-query`,
-    ])
-    .concat([
-      `--bind`, //
-      `ctrl-b:reload[${myfzf} load buffer]+change-prompt[buffer>]`,
-    ])
-    .concat([
-      `--bind`, //
-      `ctrl-h:reload[${myfzf} load mru]+change-prompt[file-history>]`,
-    ])
-    .concat([
-      `--bind`, //
-      `ctrl-d:reload[${myfzf} load zoxide]+change-prompt[dir-history>]`,
-    ])
-    .concat([
-      `--bind`, //
-      `ctrl-g:reload[${myfzf} load rg --query {q}]+clear-query+change-prompt[grep>]`,
-    ])
-    .concat([
-      `--bind`, //
-      `ctrl-i:reload[${myfzf} load browser-history {q}]+clear-query+change-prompt[browser-history>]`,
-    ])
-    .concat([
-      `--bind`, //
-      `ctrl-r:reload[${myfzf} reload]`,
-    ])
-    .concat([
-      `--bind`, //
-      `ctrl-s:toggle-sort`,
-    ]);
+    .concat(binds.flat());
+};
 
 export const allRunners: Record<string, Runner> = {
-  [runNvim.name]: runNvim,
-  [runVifm.name]: runVifm,
-  [runBrowser.name]: runBrowser,
+  [nvimR.runner.name]: nvimR.runner,
+  [vifmR.runner.name]: vifmR.runner,
+  [browserR.runner.name]: browserR.runner,
 };
 
 export const allModes: Record<string, Mode> = {
-  fd,
-  rg,
-  mru,
-  buffer,
-  zoxide,
-  "browser-history": browserHistory,
+  fd: fd.mode,
+  rg: rg.mode,
+  mru: mru.mode,
+  buffer: buffer.mode,
+  zoxide: zoxide.mode,
+  "browser-history": browser.mode,
 };

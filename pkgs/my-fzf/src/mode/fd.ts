@@ -3,8 +3,6 @@ import {
   nvrExpr,
   previewFileOrDir,
   print,
-  printHeader,
-  readState,
   RelPath,
   resolve,
   typeOfPath,
@@ -62,7 +60,7 @@ const getNextCwd = async (s: State, args: Args) => {
 const loadFd: Load = async (s, args) => {
   const nextCwd = await getNextCwd(s, args);
   changeDirectory(s, nextCwd);
-  print(`[${nextCwd}]`); // header
+  print(`[${nextCwd.val}]`); // header
   await Deno.run({
     cmd: ["fd"].concat(fdOpts),
     cwd: nextCwd.val,
@@ -71,7 +69,7 @@ const loadFd: Load = async (s, args) => {
 
 const previewFd: Preview = previewFileOrDir;
 
-export const fd: Mode = {
+export const mode: Mode = {
   mode: "fd",
   load: loadFd,
   preview: previewFd,
@@ -82,4 +80,11 @@ export const fd: Mode = {
       return { _: [s.cwd] };
     },
   },
+};
+
+export const cmd = {
+  default: (prog: string) => `${prog} load fd`,
+  cdUp: (prog: string) => `${prog} load fd --cd-up`,
+  cdArg: (prog: string) => `${prog} load fd --cd {}`,
+  cdLastFile: (prog: string) => `${prog} load fd --cd-last-file`,
 };

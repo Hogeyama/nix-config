@@ -24,7 +24,7 @@ const loadMru: Load = async (s, _opts) => {
   }
 };
 
-export const mru: Mode = {
+export const mode: Mode = {
   mode: "mru",
   load: loadMru,
   preview: previewFileOrDir,
@@ -32,4 +32,8 @@ export const mru: Mode = {
   modifyRunnerArgs: {
     nvim: (_, args) => args,
   },
+};
+
+export const cmd = {
+  default: (prog: string) => `${prog} load mru`,
 };

@@ -59,7 +59,7 @@ const previewRgItem = async (s: State, args: Args) => {
   return;
 };
 
-export const rg: Mode = {
+export const mode: Mode = {
   mode: "rg",
   load: loadRg,
   preview: previewRgItem,
@@ -73,4 +73,8 @@ export const rg: Mode = {
       return { _: [s.cwd] };
     },
   },
+};
+
+export const cmd = {
+  default: (prog: string) => `${prog} load rg --query {q}`,
 };
