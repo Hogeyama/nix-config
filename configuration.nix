@@ -3,6 +3,8 @@ let
   env = import ./env.nix;
 in
 {
+  system.stateVersion = "22.05";
+
   imports =
     if env.type == "nixos-virtualbox" then [
       "${nixpkgs.outPath}/nixos/modules/profiles/graphical.nix"
@@ -75,7 +77,6 @@ in
     # Sound config
     enable = true;
     package = pkgs.pulseaudioFull;
-    extraModules = [ pkgs.pulseaudio-modules-bt ];
     support32Bit = true;
     extraConfig = "
         load-module module-switch-on-connect
@@ -109,12 +110,7 @@ in
     windowManager = {
       xmonad = {
         enable = true;
-        haskellPackages = pkgs.haskell.packages.ghc8107.override {
-          overrides = haskellPackagesNew: haskellPackagesOld: {
-            xmonad = haskellPackagesOld.xmonad_0_17_0;
-            xmonad-contrib = haskellPackagesOld.xmonad-contrib_0_17_0;
-          };
-        };
+        haskellPackages = pkgs.haskell.packages.ghc8107;
       };
     };
   };

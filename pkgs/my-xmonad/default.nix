@@ -8,12 +8,8 @@ let
     "CHANGELOG.md"
     "LICENSE"
   ];
-  haskPkgs = pkgs.haskell.packages.${compiler}.override {
-    overrides = haskellPackagesNew: haskellPackagesOld: {
-      xmonad = haskellPackagesOld.xmonad_0_17_0;
-      xmonad-contrib = haskellPackagesOld.xmonad-contrib_0_17_0;
-    };
-  };
+  # xmonad 0.17.0
+  haskPkgs = pkgs.haskell.packages.${compiler};
   drv = (haskPkgs.callCabal2nix "xmonad-config" src { });
 in
 drv

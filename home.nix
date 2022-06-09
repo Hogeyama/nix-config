@@ -358,7 +358,6 @@ in
           "cabal"
           "stack"
           "rust"
-          "cargo"
           "node"
           "npm"
           "deno"
