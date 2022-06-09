@@ -99,7 +99,7 @@ in
     enable = true;
     layout = "jp";
 
-    videoDrivers = [ "modesetting" ];
+    # videoDrivers = [ "modesetting" ];
     useGlamor = true;
 
     displayManager =
