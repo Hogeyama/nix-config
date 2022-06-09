@@ -487,7 +487,11 @@ use {'mfussenegger/nvim-jdtls', --{{{
 use {'lukas-reineke/lsp-format.nvim', --{{{
   config = function()
     -- TODO configure
-    require "lsp-format".setup{}
+    require "lsp-format".setup{
+      java = {
+        exclude = {"jdtls"}
+      }
+    }
   end
 }--}}}
 -- [DAP]
