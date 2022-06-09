@@ -4,15 +4,20 @@
 多分こんな感じで動くはず
 
 ```
-git clone https://github.com/Hogeyama/nixos-config.git
-cd ./nixos-config
-cp /etx/nixos/hardware-configuration.nix ./
-nano env.nix
+cd /tmp
+nix-shell -p neovim -p git
+git clone https://github.com/Hogeyama/nix-config.git
+cd ./nix-config
+cp /etc/nixos/hardware-configuration.nix ./
+nvim env.nix
 nixos-rebuild switch --flake .
 ```
 
-* konsole, fcitx5, firefox, モニターなどの設定は手動でやる必要がある
-  * 加えてモニターの設定後は `autorandr --save default` する
+
+* fcitx5, firefox, モニターなどの設定は手動でやる必要がある
+```
+fcitx5-config-qt
+```
 
 ## Nix package manager only
 
@@ -21,7 +26,7 @@ nix-channel --add https://github.com/nix-community/home-manager/archive/master.t
 nix-channel --update
 export NIX_PATH=$HOME/.nix-defexpr/channels:/nix/var/nix/profiles/per-user/root/channels${NIX_PATH:+:$NIX_PATH}
 nix-shell '<home-manager>' -A install
-git clone https://github.com/Hogeyama/nixos-config.git /path/to/some/dir
+git clone https://github.com/Hogeyama/nix-config.git /path/to/some/dir
 nano /path/to/some/dir/env.nix
 home-manager switch --flake '/path/to/some/dir#<username_in_env_nix>'
 ```
