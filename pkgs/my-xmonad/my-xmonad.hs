@@ -65,7 +65,7 @@ main = do
     myConfig =
       def
         { modMask = mod4Mask
-        , terminal = "alacritty"
+        , terminal = "konsole"
         , workspaces = myWorkspaces
         , focusedBorderColor = "#00FF00"
         , normalBorderColor = "#EEEEEE"
