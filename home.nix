@@ -462,7 +462,7 @@ in
         rebase.autoStash = true;
         rebase.autoSquash = true;
         rebase.missingCommitsCheck = "warn";
-        rerere.enable = true;
+        rerere.enabled = true;
         credential."https://github.com".helper = "!${pkgs.gh}/bin/gh auth git-credential";
       };
       delta.enable = true;
