@@ -26,7 +26,7 @@ local on_attach = function(client, bufnr)
   require'jdtls.setup'.add_commands()
 end
 
-local cmd = { vim.env.JAVA11_HOME .. '/bin/java' }
+local cmd = { vim.env.JAVA17_HOME .. '/bin/java' }
 vim.list_extend(cmd, {
   '-Declipse.application=org.eclipse.jdt.ls.core.id1',
   '-Dosgi.bundles.defaultStartLevel=4',
