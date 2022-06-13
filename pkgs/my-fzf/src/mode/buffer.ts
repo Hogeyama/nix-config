@@ -44,7 +44,12 @@ function isNvimBuffer(v: unknown): v is NvimBuffer {
 
 const loadBuffer: Load = async (s, _opts) => {
   printHeader(s);
-  const rawBuffers = await nvrExpr(s, "json_encode(getbufinfo())");
+  // variables に function が入っていることがあり、json_encode が失敗する。
+  // →必要なフィールドだけを取り出すことにする。
+  const rawBuffers = await nvrExpr(
+    s,
+    "json_encode(map(getbufinfo(),{_,v->filter(v,{k->index(['bufnr','name','changed','lastused','lnum'],k)>=0})}))",
+  );
   (JSON.parse(rawBuffers) as unknown[])
     .filter(isNvimBuffer)
     .filter((b) =>
