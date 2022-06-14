@@ -459,7 +459,10 @@ use {'tamago324/nlsp-settings.nvim', --{{{
   config = function()
     require'nlspsettings'.setup({
       append_default_schemas = true,
-      loader = 'yaml'
+      loader = 'yaml',
+      nvim_notify = {
+        enable = true,
+      },
     })
   end
 } --}}}
