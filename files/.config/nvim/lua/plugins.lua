@@ -394,6 +394,11 @@ use {'neovim/nvim-lspconfig', --{{{
         '-l',
         '/tmp/LanguageServer.log',
       },
+      settings = {
+        haskell = {
+          formattingProvider = 'fourmolu',
+        },
+      },
     }
     require'lspconfig'['denols'].setup{
       root_dir = require'lspconfig'.util.root_pattern("deno.json"),
