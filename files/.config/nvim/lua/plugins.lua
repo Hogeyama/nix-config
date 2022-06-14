@@ -339,9 +339,7 @@ use {'neovim/nvim-lspconfig', --{{{
       require "lsp-format".on_attach(client, bufnr)
       -- Highlight symbol under cursor
       -- https://github.com/neovim/nvim-lspconfig/wiki/UI-customization#highlight-symbol-under-cursor
-      if client.resolved_capabilities.document_highlight then
-        vim.cmd [[
-        ]]
+      if client.server_capabilities.documentHighlightProvider then
         vim.api.nvim_create_augroup('lsp_document_highlight', {
           clear = false
         })
