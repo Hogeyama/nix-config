@@ -304,9 +304,7 @@ use {'neovim/nvim-lspconfig', --{{{
     vim.keymap.set('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', { noremap=true, silent=true })
     --}}}
     -- [[code lens]] {{{
-    vim.cmd [[
-      autocmd CursorHold,InsertLeave <buffer> lua vim.lsp.codelens.refresh()
-    ]]
+
     --}}}
     -- [[on_attach]] {{{
     vim.g.lsp_default_on_attach = function(client, bufnr)
@@ -360,6 +358,11 @@ use {'neovim/nvim-lspconfig', --{{{
           buffer = bufnr,
           callback = vim.lsp.buf.clear_references,
         })
+      end
+      if client.server_capabilities.codeLensProvider then
+        vim.cmd [[
+          autocmd CursorHold,InsertLeave <buffer> lua vim.lsp.codelens.refresh()
+        ]]
       end
       -- hack for yamlls.
       -- https://github.com/redhat-developer/yaml-language-server/issues/486#issuecomment-1046792026
