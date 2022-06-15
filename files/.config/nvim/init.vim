@@ -4,7 +4,7 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Install packer if not installed
-if filereadable(expand('~/.local/share/nvim/site/pack/packer/start/packer.nvim'))
+if !filereadable(expand('~/.local/share/nvim/site/pack/packer/start/packer.nvim'))
   silent !git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim
 endif
 
