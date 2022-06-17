@@ -31,10 +31,16 @@ const fdExcludePaths = (() => {
   }
 })();
 
+const fdExtraOpt = (() => {
+  const opt = Deno.env.get("MY_FZF_FD_EXTRA_OPT");
+  return opt ? opt.split(/\s+/) : [];
+})();
+
 const fdOpts = ([] as string[])
   .concat(["--hidden"])
   .concat(["--no-ignore"])
   .concat(["--type", "f"])
+  .concat(fdExtraOpt)
   .concat(fdExcludePaths.flatMap((p) => ["--exclude", p]));
 
 const nvrLastFile = async (s: State): Promise<string> => {
