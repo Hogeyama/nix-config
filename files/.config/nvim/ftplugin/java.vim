@@ -9,3 +9,4 @@ nnoremap <silent> <Leader>dr <Cmd>lua require'dap'.repl.open()<CR>
 nnoremap <silent> <Leader>dl <Cmd>lua require'dap'.run_last()<CR>
 nnoremap <silent> <Leader>df <Cmd>lua require'jdtls'.test_class()<CR>
 nnoremap <silent> <Leader>dn <Cmd>lua require'jdtls'.test_nearest_method()<CR>
+nnoremap <silent> <Leader>du <Cmd>lua require'dapui'.toggle()<CR>
