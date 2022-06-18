@@ -271,6 +271,8 @@ use {'neovim/nvim-lspconfig', --{{{
         'jsonls',
         'tsserver',
         'yamlls',
+        'terraformls',
+        'tflint',
       },
       automatic_installation = false,
       ui = {
@@ -451,6 +453,8 @@ use {'neovim/nvim-lspconfig', --{{{
       },
     }
     require'lspconfig'['yamlls'].setup{}
+    require'lspconfig'['terraformls'].setup{}
+    require'lspconfig'['tflint'].setup{}
     -- }}}
   end
 } --}}}

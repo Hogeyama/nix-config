@@ -46,6 +46,7 @@ in
       shellcheck
       scrot
       sqlite
+      terraform
       textql
       time
       tldr
