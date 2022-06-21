@@ -3,7 +3,6 @@
 import { isLike } from "https://deno.land/x/unknownutil@v2.0.0/is.ts";
 import {
   AbsPath,
-  log,
   nvrExpr,
   pathExists,
   previewFileOrDir,
@@ -67,7 +66,6 @@ const loadBuffer: Load = async (s, _opts) => {
 type BufferItem = { path: AbsPath; bufnum: number; line: number };
 
 const parseBufferItem = (item: string): BufferItem => {
-  log({ context: "parseBufferItem", item });
   const delim = ":";
   const firstIx = item.indexOf(delim);
   const lastIx = item.lastIndexOf(delim);

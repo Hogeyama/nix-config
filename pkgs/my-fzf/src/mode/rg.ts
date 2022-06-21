@@ -14,7 +14,6 @@ const parseRgItem = (args: Args) => {
   if (!line) {
     throw `parseRgItem: Parse error: line not found: ${item}`;
   }
-  log({ item, line });
   return { file, line: Number(line) };
 };
 
@@ -51,7 +50,6 @@ const previewRgItem = async (s: State, args: Args) => {
     `${line}`,
   ];
   print(`  [${file}]`);
-  log(["bat"].concat(batOpts, batExtraargss, [file]));
   await Deno.run({
     cmd: ["bat"].concat(batOpts, batExtraargss, [file]),
     cwd: s.cwd,
