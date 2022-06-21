@@ -43,7 +43,7 @@ const loadRg: Load = async (s, argss) => {
 const previewRgItem = async (s: State, args: Args) => {
   const { file, line } = parseRgItem(args);
   const start = Math.max(Number(line) - 15, 0);
-  const batExtraargss = [
+  const batExtraArgss = [
     "--line-range",
     `${start}:`,
     "--highlight-line",
@@ -51,10 +51,9 @@ const previewRgItem = async (s: State, args: Args) => {
   ];
   print(`  [${file}]`);
   await Deno.run({
-    cmd: ["bat"].concat(batOpts, batExtraargss, [file]),
+    cmd: ["bat"].concat(batOpts, batExtraArgss, [file]),
     cwd: s.cwd,
   }).status();
-  return;
 };
 
 export const mode: Mode = {
