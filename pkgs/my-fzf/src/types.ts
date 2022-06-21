@@ -25,12 +25,17 @@ export type State = {
 // Interfaces
 ////////////////////////////////////////////////////////////////////////////////
 
+// XXX ad-hoc!
+type ModifyRunnerArgs =
+  | ((s: State, _: Args) => Args)
+  | { async_: ((s: State, _: Args) => Promise<Args>) };
+
 export type Mode = {
   mode: string;
   load: Load;
   preview: Preview;
   defaultRunner: string;
-  modifyRunnerArgs: Record<string, ((s: State, _: Args) => Args)>;
+  modifyRunnerArgs: Record<string, ModifyRunnerArgs>;
 };
 
 export type Runner = {

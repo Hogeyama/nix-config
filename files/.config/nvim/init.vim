@@ -189,8 +189,10 @@ function! CRecursive(cmd) abort "{{{
     echomsg "no more items"
   endtry
 endfunction "}}}
+let g:current_buf = 0
 au WinLeave * let g:last_win = winnr() | let g:last_file = expand("%:p")
 au TabLeave * let g:last_tab = tabpagenr()
+au BufLeave * let g:last_buf = g:current_buf | let g:current_buf = bufnr('%')
 command! -nargs=0 MoveToLastWin execute "normal! ".g:last_win."<C-w><C-w>"
 command! -nargs=0 MoveToLastTab execute "tabnext ".g:last_tab
 command! -complete=file -nargs=1 EditBehind    edit <args>    | MoveToLastWin

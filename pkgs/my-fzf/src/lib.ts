@@ -40,15 +40,18 @@ export const execPreviewer = async (mode: Mode, s: State, args: Args) => {
   await mode.preview(s, args);
 };
 
-export const execRunner = (
+export const execRunner = async (
   mode: Mode,
   runner: Runner,
   s: State,
   args: Args,
 ) => {
-  const modifyRunnerargs = mode.modifyRunnerArgs[runner.name];
-  if (modifyRunnerargs) {
-    runner.run(s, modifyRunnerargs(s, args));
+  const modifyRunnerArgs = mode.modifyRunnerArgs[runner.name];
+  if (modifyRunnerArgs) {
+    const modifiedArgs = "async_" in modifyRunnerArgs
+      ? (await modifyRunnerArgs.async_(s, args))
+      : modifyRunnerArgs(s, args);
+    runner.run(s, modifiedArgs);
   } else {
     throw `run: Runner '${runner}' unavailable for mode '${s.mode}'`;
   }
@@ -119,6 +122,7 @@ export const exaOpts = ([] as string[])
 export const previewFileOrDir: Preview = async (s: State, args: Args) => {
   const rawPath = args._.shift()?.toString();
   const line = Number(args.line || 0);
+  const highlightLine = args.highlightLine ? Number(args.highlightLine) : null;
   if (!rawPath) {
     throw `previewFile_or_dir: No path given`;
   }
@@ -130,6 +134,7 @@ export const previewFileOrDir: Preview = async (s: State, args: Args) => {
         cmd: ["bat"].concat(
           batOpts, //
           ["--line-range", `${line}:`],
+          highlightLine ? ["--highlight-line", `${highlightLine}`] : [],
           [rawPath],
         ),
         cwd: s.cwd,
@@ -264,5 +269,5 @@ export const nvrExpr = async (s: State, expr: string): Promise<string> => {
   const out = new TextDecoder().decode(await p.output());
   const err = new TextDecoder().decode(await p.stderrOutput());
   log({ context: "nvrExpr", expr, status, out, err });
-  return out;
+  return out.trimEnd();
 };

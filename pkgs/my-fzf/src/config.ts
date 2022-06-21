@@ -1,6 +1,7 @@
 import { log } from "./lib.ts";
 import * as browser from "./mode/browserHistory.ts";
 import * as buffer from "./mode/buffer.ts";
+import * as diagnostics from "./mode/diagnostics.ts";
 import * as fd from "./mode/fd.ts";
 import * as mru from "./mode/mru.ts";
 import * as rg from "./mode/rg.ts";
@@ -44,6 +45,7 @@ export const fzfOpts = (prog: string) => {
     reload("ctrl-d", zoxide.cmd.default, [prompt("dir-history")]),
     reload("ctrl-g", rg.cmd.default, [prompt("grep"), clQuery]),
     reload("ctrl-i", browser.cmd.default, [prompt("browser-history"), clQuery]),
+    reload("alt-w", diagnostics.cmd.default, [prompt("diagnostics"), clQuery]),
   ];
   log(binds);
 
@@ -67,5 +69,6 @@ export const allModes: Record<string, Mode> = {
   mru: mru.mode,
   buffer: buffer.mode,
   zoxide: zoxide.mode,
+  diagnostics: diagnostics.mode,
   "browser-history": browser.mode,
 };
