@@ -1,4 +1,4 @@
-import { nvrExpr, previewFileOrDir, print } from "../lib.ts";
+import { log, nvrExpr, previewFileOrDir, print } from "../lib.ts";
 import { Load, Mode, Preview } from "../types.ts";
 import { isLike } from "https://deno.land/x/unknownutil@v2.0.0/is.ts";
 
@@ -44,6 +44,7 @@ const loadDiagnostics: Load = async (s, _args) => {
   );
   const diagnostics = (JSON.parse(rawDiagnostics) as unknown[])
     .filter(isDiagnostics);
+  log({ diagnostics });
   const lnumMaxLen = Math.max(
     // +1 because diagnostic is 0-based
     ...diagnostics.map((d) => `${d.lnum + 1}`.length),

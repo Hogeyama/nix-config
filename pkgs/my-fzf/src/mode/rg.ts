@@ -1,4 +1,4 @@
-import { batOpts, log, print, printHeader } from "../lib.ts";
+import { batOpts, log, previewFileOrDir, print, printHeader } from "../lib.ts";
 import { Args, Load, Mode, State } from "../types.ts";
 
 const parseRgItem = (args: Args) => {
@@ -41,19 +41,9 @@ const loadRg: Load = async (s, argss) => {
 };
 
 const previewRgItem = async (s: State, args: Args) => {
-  const { file, line } = parseRgItem(args);
-  const start = Math.max(Number(line) - 15, 0);
-  const batExtraArgss = [
-    "--line-range",
-    `${start}:`,
-    "--highlight-line",
-    `${line}`,
-  ];
-  print(`  [${file}]`);
-  await Deno.run({
-    cmd: ["bat"].concat(batOpts, batExtraArgss, [file]),
-    cwd: s.cwd,
-  }).status();
+  const { file, line: highlightLine } = parseRgItem(args);
+  const line = Math.max(Number(highlightLine) - 15, 0);
+  await previewFileOrDir(s, { _: [file], line, highlightLine });
 };
 
 export const mode: Mode = {

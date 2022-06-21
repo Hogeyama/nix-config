@@ -266,8 +266,8 @@ export const nvrExpr = async (s: State, expr: string): Promise<string> => {
     stderr: "piped",
   });
   const status = await p.status();
-  const out = new TextDecoder().decode(await p.output());
-  const err = new TextDecoder().decode(await p.stderrOutput());
+  const out = new TextDecoder().decode(await p.output()).trimEnd();
+  const err = new TextDecoder().decode(await p.stderrOutput()).trimEnd();
   log({ context: "nvrExpr", expr, status, out, err });
-  return out.trimEnd();
+  return out;
 };
