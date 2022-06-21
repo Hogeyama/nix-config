@@ -31,10 +31,10 @@ export const fzfOpts = (prog: string) => {
   const binds = [
     simple([`--bind`, `ctrl-s:toggle-sort`]),
     exec("enter", `${prog} run default {}`, []),
-    exec("ctrl-r", `${prog} reload`, []),
     exec("ctrl-o", nvimR.cmd.default, []),
     exec("ctrl-t", nvimR.cmd.tabEdit, []),
     exec("ctrl-v", vifmR.cmd.default, []),
+    reload("ctrl-r", `${prog} reload`, []),
     reload("ctrl-f", fd.cmd.default, [prompt("files")]),
     reload("ctrl-u", fd.cmd.cdUp, [prompt("files")]),
     reload("ctrl-l", fd.cmd.cdArg, [prompt("files"), clQuery]),
