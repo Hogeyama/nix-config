@@ -65,14 +65,18 @@ style = 'green'
 
 [git_status]
 format = '([\[$all_status$ahead_behind\]]($style)) '
-up_to_date = '👍'
+up_to_date = '○'
 deleted = '🚮'
-modified = ' '
-untracked = '❓'
-conflicted = '✘ '
+modified = '✎'
+untracked = '?'
+ahead = '⇡'
+conflicted = '❎'
 staged = '💨'
 stashed = ''
 style = 'green'
+
+[container]
+format = '[\[$name\]]($style) '
 
 [git_state]
 format = '[\($state( $progress_current/$progress_total)\)]($style) '
