@@ -461,7 +461,7 @@ in
         mergetool.my-nvimdiff3.cmd = "nvim -d -c 'wincmd J' $MERGED $LOCAL $BASE $REMOTE";
         pull.rebase = true;
         rebase.autoStash = true;
-        rebase.autoSquash = true;
+        rebase.autoSquash = false;
         rebase.missingCommitsCheck = "warn";
         rerere.enabled = true;
         credential."https://github.com".helper = "!${pkgs.gh}/bin/gh auth git-credential";
