@@ -1,6 +1,8 @@
+import { isString } from "https://deno.land/x/unknownutil@v2.0.0/is.ts";
 import {
   changeDirectory,
   nvrExpr,
+  pathExists,
   previewFileOrDir,
   print,
   RelPath,
@@ -48,13 +50,21 @@ const nvrLastFile = async (s: State): Promise<string> => {
 };
 
 const getNextCwd = async (s: State, args: Args) => {
-  const nextDirBase: string = args["cd"]
-    ? args["cd"]
-    : args["cd-up"]
-    ? s.cwd + "/.."
-    : args["cd-last-file"]
-    ? (await nvrLastFile(s)) + "/.."
-    : s.cwd;
+  let nextDirBase: string;
+  if (args["cd"]) {
+    nextDirBase = args["cd"];
+  } else if (args["cd-up"]) {
+    nextDirBase = s.cwd + "/..";
+  } else if (args["cd-last-file"]) {
+    nextDirBase = (await nvrLastFile(s)) + "/..";
+  } else {
+    const arg = args["_"].at(0);
+    if (isString(arg) && pathExists(s, RelPath(arg))) {
+      nextDirBase = arg;
+    } else {
+      nextDirBase = s.cwd;
+    }
+  }
   switch (typeOfPath(s, RelPath(nextDirBase))) {
     case "file":
       return resolve(s, RelPath(nextDirBase + "/.."));
@@ -89,7 +99,7 @@ export const mode: Mode = {
 };
 
 export const cmd = {
-  default: (prog: string) => `${prog} load fd`,
+  default: (prog: string) => `${prog} load fd {q}`,
   cdUp: (prog: string) => `${prog} load fd --cd-up`,
   cdArg: (prog: string) => `${prog} load fd --cd {}`,
   cdLastFile: (prog: string) => `${prog} load fd --cd-last-file`,
