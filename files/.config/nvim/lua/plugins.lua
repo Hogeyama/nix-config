@@ -543,6 +543,8 @@ use { 'Shougo/ddc.vim', --{{{
     'ddc-file',
     'ddc-input',
     'ddc-nvim-lsp',
+    'ddc-path',
+    'ddc-rg',
     'ddc-zsh',
     'denops-popup-preview.vim',
     'vim-vsnip',
@@ -565,6 +567,7 @@ use { 'Shougo/ddc.vim', --{{{
             \ 'buffer',
             \ 'input',
             \ 'file',
+            \ 'rg',
             \ 'zsh',
             \ ])
       call ddc#custom#patch_global('sourceOptions', {
@@ -592,7 +595,11 @@ use { 'Shougo/ddc.vim', --{{{
             \ },
             \ 'nvim-lsp': {
             \   'mark': 'lsp',
-            \   'forceCompletionPattern': '\.\w*|:\w*|->\w*'
+            \   'forceCompletionPattern': '\.\w*|:\w*|->\w*',
+            \ },
+            \ 'rg': {
+            \   'mark': 'rg',
+            \   'minAutoCompleteLength': 4,
             \ },
             \ 'vsnip': {
             \   'mark': 'snip'
@@ -612,7 +619,8 @@ use { 'Shougo/ddc.vim', --{{{
             \   'forceCollect': v:true,
             \ },
             \ 'path': {
-            \   'cmd': ['fd', '--max-depth', '5'],
+            \   'cmd': ['fd', '--max-depth', '5', '--type', 'file'],
+            \   'absolute': v:false,
             \ },
             \ })
 
@@ -633,7 +641,8 @@ use { 'Shougo/ddc.vim', --{{{
             \ '<Right>'
 
       " Enable command line completion
-      nnoremap /       <Cmd>call CommandlinePre()<CR>/
+      nnoremap / <Cmd>call CommandlinePre()<CR>/
+      "nnoremap : <Cmd>call CommandlinePre()<CR>:
       function! CommandlinePre() abort
         cnoremap <silent><expr><TAB> pum#visible() ?
               \ '<Cmd>call pum#map#select_relative(+1)<CR>' :
@@ -641,6 +650,9 @@ use { 'Shougo/ddc.vim', --{{{
         cnoremap <silent><expr><Right> pum#visible() ?
               \ '<Cmd>call pum#map#confirm()<CR>' :
               \ '<Right>'
+        cnoremap <silent><expr><CR> pum#visible() ?
+              \ '<Cmd>call pum#map#confirm()<CR>' :
+              \ '<CR>'
         cnoremap <S-Tab> <Cmd>call pum#map#select_relative(-1)<CR>
         cnoremap <Down>  <Cmd>call pum#map#select_relative(+1)<CR>
         cnoremap <Up>    <Cmd>call pum#map#select_relative(-1)<CR>
@@ -704,6 +716,8 @@ use { 'Shougo/ddc-input', --{{{
 } -- }}}
 use { 'Shougo/ddc-nvim-lsp', --{{{
 } -- }}}
+use { 'Shougo/ddc-rg', --{{{
+} -- }}}
 use { 'Shougo/ddc-zsh', --{{{
 } -- }}}
 use { 'Shougo/pum.vim', --{{{
@@ -718,6 +732,8 @@ use { 'Shougo/pum.vim', --{{{
 use { 'LumaKernel/ddc-file', --{{{
 } --}}}
 use { 'tani/ddc-fuzzy', --{{{
+} --}}}
+use { 'tani/ddc-path', --{{{
 } --}}}
 use { 'matsui54/ddc-buffer', --{{{
 } --}}}
@@ -802,7 +818,7 @@ use {'cocopon/iceberg.vim', --{{{
       hi LineNr            guibg=None
       hi MatchParen        guibg=black guifg=#dadada
       hi FloatermBorder    guibg=None  guifg=cyan     " floaterm
-      hi Pmenu             guibg=None                 " pum.vim
+      "hi Pmenu             guibg=None                 " pum.vim
       hi LspCodeLens       guibg=None  guifg=#555555  " lsp
       hi LspReferenceRead  guibg=black
       hi LspReferenceText  guibg=black
