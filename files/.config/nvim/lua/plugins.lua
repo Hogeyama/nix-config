@@ -74,7 +74,9 @@ use {'github/copilot.vim', --{{{
   config = function()
     vim.g.copilot_no_tab_map = true
     vim.cmd[[
-      imap <silent><expr><Right> copilot#Accept("\<Right>")
+      imap <silent><expr><C-Right> copilot#Accept("\<Right>")
+      "imap <silent><expr><Tab> copilot#Accept("\<Tab>")
+      let g:copilot_no_tab_map = v:true
     ]]
   end
 } --}}}
