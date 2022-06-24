@@ -12,20 +12,20 @@ export const runner: Runner = {
     if (opt.buf) {
       const buf = opt.buf;
       if (opt.tab) {
-        await nvrCommand(s, `tabnew`);
-        await nvrCommand(s, `buffer ${lOpt} ${buf}`);
-        await nvrCommand(s, `MoveToLastTab`);
+        await nvrCommand(`tabnew`);
+        await nvrCommand(`buffer ${lOpt} ${buf}`);
+        await nvrCommand(`MoveToLastTab`);
       } else if (opt.leave) {
-        await nvrCommand(s, `stopinsert`);
-        await nvrCommand(s, `MoveToLastWin`);
-        await nvrCommand(s, `buffer ${lOpt} ${buf}`);
-        await nvrCommand(s, `FloatermHide! fzf`);
+        await nvrCommand(`stopinsert`);
+        await nvrCommand(`MoveToLastWin`);
+        await nvrCommand(`buffer ${lOpt} ${buf}`);
+        await nvrCommand(`FloatermHide! fzf`);
       } else {
-        await nvrCommand(s, `stopinsert`);
-        await nvrCommand(s, `MoveToLastWin`);
-        await nvrCommand(s, `buffer ${lOpt} ${buf}`);
-        await nvrCommand(s, `MoveToLastWin`);
-        await nvrCommand(s, `startinsert`);
+        await nvrCommand(`stopinsert`);
+        await nvrCommand(`MoveToLastWin`);
+        await nvrCommand(`buffer ${lOpt} ${buf}`);
+        await nvrCommand(`MoveToLastWin`);
+        await nvrCommand(`startinsert`);
       }
     } else {
       const relPath = opt._.shift()?.toString();
@@ -34,22 +34,19 @@ export const runner: Runner = {
       }
       const path = resolve(s, RelPath(relPath)).val;
       if (opt.tab) {
-        await nvrCommand(
-          s,
-          `execute 'tabedit ${lOpt} '.fnameescape('${path}')`,
-        );
-        await nvrCommand(s, `MoveToLastTab`);
+        await nvrCommand(`execute 'tabedit ${lOpt} '.fnameescape('${path}')`);
+        await nvrCommand(`MoveToLastTab`);
       } else if (opt.leave) {
-        await nvrCommand(s, `stopinsert`);
-        await nvrCommand(s, `MoveToLastWin`);
-        await nvrCommand(s, `execute 'edit ${lOpt} '.fnameescape('${path}')`);
-        await nvrCommand(s, `FloatermHide! fzf`);
+        await nvrCommand(`stopinsert`);
+        await nvrCommand(`MoveToLastWin`);
+        await nvrCommand(`execute 'edit ${lOpt} '.fnameescape('${path}')`);
+        await nvrCommand(`FloatermHide! fzf`);
       } else {
-        await nvrCommand(s, `stopinsert`);
-        await nvrCommand(s, `MoveToLastWin`);
-        await nvrCommand(s, `execute 'edit ${lOpt} '.fnameescape('${path}')`);
-        await nvrCommand(s, `MoveToLastWin`);
-        await nvrCommand(s, `startinsert`);
+        await nvrCommand(`stopinsert`);
+        await nvrCommand(`MoveToLastWin`);
+        await nvrCommand(`execute 'edit ${lOpt} '.fnameescape('${path}')`);
+        await nvrCommand(`MoveToLastWin`);
+        await nvrCommand(`startinsert`);
       }
     }
   },

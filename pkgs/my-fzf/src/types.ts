@@ -17,6 +17,7 @@ export const isCommand = (s: string): s is Command => {
 };
 
 export type State = {
+  id: string;
   mode: string;
   cwd: string; // absolute path to the (virtual) current directory
   currentLoaderArgs: Args;

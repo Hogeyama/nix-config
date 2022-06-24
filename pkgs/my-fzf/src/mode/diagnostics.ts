@@ -35,11 +35,10 @@ export const severityMap = {
   4: "H",
 };
 
-const loadDiagnostics: Load = async (s, _args) => {
-  const file = (await nvrExpr(s, "g:last_file")).trimEnd();
+const loadDiagnostics: Load = async (_, _args) => {
+  const file = (await nvrExpr("g:last_file")).trimEnd();
   print(`[${file}]`);
   const rawDiagnostics = await nvrExpr(
-    s,
     "luaeval('vim.fn.json_encode(vim.diagnostic.get(vim.g.last_buf))')",
   );
   const diagnostics = (JSON.parse(rawDiagnostics) as unknown[])
@@ -72,7 +71,7 @@ const parseDiagnosticItem = (arg: string): { lnum: number; col: number } => {
 
 const previewDiagnosticItem: Preview = async (s, args) => {
   const rawItem = args._.at(0)?.toString();
-  const file = (await nvrExpr(s, "g:last_file")).trimEnd();
+  const file = (await nvrExpr("g:last_file")).trimEnd();
   if (rawItem) {
     const { lnum: highlightLine } = parseDiagnosticItem(rawItem);
     const line = Math.max(Number(highlightLine) - 15, 0);
@@ -87,10 +86,10 @@ export const mode: Mode = {
   defaultRunner: "nvim",
   modifyRunnerArgs: {
     nvim: {
-      async_: async (s, args) => {
+      async_: async (_, args) => {
         const rawItem = args._.at(0)?.toString();
         if (rawItem) {
-          const file = await nvrExpr(s, "g:last_file");
+          const file = await nvrExpr("g:last_file");
           const { lnum } = parseDiagnosticItem(rawItem);
           return Object.assign(args, { _: [file.trimEnd()], line: lnum });
         } else {

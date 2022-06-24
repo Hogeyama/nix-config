@@ -14,7 +14,7 @@ const loadMru: Load = async (s, _opts) => {
   let tmp: string | undefined = undefined;
   try {
     tmp = Deno.makeTempFileSync();
-    const rawMru = await nvrExpr(s, "json_encode(v:oldfiles)");
+    const rawMru = await nvrExpr("json_encode(v:oldfiles)");
     (JSON.parse(rawMru) as unknown[])
       .filter(isString)
       .filter((x: string) => pathExists(s, RelPath(x)))

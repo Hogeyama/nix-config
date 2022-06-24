@@ -45,8 +45,8 @@ const fdOpts = ([] as string[])
   .concat(fdExtraOpt)
   .concat(fdExcludePaths.flatMap((p) => ["--exclude", p]));
 
-const nvrLastFile = async (s: State): Promise<string> => {
-  return await nvrExpr(s, "g:last_file");
+const nvrLastFile = async (): Promise<string> => {
+  return await nvrExpr("g:last_file");
 };
 
 const getNextCwd = async (s: State, args: Args) => {
@@ -56,7 +56,7 @@ const getNextCwd = async (s: State, args: Args) => {
   } else if (args["cd-up"]) {
     nextDirBase = s.cwd + "/..";
   } else if (args["cd-last-file"]) {
-    nextDirBase = (await nvrLastFile(s)) + "/..";
+    nextDirBase = (await nvrLastFile()) + "/..";
   } else {
     const arg = args["_"].at(0);
     if (isString(arg) && pathExists(s, RelPath(arg))) {

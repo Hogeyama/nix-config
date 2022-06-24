@@ -6,33 +6,37 @@ import * as Path_ from "https://deno.land/std@0.133.0/path/mod.ts";
 ////////////////////////////////////////////////////////////////////////////////
 
 export const spawnFzf = async (fzfOpts: (_: string) => string[]) => {
+  // 子ども達に一意の id を渡して他の myfzf の起動と区別する
+  const id = Math.random().toString(32).substring(2);
+
   const prog = Deno.env.get("MY_FZF_PROG") || (() => {
     throw "MY_FZF_PROG not set";
   })();
 
-  writeState({
+  await writeState({
+    id,
     mode: "fd",
     cwd: Deno.cwd(),
     currentLoaderArgs: { _: [] },
   });
 
   await Deno.run({
-    cmd: ["fzf"].concat(fzfOpts(prog)),
+    cmd: ["fzf"].concat(fzfOpts(`${prog} --id ${id}`)),
     stdin: "inherit",
     stdout: "piped",
     env: Object.assign(
       {},
       Deno.env.toObject(),
       {
-        FZF_DEFAULT_COMMAND: `${prog} load fd`,
+        FZF_DEFAULT_COMMAND: `${prog} --id ${id} load fd`,
       },
     ),
   }).status();
 };
 
 export const execLoader = async (mode: Mode, s: State, args: Args) => {
-  setMode(mode.mode);
-  setCurrentLoaderArgs(args);
+  setMode(s, mode.mode);
+  setCurrentLoaderArgs(s, args);
   await mode.load(s, args);
 };
 
@@ -61,43 +65,30 @@ export const execRunner = async (
 // State
 ////////////////////////////////////////////////////////////////////////////////
 
-export const readState = () => {
-  const { stateFile } = getOrCreateStateFile();
-  return JSON.parse(Deno.readTextFileSync(stateFile)) as State;
+export const readState = async (id: string): Promise<State> => {
+  return JSON.parse(
+    await nvrExpr(`json_encode(g:myfzf_state['${id}'])`),
+  ) as State;
 };
 
-export const getOrCreateStateFile = (): {
-  stateFile: string;
-  created: boolean;
-} => {
-  const stateFile = Deno.env.get("MY_FZF_STATE_FILE");
-  if (stateFile) {
-    return { stateFile, created: false };
-  } else {
-    const stateFile = Deno.makeTempFileSync({
-      prefix: "myfzf",
-      suffix: ".json",
-    });
-    Deno.env.set("MY_FZF_STATE_FILE", stateFile);
-    return { stateFile, created: true };
-  }
+const writeState = async (s: State) => {
+  await nvrCommand(`
+    if !exists('g:myfzf_state') | let g:myfzf_state = {} | endif
+  `);
+  // エスケープのために2回 JSON.stringify する
+  await nvrCommand(
+    `let g:myfzf_state['${s.id}'] = json_decode(${
+      JSON.stringify(JSON.stringify(s))
+    })`,
+  );
 };
 
-const writeState = (s: State) => {
-  const { stateFile } = getOrCreateStateFile();
-  Deno.writeFileSync(stateFile, new TextEncoder().encode(JSON.stringify(s)));
+const setMode = (s: State, mode: string) => {
+  writeState(Object.assign(s, { mode }));
 };
 
-const modifyState = (f: (_: State) => State) => {
-  writeState(f(readState()));
-};
-
-const setMode = (mode: string) => {
-  modifyState((s) => Object.assign(s, { mode }));
-};
-
-const setCurrentLoaderArgs = (currentLoaderArgs: Args) => {
-  modifyState((s) => Object.assign(s, { currentLoaderArgs }));
+const setCurrentLoaderArgs = (s: State, currentLoaderArgs: Args) => {
+  writeState(Object.assign(s, { currentLoaderArgs }));
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -238,30 +229,27 @@ export const changeDirectory = (s: State, path: Path) => {
     throw `changeDirectory: ${path} is not a directory`;
   }
   const nextCwd = absPath.val;
-  modifyState((s) => Object.assign(s, { cwd: nextCwd }));
-  xlog({ context: "changeDirectory", dir: absPath, nextCwd });
+  writeState(Object.assign(s, { cwd: nextCwd }));
 };
 
 // NeoVim
 /////////
 
-export const nvrCommand = async (s: State, command: string) => {
+export const nvrCommand = async (command: string) => {
   const p = Deno.run({
     cmd: ["nvr", "-c", command],
-    cwd: s.cwd,
     stdout: "piped",
     stderr: "piped",
   });
   const status = await p.status();
   const out = new TextDecoder().decode(await p.output());
   const err = new TextDecoder().decode(await p.stderrOutput());
-  xlog({ context: "nvrCommand", command, status, out, err });
+  log({ context: "nvrCommand", command, status, out, err });
 };
 
-export const nvrExpr = async (s: State, expr: string): Promise<string> => {
+export const nvrExpr = async (expr: string): Promise<string> => {
   const p = Deno.run({
     cmd: ["nvr", "--remote-expr", expr],
-    cwd: s.cwd,
     stdout: "piped",
     stderr: "piped",
   });

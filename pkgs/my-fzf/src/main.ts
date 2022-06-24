@@ -6,7 +6,6 @@ import {
   execLoader,
   execPreviewer,
   execRunner,
-  getOrCreateStateFile,
   log,
   readState,
   spawnFzf,
@@ -41,8 +40,7 @@ const run = (s: State, args: Args) => {
   execRunner(mode, allRunners[runner], s, args);
 };
 
-const dispatch = async (command: Command, args: Args) => {
-  const s = readState();
+const dispatch = async (s: State, command: Command, args: Args) => {
   switch (command) {
     case "load": {
       await load(s, args);
@@ -69,18 +67,15 @@ const dispatch = async (command: Command, args: Args) => {
 
 const main = async () => {
   try {
-    const { stateFile, created } = getOrCreateStateFile();
-    if (created) {
-      try {
-        await spawnFzf(fzfOpts);
-      } finally {
-        Deno.removeSync(stateFile);
-      }
+    const args = flags.parse(Deno.args);
+    const id = args?.id;
+    if (!id) {
+      await spawnFzf(fzfOpts);
     } else {
-      const args = flags.parse(Deno.args);
       const command = args._.shift()?.toString() || "";
+      const s = await readState(id.toString());
       if (isCommand(command)) {
-        await dispatch(command, args);
+        await dispatch(s, command, args);
       } else {
         throw `Unknown command: ${command}`;
       }
