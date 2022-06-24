@@ -1,4 +1,3 @@
-import { log } from "./lib.ts";
 import * as browser from "./mode/browserHistory.ts";
 import * as buffer from "./mode/buffer.ts";
 import * as diagnostics from "./mode/diagnostics.ts";
@@ -47,7 +46,6 @@ export const fzfOpts = (prog: string) => {
     reload("ctrl-i", browser.cmd.default, [prompt("browser-history"), clQuery]),
     reload("alt-w", diagnostics.cmd.default, [prompt("diagnostics"), clQuery]),
   ];
-  log(binds);
 
   return ([] as string[])
     .concat(["--preview", `${prog} preview {}`])
