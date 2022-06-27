@@ -641,7 +641,7 @@ use { 'Shougo/ddc.vim', --{{{
             \ '<Right>'
 
       " Enable command line completion
-      nnoremap / <Cmd>call CommandlinePre()<CR>/
+      "nnoremap / <Cmd>call CommandlinePre()<CR>/
       "nnoremap : <Cmd>call CommandlinePre()<CR>:
       function! CommandlinePre() abort
         cnoremap <silent><expr><TAB> pum#visible() ?
