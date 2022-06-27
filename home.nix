@@ -437,12 +437,12 @@ in
         cp = "cp -iL";
         l = "ls -F";
         ll = "ls -ahlF";
-        la = "ls -A";
+        la = "ls -a";
         DU = "du -hd1 | sort -h";
         open = "xdg-open";
         v = "neovim";
-        vi = "neovim";
-        vim = "neovim";
+        # vi = "neovim";
+        # vim = "neovim";
         gs = "git status";
       };
     };
