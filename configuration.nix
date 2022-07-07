@@ -68,7 +68,13 @@ in
   # gui application for
   programs.nm-applet.enable = true;
   # enable sshd
-  services.sshd.enable = true;
+  services.openssh = {
+    enable = true;
+    extraConfig = ''
+      ClientAliveInterval 30
+      ClientAliveCountMax 120
+    '';
+  };
 
   # Enable sound.
   sound.enable = true;
