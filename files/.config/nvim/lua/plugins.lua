@@ -247,6 +247,14 @@ use {'haya14busa/vim-asterisk', --{{{
 }--}}}
 use {'Shougo/deol.nvim', --{{{
 }--}}}
+use {'dbridges/vim-markdown-runner', --{{{
+  config = function()
+    vim.cmd[[
+      autocmd FileType markdown nnoremap <buffer> <C-q> <Cmd>MarkdownRunnerInsert<CR>
+      autocmd FileType markdown nnoremap <buffer> <Leader>q :MarkdownRunnerInsert<CR>
+    ]]
+  end
+}--}}}
 use {'Hogeyama/metarw-redmine', --{{{
 }--}}}
 -- [Git]
