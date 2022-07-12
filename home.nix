@@ -31,6 +31,7 @@ in
       google-cloud-sdk
       htop
       jq
+      just
       libreoffice
       lsof
       mercurial
@@ -368,6 +369,7 @@ in
           zstyle :omz:plugins:ssh-agent lazy yes
           # home-manager's module seems broken. Manually set fpath
           fpath+=(${pkgs.watson}/share/zsh/site-functions)
+          fpath+=(${pkgs.just}/share/zsh/site-functions)
           # for ddc-zsh
           zmodload zsh/zpty
         '';
@@ -444,6 +446,7 @@ in
         # vi = "neovim";
         # vim = "neovim";
         gs = "git status";
+        j = "just";
       };
     };
     git = {
