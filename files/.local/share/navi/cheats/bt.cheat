@@ -1,0 +1,9 @@
+% bt
+
+# connect
+bluetoothctl connect <devices>
+
+# disconnect
+bluetoothctl disconnect
+
+$ devices: bluetoothctl devices --- --map "awk '{print $2}'"
