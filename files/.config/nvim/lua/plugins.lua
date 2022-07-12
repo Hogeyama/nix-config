@@ -273,7 +273,6 @@ use {'neovim/nvim-lspconfig', --{{{
     require'nvim-lsp-installer'.setup({
       ensure_installed = {
         -- 'hls', -- managed by nix
-        -- 'rls', -- managed by nix
         'denols',
         'diagnosticls',
         'gopls',
@@ -282,6 +281,7 @@ use {'neovim/nvim-lspconfig', --{{{
         'tsserver',
         'yamlls',
         'terraformls',
+        'rust_analyzer',
         'tflint',
       },
       automatic_installation = false,
@@ -454,7 +454,7 @@ use {'neovim/nvim-lspconfig', --{{{
     }
     require'lspconfig'['gopls'].setup{}
     require'lspconfig'['jsonls'].setup{}
-    require'lspconfig'['rls'].setup{}
+    require'lspconfig'['rust_analyzer'].setup{}
     require'lspconfig'['rnix'].setup{}
     require'lspconfig'['tsserver'].setup{
       root_dir = require'lspconfig'.util.root_pattern("package.json"),
