@@ -13,6 +13,7 @@ in
       aws-sam-cli
       bat
       bind
+      commitizen
       curl
       deno
       docker
@@ -42,6 +43,7 @@ in
       nodePackages.npm
       openssl
       pandoc
+      pre-commit
       ripgrep
       rnix-lsp
       shellcheck
