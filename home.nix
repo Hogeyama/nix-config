@@ -43,6 +43,7 @@ in
       nodePackages.npm
       openssl
       pandoc
+      pass
       pre-commit
       ripgrep
       rnix-lsp
@@ -372,6 +373,7 @@ in
           # home-manager's module seems broken. Manually set fpath
           fpath+=(${pkgs.watson}/share/zsh/site-functions)
           fpath+=(${pkgs.just}/share/zsh/site-functions)
+          fpath+=(${pkgs.pass}/share/zsh/site-functions)
           # for ddc-zsh
           zmodload zsh/zpty
         '';

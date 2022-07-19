@@ -82,7 +82,6 @@ in
   };
   services.blueman.enable = true;
 
-
   time.timeZone = "Asia/Tokyo";
 
   i18n = {
@@ -120,6 +119,9 @@ in
 
   # Enable docker
   virtualisation.docker.enable = true;
+
+  # Enable gnupg-agent
+  programs.gnupg.agent.enable = true;
 
   environment = {
     systemPackages = with pkgs; [
