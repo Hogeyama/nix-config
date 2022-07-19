@@ -191,10 +191,10 @@ in
       #ultimate.enable = true;
       defaultFonts = {
         monospace = [
-          "Illusion N"
           "Rounded Mgen+ 1mn"
-          "DejaVu Sans Mono"
-          "IPAGothic"
+          "Cica"
+          # "DejaVu Sans Mono"
+          # "IPAGothic"
         ];
         sansSerif = [
           "Rounded Mgen+ 1cp"
