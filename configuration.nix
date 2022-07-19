@@ -16,26 +16,18 @@ in
 
   nix = {
     package = pkgs.unstable.nixUnstable; # or versioned attributes like nix_2_4
-    # [unstable]
-    # settings = {
-    #   substituters = [
-    #     "s3://hogeyama-nix-cache?region=ap-northeast-1"
-    #   ];
-    #   trusted-public-keys = [
-    #     "hogeyama-nix-cache:rCcxGULOLr4ei6xv6vZObA7fqBKAt1Y6LZwmaN08Utc="
-    #   ];
-    #   auto-optimise-store = true;
-    # };
-    binaryCaches = [
-      "s3://hogeyama-nix-cache?region=ap-northeast-1"
-    ];
-    binaryCachePublicKeys = [
-      "hogeyama-nix-cache:rCcxGULOLr4ei6xv6vZObA7fqBKAt1Y6LZwmaN08Utc="
-    ];
+    settings = {
+      substituters = [
+        "s3://hogeyama-nix-cache?region=ap-northeast-1"
+      ];
+      trusted-public-keys = [
+        "hogeyama-nix-cache:rCcxGULOLr4ei6xv6vZObA7fqBKAt1Y6LZwmaN08Utc="
+      ];
+      auto-optimise-store = true;
+    };
     extraOptions = ''
       experimental-features = nix-command flakes
     '';
-    autoOptimiseStore = true;
   };
   nixpkgs.config.allowUnfree = true;
 
