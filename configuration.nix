@@ -121,7 +121,10 @@ in
   virtualisation.docker.enable = true;
 
   # Enable gnupg-agent
-  programs.gnupg.agent.enable = true;
+  programs.gnupg = {
+    agent.enable = true;
+    agent.pinentryFlavor = "tty";
+  };
 
   environment = {
     systemPackages = with pkgs; [
