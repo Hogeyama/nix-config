@@ -69,6 +69,7 @@ in
       ### my packages
       my-xmobar
       my-fzf
+      my-fzf-wrapper
       ### unstable
       unstable.alacritty
     ];

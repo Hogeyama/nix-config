@@ -6,9 +6,11 @@
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    # mine
+    my-fzf-wrapper.url = "github:Hogeyama/my-fzf-wrapper";
   };
 
-  outputs = { nixpkgs, nixpkgs-unstable, home-manager, ... }:
+  outputs = { nixpkgs, nixpkgs-unstable, home-manager, my-fzf-wrapper, ... }:
     let
       system = "x86_64-linux";
 
@@ -25,6 +27,7 @@
         my-xmobar = import ./pkgs/my-xmobar { pkgs = final; };
         my-xmonad = import ./pkgs/my-xmonad { pkgs = final; };
         my-fzf = import ./pkgs/my-fzf { pkgs = final; };
+        my-fzf-wrapper = my-fzf-wrapper.defaultPackage.x86_64-linux;
       };
     in
     {
