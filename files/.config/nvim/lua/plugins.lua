@@ -117,7 +117,7 @@ use {'voldikss/vim-floaterm', --{{{
           FloatermToggle fzf
         else
           FloatermNew  --name=fzf
-          FloatermSend --name=fzf myfzf
+          FloatermSend --name=fzf fzfw
           let g:floaterm_fzf_exists=1
         endif
       endfunction
