@@ -70,7 +70,7 @@ set updatetime=300
 let mapleader=","
 let maplocalleader=","
 """esc
-inoremap jk <Esc>
+"inoremap jk <Esc>
 inoremap <C-j><C-k> <Esc>:w<CR>
 nnoremap <C-\> :update<CR>
 inoremap <C-\> <Esc>:update<CR>
