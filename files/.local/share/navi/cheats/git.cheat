@@ -7,13 +7,16 @@ git log --pretty=format:"%C(yellow)%h%Creset %C(green)%ad%Creset %s %Cred%d%Cres
 git worktree add -B {,,<remote>/}<remote-branch-no-prefix>
 
 # squash/fixup automatically
-GIT_SEQUENCE_EDITOR=: git rebase --autosquash -i <commit>
+GIT_SEQUENCE_EDITOR=: git rebase --autosquash --autostash -i <commit>
 
 # commit and fixup
-git commit --fixup=<commit> && GIT_SEQUENCE_EDITOR=: git rebase --autosquash -i <commit>^
+git commit --fixup=<commit> && GIT_SEQUENCE_EDITOR=: git rebase --autosquash --autostash -i <commit>^
 
 # commit all and fixup
-git commit -a --fixup=<commit> && GIT_SEQUENCE_EDITOR=: git rebase --autosquash -i <commit>^
+git commit -a --fixup=<commit> && GIT_SEQUENCE_EDITOR=: git rebase --autosquash --autostash -i <commit>^
+
+# create fixup commit
+git commit --fixup=<commit>
 
 $ commit:                  git log --oneline --color=always --- --map "awk '{print $1}'"
 $ remote:                  git remote show
