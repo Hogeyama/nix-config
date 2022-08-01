@@ -278,6 +278,7 @@ use {'neovim/nvim-lspconfig', --{{{
         'gopls',
         'jdtls',
         'jsonls',
+        'pyright',
         'tsserver',
         'yamlls',
         'terraformls',
@@ -419,11 +420,12 @@ use {'neovim/nvim-lspconfig', --{{{
       },
     }
     require'lspconfig'['diagnosticls'].setup{
-      filetypes = {'sh', 'bash'},
+      filetypes = {'sh', 'bash', 'python'},
       init_options = {
         filetypes = {
           sh = 'shellcheck',
           bash = 'shellcheck',
+          python = 'flake8',
         },
         linters = {
           shellcheck = {
@@ -449,6 +451,37 @@ use {'neovim/nvim-lspconfig', --{{{
               note = 'info'
             }
           },
+          flake8 = {
+            command = "flake8",
+            debounce = 100,
+            args = { "--format=%(row)d,%(col)d,%(code).1s,%(code)s: %(text)s", "-" },
+            offsetLine = 0,
+            offsetColumn = 0,
+            sourceName = "flake8",
+            formatLines = 1,
+            formatPattern = {
+              "(\\d+),(\\d+),([A-Z]),(.*)(\\r|\\n)*$",
+              {
+                line = 1,
+                column = 2,
+                security = 3,
+                message = 4
+              }
+            },
+            securities = {
+              W = "warning",
+              E = "error",
+              F = "error",
+              C = "error",
+              N = "error"
+            }
+          },
+          formatters = {
+            black =  {
+              command = "black",
+              args = {"--quiet", "-"}
+            }
+          }
         },
       },
     }
@@ -456,6 +489,7 @@ use {'neovim/nvim-lspconfig', --{{{
     require'lspconfig'['jsonls'].setup{}
     require'lspconfig'['rust_analyzer'].setup{}
     require'lspconfig'['rnix'].setup{}
+    require'lspconfig'['pyright'].setup{}
     require'lspconfig'['tsserver'].setup{
       root_dir = require'lspconfig'.util.root_pattern("package.json"),
       init_options = {
