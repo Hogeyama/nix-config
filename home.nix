@@ -9,6 +9,7 @@ in
   };
   home = {
     packages = with pkgs; [
+      aws2-wrap
       awscli2
       aws-sam-cli
       bat

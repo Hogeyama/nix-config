@@ -25,6 +25,8 @@
         illusion = import ./pkgs/illusion { inherit (final) fetchzip unzip; };
         Cica = import ./pkgs/Cica { inherit (final) fetchzip unzip; };
         amazon-corretto17 = import ./pkgs/amazon-corretto17 { pkgs = final; };
+        aws2-wrap = import ./pkgs/aws2-wrap { pkgs = final; };
+
         my-xmobar = import ./pkgs/my-xmobar { pkgs = final; };
         my-xmonad = import ./pkgs/my-xmonad { pkgs = final; };
         my-fzf = import ./pkgs/my-fzf { pkgs = final; };
