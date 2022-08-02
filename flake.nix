@@ -22,8 +22,9 @@
         # unstable packages are available as pkgs.unstable.${package}
         unstable = builtins.getAttr system nixpkgs-unstable.outputs.legacyPackages;
         # my packages
-        illusion = import ./pkgs/illusion { inherit (prev) fetchzip unzip; };
-        Cica = import ./pkgs/Cica { inherit (prev) fetchzip unzip; };
+        illusion = import ./pkgs/illusion { inherit (final) fetchzip unzip; };
+        Cica = import ./pkgs/Cica { inherit (final) fetchzip unzip; };
+        amazon-corretto17 = import ./pkgs/amazon-corretto17 { pkgs = final; };
         my-xmobar = import ./pkgs/my-xmobar { pkgs = final; };
         my-xmonad = import ./pkgs/my-xmonad { pkgs = final; };
         my-fzf = import ./pkgs/my-fzf { pkgs = final; };
