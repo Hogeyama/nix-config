@@ -286,6 +286,7 @@ use {'neovim/nvim-lspconfig', --{{{
     require'nvim-lsp-installer'.setup({
       ensure_installed = {
         -- 'hls', -- managed by nix
+        'bashls',
         'denols',
         'diagnosticls',
         'gopls',
@@ -489,15 +490,19 @@ use {'neovim/nvim-lspconfig', --{{{
               N = "error"
             }
           },
-          formatters = {
-            black =  {
-              command = "black",
-              args = {"--quiet", "-"}
-            }
-          }
         },
+        formatFiletypes = {
+          python = 'black',
+        },
+        formatters = {
+          black =  {
+            command = "black",
+            args = {"--quiet", "-"}
+          }
+        }
       },
     }
+    require'lspconfig'['bashls'].setup{}
     require'lspconfig'['gopls'].setup{}
     require'lspconfig'['jsonls'].setup{}
     require'lspconfig'['rust_analyzer'].setup{}
