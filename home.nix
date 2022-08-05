@@ -58,6 +58,7 @@ in
       unar
       ulauncher
       vifm
+      watson
       wget
       yq
       zip
