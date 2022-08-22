@@ -79,11 +79,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1659708276,
-        "narHash": "sha256-jwpO6ypY0I0rpDSSMCC2yWFULuMcQsOJQ+c5Qt5AtUw=",
+        "lastModified": 1661176741,
+        "narHash": "sha256-KVHccPU67FCJdNZum45VGElJ+8XntLktUYvu1CH7r+w=",
         "owner": "Hogeyama",
         "repo": "my-fzf-wrapper",
-        "rev": "13e4fa397c8890e84aad51ed60b16874329bb470",
+        "rev": "f49994b4fd0d07abab410214db4b7007964f5c2f",
         "type": "github"
       },
       "original": {
