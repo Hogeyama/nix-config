@@ -679,7 +679,13 @@ use { 'Shougo/ddc.vim', --{{{
             \   'forceCollect': v:true,
             \ },
             \ 'path': {
-            \   'cmd': ['fd', '--max-depth', '5', '--type', 'file'],
+            \   'cmd': [
+            \     'fd',
+            \     '--hidden',
+            \     '--exclude', '.git',
+            \     '--max-depth', '8',
+            \     '--type', 'file'
+            \   ],
             \   'absolute': v:false,
             \ },
             \ })
@@ -701,8 +707,8 @@ use { 'Shougo/ddc.vim', --{{{
             \ '<Right>'
 
       " Enable command line completion
-      "nnoremap / <Cmd>call CommandlinePre()<CR>/
-      "nnoremap : <Cmd>call CommandlinePre()<CR>:
+      nnoremap / <Cmd>call CommandlinePre()<CR>/
+      nnoremap : <Cmd>call CommandlinePre()<CR>:
       function! CommandlinePre() abort
         cnoremap <silent><expr><TAB> pum#visible() ?
               \ '<Cmd>call pum#map#select_relative(+1)<CR>' :
@@ -710,9 +716,6 @@ use { 'Shougo/ddc.vim', --{{{
         cnoremap <silent><expr><Right> pum#visible() ?
               \ '<Cmd>call pum#map#confirm()<CR>' :
               \ '<Right>'
-        cnoremap <silent><expr><CR> pum#visible() ?
-              \ '<Cmd>call pum#map#confirm()<CR>' :
-              \ '<CR>'
         cnoremap <S-Tab> <Cmd>call pum#map#select_relative(-1)<CR>
         cnoremap <Down>  <Cmd>call pum#map#select_relative(+1)<CR>
         cnoremap <Up>    <Cmd>call pum#map#select_relative(-1)<CR>
@@ -721,7 +724,12 @@ use { 'Shougo/ddc.vim', --{{{
         if !exists('b:prev_buffer_config')
           let b:prev_buffer_config = ddc#custom#get_buffer()
         endif
+        " XXX うまく動いていない
         if getcmdtype() == '/'
+          call ddc#custom#patch_buffer('cmdlineSources', [
+              \ 'buffer',
+              \ ])
+        elseif getcmdtype() == '?'
           call ddc#custom#patch_buffer('cmdlineSources', [
               \ 'buffer',
               \ ])
@@ -733,6 +741,7 @@ use { 'Shougo/ddc.vim', --{{{
           call ddc#custom#patch_buffer('cmdlineSources', [
               \ 'cmdline',
               \ 'file',
+              \ 'path',
               \ ])
         endif
 
