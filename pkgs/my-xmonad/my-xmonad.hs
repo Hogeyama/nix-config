@@ -115,6 +115,7 @@ main = do
         , ("M-S-o", spawn "amixer sset Master mute")
         , ("M-S-t", spawn "amixer sset Master toggle")
         , ("M-S-s", spawn $ unwords ["scrot", screenShotName])
+        , ("M-C-s", spawn $ unwords ["scrot", "-s", screenShotName])
         , ("M-S-b", spawn "$HOME/.local/bin/bttoggle")
         , ("M-m", toggleTouchPad)
         , ("M-b", sendMessage ToggleStruts) -- xmobar
