@@ -43,6 +43,7 @@ add_newline = true
 
 [aws]
 format = '[($symbol$profile)]($style)'
+symbol = '☁️ '
 
 [directory]
 format = '[$path]($style)[$read_only]($read_only_style) '
