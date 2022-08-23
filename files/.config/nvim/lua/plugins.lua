@@ -341,7 +341,7 @@ use {'neovim/nvim-lspconfig', --{{{
       bmap('n', '<C-j>' , '<cmd>lua vim.lsp.buf.definition()<CR>')
       bmap('n', '<C-h>' , '<cmd>Lspsaga hover_doc<cr>')
       bmap('n', '<C-l>f', '<cmd>lua vim.lsp.buf.formatting()<CR>')
-      bmap('v', '<C-l>f', '<cmd>lua vim.lsp.buf.Jange_formatting()<CR>')
+      bmap('v', '<C-l>f', '<cmd>lua vim.lsp.buf.range_formatting()<CR>')
       bmap('n', '<C-l>l', '<cmd>lua vim.lsp.codelens.run()<CR>')
       bmap('n', '<C-l>a', '<cmd>Lspsaga code_action<cr>')
       bmap('n', '<C-l>h', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
@@ -363,7 +363,8 @@ use {'neovim/nvim-lspconfig', --{{{
         end
       })
       -- Format
-      require "lsp-format".on_attach(client, bufnr)
+      -- 不便を感じることが増えたので無効にしておく
+      -- require "lsp-format".on_attach(client, bufnr)
       -- Highlight symbol under cursor
       -- https://github.com/neovim/nvim-lspconfig/wiki/UI-customization#highlight-symbol-under-cursor
       if client.server_capabilities.documentHighlightProvider then
@@ -562,7 +563,6 @@ use {'mfussenegger/nvim-jdtls', --{{{
 } --}}}
 use {'lukas-reineke/lsp-format.nvim', --{{{
   config = function()
-    -- TODO configure
     require "lsp-format".setup{
       java = {
         exclude = {"jdtls"}
