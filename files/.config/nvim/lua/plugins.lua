@@ -507,6 +507,7 @@ use {'neovim/nvim-lspconfig', --{{{
     require'lspconfig'['gopls'].setup{}
     require'lspconfig'['jsonls'].setup{}
     require'lspconfig'['rust_analyzer'].setup{}
+    require'lspconfig'['graphql'].setup{}
     require'lspconfig'['rnix'].setup{}
     require'lspconfig'['pyright'].setup{}
     require'lspconfig'['tsserver'].setup{
@@ -848,6 +849,11 @@ use {'vmchale/dhall-vim', --{{{
 }--}}}
 -- [[Rust]]
 use {'rust-lang/rust.vim', --{{{
+}--}}}
+-- [[GraphQL]]
+use {'jparise/vim-graphql', --{{{
+  config = function()
+  end
 }--}}}
 -- [[nix]]
 use {'LnL7/vim-nix', --{{{
