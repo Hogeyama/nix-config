@@ -453,6 +453,7 @@ in
         # vi = "neovim";
         # vim = "neovim";
         gs = "git status";
+        glog = "git log --pretty=format:\"%C(yellow)%h%Creset %C(green)%ad%Creset %s %Cred%d%Creset %Cblue[%an]\" --date=short --graph";
         j = "just";
       };
     };
