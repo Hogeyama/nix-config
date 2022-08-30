@@ -426,7 +426,7 @@ in
           mkdir -p "$1" && cd "$1"
         }
         neovim(){
-          if [[ -z "$NVIM_LISTEN_ADDRESS" ]]
+          if [[ -z "$NVIM_LISTEN_ADDRESS" ]] && [[ -z "$NVIM" ]]
           then
             nvim "$@"
           else
