@@ -18,6 +18,9 @@ git commit -a --fixup=<commit> && GIT_SEQUENCE_EDITOR=: git rebase --autosquash 
 # create fixup commit
 git commit --fixup=<commit>
 
+# add prefix to selected commits
+GIT_SEQUENCE_EDITOR=$EDITOR EDITOR='bash -c "{ echo -n \"<prefix> \"; cat $1; } | tee $1 >>/dev/null"' git rebase -i 
+
 $ commit:                  git log --oneline --color=always --- --map "awk '{print $1}'"
 $ remote:                  git remote show
 $ remote-branch:           git branch -r | sed -e 's/\(.*->\)//' -e 's/^\s*//'
