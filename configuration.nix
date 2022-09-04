@@ -19,9 +19,11 @@ in
     settings = {
       substituters = [
         "s3://hogeyama-nix-cache?region=ap-northeast-1"
+        "https://cache.iog.io"
       ];
       trusted-public-keys = [
         "hogeyama-nix-cache:rCcxGULOLr4ei6xv6vZObA7fqBKAt1Y6LZwmaN08Utc="
+        "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
       ];
       auto-optimise-store = true;
     };
