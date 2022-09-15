@@ -646,6 +646,9 @@ use { 'Shougo/ddc.vim', --{{{
             \ 'cmdline': {
             \   'mark': 'C',
             \ },
+            \ 'cmdline-history': {
+            \   'mark': 'history'
+            \ },
             \ 'path': {
             \   'mark': 'P',
             \ },
@@ -741,6 +744,7 @@ use { 'Shougo/ddc.vim', --{{{
         else
           call ddc#custom#patch_buffer('cmdlineSources', [
               \ 'cmdline',
+              \ 'cmdline-history',
               \ 'file',
               \ 'path',
               \ ])
