@@ -871,6 +871,8 @@ use {'preservim/vim-markdown', --{{{
 }--}}}
 use {'vim-voom/VOoM', --{{{
 }--}}}
+use {'hashivim/vim-terraform', --{{{
+}--}}}
 -- [[Textile]]
 use {'s3rvac/vim-syntax-redminewiki', --{{{
   config = function()
