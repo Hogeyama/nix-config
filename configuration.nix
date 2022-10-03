@@ -180,29 +180,27 @@ in
 
   fonts = {
     fonts = [
-      pkgs.ipafont
-      pkgs.dejavu_fonts
       pkgs.rounded-mgenplus
-      pkgs.illusion
-      pkgs.Cica
+      pkgs.nerdfonts
+      pkgs.noto-fonts-emoji
+      pkgs.noto-fonts-cjk-sans
+      pkgs.noto-fonts-cjk-serif
     ];
     fontconfig = {
       #ultimate.enable = true;
       defaultFonts = {
         monospace = [
           "Rounded Mgen+ 1mn"
-          "Cica"
-          # "DejaVu Sans Mono"
-          # "IPAGothic"
+          "Noto Color Emoji"      # Emoji fallback
+          "FiraMono Nerd Font"    # Nerd font fallback
+          "Noto Sans Mono CJK JP" # Other fallback
         ];
         sansSerif = [
           "Rounded Mgen+ 1cp"
-          "DejaVu Sans"
-          "IPAGothic"
+          "Noto Sans CJK JP"
         ];
         serif = [
-          "DejaVu Serif"
-          "IPAMincho"
+          "Noto Serif CJK JP"
         ];
       };
       localConf = ''
