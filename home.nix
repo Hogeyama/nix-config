@@ -227,7 +227,8 @@ in
       ".config/fontconfig/conf.d/20-illusion-fonts.conf".source = ./files/.config/fontconfig/conf.d/20-illusion-fonts.conf;
     } else { });
     sessionVariables = {
-      EDITOR = "nvim";
+      # EDITOR="bash -c 'nvim --server \"\$NVIM\" --remote-tab-silent \"\$@\"' --"
+      EDITOR = ''bash -c 'nvim --server \"\''$NVIM\" --remote-tab-silent \"\''$@\"' --'';
       BROWSER = env.user.browser;
     };
   };
