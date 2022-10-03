@@ -416,7 +416,9 @@ use {'neovim/nvim-lspconfig', --{{{
     -- {{{
     require'lspconfig'['hls'].setup{
       cmd = {
-        'haskell-language-server-wrapper',
+        -- a wrapper of haskell-language-server-wrapper that
+        -- fall backs to haskell-language-server
+        'haskell-language-server-wrapper-wrapper',
         '--lsp',
         '-d',
         '-l',

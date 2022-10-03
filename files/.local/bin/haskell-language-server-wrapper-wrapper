@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# haskell-language-server-wrapper がない場合は haskell-language-server にフォールバックする
+if command -v haskell-language-server-wrapper >/dev/null; then
+  haskell-language-server-wrapper "$@"
+else
+  haskell-language-server "$@"
+fi

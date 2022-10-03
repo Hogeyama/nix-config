@@ -219,6 +219,7 @@ in
       # my script
       ".local/bin/myclip".source = ./files/.local/bin/myclip;
       ".local/bin/my-xmonad-borderwidth".source = ./files/.local/bin/my-xmonad-borderwidth;
+      ".local/bin/haskell-language-server-wrapper-wrapper".source = ./files/.local/bin/haskell-language-server-wrapper-wrapper;
       # wall paper
       "Pictures/reflexion.jpg".source = ./files/Pictures/reflexion.jpg;
     } // (if env.type == "nix-package-manager" then {
