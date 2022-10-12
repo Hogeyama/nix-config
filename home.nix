@@ -12,6 +12,7 @@ in
       aws2-wrap
       awscli2
       aws-sam-cli
+      aws-vault
       bat
       bind
       commitizen
@@ -227,9 +228,10 @@ in
       ".config/fontconfig/conf.d/20-illusion-fonts.conf".source = ./files/.config/fontconfig/conf.d/20-illusion-fonts.conf;
     } else { });
     sessionVariables = {
-      # EDITOR="bash -c 'nvim --server \"\$NVIM\" --remote-tab-silent \"\$@\"' --"
       EDITOR = ''bash -c 'nvim --server \"\''$NVIM\" --remote-tab-silent \"\''$@\"' --'';
       BROWSER = env.user.browser;
+      AWS_VAULT_BACKEND = "pass";
+      AWS_VAULT_PASS_PREFIX = "aws-vault/";
     };
   };
   programs = {
