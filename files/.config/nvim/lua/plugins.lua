@@ -289,6 +289,8 @@ use {'jreybert/vimagit', --{{{
 }--}}}
 use {'lambdalisue/gina.vim', --{{{
 }--}}}
+use {'sindrets/diffview.nvim', --{{{
+}--}}}
 -- [LSP]
 use {'neovim/nvim-lspconfig', --{{{
   after = {"nvim-lsp-installer", "lsp-format.nvim"},
