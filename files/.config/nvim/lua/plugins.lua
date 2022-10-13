@@ -288,6 +288,15 @@ use {'tpope/vim-fugitive', --{{{
 use {'jreybert/vimagit', --{{{
 }--}}}
 use {'lambdalisue/gina.vim', --{{{
+  config = function()
+    vim.cmd[[
+      call gina#custom#action#alias(
+        \ '/.*', 'p', 'diff:preview'
+        \)
+      autocmd FileType gina-log nmap F <Plug>(gina-show-commit-vsplit)zv
+      "autocmd FileType gina-log nmap F <Plug>(gina-show-commit-preview)zv
+    ]]
+  end
 }--}}}
 use {'sindrets/diffview.nvim', --{{{
 }--}}}
