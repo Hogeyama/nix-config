@@ -300,6 +300,69 @@ use {'lambdalisue/gina.vim', --{{{
 }--}}}
 use {'sindrets/diffview.nvim', --{{{
 }--}}}
+use {'TimUntersberger/neogit', --{{{
+  config = function()
+    require("neogit").setup {
+      auto_refresh = true,
+      disable_builtin_notifications = false,
+      use_magit_keybindings = false,
+      kind = "tab",
+      commit_popup = {
+        kind = "vsplit",
+      },
+      popup = {
+        kind = "vsplit",
+      },
+      status = {
+        recent_commit_count = 25
+      },
+      -- customize displayed signs
+      signs = {
+        section = { "", "" },
+        item = { "", "" },
+        hunk = { ">", "v" },
+      },
+      integrations = {
+        diffview = true
+      },
+      sections = {
+        untracked = {
+          folded = true
+        },
+        unstaged = {
+          folded = false
+        },
+        staged = {
+          folded = false
+        },
+        stashes = {
+          folded = true
+        },
+        unpulled = {
+          folded = true
+        },
+        unmerged = {
+          folded = false
+        },
+        recent = {
+          folded = true
+        },
+      },
+      mappings = {
+        status = {
+          ["L"] = "",
+          ["B"] = "BranchPopup",
+          ["e"] = "LogPopup",
+        }
+      }
+    }
+    vim.cmd[[
+      nnoremap <buffer> <Leader>g :Neogit<CR>
+      autocmd FileType NeogitStatus       setlocal foldmethod=diff
+      autocmd FileType NeogitCommitReview setlocal foldmethod=diff
+    ]]
+  end
+}--}}}
 -- [LSP]
 use {'neovim/nvim-lspconfig', --{{{
   after = {"nvim-lsp-installer", "lsp-format.nvim"},
