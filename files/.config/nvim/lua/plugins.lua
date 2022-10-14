@@ -283,7 +283,7 @@ use {'dbridges/vim-markdown-runner', --{{{
 use {'Hogeyama/metarw-redmine', --{{{
 }--}}}
 use {'folke/noice.nvim', -- {{{
-  after = {"nui.nvim", "nvim-notify"},
+  after = {"nui.nvim", "nvim-notify", "nvim-cmp"},
   config = function()
     require("noice").setup {
       cmdline = {
@@ -303,9 +303,9 @@ use {'folke/noice.nvim', -- {{{
         enabled = false, -- disable if you use native messages UI
       },
       popupmenu = {
-        enabled = false, -- disable if you use something like cmp-cmdline
+        enabled = true, -- disable if you use something like cmp-cmdline
         ---@type 'nui'|'cmp'
-        backend = "nui", -- backend to use to show regular cmdline completions
+        backend = "cmp", -- backend to use to show regular cmdline completions
         -- You can specify options for nui under `config.views.popupmenu`
       },
       history = {
@@ -320,7 +320,7 @@ use {'folke/noice.nvim', -- {{{
         -- event is always "notify" and kind can be any log level as a string
         -- The default routes will forward notifications to nvim-notify
         -- Benefit of using Noice for this is the routing and consistent history view
-        enabled = false,
+        enabled = true,
       },
       hacks = {
         -- due to https://github.com/neovim/neovim/issues/20416
@@ -340,6 +340,11 @@ use {'folke/noice.nvim', -- {{{
       ---@type NoiceFormatOptions
       format = {}, -- @see section on formatting
     }
+    vim.cmd[[
+      hi NoiceCmdlinePopupBorder       guibg=None
+      hi NoiceCmdlinePopupSearchBorder guibg=None
+      hi NoiceConfirmBorder            guibg=None
+    ]]
   end,
 }--}}}
 -- [Git]
@@ -812,7 +817,7 @@ use {'hrsh7th/nvim-cmp',
     })
   end
 }
-use { 'hrsh7th/vim-vsnip', --{{{
+use {'hrsh7th/vim-vsnip', --{{{
   config = function()
     vim.cmd[[
       let g:vsnip_snippet_dir = expand('~/.config/nvim/vsnip')
@@ -822,7 +827,7 @@ use { 'hrsh7th/vim-vsnip', --{{{
     ]]
   end
 } --}}}
-use { 'hrsh7th/vim-vsnip-integ', --{{{
+use {'hrsh7th/vim-vsnip-integ', --{{{
   config = function()
     vim.cmd[[
       autocmd User PumCompleteDone call vsnip_integ#on_complete_done(g:pum#completed_item)
