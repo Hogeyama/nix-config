@@ -491,7 +491,7 @@ use {'neovim/nvim-lspconfig', --{{{
       end
       bmap('n', '<C-j>' , '<cmd>lua vim.lsp.buf.definition()<CR>')
       bmap('n', '<C-h>' , '<cmd>Lspsaga hover_doc<cr>')
-      bmap('n', '<C-l>f', '<cmd>lua vim.lsp.buf.formatting()<CR>')
+      bmap('n', '<C-l>f', '<cmd>lua vim.lsp.buf.format({ async = true })<CR>')
       bmap('v', '<C-l>f', '<cmd>lua vim.lsp.buf.range_formatting()<CR>')
       bmap('n', '<C-l>l', '<cmd>lua vim.lsp.codelens.run()<CR>')
       bmap('n', '<C-l>a', '<cmd>Lspsaga code_action<cr>')
