@@ -71,9 +71,12 @@ let mapleader=","
 let maplocalleader=","
 """esc
 "inoremap jk <Esc>
-inoremap <C-j><C-k> <Esc>:w<CR>
 nnoremap <C-\> :update<CR>
 inoremap <C-\> <Esc>:update<CR>
+nnoremap <C-s> :w<CR>
+inoremap <C-s> <Esc>:w<CR>
+nnoremap <C-n> :w<CR>
+inoremap <C-n> <Esc>:w<CR>
 """tab
 nnoremap <silent> tt  :<C-u>tabe<CR>
 nnoremap tg gT
@@ -139,7 +142,6 @@ inoremap <C-k> <up>
 inoremap <C-h> <left>
 inoremap <C-l> <right>
 inoremap <C-b> <esc>lBi
-inoremap <C-n> <esc>lWi
 inoremap <C-a> <esc>I
 inoremap <C-e> <esc>A
 """moving: mode
@@ -161,8 +163,8 @@ tnoremap ztg        <C-\><C-n>gT
 nnoremap <Space>cd :lcd %:h<CR>
 nnoremap ^ :noh<CR>
 vnoremap * "zy:let @/ = @z<CR>n
-nnoremap <C-n> :CNextRecursive<CR>
-nnoremap <C-p> :CPreviousRecursive<CR>
+"nnoremap <C-n> :CNextRecursive<CR>
+"nnoremap <C-p> :CPreviousRecursive<CR>
 nnoremap <M-n> :LNextRecursive<CR>
 nnoremap <M-p> :LPreviousRecursive<CR>
 "}}}
