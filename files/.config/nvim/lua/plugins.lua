@@ -550,7 +550,7 @@ use {'neovim/nvim-lspconfig', --{{{
       -- hack for yamlls.
       -- https://github.com/redhat-developer/yaml-language-server/issues/486#issuecomment-1046792026
       if client.name == "yamlls" then
-        client.resolved_capabilities.document_formatting = true
+        client.server_capabilities.documentFormattingProvider = true
       end
     end
     -- }}}
