@@ -237,6 +237,8 @@ in
 
       AWS_VAULT_BACKEND = "pass";
       AWS_VAULT_PASS_PREFIX = "aws-vault/";
+
+      FZFW_FD_EXCLUDE_PATHS = ".git,.hg,.hie,dist-newstyle,__pycache__,Session.vim";
     };
   };
   programs = {
