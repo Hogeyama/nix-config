@@ -190,6 +190,9 @@ in
         source = ./files/.config/nvim/vsnip;
         recursive = true;
       };
+      # direnv
+      ".config/direnv/direnvrc".source = ./files/.config/direnv/direnvrc;
+      ".config/direnv/direnv.toml".source = ./files/.config/direnv/direnv.toml;
       # vifm
       ".config/vifm/vifmrc".source = ./files/.config/vifm/vifmrc;
       ".config/vifm/colors/onedark.vifm".source = ./files/.config/vifm/colors/onedark.vifm;
