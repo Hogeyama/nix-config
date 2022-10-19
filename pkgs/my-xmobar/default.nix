@@ -13,7 +13,7 @@ let
   haskPkgs = pkgs.haskell.packages.${compiler}.override {
     overrides = haskellPackagesNew: haskellPackagesOld: {
       xmobar = haskellPackagesOld.xmobar.overrideAttrs (old: {
-        configureFlags = "-f all_extensions";
+        configureFlags = ["-f" "all_extensions"];
       });
     };
   };
