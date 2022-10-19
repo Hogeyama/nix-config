@@ -230,6 +230,11 @@ in
     sessionVariables = {
       EDITOR = ''bash -c 'nvim --server \"\''$NVIM\" --remote-tab-silent \"\''$@\"' --'';
       BROWSER = env.user.browser;
+
+      AWS_PAGER = "";
+      AWS_DEFAULT_OUTPUT = "yaml";
+      AWS_CLI_AUTO_PROMPT = "on-partial";
+
       AWS_VAULT_BACKEND = "pass";
       AWS_VAULT_PASS_PREFIX = "aws-vault/";
     };
