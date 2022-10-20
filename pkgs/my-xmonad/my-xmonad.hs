@@ -74,7 +74,8 @@ main = do
         , startupHook =
             mapM_
               spawn
-              [ "autorandr -l default"
+              [ "zsh -c albert"
+              , "autorandr -l default"
               , "feh --bg-scale $HOME/Pictures/reflexion.jpg"
               ]
         , handleExtraArgs = \xs conf -> do

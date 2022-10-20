@@ -9,6 +9,7 @@ in
   };
   home = {
     packages = with pkgs; [
+      albert
       aws2-wrap
       awscli2
       aws-sam-cli
@@ -193,6 +194,13 @@ in
       # direnv
       ".config/direnv/direnvrc".source = ./files/.config/direnv/direnvrc;
       ".config/direnv/direnv.toml".source = ./files/.config/direnv/direnv.toml;
+      # albert
+      ".config/albert/albert.conf".source = ./files/.config/albert/albert.conf;
+      ".config/albert/org.albert.extension.websearch/engines.json".source = ./files/.config/albert/org.albert.extension.websearch/engines.json;
+      ".local/share/albert/org.albert.extension.python/modules" = {
+        source = ./files/.local/share/albert/org.albert.extension.python/modules;
+        recursive = true;
+      };
       # vifm
       ".config/vifm/vifmrc".source = ./files/.config/vifm/vifmrc;
       ".config/vifm/colors/onedark.vifm".source = ./files/.config/vifm/colors/onedark.vifm;
