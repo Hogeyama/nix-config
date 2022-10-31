@@ -435,9 +435,13 @@ use {'lewis6991/gitsigns.nvim', --{{{
 }--}}}
 -- [LSP]
 use {'neovim/nvim-lspconfig', --{{{
-  after = {"nvim-lsp-installer", "lsp-format.nvim"},
+  after = {
+    "nvim-lsp-installer",
+    "lsp-format.nvim",
+    "diagnosticls-configs-nvim",
+  },
   config = function()
-    -- [Common config]
+    -- [Common]
     -- [[configure LSP installer]] {{{
     require'nvim-lsp-installer'.setup({
       ensure_installed = {
@@ -569,6 +573,12 @@ use {'neovim/nvim-lspconfig', --{{{
     )
     -- }}}
     -- [Per server]
+    -- [[diagnosticls]] --{{{
+    local dlsconfig = require 'diagnosticls-configs'
+    dlsconfig.init {
+      on_attach = vim.g.lsp_default_on_attach,
+    }
+    -- }}}
     -- {{{
     require'lspconfig'['hls'].setup{
       cmd = {
@@ -601,54 +611,8 @@ use {'neovim/nvim-lspconfig', --{{{
           python = 'flake8',
         },
         linters = {
-          shellcheck = {
-            command = 'shellcheck',
-            debounce = 100,
-            args = { '--format=gcc', '-' },
-            offsetLine = 0,
-            offsetColumn = 0,
-            sourceName = 'shellcheck',
-            formatLines = 1,
-            formatPattern = {
-              "^[^:]+:(\\d+):(\\d+):\\s+([^:]+):\\s+(.*)$",
-              {
-                line = 1,
-                column = 2,
-                message = 4,
-                security = 3,
-              },
-            },
-            securities = {
-              error = 'error',
-              warning = 'warning',
-              note = 'info'
-            }
-          },
-          flake8 = {
-            command = "flake8",
-            debounce = 100,
-            args = { "--format=%(row)d,%(col)d,%(code).1s,%(code)s: %(text)s", "-" },
-            offsetLine = 0,
-            offsetColumn = 0,
-            sourceName = "flake8",
-            formatLines = 1,
-            formatPattern = {
-              "(\\d+),(\\d+),([A-Z]),(.*)(\\r|\\n)*$",
-              {
-                line = 1,
-                column = 2,
-                security = 3,
-                message = 4
-              }
-            },
-            securities = {
-              W = "warning",
-              E = "error",
-              F = "error",
-              C = "error",
-              N = "error"
-            }
-          },
+          shellcheck = require 'diagnosticls-configs.linters.shellcheck',
+          flake8 = require 'diagnosticls-configs.linters.flake8',
         },
         formatFiletypes = {
           python = 'black',
