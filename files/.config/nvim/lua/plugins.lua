@@ -556,6 +556,10 @@ use {'neovim/nvim-lspconfig', --{{{
       if client.name == "yamlls" then
         client.server_capabilities.documentFormattingProvider = true
       end
+      -- preffer prettier
+      if client.name == "tsserver" then
+        client.server_capabilities.documentFormattingProvider = false
+      end
     end
     -- }}}
     -- [[capabilities]] --{{{
@@ -616,21 +620,23 @@ use {'neovim/nvim-lspconfig', --{{{
           sh = 'shellcheck',
           bash = 'shellcheck',
           python = 'flake8',
+          typescript = 'eslint',
+          typescriptreact = 'eslint',
+          ['typescript.tsx'] = 'eslint',
         },
         linters = {
           shellcheck = require 'diagnosticls-configs.linters.shellcheck',
           flake8 = require 'diagnosticls-configs.linters.flake8',
+          eslint = require 'diagnosticls-configs.linters.eslint',
         },
         formatFiletypes = {
           python = 'black',
           typescript = 'prettier',
           typescriptreact = 'prettier',
+          ['typescript.tsx'] = 'prettier',
         },
         formatters = {
-          black =  {
-            command = "black",
-            args = {"--quiet", "-"}
-          },
+          black =  { command = "black", args = {"--quiet", "-"} },
           prettier = require 'diagnosticls-configs.formatters.prettier',
         }
       },
