@@ -603,7 +603,14 @@ use {'neovim/nvim-lspconfig', --{{{
       },
     }
     require'lspconfig'['diagnosticls'].setup{
-      filetypes = {'sh', 'bash', 'python'},
+      filetypes = {
+        'sh',
+        'bash',
+        'python',
+        'typescript',
+        'typescriptreact',
+        'typescript.tsx',
+      },
       init_options = {
         filetypes = {
           sh = 'shellcheck',
@@ -616,12 +623,15 @@ use {'neovim/nvim-lspconfig', --{{{
         },
         formatFiletypes = {
           python = 'black',
+          typescript = 'prettier',
+          typescriptreact = 'prettier',
         },
         formatters = {
           black =  {
             command = "black",
             args = {"--quiet", "-"}
-          }
+          },
+          prettier = require 'diagnosticls-configs.formatters.prettier',
         }
       },
     }
@@ -692,6 +702,8 @@ use {'lukas-reineke/lsp-format.nvim', --{{{
       }
     }
   end
+}--}}}
+use {'creativenull/diagnosticls-configs-nvim', --{{{
 }--}}}
 -- [DAP]
 use {'mfussenegger/nvim-dap', --{{{

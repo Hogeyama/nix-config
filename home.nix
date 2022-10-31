@@ -44,6 +44,7 @@ in
       nodejs
       nodePackages.bash-language-server
       nodePackages.npm
+      nodePackages.prettier
       openssl
       pandoc
       pass
