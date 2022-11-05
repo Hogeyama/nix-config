@@ -76,6 +76,7 @@ in
       my-fzf
       my-fzf-wrapper
       ### unstable
+      unstable.dasel
       unstable.alacritty
     ];
     file = {
@@ -400,6 +401,17 @@ in
           fpath+=(${pkgs.watson}/share/zsh/site-functions)
           fpath+=(${pkgs.just}/share/zsh/site-functions)
           fpath+=(${pkgs.pass}/share/zsh/site-functions)
+          # dasel completion
+          fpath+=(${pkgs.stdenv.mkDerivation {
+            name = "dasel-completion";
+            unpackPhase = "true";
+            buildInputs = [ pkgs.unstable.dasel ];
+            installPhase = ''
+              mkdir -p $out/share/zsh/site-functions
+              dasel --version
+              dasel completion zsh > $out/share/zsh/site-functions/_dasel
+            '';
+          }}/share/zsh/site-functions)
           # for ddc-zsh
           zmodload zsh/zpty
         '';
