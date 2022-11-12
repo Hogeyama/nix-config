@@ -267,6 +267,9 @@ in
     enable = true;
     adminPubkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK2Apn34HBo5o00uK04Qrm5ySRzZqcYXFwTCKZllS4uZ";
   };
+  services.keybase = {
+    enable = true;
+  };
 
   nix.trustedUsers = [ env.user.name ];
 }
