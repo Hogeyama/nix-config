@@ -1,10 +1,16 @@
 % git
 
-# informative log (graph)
-git log --pretty=format:"%C(yellow)%h%Creset %C(green)%ad%Creset %s %Cred%d%Creset %Cblue[%an]" --date=short --graph
+# interactive rebase
+git rebase -i --keep-base <commit>^
 
 # add worktree
 git worktree add -B {,,<remote>/}<remote-branch-no-prefix>
+
+# add worktree for PR review
+<add_worktree_for_pr>
+
+# remove worktree
+git worktree remove <worktree_path>
 
 # squash/fixup automatically
 GIT_SEQUENCE_EDITOR=: git rebase --autosquash --autostash -i <commit>
@@ -25,3 +31,5 @@ $ commit:                  git log --oneline --color=always --- --map "awk '{pri
 $ remote:                  git remote show
 $ remote-branch:           git branch -r | sed -e 's/\(.*->\)//' -e 's/^\s*//'
 $ remote-branch-no-prefix: git branch -r | sed -e 's/\(.*->\)//' -e 's/^[^\/]*\///'
+$ worktree_path:           git worktree list | tail -n+2 --- --map "awk '{print $1}'"
+$ add_worktree_for_pr:     gh pr list --json number,headRefName,title | jq -r '.[]| [.number,.title,.headRefName]|join("\t")' --- --multi --expand --map "read -r line; num=$(awk -F'\t' '{print $1}' <<<\"$line\"); title=$(awk -F'\t' '{print $2}' <<<\"$line\"); branch=$(awk -F'\t' '{print $3}' <<<\"$line\"); echo -n \"git worktree add 'pr/$num-$title' -b {,origin/}$branch\""
