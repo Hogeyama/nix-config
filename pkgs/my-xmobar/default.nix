@@ -1,5 +1,5 @@
 { pkgs
-, compiler ? "ghc8107"
+, compiler ? "ghc924"
 }:
 let
   src = pkgs.lib.sourceByRegex ./. [

@@ -1,4 +1,4 @@
-{ pkgs, compiler ? "ghc8107" }:
+{ pkgs, compiler ? "ghc924" }:
 let
   src = pkgs.lib.sourceByRegex ./. [
     "my-xmonad.hs"
