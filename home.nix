@@ -569,5 +569,6 @@ in
     };
   };
   services.dropbox.enable = true;
+  manual.manpages.enable = false;
 }
 # vim:foldmethod=indent:

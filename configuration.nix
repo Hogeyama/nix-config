@@ -3,7 +3,7 @@ let
   env = import ./env.nix;
 in
 {
-  system.stateVersion = "22.05";
+  system.stateVersion = "22.11";
 
   imports =
     if env.type == "nixos-virtualbox" then [
@@ -99,9 +99,6 @@ in
   services.xserver = {
     enable = true;
     layout = "jp";
-
-    # videoDrivers = [ "modesetting" ];
-    useGlamor = true;
 
     displayManager =
       if env.type == "nixos"
@@ -271,5 +268,5 @@ in
     enable = true;
   };
 
-  nix.trustedUsers = [ env.user.name ];
+  nix.settings.trusted-users = [ env.user.name ];
 }
