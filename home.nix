@@ -33,6 +33,7 @@ in
       gopls
       golangci-lint
       google-cloud-sdk
+      hadolint
       htop
       jq
       just
