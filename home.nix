@@ -53,6 +53,7 @@ in
       ripgrep
       rnix-lsp
       shellcheck
+      shfmt
       scrot
       sqlite
       terraform
