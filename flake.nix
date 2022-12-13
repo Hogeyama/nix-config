@@ -6,11 +6,13 @@
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    # nightly neovim
+    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     # mine
     my-fzf-wrapper.url = "github:Hogeyama/my-fzf-wrapper";
   };
 
-  outputs = { nixpkgs, nixpkgs-unstable, home-manager, my-fzf-wrapper, ... }:
+  outputs = { nixpkgs, nixpkgs-unstable, home-manager, my-fzf-wrapper, neovim-nightly-overlay, ... }:
     let
       system = "x86_64-linux";
 
@@ -18,7 +20,7 @@
       hostName = env.hostName;
       username = env.user.name;
 
-      overlay = final: prev: {
+      my-overlay = final: prev: {
         # unstable packages are available as pkgs.unstable.${package}
         unstable = builtins.getAttr system nixpkgs-unstable.outputs.legacyPackages;
         # my packages
@@ -32,6 +34,11 @@
         my-fzf = import ./pkgs/my-fzf { pkgs = final; };
         my-fzf-wrapper = my-fzf-wrapper.defaultPackage.${system};
       };
+
+      overlays = [
+        my-overlay
+        neovim-nightly-overlay.overlay
+      ];
     in
     {
       # For NixOS
@@ -39,7 +46,7 @@
         inherit system;
         modules = [
           # overlay
-          ({ pkgs, ... }@args: { nixpkgs.overlays = [ overlay ]; })
+          ({ pkgs, ... }@args: { nixpkgs.overlays = overlays; })
           # system configuration
           ({ pkgs, ... }@args: import ./configuration.nix (args // { inherit nixpkgs; }))
           # home-manager configuration
@@ -55,7 +62,7 @@
       # For Nix package manager only
       homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
         pkgs = builtins.getAttr system nixpkgs.outputs.legacyPackages // {
-          overlays = [ overlay ];
+          overlays = overlays;
         };
         inherit system username;
         configuration = import ./home.nix;
