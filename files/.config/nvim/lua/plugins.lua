@@ -286,27 +286,106 @@ use {'folke/noice.nvim', -- {{{
   after = {"nui.nvim", "nvim-notify", "nvim-cmp"},
   config = function()
     require("noice").setup {
+      presets = {
+        bottom_search = false, -- use a classic bottom cmdline for search
+        long_message_to_split = true, -- long messages will be sent to a split
+        inc_rename = false, -- enables an input dialog for inc-rename.nvim
+        lsp_doc_border = true, -- add a border to hover docs and signature help
+      },
+      lsp = {
+        override = {
+          -- override the default lsp markdown formatter with Noice
+          ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+          -- override the lsp markdown formatter with Noice
+          ["vim.lsp.util.stylize_markdown"] = true,
+          -- override cmp documentation with Noice (needs the other options to work)
+          ["cmp.entry.get_documentation"] = true,
+        },
+        progress = {
+          enabled = true,
+          -- Lsp Progress is formatted using the builtins for lsp_progress. See config.format.builtin
+          -- See the section on formatting for more details on how to customize.
+          --- @type NoiceFormat|string
+          format = "lsp_progress",
+          --- @type NoiceFormat|string
+          format_done = "lsp_progress_done",
+          throttle = 1000 / 30, -- frequency to update lsp progress message
+          view = "mini",
+        },
+        hover = {
+          enabled = true,
+          view = nil, -- when nil, use defaults from documentation
+          ---@type NoiceViewOptions
+          opts = {
+            border = {
+              style = "none",
+              padding = { 1, 1 },
+            }
+          }, -- merged with defaults from documentation
+        },
+        signature = {
+          enabled = true,
+          auto_open = {
+            enabled = true,
+            trigger = true, -- Automatically show signature help when typing a trigger character from the LSP
+            luasnip = true, -- Will open signature help when jumping to Luasnip insert nodes
+            throttle = 50, -- Debounce lsp signature help request by 50ms
+          },
+          view = nil, -- when nil, use defaults from documentation
+          ---@type NoiceViewOptions
+          opts = {}, -- merged with defaults from documentation
+        },
+        message = {
+          -- Messages shown by lsp servers
+          enabled = true,
+          view = "mini",
+          opts = {},
+        },
+        -- defaults for hover and signature help
+        documentation = {
+          view = "hover",
+          ---@type NoiceViewOptions
+          opts = {
+            lang = "markdown",
+            replace = true,
+            render = "plain",
+            format = { "{message}" },
+            win_options = { concealcursor = "n", conceallevel = 3 },
+          },
+        },
+      },
       cmdline = {
         enabled = true, -- disable if you use native command line UI
         view = "cmdline_popup", -- view for rendering the cmdline. Change to `cmdline` to get a classic cmdline at the bottom
-        opts = { buf_options = { filetype = "vim" } }, -- enable syntax highlighting in the cmdline
-        icons = {
-          ["/"] = { icon = " ", hl_group = "DiagnosticWarn" },
-          ["?"] = { icon = " ", hl_group = "DiagnosticWarn" },
-          [":"] = { icon = " ", hl_group = "DiagnosticInfo", firstc = false },
+        format = {
+          cmdline = { pattern = "^:", icon = "", lang = "vim" },
+          search_down = { kind = "search", pattern = "^/", icon = "  ", lang = "regex" },
+          search_up = { kind = "search", pattern = "^%?", icon = "  ", lang = "regex" },
+          filter = { pattern = "^:%s*!", icon = "$", lang = "bash" },
+          lua = { pattern = "^:%s*lua%s+", icon = " ", lang = "lua" },
+          help = { pattern = "^:%s*he?l?p?%s+", icon = " " },
+          input = {}, -- Used by input()
         },
       },
       messages = {
-        -- NOTE: If you enable noice messages UI, noice cmdline UI is enabled
-        -- automatically. You cannot enable noice messages UI only.
-        -- It is current neovim implementation limitation.  It may be fixed later.
-        enabled = false, -- disable if you use native messages UI
+        enabled = true,
+        view = "mini",
+        view_error = "mini",
+        view_warn = "mini",
+        view_history = "mini",
+        view_search = "mini",
       },
       popupmenu = {
         enabled = true, -- disable if you use something like cmp-cmdline
         ---@type 'nui'|'cmp'
         backend = "cmp", -- backend to use to show regular cmdline completions
-        -- You can specify options for nui under `config.views.popupmenu`
+      },
+      -- default options for require('noice').redirect
+      -- see the section on Command Redirection
+      ---@type NoiceRouteConfig
+      redirect = {
+        view = "split",
+        filter = { event = "msg_show" },
       },
       history = {
         -- options for the message history that you get with `:Noice`
@@ -332,7 +411,10 @@ use {'folke/noice.nvim', -- {{{
       },
       throttle = 1000 / 30, -- how frequently does Noice need to check for ui updates? This has no effect when in blocking mode.
       ---@type table<string, NoiceViewOptions>
-      views = {}, -- @see the section on views below
+      views = {
+        cmdline_popup = { position = { row = 20, col = "50%" } },
+      },
+      -- NOTE ここから下はデフォルト
       ---@type NoiceRouteConfig[]
       routes = {}, -- @see the section on routes below
       ---@type table<string, NoiceFilter>
@@ -340,11 +422,6 @@ use {'folke/noice.nvim', -- {{{
       ---@type NoiceFormatOptions
       format = {}, -- @see section on formatting
     }
-    vim.cmd[[
-      hi NoiceCmdlinePopupBorder       guibg=None
-      hi NoiceCmdlinePopupSearchBorder guibg=None
-      hi NoiceConfirmBorder            guibg=None
-    ]]
   end,
 }--}}}
 -- [Git]
@@ -499,7 +576,7 @@ use {'neovim/nvim-lspconfig', --{{{
         vim.keymap.set(mode, key, cmd, { noremap=true, silent=true })
       end
       bmap('n', '<C-j>' , '<cmd>lua vim.lsp.buf.definition()<CR>')
-      bmap('n', '<C-h>' , '<cmd>Lspsaga hover_doc<cr>')
+      bmap('n', '<C-h>' , '<cmd>lua vim.lsp.buf.hover()<CR>')
       bmap('n', '<C-l>f', '<cmd>lua vim.lsp.buf.format({ async = true })<CR>')
       bmap('v', '<C-l>f', '<cmd>lua vim.lsp.buf.range_formatting()<CR>')
       bmap('n', '<C-l>l', '<cmd>lua vim.lsp.codelens.run()<CR>')
@@ -876,23 +953,25 @@ use {'jelera/vim-javascript-syntax', --{{{
 use {'leafgarland/typescript-vim', --{{{
 }--}}}
 -- [[Color scheme]]
-use {'tyrannicaltoucan/vim-deep-space', --{{{
-}--}}}
 use {'cocopon/iceberg.vim', --{{{
+  after = {"vim-floaterm", "nvim-cmp", "noice.nvim", "nui.nvim", "popup.nvim", "nvim-notify", "hop.nvim"},
   config = function()
     vim.cmd[[
       set background=dark
       set termguicolors
       colorscheme iceberg
-      hi Folded            guibg=None
-      hi LineNr            guibg=None
-      hi MatchParen        guibg=black guifg=#dadada
-      hi FloatermBorder    guibg=None  guifg=cyan     " floaterm
-      "hi Pmenu             guibg=None                 " pum.vim
-      hi LspCodeLens       guibg=None  guifg=#555555  " lsp
-      hi LspReferenceRead  guibg=black
-      hi LspReferenceText  guibg=black
-      hi LspReferenceWrite guibg=black
+      hi Pmenu                         guibg=None guifg=cyan
+      hi Folded                        guibg=None
+      hi LineNr                        guibg=None
+      hi MatchParen                    guibg=black guifg=#dadada
+      hi FloatermBorder                guibg=None  guifg=cyan     " floaterm
+      hi DiagnosticSignInfo            guibg=None
+      hi DiagnosticSignWarn            guibg=None
+      hi LspCodeLens                   guibg=None  guifg=#555555  " lsp
+      hi LspReferenceRead              guibg=black
+      hi LspReferenceText              guibg=black
+      hi LspReferenceWrite             guibg=black
+      hi NoiceCmdlineIcom              guibg=None
     ]]
   end
 }--}}}
