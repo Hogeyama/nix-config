@@ -522,9 +522,6 @@ use {'neovim/nvim-lspconfig', --{{{
           vim.diagnostic.open_float(nil, opts)
         end
       })
-      -- Format
-      -- 不便を感じることが増えたので無効にしておく
-      -- require "lsp-format".on_attach(client, bufnr)
       -- Highlight symbol under cursor
       -- https://github.com/neovim/nvim-lspconfig/wiki/UI-customization#highlight-symbol-under-cursor
       if client.server_capabilities.documentHighlightProvider then
@@ -560,6 +557,8 @@ use {'neovim/nvim-lspconfig', --{{{
       if client.name == "tsserver" then
         client.server_capabilities.documentFormattingProvider = false
       end
+      -- 自動Format
+      require "lsp-format".on_attach(client, bufnr)
     end
     -- }}}
     -- [[capabilities]] --{{{
@@ -707,6 +706,8 @@ use {'lukas-reineke/lsp-format.nvim', --{{{
         exclude = {"jdtls"}
       }
     }
+    -- 自動フォーマット
+    vim.cmd [[cabbrev wq execute "Format sync" <bar> wq]]
   end
 }--}}}
 use {'creativenull/diagnosticls-configs-nvim', --{{{
