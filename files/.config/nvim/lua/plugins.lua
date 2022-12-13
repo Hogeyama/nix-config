@@ -17,54 +17,6 @@ use {'kyazdani42/nvim-web-devicons', --{{{
 } --}}}
 use {'rcarriga/nvim-notify', --{{{
 } --}}}
-use {'stevearc/dressing.nvim', --{{{
-  config = function()
-    require('dressing').setup({
-      input = {
-        enabled = true,
-        -- Default prompt string
-        default_prompt = 'Input:',
-        -- Can be 'left', 'right', or 'center'
-        prompt_align = 'left',
-        -- When true, <Esc> will close the modal
-        insert_only = true,
-        -- These are passed to nvim_open_win
-        anchor = 'NW',
-        border = 'rounded',
-        -- 'editor' and 'win' will default to being centered
-        relative = 'cursor',
-        -- These can be integers or a float between 0 and 1 (e.g. 0.4 for 40%)
-        prefer_width = 0.4,
-        width = nil,
-        -- min_width and max_width can be a list of mixed types.
-        -- min_width = {20, 0.2} means 'the greater of 20 columns or 20% of total'
-        max_width = { 140, 0.9 },
-        min_width = { 20, 0.2 },
-        -- Window transparency (0-100)
-        winblend = 0,
-        -- Change default highlight groups (see :help winhl)
-        winhighlight = '',
-        override = function(conf)
-          -- This is the config that will be passed to nvim_open_win.
-          -- Change values here to customize the layout
-          return conf
-        end,
-        -- see :help dressing_get_config
-        get_config = nil,
-      },
-      select = {
-        enabled = true,
-        backend = { 'fzf_lua', 'telescope', 'fzf', 'nui', 'builtin' },
-        fzf_lua = {
-          winopts = {
-            width = 0.5,
-            height = 0.4,
-          },
-        },
-      },
-    })
-  end
-} --}}}
 use {'nvim-telescope/telescope.nvim' --{{{
 } --}}}
 use {'ibhagwan/fzf-lua', --{{{
