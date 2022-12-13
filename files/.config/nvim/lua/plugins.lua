@@ -399,6 +399,7 @@ use {'TimUntersberger/neogit', --{{{
     require("neogit").setup {
       auto_refresh = true,
       disable_builtin_notifications = false,
+      disable_commit_confirmation = true,
       use_magit_keybindings = false,
       kind = "tab",
       commit_popup = {
@@ -447,11 +448,12 @@ use {'TimUntersberger/neogit', --{{{
           ["L"] = "",
           ["B"] = "BranchPopup",
           ["e"] = "LogPopup",
+          ["<enter>"] = "TabOpen",
         }
       }
     }
     vim.cmd[[
-      nnoremap <buffer> <Leader>g :Neogit<CR>
+      nnoremap <Leader>g :Neogit<CR>
       autocmd FileType NeogitStatus       setlocal foldmethod=diff
       autocmd FileType NeogitCommitReview setlocal foldmethod=diff
     ]]
