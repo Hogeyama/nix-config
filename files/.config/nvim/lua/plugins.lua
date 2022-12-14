@@ -316,7 +316,7 @@ use {'folke/noice.nvim', -- {{{
         },
       },
       messages = {
-        enabled = true,
+        enabled = false,
         view = "mini",
         view_error = "mini",
         view_warn = "mini",
