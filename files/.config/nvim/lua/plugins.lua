@@ -6,8 +6,6 @@ use {'wbthomason/packer.nvim', --{{{
 -- [Lib]
 use {'nvim-lua/plenary.nvim', --{{{
 } --}}}
-use {'vim-denops/denops.vim' --{{{
-} --}}}
 -- [UI]
 use {'nvim-lua/popup.nvim', --{{{
 } --}}}
@@ -231,8 +229,6 @@ use {'dbridges/vim-markdown-runner', --{{{
       autocmd FileType markdown nnoremap <buffer> <Leader>q :MarkdownRunnerInsert<CR>
     ]]
   end
-}--}}}
-use {'Hogeyama/metarw-redmine', --{{{
 }--}}}
 use {'folke/noice.nvim', -- {{{
   after = {"nui.nvim", "nvim-notify", "nvim-cmp"},
