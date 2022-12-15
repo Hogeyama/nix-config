@@ -188,8 +188,8 @@ in
       defaultFonts = {
         monospace = [
           "Rounded Mgen+ 1mn"
-          "Noto Color Emoji"      # Emoji fallback
-          "FiraMono Nerd Font"    # Nerd font fallback
+          "Noto Color Emoji" # Emoji fallback
+          "FiraMono Nerd Font" # Nerd font fallback
           "Noto Sans Mono CJK JP" # Other fallback
         ];
         sansSerif = [
