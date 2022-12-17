@@ -497,6 +497,7 @@ use {'WhoIsSethDaniel/mason-tool-installer.nvim', --{{{
         "jdtls",
         "json-lsp",
         "lua-language-server",
+        "ocaml-lsp",
         "pyright",
         "terraform-ls",
         "tflint",
@@ -677,6 +678,7 @@ use {'neovim/nvim-lspconfig', --{{{
     require'lspconfig'['tflint'].setup{}
     require'lspconfig'['dockerls'].setup{}
     require'lspconfig'['sqlls'].setup{}
+    require'lspconfig'['ocamllsp'].setup{}
     -- }}}
   end
 } --}}}
