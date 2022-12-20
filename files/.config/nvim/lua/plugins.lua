@@ -468,59 +468,74 @@ use {'lewis6991/gitsigns.nvim', --{{{
   end
 }--}}}
 -- [LSP]
+use {'williamboman/mason.nvim', --{{{
+  config = function()
+    require('mason').setup()
+  end
+}--}}}
+use {'williamboman/mason-lspconfig.nvim', --{{{
+  config = function()
+    require('mason-lspconfig').setup()
+  end
+}--}}}
+use {'WhoIsSethDaniel/mason-tool-installer.nvim', --{{{
+  after = {
+    'mason.nvim',
+    'mason-lspconfig.nvim',
+  },
+  config = function()
+    require('mason-tool-installer').setup {
+      ensure_installed = {
+        -- [LSP]
+        "bash-language-server",
+        "dhall-lsp",
+        "diagnostic-languageserver",
+        "dockerfile-language-server",
+        "eslint-lsp",
+        "gopls",
+        "graphql-language-service-cli",
+        "jdtls",
+        "json-lsp",
+        "lua-language-server",
+        "pyright",
+        "terraform-ls",
+        "tflint",
+        "typescript-language-server",
+        "yaml-language-server",
+        "sqls",
+        -- [DAP]
+        "java-debug-adapter",
+        "java-test",
+        -- [null-ls]
+        "actionlint",
+        "black",
+        "commitlint",
+        "flake8",
+        "hadolint",
+        "prettier",
+        "shfmt",
+        "yamllint",
+      },
+      auto_update = false,
+      run_on_start = true,
+      start_delay = 3000, -- 3 second delay
+    }
+  end
+}--}}}
 use {'neovim/nvim-lspconfig', --{{{
   after = {
-    "nvim-lsp-installer",
+    "mason-tool-installer.nvim",
     "lsp-format.nvim",
     "diagnosticls-configs-nvim",
   },
   config = function()
     -- [Common]
-    -- [[configure LSP installer]] {{{
-    require'nvim-lsp-installer'.setup({
-      ensure_installed = {
-        -- 'hls', -- managed by nix
-        'bashls',
-        'denols',
-        'diagnosticls',
-        'gopls',
-        'jdtls',
-        'jsonls',
-        'pyright',
-        'tsserver',
-        'yamlls',
-        'terraformls',
-        'rust_analyzer',
-        'tflint',
-      },
-      automatic_installation = false,
-      ui = {
-        icons = {
-            server_installed = '✓',
-            server_pending = '➜',
-            server_uninstalled = '✗'
-        }
-      }
-    })
-    vim.g.jdtls_home = vim.env.HOME .. '/.local/share/nvim/lsp_servers/jdtls'
-    --}}}
     -- [[diagnostic]] {{{
     vim.diagnostic.config({
       virtual_text = {
         prefix = "",
       },
     })
-    vim.cmd [[
-      highlight! DiagnosticLineNrError guibg=#51202A guifg=#FF0000 gui=bold
-      highlight! DiagnosticLineNrWarn guibg=#51412A guifg=#FFA500 gui=bold
-      highlight! DiagnosticLineNrInfo guibg=#1E535D guifg=#00FFFF gui=bold
-      highlight! DiagnosticLineNrHint guibg=#1E205D guifg=#0000FF gui=bold
-
-      sign define DiagnosticSignError text= texthl=DiagnosticSignError linehl= numhl=DiagnosticLineNrError
-      sign define DiagnosticSignWarn text= texthl=DiagnosticSignWarn linehl= numhl=DiagnosticLineNrWarn
-      sign define DiagnosticSignInfo text= texthl=DiagnosticSignInfo linehl= numhl=DiagnosticLineNrInfo
-      sign define DiagnosticSignHint text= texthl=DiagnosticSignHint linehl= numhl=DiagnosticLineNrHint
-    ]]
     vim.keymap.set('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', { noremap=true, silent=true })
     vim.keymap.set('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', { noremap=true, silent=true })
     --}}}
@@ -532,16 +547,19 @@ use {'neovim/nvim-lspconfig', --{{{
       local bmap = function (mode, key, cmd)
         vim.keymap.set(mode, key, cmd, { noremap=true, silent=true })
       end
-      bmap('n', '<C-j>' , '<cmd>lua vim.lsp.buf.definition()<CR>')
-      bmap('n', '<C-h>' , '<cmd>lua vim.lsp.buf.hover()<CR>')
-      bmap('n', '<C-l>f', '<cmd>lua vim.lsp.buf.format({ async = true })<CR>')
-      bmap('v', '<C-l>f', '<cmd>lua vim.lsp.buf.range_formatting()<CR>')
-      bmap('n', '<C-l>l', '<cmd>lua vim.lsp.codelens.run()<CR>')
-      bmap('n', '<C-l>a', '<cmd>Lspsaga code_action<cr>')
-      bmap('n', '<C-l>h', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
-      bmap('n', '<C-l>d', '<cmd>lua vim.lsp.buf.type_definition()<CR>')
-      bmap('n', '<C-l>r', '<cmd>lua vim.lsp.buf.references()<CR>')
-      bmap('n', '<C-l>R', '<cmd>lua vim.lsp.buf.rename()<CR>')
+      bmap('n', '<C-h>' , vim.lsp.buf.hover)
+      bmap('n', '<C-j>' , '<cmd>Lspsaga lsp_finder<CR>')
+      bmap('n', '<C-k>' , '<cmd>Lspsaga peek_definition<CR>')
+      bmap('n', '<C-l>a', '<cmd>Lspsaga code_action<CR>')
+      bmap('n', '<C-l>o', '<cmd>Lspsaga outline<CR>')
+      bmap('n', '<C-l>f', vim.lsp.buf.format)
+      bmap('v', '<C-l>f', vim.lsp.buf.format)
+      bmap('n', '<C-l>h', vim.lsp.buf.signature_help)
+      bmap('n', '<C-l>d', vim.lsp.buf.type_definition)
+      bmap('n', '<C-l>r', vim.lsp.buf.references)
+      bmap('n', '<C-l>R', vim.lsp.buf.rename)
+      bmap('n', '<C-l>j', vim.lsp.buf.definition)
+      bmap('n', '<C-l>l', vim.lsp.codelens.run)
       vim.api.nvim_create_autocmd("CursorHold", {
         buffer = bufnr,
         callback = function()
@@ -592,7 +610,7 @@ use {'neovim/nvim-lspconfig', --{{{
         client.server_capabilities.documentFormattingProvider = false
       end
       -- 自動Format
-      require "lsp-format".on_attach(client, bufnr)
+      require'lsp-format'.on_attach(client, bufnr)
     end
     -- }}}
     -- [[capabilities]] --{{{
@@ -610,13 +628,7 @@ use {'neovim/nvim-lspconfig', --{{{
     )
     -- }}}
     -- [Per server]
-    -- [[diagnosticls]] --{{{
-    local dlsconfig = require 'diagnosticls-configs'
-    dlsconfig.init {
-      on_attach = vim.g.lsp_default_on_attach,
-    }
-    -- }}}
-    -- {{{
+    -- [[hls]] {{{
     require'lspconfig'['hls'].setup{
       cmd = {
         -- a wrapper of haskell-language-server-wrapper that
@@ -633,66 +645,66 @@ use {'neovim/nvim-lspconfig', --{{{
         },
       },
     }
+    -- }}}
+    -- [[denols]] --{{{
     require'lspconfig'['denols'].setup{
       root_dir = require'lspconfig'.util.root_pattern("deno.json"),
       init_options = {
         lint = true,
       },
     }
-    require'lspconfig'['diagnosticls'].setup{
-      filetypes = {
-        'sh',
-        'bash',
-        'python',
-        'typescript',
-        'typescriptreact',
-        'typescript.tsx',
-      },
-      init_options = {
-        filetypes = {
-          sh = 'shellcheck',
-          bash = 'shellcheck',
-          python = 'flake8',
-          typescript = 'eslint',
-          typescriptreact = 'eslint',
-          ['typescript.tsx'] = 'eslint',
-        },
-        linters = {
-          shellcheck = require 'diagnosticls-configs.linters.shellcheck',
-          flake8 = require 'diagnosticls-configs.linters.flake8',
-          eslint = require 'diagnosticls-configs.linters.eslint',
-        },
-        formatFiletypes = {
-          python = 'black',
-          typescript = 'prettier',
-          typescriptreact = 'prettier',
-          ['typescript.tsx'] = 'prettier',
-        },
-        formatters = {
-          black =  { command = "black", args = {"--quiet", "-"} },
-          prettier = require 'diagnosticls-configs.formatters.prettier',
-        }
-      },
-    }
-    require'lspconfig'['bashls'].setup{}
-    require'lspconfig'['gopls'].setup{}
-    require'lspconfig'['jsonls'].setup{}
-    require'lspconfig'['rust_analyzer'].setup{}
-    require'lspconfig'['graphql'].setup{}
-    require'lspconfig'['rnix'].setup{}
-    require'lspconfig'['pyright'].setup{}
+    -- }}}
+    -- [[tsserver]] --{{{
     require'lspconfig'['tsserver'].setup{
       root_dir = require'lspconfig'.util.root_pattern("package.json"),
       init_options = {
         lint = true,
       },
     }
+    -- }}}
+    -- [[others]] --{{{
+    require'lspconfig'['bashls'].setup{}
+    require'lspconfig'['dhall_lsp_server'].setup{}
+    require'lspconfig'['eslint'].setup{}
+    require'lspconfig'['gopls'].setup{}
+    require'lspconfig'['jsonls'].setup{}
+    require'lspconfig'['rust_analyzer'].setup{}
+    require'lspconfig'['graphql'].setup{}
+    require'lspconfig'['rnix'].setup{}
+    require'lspconfig'['pyright'].setup{}
     require'lspconfig'['yamlls'].setup{}
     require'lspconfig'['terraformls'].setup{}
     require'lspconfig'['tflint'].setup{}
+    require'lspconfig'['dockerls'].setup{}
+    require'lspconfig'['sqlls'].setup{}
     -- }}}
   end
 } --}}}
+use {'jose-elias-alvarez/null-ls.nvim', --{{{
+  after = { "plenary.nvim", "nvim-lspconfig" },
+  config = function()
+    local null_ls = require("null-ls")
+    null_ls.setup {
+      on_attach = vim.g.lsp_default_on_attach,
+      sources = {
+        -- diagnostics
+        null_ls.builtins.diagnostics.actionlint,
+        null_ls.builtins.diagnostics.commitlint,
+        null_ls.builtins.diagnostics.flake8,
+        null_ls.builtins.diagnostics.hadolint,
+        null_ls.builtins.diagnostics.yamllint,
+        -- formatter
+        null_ls.builtins.formatting.black,
+        null_ls.builtins.formatting.jq,
+        null_ls.builtins.formatting.just,
+        null_ls.builtins.formatting.prettier,
+        null_ls.builtins.formatting.shfmt.with({
+          extra_args = { "-i", "4", "-ci" },
+        }),
+      }
+    }
+  end
+}--}}}
 use {'tamago324/nlsp-settings.nvim', --{{{
   after = 'nvim-lspconfig',
   config = function()
@@ -704,8 +716,6 @@ use {'tamago324/nlsp-settings.nvim', --{{{
       },
     })
   end
-} --}}}
-use {'williamboman/nvim-lsp-installer', --{{{
 } --}}}
 use {'folke/trouble.nvim', --{{{
   config = function()
@@ -724,7 +734,17 @@ use {'folke/trouble.nvim', --{{{
     vim.keymap.set('n', '<space>q', '<cmd>TroubleToggle<CR>', { noremap=true, silent=true })
   end
 } --}}}
-use {'tami5/lspsaga.nvim', --{{{
+use {'glepnir/lspsaga.nvim', --{{{
+  config = function()
+    local keymap = vim.keymap.set
+    local saga = require('lspsaga')
+    saga.init_lsp_saga({
+      code_action_lightbulb = {
+        sign = false,
+        virtual_text = false,
+      },
+    })
+  end
 } --}}}
 use {'j-hui/fidget.nvim', --{{{
   config = function()
@@ -767,7 +787,7 @@ use { "rcarriga/nvim-dap-ui", --{{{
   end
 } --}}}
 -- [Completion]
-use {'hrsh7th/nvim-cmp',
+use {'hrsh7th/nvim-cmp', --{{{
   after = {
     'cmp-cmdline',
     'cmp-path',
@@ -833,7 +853,7 @@ use {'hrsh7th/nvim-cmp',
       })
     })
   end
-}
+} --}}}
 use {'hrsh7th/vim-vsnip', --{{{
   config = function()
     vim.cmd[[
