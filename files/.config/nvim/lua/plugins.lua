@@ -266,9 +266,16 @@ use {'folke/noice.nvim', -- {{{
           ---@type NoiceViewOptions
           opts = {
             border = {
-              style = "none",
-              padding = { 1, 1 },
-            }
+              style = "rounded",
+              padding = {0, 0},
+            },
+            win_options = {
+              winhighlight = {
+                Normal = "NoiceSplit",
+                FloatBorder = "NoiceSplitBorder"
+              },
+              wrap = true,
+            },
           }, -- merged with defaults from documentation
         },
         signature = {
@@ -910,18 +917,30 @@ use {'cocopon/iceberg.vim', --{{{
       set background=dark
       set termguicolors
       colorscheme iceberg
-      hi Pmenu                         guibg=None guifg=cyan
-      hi Folded                        guibg=None
-      hi LineNr                        guibg=None
-      hi MatchParen                    guibg=black guifg=#dadada
-      hi FloatermBorder                guibg=None  guifg=cyan     " floaterm
-      hi DiagnosticSignInfo            guibg=None
-      hi DiagnosticSignWarn            guibg=None
-      hi LspCodeLens                   guibg=None  guifg=#555555  " lsp
-      hi LspReferenceRead              guibg=black
-      hi LspReferenceText              guibg=black
-      hi LspReferenceWrite             guibg=black
-      hi NoiceCmdlineIcom              guibg=None
+      hi! Pmenu                         guibg=None guifg=cyan
+      hi! Folded                        guibg=None
+      hi! LineNr                        guibg=None
+      hi! MatchParen                    guibg=black guifg=#dadada
+      hi! FloatBorder                   guibg=None  guifg=#555555 "LSPのCursorHold
+      hi! FloatermBorder                guibg=None  guifg=cyan
+      hi! DiagnosticSignInfo            guibg=None
+      hi! DiagnosticSignWarn            guibg=None
+      hi! LspCodeLens                   guibg=None  guifg=#555555
+      hi! LspReferenceRead              guibg=black
+      hi! LspReferenceText              guibg=black
+      hi! LspReferenceWrite             guibg=black
+      hi! NoiceCmdlineIcon                          guifg=cyan
+      hi! NoiceSplitBorder              guibg=None  guifg=#555555
+      hi! LspSagaCodeActionBorder       guibg=None  guifg=#555555
+
+      hi! DiagnosticLineNrError guibg=#51202A guifg=#FF0000 gui=bold
+      hi! DiagnosticLineNrWarn  guibg=#51412A guifg=#FFA500 gui=bold
+      hi! DiagnosticLineNrInfo  guibg=#1E535D guifg=#00FFFF gui=bold
+      hi! DiagnosticLineNrHint  guibg=#1E205D guifg=#0000FF gui=bold
+      sign define DiagnosticSignError text= texthl=DiagnosticSignError linehl= numhl=DiagnosticLineNrError
+      sign define DiagnosticSignWarn  text= texthl=DiagnosticSignWarn  linehl= numhl=DiagnosticLineNrWarn
+      sign define DiagnosticSignInfo  text= texthl=DiagnosticSignInfo  linehl= numhl=DiagnosticLineNrInfo
+      sign define DiagnosticSignHint  text= texthl=DiagnosticSignHint  linehl= numhl=DiagnosticLineNrHint
     ]]
   end
 }--}}}
