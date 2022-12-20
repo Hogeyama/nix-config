@@ -686,8 +686,33 @@ use {'jose-elias-alvarez/null-ls.nvim', --{{{
   after = { "plenary.nvim", "nvim-lspconfig" },
   config = function()
     local null_ls = require("null-ls")
+    local h = require("null-ls.helpers")
+    local methods = require("null-ls.methods")
+
+    local spotless = h.make_builtin({
+      name = "spotless",
+      meta = {
+        url = "https://github.com/diffplug/spotless",
+        description = "Spotless is a general-purpose formatter",
+      },
+      method = methods.internal.FORMATTING,
+      filetypes = { "java", "groovy" },
+      generator_opts = {
+        command = "bash",
+        args = {
+          '-c',
+          'cd "$ROOT" && ./gradlew spotlessApply -PspotlessIdeHook="$FILENAME" --quiet',
+        },
+        to_stdin = false,
+        to_temp_file = true,
+        from_temp_file = true,
+      },
+      factory = h.formatter_factory,
+    })
+
     null_ls.setup {
       on_attach = vim.g.lsp_default_on_attach,
+      default_timeout = 5000,
       sources = {
         -- diagnostics
         null_ls.builtins.diagnostics.actionlint,
@@ -703,6 +728,7 @@ use {'jose-elias-alvarez/null-ls.nvim', --{{{
         null_ls.builtins.formatting.shfmt.with({
           extra_args = { "-i", "4", "-ci" },
         }),
+        spotless,
       }
     }
   end
