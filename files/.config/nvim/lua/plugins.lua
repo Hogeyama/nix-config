@@ -510,7 +510,6 @@ use {'WhoIsSethDaniel/mason-tool-installer.nvim', --{{{
         -- [null-ls]
         "actionlint",
         "black",
-        "commitlint",
         "flake8",
         "hadolint",
         "prettier",
@@ -716,7 +715,6 @@ use {'jose-elias-alvarez/null-ls.nvim', --{{{
       sources = {
         -- diagnostics
         null_ls.builtins.diagnostics.actionlint,
-        null_ls.builtins.diagnostics.commitlint,
         null_ls.builtins.diagnostics.flake8,
         null_ls.builtins.diagnostics.hadolint,
         null_ls.builtins.diagnostics.yamllint,
