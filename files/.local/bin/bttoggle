@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -eu
+is_connected() {
+    bluetoothctl devices Connected | grep . >/dev/null
+}
+
+if is_connected; then
+    bluetoothctl disconnect
+else
+    device=$(bluetoothctl devices Bonded | fzf | awk '{print $2}')
+    bluetoothctl connect "$device"
+fi

@@ -274,6 +274,7 @@ in
       ".config/alacritty.yml".source = ./files/.config/alacritty.yml;
       # my script
       ".local/bin/myclip".source = ./files/.local/bin/myclip;
+      ".local/bin/bttoggle".source = ./files/.local/bin/bttoggle;
       ".local/bin/my-xmonad-borderwidth".source = ./files/.local/bin/my-xmonad-borderwidth;
       ".local/bin/haskell-language-server-wrapper-wrapper".source = ./files/.local/bin/haskell-language-server-wrapper-wrapper;
       # wall paper
