@@ -997,6 +997,13 @@ use {'jelera/vim-javascript-syntax', --{{{
 }--}}}
 use {'leafgarland/typescript-vim', --{{{
 }--}}}
+-- [[justfile]]
+use {"IndianBoy42/tree-sitter-just", --{{{
+  after = {"nvim-treesitter"},
+  config = function()
+    require('tree-sitter-just').setup({})
+  end
+} --}}}
 -- [[Color scheme]]
 use {'cocopon/iceberg.vim', --{{{
   after = {"vim-floaterm", "nvim-cmp", "noice.nvim", "nui.nvim", "popup.nvim", "nvim-notify", "hop.nvim"},
