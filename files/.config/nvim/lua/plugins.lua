@@ -362,7 +362,7 @@ use {'folke/noice.nvim', -- {{{
         },
       },
       messages = {
-        enabled = false,
+        enabled = true,
         view = "mini",
         view_error = "mini",
         view_warn = "mini",
