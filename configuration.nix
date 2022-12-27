@@ -96,6 +96,12 @@ in
     };
   };
 
+  xdg.mime.defaultApplications = {
+    "text/html" = "${env.user.browser}.desktop";
+    "x-scheme-handler/https" = "${env.user.browser}.desktop";
+    "x-scheme-handler/http" = "${env.user.browser}.desktop";
+  };
+
   services.xserver = {
     enable = true;
     layout = "jp";
