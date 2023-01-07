@@ -55,6 +55,7 @@ in
       aws-vault
       bat
       bind
+      cachix
       checkstyle
       commitizen
       comma
@@ -80,7 +81,10 @@ in
       just
       libreoffice
       lsof
+      manix
       mercurial
+      nix-du
+      nix-tree
       neovim-remote
       python3
       nodejs
