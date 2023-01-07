@@ -98,6 +98,7 @@ in
       pre-commit
       ripgrep
       rnix-lsp
+      simplescreenrecorder
       shellcheck
       shfmt
       scrot
