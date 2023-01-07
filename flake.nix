@@ -6,13 +6,22 @@
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    # nightly neovim
+    nix-index-database.url = "github:Mic92/nix-index-database";
+    nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     # mine
     my-fzf-wrapper.url = "github:Hogeyama/my-fzf-wrapper";
   };
 
-  outputs = { nixpkgs, nixpkgs-unstable, home-manager, my-fzf-wrapper, neovim-nightly-overlay, ... }:
+  outputs =
+    { nixpkgs
+    , nixpkgs-unstable
+    , home-manager
+    , neovim-nightly-overlay
+    , nix-index-database
+    , my-fzf-wrapper
+    , ...
+    }:
     let
       system = "x86_64-linux";
 
@@ -55,6 +64,10 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.${username} = import ./home.nix;
+            home-manager.sharedModules = [
+              # TODO Use NixOS module when 23.05 comes
+              nix-index-database.hmModules.nix-index
+            ];
           }
         ];
       };

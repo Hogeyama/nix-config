@@ -167,6 +167,26 @@
         "type": "github"
       }
     },
+    "nix-index-database": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1672543420,
+        "narHash": "sha256-n6hatHjbTmylU4w8ZMrPZQTOrgUgCWthGUFC3BMBvuw=",
+        "owner": "Mic92",
+        "repo": "nix-index-database",
+        "rev": "83976f98374a2cbf02de1b4a3f93fdc359e457cb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "nix-index-database",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1655983783,
@@ -268,6 +288,7 @@
         "home-manager": "home-manager",
         "my-fzf-wrapper": "my-fzf-wrapper",
         "neovim-nightly-overlay": "neovim-nightly-overlay",
+        "nix-index-database": "nix-index-database",
         "nixpkgs": "nixpkgs_3",
         "nixpkgs-unstable": "nixpkgs-unstable"
       }

@@ -57,6 +57,7 @@ in
       bind
       checkstyle
       commitizen
+      comma
       curl
       deno
       docker
@@ -608,6 +609,9 @@ in
       enable = true;
     };
     starship = {
+      enable = true;
+    };
+    nix-index = {
       enable = true;
     };
   };
