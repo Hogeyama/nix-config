@@ -86,7 +86,8 @@ in
       nix-du
       nix-tree
       neovim-remote
-      python3
+      python310
+      python310Packages.httpie
       nodejs
       nodePackages.bash-language-server
       nodePackages.npm
