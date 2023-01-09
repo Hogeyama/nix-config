@@ -418,6 +418,42 @@ use {'folke/noice.nvim', -- {{{
     }
   end,
 }--}}}
+use {'nvim-neo-tree/neo-tree.nvim', --{{{
+  requires = {
+    "nvim-lua/plenary.nvim",
+    "nvim-tree/nvim-web-devicons",
+    "MunifTanjim/nui.nvim",
+  },
+  config = function()
+    require("neo-tree").setup({
+      window = {
+      },
+      filesystem = {
+        filtered_items = {
+          hide_dotfiles = false,
+          hide_hidden = false,
+          never_show = {
+            ".git",
+          },
+        },
+        window = {
+          mappings = {
+            ["z"] = {},
+            ["zl"] = "unfocus",
+          },
+        },
+        commands = {
+          unfocus = function(state)
+            vim.cmd[[wincmd l]]
+          end,
+        },
+      },
+    })
+    vim.cmd[[
+      nnoremap <Leader>f :Neotree<CR>
+    ]]
+  end
+} --}}}
 -- [Git]
 use {'tpope/vim-fugitive', --{{{
 }--}}}
