@@ -540,6 +540,10 @@ use {'TimUntersberger/neogit', --{{{
 use {'lewis6991/gitsigns.nvim', --{{{
   config = function()
     require('gitsigns').setup()
+    vim.cmd[[
+      nnoremap <C-g>n :Gitsigns next_hunk<CR>
+      nnoremap <C-g>p :Gitsigns prev_hunk<CR>
+    ]]
   end
 }--}}}
 -- [LSP]
