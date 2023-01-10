@@ -767,8 +767,35 @@ use {'jose-elias-alvarez/null-ls.nvim', --{{{
     local h = require("null-ls.helpers")
     local methods = require("null-ls.methods")
 
+    local spotbugs = h.make_builtin({
+      name = "spotbugs",
+      meta = {
+        url = "https://spotbugs.github.io/",
+        description = "SpotBugs is a program which uses static analysis to look for bugs in Java code",
+      },
+      method = methods.internal.DIAGNOSTICS_ON_SAVE,
+      filetypes = { "java" },
+      generator_opts = {
+        command = "spotbugs",
+        args = { "$ROOT" },
+        format = "json",
+        on_output = function(params)
+            local parser = h.diagnostics.from_json({})
+            local r = parser({ output = params.output.comments })
+            return parser({ output = params.output.comments })
+        end,
+        multiple_files = true,
+        check_exit_code = function(code)
+          return code >= 1
+        end,
+        from_stderr = true, -- なぜかstderrに出力される？
+      },
+      factory = h.generator_factory,
+    })
+
     local spotless = h.make_builtin({
       name = "spotless",
+      timeout = 50000,
       meta = {
         url = "https://github.com/diffplug/spotless",
         description = "Spotless is a general-purpose formatter",
@@ -789,8 +816,9 @@ use {'jose-elias-alvarez/null-ls.nvim', --{{{
     })
 
     null_ls.setup {
+      log_level = "trace",
       on_attach = vim.g.lsp_default_on_attach,
-      default_timeout = 5000,
+      default_timeout = 50000,
       sources = {
         -- diagnostics
         null_ls.builtins.diagnostics.actionlint,
@@ -800,6 +828,7 @@ use {'jose-elias-alvarez/null-ls.nvim', --{{{
         null_ls.builtins.diagnostics.checkstyle.with({
           extra_args = { "--", "-f", "sarif", "$FILENAME" },
         }),
+        spotbugs,
         -- formatter
         null_ls.builtins.formatting.black,
         null_ls.builtins.formatting.jq,
@@ -811,6 +840,7 @@ use {'jose-elias-alvarez/null-ls.nvim', --{{{
         spotless,
       }
     }
+    -- require("null-ls").disable({ name = "spotbugs" })
   end
 }--}}}
 use {'tamago324/nlsp-settings.nvim', --{{{
