@@ -63,6 +63,7 @@ in
       deno
       docker
       docker-compose
+      docker-credential-helpers
       exa
       fd
       feh
@@ -75,8 +76,10 @@ in
       gopls
       golangci-lint
       google-cloud-sdk
+      gron
       hadolint
       htop
+      hr
       jq
       just
       libreoffice
@@ -86,6 +89,7 @@ in
       nix-du
       nix-tree
       neovim-remote
+      pgcli
       python310
       python310Packages.httpie
       nodejs
