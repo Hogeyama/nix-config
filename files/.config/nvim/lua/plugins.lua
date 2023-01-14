@@ -874,10 +874,12 @@ use {'folke/trouble.nvim', --{{{
 } --}}}
 use {'glepnir/lspsaga.nvim', --{{{
   config = function()
-    local keymap = vim.keymap.set
-    local saga = require('lspsaga')
-    saga.init_lsp_saga({
-      code_action_lightbulb = {
+    require('lspsaga').setup({
+      request_timeout = 15000, -- jdtlsが重いので15秒くらい待つ
+      ui = {
+        border = 'rounded'
+      },
+      lightbulb = {
         sign = false,
         virtual_text = false,
       },
