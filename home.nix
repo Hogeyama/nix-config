@@ -57,8 +57,8 @@ in
       bind
       cachix
       checkstyle
-      commitizen
       comma
+      commitizen
       curl
       deno
       docker
@@ -70,28 +70,25 @@ in
       fuse
       gcc
       gh
-      git-remote-codecommit
       gitflow
+      git-remote-codecommit
       go
-      gopls
       golangci-lint
       google-cloud-sdk
+      gopls
       gron
       hadolint
-      htop
       hr
+      htop
       jq
       just
       libreoffice
       lsof
       manix
       mercurial
+      neovim-remote
       nix-du
       nix-tree
-      neovim-remote
-      pgcli
-      python310
-      python310Packages.httpie
       nodejs
       nodePackages.bash-language-server
       nodePackages.npm
@@ -99,20 +96,23 @@ in
       openssl
       pandoc
       pass
+      pgcli
       pre-commit
+      python310
+      python310Packages.httpie
       ripgrep
       rnix-lsp
-      simplescreenrecorder
+      scrot
       shellcheck
       shfmt
-      scrot
+      simplescreenrecorder
       sqlite
       terraform
       textql
       time
       tldr
-      unar
       ulauncher
+      unar
       vifm
       watson
       wget
