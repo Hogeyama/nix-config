@@ -269,6 +269,16 @@ use {'dbridges/vim-markdown-runner', --{{{
     ]]
   end
 }--}}}
+use { 'gpanders/vim-medieval', --{{{
+  -- markdown-runner と同じようなプラグイン。
+  -- 依存関係を記述できる点が便利だが、targetをコメントで指定する必要がある点が不便。
+  -- 複雑なものを書くときにはこっちを使うべきか。
+  config = function()
+    vim.cmd[[
+      let g:medieval_langs = ['python', 'sh', 'bash', 'console=bash']
+    ]]
+  end
+}--}}}
 use {'folke/noice.nvim', -- {{{
   after = {"nui.nvim", "nvim-notify", "nvim-cmp"},
   config = function()
