@@ -843,7 +843,20 @@ use {'jose-elias-alvarez/null-ls.nvim', --{{{
         null_ls.builtins.formatting.black,
         null_ls.builtins.formatting.jq,
         null_ls.builtins.formatting.just,
-        null_ls.builtins.formatting.prettier,
+        null_ls.builtins.formatting.prettier.with({
+          filetypes = {
+            "javascript",
+            "javascriptreact",
+            "typescript",
+            "typescriptreact",
+            "json",
+            "jsonc",
+            "yaml",
+            "css",
+            "scss",
+            "html",
+          },
+        }),
         null_ls.builtins.formatting.shfmt.with({
           extra_args = { "-i", "4", "-ci" },
         }),
