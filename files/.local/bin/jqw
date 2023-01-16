@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -eu
+TEMPDIR=/tmp/jqw
+mkdir -p $TEMPDIR
+tmp=$(mktemp -p $TEMPDIR)
+cat - >"$tmp"
+if jq "$@" <"$tmp"; then
+    rm -f "$tmp"
+else
+    code=$?
+    echo "See $tmp for input" >&2
+    exit "$code"
+fi

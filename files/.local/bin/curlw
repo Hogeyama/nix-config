@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# wrapper of curl which has
+# * better error message and
+# * pretty print of JSON using jq
+
+set -eu
+TEMPDIR=/tmp/curlw
+mkdir -p $TEMPDIR
+
+format-if-json() {
+    local input
+    input="$(mktemp -p "$TEMPDIR")"
+    cat - >"$input"
+    if jq . "$input" >/dev/null 2>&1; then
+        jq . "$input"
+    else
+        cat "$input"
+    fi
+}
+
+curlw() {
+    local stdout
+    local stderr
+    stdout="$(mktemp -p "$TEMPDIR")"
+    stderr="$(mktemp -p "$TEMPDIR")"
+
+    curl -sw "%{stderr}%{http_code}" "$@" >"$stdout" 2>"$stderr"
+    local code
+    code="$(cat "$stderr")"
+
+    if [[ "${code}" =~ ^20 ]]; then # case of success
+        format-if-json <"$stdout"
+        return 0
+    else # case of failure
+        echo "curl-wrapper: The requested URL returned ${code} error" >&2
+        awk 1 "$stdout" | format-if-json
+        return 1
+    fi
+}
+
+curlw "$@"
