@@ -160,7 +160,7 @@ tnoremap zz         <C-\><C-n>
 tnoremap zgt        <C-\><C-n>gt
 tnoremap ztg        <C-\><C-n>gT
 """other
-nnoremap <Space>cd :lcd %:h<CR>
+nnoremap <Space>cd :cd %:h<CR>
 nnoremap ^ :noh<CR>
 vnoremap * "zy:let @/ = @z<CR>n
 "nnoremap <C-n> :CNextRecursive<CR>

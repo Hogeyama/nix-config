@@ -464,6 +464,32 @@ use {'nvim-neo-tree/neo-tree.nvim', --{{{
     ]]
   end
 } --}}}
+use {'glepnir/dashboard-nvim', --{{{
+  config = function()
+    local db = require('dashboard')
+    db.custom_center = {
+      {
+        icon = '  ',
+        desc = 'Recently latest session',
+        action ='SessionLoad'
+      },
+    }
+    db.confirm_key                = '<CR>'
+    db.session_directory          = vim.fn.stdpath('data') .. '/sessions'
+    db.session_auto_save_on_exit  = true
+    db.session_verbose            = true
+    vim.cmd[[
+      command! -nargs=0 -bang Q call SessionSaveAndQuit(<bang>)
+      function! SessionSaveAndQuit(...) abort
+        SessionSave
+        if a:0
+          qa!
+        else
+          qa
+      endfunction
+    ]]
+  end
+}--}}}
 -- [Git]
 use {'tpope/vim-fugitive', --{{{
 }--}}}
