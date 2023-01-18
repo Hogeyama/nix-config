@@ -308,6 +308,18 @@ in
       AWS_VAULT_PASS_PREFIX = "aws-vault/";
 
       FZFW_FD_EXCLUDE_PATHS = ".git,.hg,.hie,dist-newstyle,__pycache__,Session.vim";
+
+      # 典型的な実行ファイルはそのまま動くようにしておく。
+      # NIX_LD_LIBRARY_PATH は必要そうなものを適宜足していく運用にする。
+      # pkgs.lib.fileContents "${pkgs.stdenv.cc}/nix-support/dynamic-linker"; の方が正しそうだが
+      # access to canonical path is forbidden in restricted mode エラーが出るので妥協。
+      NIX_LD = "${pkgs.glibc}/lib/ld-linux-x86-64.so.2";
+      NIX_LD_LIBRARY_PATH = with pkgs; lib.makeLibraryPath [
+        stdenv.cc.cc
+        zlib
+        ncurses
+        gmp5
+      ];
     };
   };
   programs = {

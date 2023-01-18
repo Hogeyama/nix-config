@@ -131,6 +131,8 @@ in
     agent.pinentryFlavor = "tty";
   };
 
+  programs.nix-ld.enable = true;
+
   environment = {
     systemPackages = with pkgs; [
       awscli2
