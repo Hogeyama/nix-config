@@ -8,17 +8,21 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     nix-index-database.url = "github:Mic92/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
+    nix-alien.url = "github:thiagokokada/nix-alien";
+    nix-alien.inputs.nixpkgs.follows = "nixpkgs";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     # mine
     my-fzf-wrapper.url = "github:Hogeyama/my-fzf-wrapper";
   };
 
   outputs =
-    { nixpkgs
+    { self
+    , nixpkgs
     , nixpkgs-unstable
     , home-manager
     , neovim-nightly-overlay
     , nix-index-database
+    , nix-alien
     , my-fzf-wrapper
     , ...
     }:
@@ -69,6 +73,14 @@
               nix-index-database.hmModules.nix-index
             ];
           }
+          # nix-alien
+          ({ pkgs, ... }: {
+            environment.systemPackages = with self.inputs.nix-alien.packages.${system}; [
+              nix-alien
+            ];
+            # Optional, needed for `nix-alien-ld`
+            programs.nix-ld.enable = true;
+          })
         ];
       };
 
