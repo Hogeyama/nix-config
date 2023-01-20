@@ -87,9 +87,6 @@ nnoremap dj dd
 inoremap <C-w> <esc>ldba
 """yank
 nnoremap Y  y$
-"""folding
-nnoremap zj zo
-nnoremap zk zc
 """window
 nnoremap zh <C-w>h
 nnoremap zj <C-w>j

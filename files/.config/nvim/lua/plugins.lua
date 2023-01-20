@@ -78,6 +78,19 @@ return require('packer').startup(function()
           { 'j', function() vim.cmd [[wincmd -]] end, { desc = '↑/↓' } },
         }
       })
+      hydra({
+        name = 'fold',
+        mode = 'n',
+        body = '<C-f>',
+        heads = {
+          { 'L', 'zr' },
+          { 'H', 'zm' },
+          { 'l', 'zo' },
+          { 'h', 'zc' },
+          { 'k', 'zk' },
+          { 'j', 'zj' },
+        }
+      })
     end
   }
   use { 'editorconfig/editorconfig-vim',
