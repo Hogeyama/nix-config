@@ -121,11 +121,20 @@ use {'lukas-reineke/indent-blankline.nvim', --{{{
 use {'phaazon/hop.nvim', --{{{
   config = function()
     require'hop'.setup()
-    -- TODO configure mappping
-    vim.cmd[[
-      map w <Cmd>HopWord<CR>
-      map s <Cmd>HopChar2<CR>
-    ]]
+    vim.keymap.set('', 'w', function()
+      require'hop'.hint_words({
+        current_line_only = false,
+        hint_position = require'hop.hint'.HintPosition.BEGIN,
+        multi_windows = true,
+      })
+    end, {remap=true})
+    vim.keymap.set('', 'e', function()
+      require'hop'.hint_words({
+        current_line_only = false,
+        hint_position = require'hop.hint'.HintPosition.END,
+        multi_windows = true,
+      })
+    end, {remap=true})
   end
 }--}}}
 use {'mfussenegger/nvim-treehopper', --{{{
