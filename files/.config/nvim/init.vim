@@ -27,7 +27,8 @@ set fileencodings=utf-8,cp932
 set termencoding=utf-8
 set mouse=n
 set ambiwidth=single
-set foldmethod=marker
+set foldmethod=expr
+set foldexpr=nvim_treesitter#foldexpr()
 set fillchars=fold:-
 set visualbell t_vb=
 set hidden
@@ -254,4 +255,4 @@ if filereadable(expand("~/.config/nvim/local-init.vim"))
 endif
 "}}}
 
-"vim: set et ts=1 sts=2 tw=2:
+" vim:foldmethod=marker:
