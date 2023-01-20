@@ -71,13 +71,17 @@ use {'nvim-treesitter/nvim-treesitter', --{{{
       },
     }
   end
-} --}}}
-use {'kana/vim-submode', --{{{
+}
+use {'Iron-E/nvim-libmodal',
   config = function()
-    vim.cmd[[
-      let g:submode_always_show_submode = 1
-      let g:submode_timeout = 0
-    ]]
+    vim.keymap.set('n', '<Leader>z', function()
+      require'libmodal'.mode.enter('RESIZE', {
+        [">"] = 'wincmd >',
+        ["<"] = 'wincmd <',
+        ["+"] = 'wincmd +',
+        ["-"] = 'wincmd -',
+      })
+    end, {remap=true})
   end
 }--}}}
 use {'editorconfig/editorconfig-vim', --{{{

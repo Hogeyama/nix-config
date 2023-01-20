@@ -98,14 +98,6 @@ nnoremap cj <C-w>j:q<CR><C-w>k
 nnoremap ck <C-w>k:q<CR><C-w>j
 nnoremap ch <C-w>h:q<CR><C-w>l
 nnoremap cl <C-w>l:q<CR><C-w>h
-call submode#enter_with('winsize', 'n', '', 'z>', '<C-w>>')
-call submode#enter_with('winsize', 'n', '', 'z<', '<C-w><')
-call submode#enter_with('winsize', 'n', '', 'z+', '<C-w>-')
-call submode#enter_with('winsize', 'n', '', 'z-', '<C-w>+')
-call submode#map('winsize', 'n', '', '>', '<C-w>>')
-call submode#map('winsize', 'n', '', '<', '<C-w><')
-call submode#map('winsize', 'n', '', '+', '<C-w>-')
-call submode#map('winsize', 'n', '', '-', '<C-w>+')
 """folding
 nnoremap zn za
 """moving: normal mode
