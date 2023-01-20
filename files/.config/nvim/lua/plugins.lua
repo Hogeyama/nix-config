@@ -137,19 +137,6 @@ use {'phaazon/hop.nvim', --{{{
     end, {remap=true})
   end
 }--}}}
-use {'mfussenegger/nvim-treehopper', --{{{
-  config = function()
-    vim.keymap.set(
-      'n',
-      'zf',
-      function()
-        require'tsht'.nodes()
-        vim.cmd("normal! zf")
-      end,
-      {silent = true}
-    )
-  end
-}--}}}
 use {'easymotion/vim-easymotion', --{{{
   config = function()
     vim.cmd[[
