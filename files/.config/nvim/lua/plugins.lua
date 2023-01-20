@@ -64,16 +64,20 @@ return require('packer').startup(function()
       }
     end
   }
-  use { 'Iron-E/nvim-libmodal',
+  use { 'anuvyklack/hydra.nvim',
     config = function()
-      vim.keymap.set('n', '<Leader>z', function()
-        require 'libmodal'.mode.enter('RESIZE', {
-          [">"] = 'wincmd >',
-          ["<"] = 'wincmd <',
-          ["+"] = 'wincmd +',
-          ["-"] = 'wincmd -',
-        })
-      end, { remap = true })
+      local hydra = require('hydra')
+      hydra({
+        name = 'resize',
+        mode = 'n',
+        body = ',z',
+        heads = {
+          { 'l', function() vim.cmd [[wincmd >]] end },
+          { 'h', function() vim.cmd [[wincmd <]] end, { desc = '←/→' } },
+          { 'k', function() vim.cmd [[wincmd +]] end },
+          { 'j', function() vim.cmd [[wincmd -]] end, { desc = '↑/↓' } },
+        }
+      })
     end
   }
   use { 'editorconfig/editorconfig-vim',
