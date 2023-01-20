@@ -474,6 +474,7 @@ return require('packer').startup(function()
     ]]
     end
   }
+  use { 'jrudess/vim-foldtext' }
   -- [Git]
   use { 'tpope/vim-fugitive' }
   use { 'jreybert/vimagit' }
