@@ -778,6 +778,24 @@ use {'neovim/nvim-lspconfig', --{{{
     }
     -- }}}
     -- [[others]] --{{{
+
+    -- [[sumneko_lua]]
+    require'lspconfig'.sumneko_lua.setup {
+      settings = {
+        -- https://github.com/neovim/nvim-lspconfig/blob/d228bcf7cd94611929482a09e114a42c41fe81a8/doc/server_configurations.md#sumneko_lua
+        Lua = {
+          runtime = {
+            version = 'LuaJIT',
+          },
+          diagnostics = {
+            globals = {'vim', 'use'},
+          },
+          telemetry = {
+            enable = false,
+          },
+        },
+      },
+    }
     require'lspconfig'['bashls'].setup{}
     require'lspconfig'['dhall_lsp_server'].setup{}
     require'lspconfig'['eslint'].setup{}
