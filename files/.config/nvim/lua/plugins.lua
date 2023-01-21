@@ -45,10 +45,10 @@ return require('packer').startup(function()
 
         -- Automatically install missing parsers when entering buffer
         -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
-        auto_install = true,
+        auto_install = false,
 
         -- List of parsers to ignore installing (for "all")
-        ignore_install = { "javascript" },
+        ignore_install = { "nix" },
         highlight = {
           enable = true,
           -- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
