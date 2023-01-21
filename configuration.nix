@@ -22,7 +22,7 @@ in
         "https://cache.iog.io"
       ];
       trusted-public-keys = [
-        "hogeyama-nix-cache:rCcxGULOLr4ei6xv6vZObA7fqBKAt1Y6LZwmaN08Utc="
+        "hogeyama-nix-cache:23HHz6x8J47bSCM0z6kZ++3x1ZXVPorsv3AJg1yqwAQ="
         "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
       ];
       auto-optimise-store = true;
