@@ -157,6 +157,8 @@ vnoremap * "zy:let @/ = @z<CR>n
 "nnoremap <C-p> :CPreviousRecursive<CR>
 nnoremap <M-n> :LNextRecursive<CR>
 nnoremap <M-p> :LPreviousRecursive<CR>
+
+nnoremap :w<CR> :echom "yo"<CR>
 "}}}
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
