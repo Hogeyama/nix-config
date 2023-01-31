@@ -641,6 +641,7 @@ return require('packer').startup(function()
       "mason-tool-installer.nvim",
       "lsp-format.nvim",
       "diagnosticls-configs-nvim",
+      'actions-preview.nvim',
     },
     config = function()
       -- [Common]
@@ -665,7 +666,7 @@ return require('packer').startup(function()
         bmap('n', '<C-h>', vim.lsp.buf.hover)
         bmap('n', '<C-j>', '<cmd>Lspsaga lsp_finder<CR>')
         bmap('n', '<C-k>', '<cmd>Lspsaga peek_definition<CR>')
-        bmap('n', '<C-l>a', '<cmd>Lspsaga code_action<CR>')
+        bmap('n', '<C-l>a', require("actions-preview").code_actions)
         bmap('n', '<C-l>o', '<cmd>Lspsaga outline<CR>')
         bmap('n', '<C-l>f', vim.lsp.buf.format)
         bmap('v', '<C-l>f', vim.lsp.buf.format)
@@ -950,6 +951,7 @@ return require('packer').startup(function()
       })
     end
   }
+  use { 'aznhe21/actions-preview.nvim', }
   use { 'j-hui/fidget.nvim',
     config = function()
       require 'fidget'.setup {}
