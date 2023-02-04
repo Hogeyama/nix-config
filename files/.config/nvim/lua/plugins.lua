@@ -876,10 +876,10 @@ return require('packer').startup(function()
           null_ls.builtins.diagnostics.flake8,
           null_ls.builtins.diagnostics.hadolint,
           null_ls.builtins.diagnostics.yamllint,
-          null_ls.builtins.diagnostics.checkstyle.with({
-            extra_args = { "--", "-f", "sarif", "$FILENAME" },
-          }),
-          spotbugs,
+          -- null_ls.builtins.diagnostics.checkstyle.with({
+          --   extra_args = { "--", "-f", "sarif", "$FILENAME" },
+          -- }),
+          -- spotbugs,
           -- formatter
           null_ls.builtins.formatting.black,
           null_ls.builtins.formatting.jq,
@@ -901,7 +901,7 @@ return require('packer').startup(function()
           null_ls.builtins.formatting.shfmt.with({
             extra_args = { "-i", "4", "-ci" },
           }),
-          spotless,
+          -- spotless,
         }
       }
       -- require("null-ls").disable({ name = "spotbugs" })
