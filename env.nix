@@ -25,4 +25,6 @@
       };
       browser = "firefox";
     };
+
+  steam.enable = true;
 }
