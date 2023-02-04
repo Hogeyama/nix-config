@@ -13,6 +13,7 @@
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     # mine
     my-fzf-wrapper.url = "github:Hogeyama/my-fzf-wrapper";
+    my-fzf-wrapper.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
