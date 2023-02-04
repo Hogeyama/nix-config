@@ -288,6 +288,7 @@ in
       ".local/bin/curlw".source = ./files/.local/bin/curlw;
       ".local/bin/jqw".source = ./files/.local/bin/jqw;
       ".local/bin/bttoggle".source = ./files/.local/bin/bttoggle;
+      ".local/bin/vifm-preview".source = ./files/.local/bin/vifm-preview;
       ".local/bin/my-xmonad-borderwidth".source = ./files/.local/bin/my-xmonad-borderwidth;
       ".local/bin/haskell-language-server-wrapper-wrapper".source = ./files/.local/bin/haskell-language-server-wrapper-wrapper;
       # wall paper

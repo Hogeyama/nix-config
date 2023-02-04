@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+if [[ -d "$1" ]]; then
+    exa --color always --all --sort name --tree --level 1 --classify --git --color=always "$1"
+elif [[ -f "$1" ]]; then
+    bat --color always --pager never --plain "$1"
+fi

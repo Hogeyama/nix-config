@@ -506,9 +506,7 @@ set vicmd=nvim
 
 set grepprg='rg --color=never -Hn %i %a %s'
 
-" 256-color terminal
-fileviewer *.[ch],*.[ch]pp highlight -O xterm256 -s dante --syntax c %c
-fileviewer Makefile,Makefile.* highlight -O xterm256 -s dante --syntax make %c
+fileviewer * vifm-preview %c
 
 command E              :!bash -c "nvr -c 'stopinsert'; nvr -c MoveToLastWin; nvr -c 'edit  %a'; nvr -c MoveToLastWin; nvr -c FloatermHide"
 command EditBehined    :!nvr -c 'vsplit  %a | MoveToLastWin'
