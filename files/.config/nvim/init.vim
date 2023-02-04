@@ -191,6 +191,18 @@ command! -nargs=0 MoveToLastWin execute "normal! ".g:last_win."<C-w><C-w>"
 command! -nargs=0 MoveToLastTab execute "tabnext ".g:last_tab
 command! -complete=file -nargs=1 EditBehind    edit <args>    | MoveToLastWin
 command! -complete=file -nargs=1 TabEditBehind tabedit <args> | MoveToLastTab
+
+function CursorColumnForAWhile()
+  setlocal cursorcolumn
+  if exists('g:cursorcolumn_timer')
+    call timer_stop(g:cursorcolumn_timer)
+  endif
+  let g:cursorcolumn_timer = timer_start(1000, function('NoCursorColumn'))
+endfunction
+function NoCursorColumn(...)
+  setlocal nocursorcolumn
+endfunction
+nnoremap <C-c> :call CursorColumnForAWhile()<CR>
 "}}}
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
