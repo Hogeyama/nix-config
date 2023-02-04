@@ -510,19 +510,19 @@ set grepprg='rg --color=never -Hn %i %a %s'
 fileviewer *.[ch],*.[ch]pp highlight -O xterm256 -s dante --syntax c %c
 fileviewer Makefile,Makefile.* highlight -O xterm256 -s dante --syntax make %c
 
+command E              :!bash -c "nvr -c 'stopinsert'; nvr -c MoveToLastWin; nvr -c 'edit  %a'; nvr -c MoveToLastWin; nvr -c FloatermHide"
 command EditBehined    :!nvr -c 'vsplit  %a | MoveToLastWin'
 command TabEditBehined :!nvr -c 'tabedit %a | MoveToLastTab'
 
+nnoremap <CR> :E %f:p<cr>
 nnoremap o :EditBehined %f:p<cr>
 nnoremap O :TabEditBehined %f:p<cr>
-
-nnoremap ,f :fzf -c EditBehined<cr>
-nnoremap ,t :fzf -c TabEditBehined<cr>
 
 command! ncd :execute system('nvr -c "cd %d"')
 nnoremap ,n :ncd<cr>
 
 nnoremap ,c :cd! %d<cr>
+nnoremap q :q<cr>
 
 set milleroptions=lsize:1,csize:2,rsize:1
 set millerview
