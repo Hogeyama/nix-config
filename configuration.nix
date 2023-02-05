@@ -197,6 +197,7 @@ in
       #ultimate.enable = true;
       defaultFonts = {
         monospace = [
+          "Illusion N"
           "Rounded Mgen+ 1mn"
           "Noto Color Emoji" # Emoji fallback
           "FiraMono Nerd Font" # Nerd font fallback
