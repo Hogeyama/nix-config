@@ -20,6 +20,7 @@ bind --mode=ex <ArrowUp> ex.prev_completion
 bind --mode=ex <ArrowDown> ex.next_completion
 
 set smoothscroll true
+colorscheme midnight
 
 # default nmaps
 #{
