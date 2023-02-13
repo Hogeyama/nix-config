@@ -486,9 +486,6 @@ in
           zmodload zsh/zpty
         '';
       };
-      profileExtra = ''
-        export LOCALE_ARCHIVE=/usr/lib/locale/locale-archive
-      '';
       envExtra = ''
         source-if-exists() {
           [ -e $1 ] && . $1
@@ -541,6 +538,9 @@ in
         ncd() {
           nvr -c "cd '$(realpath $1)'"
         }
+        # なぜか fzf の completion がうまく動かないのでもう一度読む
+        export FZF_COMPLETION_TRIGGER="::"
+        . ${pkgs.fzf}/share/fzf/completion.zsh
         # source machine local configuration
         source-if-exists $HOME/.zshrc.local
       '';
