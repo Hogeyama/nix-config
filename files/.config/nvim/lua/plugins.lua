@@ -970,7 +970,8 @@ return require('packer').startup(function()
       'cmp-cmdline',
       'cmp-path',
       'cmp-buffer',
-      'cmp-nvim-lsp'
+      'cmp-nvim-lsp',
+      'cmp-rg',
     },
     config = function()
       local cmp = require("cmp")
@@ -1001,12 +1002,10 @@ return require('packer').startup(function()
           { name = 'nvim_lsp' },
           { name = 'vsnip' },
         }, {
+          { name = 'rg' },
           { name = 'buffer' },
           { name = 'path',
-            options = {
-              trailing_slash = false,
-            },
-          },
+            options = { trailing_slash = false, }, },
         })
       })
       cmp.setup.cmdline({ '/', '?' }, {
@@ -1026,7 +1025,8 @@ return require('packer').startup(function()
           }
         }),
         sources = cmp.config.sources({
-          { name = 'path' }
+          { name = 'path',
+            options = { trailing_slash = false, }, },
         }, {
           { name = 'cmdline' }
         })
@@ -1058,6 +1058,7 @@ return require('packer').startup(function()
   use { 'hrsh7th/cmp-emoji' }
   use { 'hrsh7th/cmp-cmdline' }
   use { 'hrsh7th/cmp-vsnip' }
+  use { 'lukas-reineke/cmp-rg' }
   -- [Filetype]
   -- [[Haskell]]
   use { 'neovimhaskell/haskell-vim' }
