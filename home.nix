@@ -281,6 +281,8 @@ in
       # firefox
       ".local/share/tridactyl/native_main".source = ./files/.local/share/tridactyl/native_main;
       ".config/tridactyl/tridactylrc".source = ./files/.config/tridactyl/tridactylrc;
+      # wezterm
+      ".config/wezterm/wezterm.lua".source = ./files/.config/wezterm/wezterm.lua;
       # alacritty
       ".config/alacritty.yml".source = ./files/.config/alacritty.yml;
       # my script
