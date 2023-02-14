@@ -1,7 +1,7 @@
 % git
 
 # interactive rebase
-git rebase -i --keep-base <commit>^
+git rebase -i --keep-base --update-refs <commit>^
 
 # add worktree
 git worktree add -B {,,<remote>/}<remote-branch-no-prefix>
@@ -13,13 +13,10 @@ git worktree add -B {,,<remote>/}<remote-branch-no-prefix>
 git worktree remove <worktree_path>
 
 # squash/fixup automatically
-GIT_SEQUENCE_EDITOR=: git rebase --autosquash --autostash -i <commit>
+GIT_SEQUENCE_EDITOR=: git rebase --update-refs --autosquash --autostash -i <commit>
 
 # commit and fixup
-git commit --fixup=<commit> && GIT_SEQUENCE_EDITOR=: git rebase --autosquash --autostash -i <commit>^
-
-# commit all and fixup
-git commit -a --fixup=<commit> && GIT_SEQUENCE_EDITOR=: git rebase --autosquash --autostash -i <commit>^
+git commit --fixup=<commit> && GIT_SEQUENCE_EDITOR=: git rebase --update-refs --autosquash --autostash -i <commit>^
 
 # create fixup commit
 git commit --fixup=<commit>
