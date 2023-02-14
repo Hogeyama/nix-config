@@ -752,10 +752,9 @@ return require('packer').startup(function()
         },
       }
 
-      -- [[sumneko_lua]]
-      require 'lspconfig'.sumneko_lua.setup {
+      -- [[lua_ls]]
+      require 'lspconfig'.lua_ls.setup {
         settings = {
-          -- https://github.com/neovim/nvim-lspconfig/blob/d228bcf7cd94611929482a09e114a42c41fe81a8/doc/server_configurations.md#sumneko_lua
           Lua = {
             runtime = {
               version = 'LuaJIT',
