@@ -213,7 +213,9 @@ hoge = do
   log' . show =<< io Env.getEnvironment
 
 log' :: MonadIO m => String -> m ()
-log' s = liftIO $ appendFile "/home/cq2n-iwym/xmonad.mylog" (s <> "\n")
+log' s = liftIO $ do
+  home <- Env.lookupEnv "HOME" <&> fromMaybe "/tmp"
+  appendFile (home <> "/xmonad.mylog") (s <> "\n")
 
 -------------------------------------------------------------------------------
 -- Command

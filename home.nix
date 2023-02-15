@@ -41,6 +41,15 @@ let
 
     "$JAVA" -jar $CHECKSTYLE "''${ARGS[@]}"
   '';
+  xmonad = pkgs.symlinkJoin {
+    name = "xmonad-x86_64-linux";
+    paths = [ pkgs.my-xmonad ];
+    buildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram $out/bin/xmonad-x86_64-linux \
+        --set BROWSER ${env.user.browser}
+    '';
+  };
 in
 {
   nixpkgs.config = {
@@ -265,16 +274,11 @@ in
         recursive = true;
       };
       # xmonad
-      ".xmonad/xmonad-x86_64-linux".source = "${pkgs.my-xmonad}/bin/xmonad-x86_64-linux";
+
+      ".xmonad/xmonad-x86_64-linux".source = "${xmonad}/bin/xmonad-x86_64-linux";
       ".xmonad/build" = {
         executable = true;
         text = ''echo "Nothing to do"'';
-      };
-      ".xmonad/xmonad-session-rc" = {
-        executable = false;
-        text = ''
-          export BROWSER=${env.user.browser}
-        '';
       };
       # starship
       ".config/starship.toml".source = ./files/.config/starship.toml;
