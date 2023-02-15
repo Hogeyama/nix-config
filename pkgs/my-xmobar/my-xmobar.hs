@@ -24,69 +24,44 @@ mkConfig position font =
     , position
     , commands =
         [ Run $
-            Network
-              "wlp2s0"
-              [ "-t"
-              , " ↓<rx> : ↑<tx> (Kb/s)"
-              , "-L"
-              , "40"
-              , "-H"
-              , "200"
-              , "--normal"
-              , "#d3d7cf"
-              , "--high"
-              , "#88b986"
-              -- , "-S"       , "True"
-              ]
-              10
+            DynNetwork
+              [ "--template"  , "↓<rx> : ↑<tx> (Kb/s)"
+              , "--Low"       , "0"
+              , "--High"      , "1000"
+              , "--low"       , "#d3d7cf"
+              , "--normal"    , "#d3d7cf"
+              , "--high"      , "#88b986"
+              ] 10
         , Run $
             Cpu
-              [ "-t"
-              , "Cpu: <total>%"
-              , "-L"
-              , "3"
-              , "-H"
-              , "50"
-              , "--normal"
-              , "green"
-              , "--high"
-              , "red"
+              [ "-t"          , "Cpu: <total>%"
+              , "-L"          , "3"
+              , "-H"          , "50"
+              , "--normal"    , "green"
+              , "--high"      , "red"
               ]
               10
         , Run $
             Memory
-              [ "-t"
-              , "Mem: <usedratio>%"
-              , "-L"
-              , "40"
-              , "-H"
-              , "90"
-              , "--normal"
-              , "#d3d7cf"
-              , "--high"
-              , "#c16666"
+              [ "-t"          , "Mem: <usedratio>%"
+              , "-L"          , "40"
+              , "-H"          , "90"
+              , "--normal"    , "#d3d7cf"
+              , "--high"      , "#c16666"
               ]
               10
         , Run $
             BatteryP
               ["BAT0"]
-              [ "-t"
-              , "Bat: <acstatus>"
-              , "-L"
-              , "20"
-              , "-H"
-              , "80"
-              , "--low"
-              , "#c16666"
-              , "--normal"
-              , "#d3d7cf"
+              [ "-t"          , "Bat: <acstatus>"
+              , "-L"          , "20"
+              , "-H"          , "80"
+              , "--low"       , "#c16666"
+              , "--normal"    , "#d3d7cf"
               , "--"
-              , "-o"
-              , "<left>% (<timeleft>)"
-              , "-O"
-              , "Charging <left>%"
-              , "-i"
-              , "<left>%"
+              , "-o"          , "<left>% (<timeleft>)"
+              , "-O"          , "Charging <left>%"
+              , "-i"          , "<left>%"
               ]
               50
         , Run $ Volume "default" "Master" [] 10
@@ -96,7 +71,7 @@ mkConfig position font =
     , sepChar = "%"
     , alignSep = "}{"
     , template =
-        " %StdinReader% }{ %wlp2s0% | %cpu% | %memory% | %default:Master% | %battery% | %date% "
+        " %StdinReader% }{ %dynnetwork% | %cpu% | %memory% | %default:Master% | %battery% | %date% "
     }
 
 run :: X.Display -> IO ()
