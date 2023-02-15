@@ -188,7 +188,7 @@ in
   fonts = {
     fonts = [
       pkgs.rounded-mgenplus
-      pkgs.nerdfonts
+      (pkgs.nerdfonts.override { fonts = [ "Hack" ]; })
       pkgs.noto-fonts-emoji
       pkgs.noto-fonts-cjk-sans
       pkgs.noto-fonts-cjk-serif
@@ -200,7 +200,7 @@ in
           "Illusion N"
           "Rounded Mgen+ 1mn"
           "Noto Color Emoji" # Emoji fallback
-          "FiraMono Nerd Font" # Nerd font fallback
+          "Hack Nerd Font" # Nerd font fallback
           "Noto Sans Mono CJK JP" # Other fallback
         ];
         sansSerif = [
