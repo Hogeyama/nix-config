@@ -453,6 +453,22 @@ return require('packer').startup(function()
     end
   }
   use { 'jrudess/vim-foldtext' }
+  use { 'gennaro-tedesco/nvim-possession',
+    requires = { 'ibhagwan/fzf-lua' },
+    config = function()
+      local possession = require("nvim-possession")
+      possession.setup {}
+      vim.keymap.set("n", "<leader>sl", function()
+        possession.list()
+      end)
+      vim.keymap.set("n", "<leader>sn", function()
+        possession.new()
+      end)
+      vim.keymap.set("n", "<leader>su", function()
+        possession.update()
+      end)
+    end,
+  }
   -- [Git]
   use { 'tpope/vim-fugitive' }
   use { 'jreybert/vimagit' }
