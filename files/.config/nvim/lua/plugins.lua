@@ -138,32 +138,19 @@ return require('packer').startup(function()
         require 'hop'.hint_words({
           current_line_only = false,
           hint_position = require 'hop.hint'.HintPosition.BEGIN,
-          multi_windows = true,
+          multi_windows = false,
         })
       end, { remap = true })
       vim.keymap.set('', 'e', function()
         require 'hop'.hint_words({
           current_line_only = false,
           hint_position = require 'hop.hint'.HintPosition.END,
-          multi_windows = true,
+          multi_windows = false,
         })
       end, { remap = true })
-    end
-  }
-  use { 'easymotion/vim-easymotion',
-    config = function()
       vim.cmd [[
-      let g:EasyMotion_keys='jfkdlamvneioc'
-      let g:EasyMotion_do_mapping = 0
-      let g:EasyMotion_smartcase = 1
-      let g:EasyMotion_enter_jump_first = 1
-      "map w <Plug>(easymotion-bd-w)
-      "map W <Plug>(easymotion-bd-W)
-      "map e <Plug>(easymotion-bd-e)
-      "map E <Plug>(easymotion-bd-E)
-      "map s <Plug>(easymotion-s2)
-      nnoremap cw cw
-    ]]
+        nnoremap cw cw
+      ]]
     end
   }
   use { 'godlygeek/tabular' }
