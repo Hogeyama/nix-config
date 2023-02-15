@@ -1,0 +1,9 @@
+%aws
+
+# aws-vault exec
+aws-vault exec <profile> -- 
+
+# aws-vault login
+aws-vault login <profile>
+
+$ profile:   aws-vault list --profiles

@@ -5,3 +5,6 @@ nixos-rebuild --use-remote-sudo switch --flake ~/nix-config
 
 # flake without git
 git add --intent-to-add flake.{nix,lock} && git update-index --assume-unchanged flake.{nix,lock}
+
+# profile remove
+nix profile remove <installed>

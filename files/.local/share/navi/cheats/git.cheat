@@ -27,6 +27,9 @@ git commit --fixup=<commit>
 # add prefix to selected commits
 GIT_SEQUENCE_EDITOR=$EDITOR EDITOR='bash -c "{ echo -n \"<prefix> \"; cat $1; } | tee $1 >>/dev/null"' git rebase -i 
 
+# edit a commit
+GIT_SEQUENCE_EDITOR="sed -i 's/p\(ick\)\? <commit>/e <commit>/'" git rebase --autostash --update-refs -i <commit>^
+
 $ commit:                  git log --oneline --color=always --- --map "awk '{print $1}'"
 $ remote:                  git remote show
 $ remote-branch:           git branch -r | sed -e 's/\(.*->\)//' -e 's/^\s*//'
