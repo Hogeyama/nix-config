@@ -1,5 +1,5 @@
 # https://rycee.gitlab.io/home-manager/options.html
-{ config, pkgs, ... }:
+{ config, self, pkgs, ... }:
 let
   env = import ./env.nix;
   checkstyle = pkgs.writeScriptBin "checkstyle" ''
@@ -50,6 +50,44 @@ let
         --set BROWSER ${env.user.browser}
     '';
   };
+  dotfilesSymlinks =
+    { rootDir ? "files"
+    , clonedPath ? "${config.home.homeDirectory}/nix-config"
+    }:
+    let
+      # /nix/store/blah 以下を traverse して相対パスを取得する。
+      # それを "${config.home.homeDirectory}/nix-config/${rootDir}" 以下の絶対パスに変換して、
+      # $HOME 以下にシンボリックリンクを貼る。
+      linksRootDirInStore = "${self}/${rootDir}";
+      linksRootDirInVCS = "${clonedPath}/${rootDir}";
+      toAbsPathInStore = s: "${linksRootDirInStore}/${s}";
+      toAbsPathInVCS = s: "${linksRootDirInVCS}/${s}";
+      dotfilesSymlinks' = dirPath:
+        let
+          # 相対パスの取得
+          items = builtins.readDir (toAbsPathInStore dirPath);
+          funcInner = name: type:
+            let
+              newDirPath = if dirPath == "" then name else "${dirPath}/${name}";
+              fileOrSymlink =
+                {
+                  "${newDirPath}" = {
+                    source = config.lib.file.mkOutOfStoreSymlink
+                      (toAbsPathInVCS newDirPath);
+                  };
+                };
+              cases = {
+                "regular" = fileOrSymlink;
+                "symlink" = fileOrSymlink;
+                "directory" = dotfilesSymlinks' newDirPath;
+              };
+              otherwise = abort ("unknown item type: " + toAbsPathInVCS newDirPath);
+            in
+              cases.${type} or otherwise;
+        in
+        pkgs.lib.concatMapAttrs (name: type: funcInner name type) items;
+    in
+    dotfilesSymlinks' "";
 in
 {
   nixpkgs.config = {
@@ -141,66 +179,13 @@ in
       unstable.dasel
       unstable.alacritty
     ];
-    file = {
-      # neovim
-      ".config/nvim/real-init.vim".source = ./files/.config/nvim/init.vim;
-      ".config/nvim/lua/plugins.lua".source = ./files/.config/nvim/lua/plugins.lua;
-      ".config/nvim/ftplugin" = {
-        source = ./files/.config/nvim/ftplugin;
-        recursive = true;
-      };
-      ".config/nvim/vsnip" = {
-        source = ./files/.config/nvim/vsnip;
-        recursive = true;
-      };
-      # direnv
-      ".config/direnv/direnvrc".source = ./files/.config/direnv/direnvrc;
-      ".config/direnv/direnv.toml".source = ./files/.config/direnv/direnv.toml;
-      # albert
-      ".config/albert/albert.conf".source = ./files/.config/albert/albert.conf;
-      ".config/albert/org.albert.extension.websearch/engines.json".source = ./files/.config/albert/org.albert.extension.websearch/engines.json;
-      ".local/share/albert/org.albert.extension.python/modules" = {
-        source = ./files/.local/share/albert/org.albert.extension.python/modules;
-        recursive = true;
-      };
-      # vifm
-      ".config/vifm/vifmrc".source = ./files/.config/vifm/vifmrc;
-      ".config/vifm/colors/onedark.vifm".source = ./files/.config/vifm/colors/onedark.vifm;
-      # navi
-      ".local/share/navi/cheats" = {
-        source = ./files/.local/share/navi/cheats;
-        recursive = true;
-      };
-      # xmonad
-
+    file = dotfilesSymlinks { } // {
       ".xmonad/xmonad-x86_64-linux".source = "${xmonad}/bin/xmonad-x86_64-linux";
       ".xmonad/build" = {
         executable = true;
         text = ''echo "Nothing to do"'';
       };
-      # starship
-      ".config/starship.toml".source = ./files/.config/starship.toml;
-      # firefox
-      ".local/share/tridactyl/native_main".source = ./files/.local/share/tridactyl/native_main;
-      ".config/tridactyl/tridactylrc".source = ./files/.config/tridactyl/tridactylrc;
-      # wezterm
-      ".config/wezterm/wezterm.lua".source = ./files/.config/wezterm/wezterm.lua;
-      # alacritty
-      ".config/alacritty.yml".source = ./files/.config/alacritty.yml;
-      # my script
-      ".local/bin/myclip".source = ./files/.local/bin/myclip;
-      ".local/bin/curlw".source = ./files/.local/bin/curlw;
-      ".local/bin/jqw".source = ./files/.local/bin/jqw;
-      ".local/bin/bttoggle".source = ./files/.local/bin/bttoggle;
-      ".local/bin/vifm-preview".source = ./files/.local/bin/vifm-preview;
-      ".local/bin/my-xmonad-borderwidth".source = ./files/.local/bin/my-xmonad-borderwidth;
-      ".local/bin/haskell-language-server-wrapper-wrapper".source = ./files/.local/bin/haskell-language-server-wrapper-wrapper;
-      # wall paper
-      "Pictures/reflexion.jpg".source = ./files/Pictures/reflexion.jpg;
-    } // (if env.type == "nix-package-manager" then {
-      # font
-      ".config/fontconfig/conf.d/20-illusion-fonts.conf".source = ./files/.config/fontconfig/conf.d/20-illusion-fonts.conf;
-    } else { });
+    };
     sessionVariables = {
       EDITOR = ''bash -c 'nvim --server \"\''$NVIM\" --remote-tab-silent \"\''$@\"' --'';
       BROWSER = env.user.browser;
