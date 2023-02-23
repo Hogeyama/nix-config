@@ -1004,11 +1004,13 @@ return require('packer').startup(function()
         sources = cmp.config.sources({
           { name = 'nvim_lsp' },
           { name = 'vsnip' },
-        }, {
-          { name = 'rg' },
           { name = 'buffer' },
+        }, {
+          { name = 'rg',
+            keyword_length = 3, },
           { name = 'path',
-            options = { trailing_slash = false, }, },
+            options = { trailing_slash = false, },
+            trigger_characters = { '/', '.', '~' }, },
         })
       })
       cmp.setup.cmdline({ '/', '?' }, {
