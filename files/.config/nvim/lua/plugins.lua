@@ -406,6 +406,9 @@ return require('packer').startup(function()
         views = {
           cmdline_popup = { position = { row = 20, col = "50%" } },
         },
+        health = {
+          checker = false,
+        },
         -- NOTE ここから下はデフォルト
         ---@type NoiceRouteConfig[]
         routes = {}, -- @see the section on routes below
