@@ -60,12 +60,14 @@ import XMonad.Util.Run (
 
 main :: IO ()
 main = do
-  xmonad =<< xmobar' (ewmh myConfig)
+  terminal <- Env.lookupEnv "TERMINAL" <&> fromMaybe "konsole"
+  browser <- Env.lookupEnv "BROWSER" <&> fromMaybe "firefox"
+  xmonad =<< xmobar' (ewmh (myConfig terminal browser))
   where
-    myConfig =
+    myConfig terminal browser =
       def
         { modMask = mod4Mask
-        , terminal = "konsole"
+        , terminal = terminal
         , workspaces = myWorkspaces
         , focusedBorderColor = "#00FF00"
         , normalBorderColor = "#EEEEEE"
@@ -91,10 +93,9 @@ main = do
         }
         `additionalKeysP`
         --
-        [ ("M-g", spawn =<< io (Env.lookupEnv "BROWSER" <&> fromMaybe "firefox"))
+        [ ("M-g", spawn browser)
         , --
           ("M-p", spawn "ulauncher")
-        , ("M-S-d", spawn "alacritty")
         , ("M-S-q", kill)
         , ("M-S-C-q", io exitSuccess)
         , ("M-x", spawn "sudo pm-suspend")

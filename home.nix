@@ -47,7 +47,8 @@ let
     buildInputs = [ pkgs.makeWrapper ];
     postBuild = ''
       wrapProgram $out/bin/xmonad-x86_64-linux \
-        --set BROWSER ${env.user.browser}
+        --set BROWSER  ${env.user.browser} \
+        --set TERMINAL ${env.user.terminal}
     '';
   };
   dotfilesSymlinks =

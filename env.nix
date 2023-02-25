@@ -24,6 +24,7 @@
         userEmail = "gan13027830@gmail.com";
       };
       browser = "firefox";
+      terminal = "wezterm";
     };
 
   steam.enable = true;
