@@ -303,9 +303,9 @@ return require('packer').startup(function()
             enabled = true,
             -- Lsp Progress is formatted using the builtins for lsp_progress. See config.format.builtin
             -- See the section on formatting for more details on how to customize.
-            --- @type NoiceFormat|string
+            --- type NoiceFormat|strin
             format = "lsp_progress",
-            --- @type NoiceFormat|string
+            --- type NoiceFormat|string
             format_done = "lsp_progress_done",
             throttle = 1000 / 30, -- frequency to update lsp progress message
             view = "mini",
@@ -313,7 +313,7 @@ return require('packer').startup(function()
           hover = {
             enabled = true,
             view = nil, -- when nil, use defaults from documentation
-            ---@type NoiceViewOptions
+            ---type NoiceViewOptions
             opts = {
               border = {
                 style = "rounded",
@@ -337,7 +337,7 @@ return require('packer').startup(function()
               throttle = 50, -- Debounce lsp signature help request by 50ms
             },
             view = nil, -- when nil, use defaults from documentation
-            ---@type NoiceViewOptions
+            ---type NoiceViewOptions
             opts = {}, -- merged with defaults from documentation
           },
           message = {
@@ -349,7 +349,7 @@ return require('packer').startup(function()
           -- defaults for hover and signature help
           documentation = {
             view = "hover",
-            ---@type NoiceViewOptions
+            ---type NoiceViewOptions
             opts = {
               lang = "markdown",
               replace = true,
@@ -387,7 +387,7 @@ return require('packer').startup(function()
         },
         -- default options for require('noice').redirect
         -- see the section on Command Redirection
-        ---@type NoiceRouteConfig
+        -- type NoiceRouteConfig
         redirect = {
           view = "split",
           filter = { event = "msg_show" },
@@ -415,7 +415,7 @@ return require('packer').startup(function()
           skip_duplicate_messages = false,
         },
         throttle = 1000 / 30, -- how frequently does Noice need to check for ui updates? This has no effect when in blocking mode.
-        ---@type table<string, NoiceViewOptions>
+        -- type table<string, NoiceViewOptions>
         views = {
           cmdline_popup = { position = { row = 20, col = "50%" } },
         },
@@ -423,11 +423,11 @@ return require('packer').startup(function()
           checker = false,
         },
         -- NOTE ここから下はデフォルト
-        ---@type NoiceRouteConfig[]
+        -- type NoiceRouteConfig[]
         routes = {}, -- @see the section on routes below
-        ---@type table<string, NoiceFilter>
+        -- type table<string, NoiceFilter>
         status = {}, --@see the section on statusline components below
-        ---@type NoiceFormatOptions
+        -- type NoiceFormatOptions
         format = {}, -- @see section on formatting
       }
     end,
