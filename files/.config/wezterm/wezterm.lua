@@ -64,7 +64,7 @@ return {
   -- WINDOW
   window_frame = {
     font = myfont,
-    font_size = 14,
+    font_size = 18,
     active_titlebar_fg = '#ffffff',
     active_titlebar_bg = '#1a1d1b',
     inactive_titlebar_fg = '#ffffff',
