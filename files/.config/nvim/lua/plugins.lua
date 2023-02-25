@@ -219,37 +219,24 @@ return require('packer').startup(function()
     ]]
     end
   }
-  use { 'itchyny/lightline.vim',
+  use { 'nvim-lualine/lualine.nvim',
+    requires = { 'kyazdani42/nvim-web-devicons' },
     config = function()
-      vim.cmd [[
-      let g:lightline = {}
-      let g:lightline.active = {
-            \ 'left':  [ ['mode', 'paste'], ['readonly', 'relativepath', 'filetype', 'modified'] ],
-            \ 'right': [ ['lineinfo'], ['percent'], ['fileformat', 'fileencoding'] ]
-            \}
-      let g:lightline.inactive = {
-            \ 'left':  [ ['relativepath', 'modified'] ],
-            \ 'right': [ ['lineinfo'], ['percent'] ]
-            \}
-      let g:lightline.tabline = {
-            \ 'left':  [ ['tabs'] ],
-            \ 'right': [ ['cwd'] ]
-            \}
-      let g:lightline.component = {
-            \ 'cwd': '%{fnamemodify(getcwd(), ":~")}',
-            \}
-      function! SetLightlineConfig() abort
-        augroup lightline
-          autocmd!
-          autocmd WinEnter,SessionLoadPost * call lightline#update()
-          autocmd SessionLoadPost * call lightline#highlight()
-          autocmd ColorScheme * if !has('vim_starting')
-                \ | call lightline#update() | call lightline#highlight() | endif
-        augroup END
-      endfunction
-      autocmd VimEnter * call SetLightlineConfig()
-    ]]
-    end
+      vim.o.laststatus = 3
+      require('lualine').setup {
+        globalstatus = true,
+        winbar = {},
+        inactive_winbar = {},
+        tabline = {
+          lualine_a = { { 'tabs', mode = 2, } },
+          lualine_b = {},
+          lualine_c = {},
+          lualine_x = {},
+          lualine_y = {},
+          lualine_z = {},
+        },
+      }
+    end,
   }
   use { 'AndrewRadev/linediff.vim' }
   use { 'machakann/vim-highlightedyank' }
