@@ -53,6 +53,8 @@
         my-overlay
         neovim-nightly-overlay.overlay
       ];
+
+      pkgs = import nixpkgs { inherit system overlays; };
     in
     {
       # For NixOS
@@ -88,13 +90,12 @@
 
       # For Nix package manager only
       homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
-        pkgs = builtins.getAttr system nixpkgs.outputs.legacyPackages // {
-          overlays = overlays;
-        };
-        inherit system username;
+        inherit pkgs system username;
         configuration = import ./home.nix;
         homeDirectory = "/home/${username}";
         stateVersion = "21.11";
       };
+
+      devShells.${system}.xmonad = import ./pkgs/my-xmonad/shell.nix { inherit pkgs; };
     };
 }
