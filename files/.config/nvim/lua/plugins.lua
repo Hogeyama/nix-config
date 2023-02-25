@@ -12,6 +12,32 @@ return require('packer').startup(function()
   use { 'nvim-telescope/telescope.nvim' }
   use { 'ibhagwan/fzf-lua' }
   -- [Love]
+  use { 'glacambre/firenvim',
+    requires = { "ibhagwan/fzf-lua", },
+    run = function() vim.fn['firenvim#install'](0) end,
+    config = function()
+      if vim.g.started_by_firenvim == true then
+        vim.o.number = false
+        vim.o.laststatus = 0
+        vim.o.showtabline = 0
+        vim.api.nvim_create_autocmd({ 'BufEnter' }, {
+          command = "set filetype=markdown"
+        })
+        vim.g.firenvim_config = {
+          globalSettings = { alt = "all" },
+          localSettings = {
+            [".*"] = {
+              selector = "textarea",
+              takeover = "empty"
+            }
+          }
+        }
+        vim.g.firenvim_config.localSettings['.*'] = { takeover = 'empty' }
+        vim.g.firenvim_config.localSettings['.*'] = { cmdline = 'firenvim' }
+        vim.api.nvim_set_keymap("n", "<Esc><Esc>", "<Cmd>call firenvim#focus_page()<CR>", {})
+      end
+    end
+  }
   use { 'github/copilot.vim',
     config = function()
       vim.g.copilot_no_tab_map = true
