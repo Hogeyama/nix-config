@@ -7,7 +7,6 @@
 
 module Main where
 
-{- {{{ -}
 import RIO hiding (Const)
 import RIO.List qualified as List
 
@@ -56,8 +55,6 @@ import XMonad.Util.Run (
   safeSpawn,
  )
 
-{- }}} -}
-
 main :: IO ()
 main = do
   terminal <- Env.lookupEnv "TERMINAL" <&> fromMaybe "konsole"
@@ -105,7 +102,8 @@ main = do
         , ("M-<Return>", focusNextScreen)
         , ("M-C-<Return>", shiftNextScreen)
         , ("M-s", swapScreen)
-        , ("M-a", sendMessage SwapWindow)
+        , ("M-a", swapWindow)
+        , ("M-d", swapPanes)
         , ("M-S-a", hoge) -- なんか動作の確認に
         , ("M-S-r", restart "xmonad" True)
         , ("M-k", focusUpOrAnotherPane)
@@ -239,6 +237,9 @@ swapScreen = windows $ \stack -> case W.visible stack of
     where
       y = W.current stack
 
+swapWindow :: X ()
+swapWindow = sendMessage SwapWindow
+
 toggleTouchPad :: X ()
 toggleTouchPad = setTouchPad . not =<< isTouchPadEnabled
   where
@@ -333,6 +334,21 @@ withNextScreen func =
     next : _ -> windows $ func $ W.tag $ W.workspace next
 
 -- XXX ad hoc
+swapPanes :: X ()
+swapPanes =
+  getPanesInfo >>= \case
+    Just (_all', focusedPane, unfocusedPane) -> do
+      forM_ focusedPane $ \_ -> do
+        sendMessage SwapWindow
+        focusAnotherPane
+      focusDown -- もともとのunfocusedPaneの先頭を指す
+      forM_ unfocusedPane $ \_ -> do
+        sendMessage SwapWindow
+        focusAnotherPane
+      focusAnotherPane
+    Nothing -> pure ()
+
+-- XXX ad hoc
 focusAnotherPane :: X ()
 focusAnotherPane =
   getPanesInfo >>= \case
@@ -375,16 +391,17 @@ getPanesInfo =
     Nothing -> pure Nothing
     Just focused -> do
       layout <- gets $ windowset >>> W.current >>> W.workspace >>> W.layout
+      -- C2Pがコンストラクタを公開していないため、showで無理やりreflectionする
       case List.splitOn "C2P " (show layout) of
         _ : s0 : _
           | _ <- ()
-            , [(all', s1)] <- reads @[Word64] s0
-            , [(left', s2)] <- reads @[Word64] s1
-            , [(right', _s)] <- reads @[Word64] s2
-            , let (focusedPane, unfocusedPane)
-                    | focused `elem` left' = (left', right')
-                    | otherwise = (right', left') ->
-            pure $ Just (all', focusedPane, unfocusedPane)
+          , [(all', s1)] <- reads @[Word64] s0
+          , [(left', s2)] <- reads @[Word64] s1
+          , [(right', _s)] <- reads @[Word64] s2
+          , let (focusedPane, unfocusedPane)
+                  | focused `elem` left' = (left', right')
+                  | otherwise = (right', left') ->
+              pure $ Just (all', focusedPane, unfocusedPane)
         _ -> pure Nothing
 
 getFocusedWin :: X (Maybe Window)
