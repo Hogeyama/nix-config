@@ -927,6 +927,9 @@ return require('packer').startup(function()
           sign = false,
           virtual_text = false,
         },
+        symbol_in_winbar = {
+          enable = false,
+        },
       })
     end
   }
