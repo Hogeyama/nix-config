@@ -222,20 +222,22 @@ return require('packer').startup(function()
   use { 'nvim-lualine/lualine.nvim',
     requires = { 'kyazdani42/nvim-web-devicons' },
     config = function()
-      vim.o.laststatus = 3
-      require('lualine').setup {
-        globalstatus = true,
-        winbar = {},
-        inactive_winbar = {},
-        tabline = {
-          lualine_a = { { 'tabs', mode = 2, } },
-          lualine_b = {},
-          lualine_c = {},
-          lualine_x = {},
-          lualine_y = {},
-          lualine_z = {},
-        },
-      }
+      if not vim.g.started_by_firenvim then
+        vim.o.laststatus = 3
+        require('lualine').setup {
+          globalstatus = true,
+          winbar = {},
+          inactive_winbar = {},
+          tabline = {
+            lualine_a = { { 'tabs', mode = 2, } },
+            lualine_b = {},
+            lualine_c = {},
+            lualine_x = {},
+            lualine_y = {},
+            lualine_z = {},
+          },
+        }
+      end
     end,
   }
   use { 'AndrewRadev/linediff.vim' }
