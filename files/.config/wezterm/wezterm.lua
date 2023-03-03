@@ -51,7 +51,7 @@ wezterm.on(
 return {
   -- FONT
   font = myfont,
-  font_size = 20,
+  font_size = 14,
 
   -- COLOR
   color_scheme = 'Seti',
@@ -71,8 +71,8 @@ return {
     inactive_titlebar_bg = '#1a1d1b',
   },
   window_padding = {
-    left = 0,
-    right = 0,
+    left = 10,
+    right = 10,
     top = 0,
     bottom = 0,
   },
@@ -110,6 +110,6 @@ return {
   },
 
   -- MULTIPLEXING
-  default_gui_startup_args = { 'connect', 'unix' },
+  -- default_gui_startup_args = { 'connect', 'unix' },
   unix_domains = { { name = 'unix' } },
 }
