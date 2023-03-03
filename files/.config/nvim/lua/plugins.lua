@@ -12,6 +12,11 @@ return require('packer').startup(function()
   use { 'nvim-telescope/telescope.nvim' }
   use { 'ibhagwan/fzf-lua' }
   -- [Love]
+  use { 'miversen33/netman.nvim',
+    config = function()
+      require("netman")
+    end
+  }
   use { 'glacambre/firenvim',
     requires = { "ibhagwan/fzf-lua", },
     run = function() vim.fn['firenvim#install'](0) end,
@@ -228,8 +233,22 @@ return require('packer').startup(function()
           globalstatus = true,
           winbar = {},
           inactive_winbar = {},
+          sections = {
+            lualine_a = { 'mode' },
+            lualine_b = { { 'filename', path = 1 } },
+            lualine_c = { 'location' },
+            lualine_x = { 'encoding', 'fileformat', 'filetype' },
+            lualine_y = { 'progress' },
+            lualine_z = { 'branch', 'diff', 'diagnostics' },
+          },
           tabline = {
-            lualine_a = { { 'tabs', mode = 2, } },
+            lualine_a = {
+              {
+                'tabs',
+                mode = 2,
+                max_length = vim.o.columns,
+              }
+            },
             lualine_b = {},
             lualine_c = {},
             lualine_x = {},
@@ -439,10 +458,44 @@ return require('packer').startup(function()
       "nvim-lua/plenary.nvim",
       "nvim-tree/nvim-web-devicons",
       "MunifTanjim/nui.nvim",
+      "miversen33/netman.nvim",
     },
     config = function()
       require("neo-tree").setup({
+        sources = {
+          "filesystem",
+          "netman.ui.neo-tree",
+        },
         window = {
+          mappings = {
+            ["z"] = {},
+            ["zl"] = "unfocus",
+          },
+        },
+        commands = {
+          unfocus = function(_)
+            vim.cmd [[wincmd l]]
+          end,
+        },
+        ["netman.ui.neo-tree"] = {
+          filtered_items = {
+            hide_dotfiles = false,
+            hide_hidden = false,
+            never_show = {
+              ".git",
+            },
+          },
+          window = {
+            mappings = {
+              ["z"] = {},
+              ["zl"] = "unfocus",
+            },
+          },
+          commands = {
+            unfocus = function(_)
+              vim.cmd [[wincmd l]]
+            end,
+          },
         },
         filesystem = {
           filtered_items = {
