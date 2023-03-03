@@ -33,7 +33,7 @@ set fillchars=fold:-
 set visualbell t_vb=
 set hidden
 set modeline
-set number
+set nonumber
 set expandtab
 set tabstop=2 shiftwidth=2 softtabstop=2
 set autoindent
