@@ -286,9 +286,28 @@ return require('packer').startup(function()
   use { 'dbridges/vim-markdown-runner',
     config = function()
       vim.cmd [[
-      autocmd FileType markdown nnoremap <buffer> <C-q> <Cmd>MarkdownRunnerInsert<CR>
-      autocmd FileType markdown nnoremap <buffer> <Leader>q :MarkdownRunnerInsert<CR>
-    ]]
+        autocmd FileType markdown nnoremap <buffer> <Leader>q :MarkdownRunnerInsert<CR>
+        autocmd FileType markdown nnoremap <buffer> <Leader>w :MarkdownRunner<CR>
+      ]]
+      vim.g.markdown_runners = {
+        mermaid = function(src)
+          local n = os.tmpname()
+          local f = assert(io.open(n, 'w'))
+          f:write(table.concat(src, "\n"))
+          f:close()
+          local job = require('plenary.job'):new {
+            command = "mmdc",
+            args = {
+              "-i", n,
+              "-o", "output.png",
+              "-b", "white"
+            },
+            writer = src,
+          }
+          job:sync()
+          return table.concat(job:stderr_result(), "\n")
+        end,
+      }
     end
   }
   use { 'gpanders/vim-medieval',

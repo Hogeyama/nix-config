@@ -139,6 +139,7 @@ in
       nix-tree
       nodejs
       nodePackages.bash-language-server
+      nodePackages.mermaid-cli
       nodePackages.npm
       nodePackages.prettier
       openssl
