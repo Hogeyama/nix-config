@@ -8,3 +8,5 @@ git add --intent-to-add flake.{nix,lock} && git update-index --assume-unchanged 
 
 # profile remove
 nix profile remove <installed>
+
+$ installed: nix profile list --- --map "awk '{print $1}'"
