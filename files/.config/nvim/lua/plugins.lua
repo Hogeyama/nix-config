@@ -46,6 +46,9 @@ return require('packer').startup(function()
   use { 'github/copilot.vim',
     config = function()
       vim.g.copilot_no_tab_map = true
+      vim.g.copilot_filetypes = {
+        ['*'] = true
+      }
       vim.cmd [[
       imap <silent><expr><C-Right> copilot#Accept("\<Right>")
       "imap <silent><expr><Tab> copilot#Accept("\<Tab>")
