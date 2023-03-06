@@ -192,15 +192,22 @@ in
       EDITOR = ''bash -c 'nvim --server \"\''$NVIM\" --remote-tab-silent \"\''$@\"' --'';
       BROWSER = env.user.browser;
 
+      # aws
       AWS_PAGER = "";
       AWS_DEFAULT_OUTPUT = "yaml";
       AWS_CLI_AUTO_PROMPT = "on-partial";
 
+      # aws-vault
       AWS_VAULT_BACKEND = "pass";
       AWS_VAULT_PASS_PREFIX = "aws-vault/";
 
+      # direnv
+      DIRENV_LOG_FORMAT = "";
+
+      # my-fzf-wrapper
       FZFW_FD_EXCLUDE_PATHS = ".git,.hg,.hie,dist-newstyle,__pycache__,Session.vim";
 
+      # nix-ld
       # 典型的な実行ファイルはそのまま動くようにしておく。
       # NIX_LD_LIBRARY_PATH は必要そうなものを適宜足していく運用にする。
       # pkgs.lib.fileContents "${pkgs.stdenv.cc}/nix-support/dynamic-linker"; の方が正しそうだが
