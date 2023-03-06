@@ -550,7 +550,14 @@ return require('packer').startup(function()
     requires = { 'ibhagwan/fzf-lua' },
     config = function()
       local possession = require("nvim-possession")
-      possession.setup {}
+      possession.setup {
+        autoload = true,
+        autosave = true,
+        autoswitch = {
+          enable = true,
+          exclude_ft = {}, -- list of filetypes to exclude from autoswitch
+        },
+      }
       vim.keymap.set("n", "<leader>sl", function()
         possession.list()
       end)
