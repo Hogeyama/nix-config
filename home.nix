@@ -477,6 +477,7 @@ in
         mergetool.my-nvimdiff3.cmd = "nvim -d -c 'wincmd J' $MERGED $LOCAL $BASE $REMOTE";
         pull.rebase = true;
         push.autoSetupRemote = true;
+        push.default = "current";
         rebase.autoStash = true;
         rebase.missingCommitsCheck = "warn";
         rebase.abbreviateCommands = true;
