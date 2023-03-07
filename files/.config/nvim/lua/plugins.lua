@@ -17,6 +17,18 @@ return require('packer').startup(function()
       require("netman")
     end
   }
+  use { 'echasnovski/mini.nvim',
+    config = function()
+      require('mini.ai').setup()
+      require('mini.align').setup({
+        mappings = {
+          start = '',
+          start_with_preview = 'ga',
+        },
+      })
+      require('mini.pairs').setup()
+    end,
+  }
   use { 'glacambre/firenvim',
     requires = { "ibhagwan/fzf-lua", },
     run = function() vim.fn['firenvim#install'](0) end,
@@ -188,13 +200,6 @@ return require('packer').startup(function()
     end
   }
   use { 'godlygeek/tabular' }
-  use { 'junegunn/vim-easy-align',
-    config = function()
-      vim.cmd [[
-      vmap <Enter> <Plug>(EasyAlign)
-    ]]
-    end
-  }
   use { 'numToStr/Comment.nvim',
     config = function()
       require('Comment').setup({
