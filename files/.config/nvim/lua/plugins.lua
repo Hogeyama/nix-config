@@ -68,6 +68,45 @@ return require('packer').startup(function()
     ]]
     end
   }
+  use { 'mhinz/vim-startify',
+    config = function()
+      vim.g.startify_lists = {
+        { type = 'sessions', header = { '   Sessions' } },
+        { type = 'files', header = { '   MRU' } },
+        { type = 'bookmarks', header = { '   Bookmarks' } },
+        { type = 'commands', header = { '   Commands' } },
+      }
+      vim.g.startify_commands = {
+        { g = 'Neogit' },
+        { n = 'Neotree remote' },
+      }
+      vim.g.startify_skiplist = {
+        "/run/user/.*",
+        "/nix/store/.*",
+        "~/.local/share/nvim/site/pack/packer/.*",
+      }
+      vim.g.startify_custom_header = vim.api.nvim_call_function("startify#pad",
+        {
+          vim.split([[
+        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣴⣶⣶⣶⣤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣴⣶⣶⣶⣤⣄⡀⠀⠀⠀⠀⠀⠀
+        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⠿⢋⣉⠀⠀⠀⠀⠀⠉⠻⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⠿⢋⣉⠀⠀⠀⠀⠀⠉⠻⣷⡀⠀⠀⠀⠀
+        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⡿⠋⠀⢾⣿⡆⢠⣾⡿⢿⣦⢸⣿⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⡿⠋⠀⢾⣿⡆⢠⣾⡿⢿⣦⢸⣿⣷⡀⠀⠀⠀
+        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⠁⠀⠀⠈⠉⠀⣾⡏⠀⠈⣿⡇⠀⠹⣷⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⠁⠀⠀⠈⠉⠀⣾⡏⠀⠈⣿⡇⠀⠹⣷⠀⠀⠀
+        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⡟⠀⠀⠀⠀⠀⠀⢿⣇⠀⠀⣿⡇⠀⠀⢻⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⡟⠀⠀⠀⠀⠀⠀⢿⣇⠀⠀⣿⡇⠀⠀⢻⡇⠀⠀
+        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣿⠀⠀⠀⠀⠀⠀⠀⠘⣿⣆⣰⣿⠃⠀⠀⣸⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣿⠀⠀⠀⠀⠀⠀⠀⠘⣿⣆⣰⣿⠃⠀⠀⣸⡇⠀⠀
+        ⠀⠀⠀⠀⠀⠀⠀⠀⣰⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠘⢿⣿⠃⠀⠀⢀⣿⠁⠀⠀⠀⠀⠀⠀⠀⠀⣰⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠘⢿⣿⠃⠀⠀⢀⣿⠁⠀⠀
+        ⠀⠀⠀⠀⠀⠀⢀⣼⠟⠀⠻⣷⡀⠀⠀⠀⠀⠀⠀⠀⠈⠃⠀⠀⠀⣾⠇⠀⠀⠀⠀⠀⠀⠀⢀⣼⠟⠀⠻⣷⡀⠀⠀⠀⠀⠀⠀⠀⠈⠃⠀⠀⠀⣾⠇⠀⠀⠀
+        ⠀⠀⠀⠀⠀⣰⡿⠋⠀⠀⠀⠘⠿⣶⣤⣤⡄⠀⠀⠀⠀⠀⠀⠀⢸⡿⠀⠀⠀⠀⠀⠀⠀⣰⡿⠋⠀⠀⠀⠘⠿⣶⣤⣤⡄⠀⠀⠀⠀⠀⠀⠀⢸⡿⠀⠀⠀⠀
+        ⠀⠀⠀⣠⡾⠋⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀⢸⣇⠀⠀⠀⠀⠀⣠⡾⠋⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀⢸⣇⠀⠀⠀⠀
+        ⠀⠀⣼⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⡀⠀⠀⠀⣼⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⡀⠀⠀⠀
+          ]], '\n')
+        }
+      )
+      -- autoload & autosave
+      vim.g.startify_session_autoload = 1
+      vim.g.startify_session_persistence = 1
+    end
+  }
   use { 'nvim-treesitter/nvim-treesitter',
     run = ':TSUpdate',
     config = function()
