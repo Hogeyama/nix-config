@@ -184,6 +184,11 @@ in
       unstable.nodePackages.npm
       unstable.neovim
     ];
+    sessionVariables = {
+      PATH = [
+        ''''${HOME}/.local/bin''
+      ];
+    };
   };
 
   fonts = {
