@@ -165,9 +165,10 @@ in
       lsof
       mercurial
       neovim-remote
+      nil
+      nixpkgs-fmt
       python3
       ripgrep
-      rnix-lsp
       scrot
       textql
       unar

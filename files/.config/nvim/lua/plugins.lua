@@ -915,6 +915,16 @@ return require('packer').startup(function()
           },
         },
       }
+      -- [[nil_ls]]
+      require 'lspconfig'['nil_ls'].setup {
+        settings = {
+          ["nil"] = {
+            formatting = {
+              command = { "nixpkgs-fmt" }
+            },
+          },
+        },
+      }
       -- [[others]]
       require 'lspconfig'['bashls'].setup {}
       require 'lspconfig'['dhall_lsp_server'].setup {}
@@ -923,7 +933,6 @@ return require('packer').startup(function()
       require 'lspconfig'['jsonls'].setup {}
       require 'lspconfig'['rust_analyzer'].setup {}
       require 'lspconfig'['graphql'].setup {}
-      require 'lspconfig'['rnix'].setup {}
       require 'lspconfig'['pyright'].setup {}
       require 'lspconfig'['yamlls'].setup {}
       require 'lspconfig'['terraformls'].setup {}
