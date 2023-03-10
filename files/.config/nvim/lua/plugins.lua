@@ -150,6 +150,9 @@ return require('packer').startup(function()
     end
   }
   use { 'anuvyklack/hydra.nvim',
+    after = {
+      'gitsigns.nvim',
+    },
     config = function()
       local hydra = require('hydra')
       hydra({
@@ -163,6 +166,7 @@ return require('packer').startup(function()
           { 'j', function() vim.cmd [[wincmd -]] end, { desc = '↑/↓' } },
         }
       })
+
       hydra({
         name = 'fold',
         mode = 'n',
@@ -174,6 +178,58 @@ return require('packer').startup(function()
           { 'h', 'zc' },
           { 'k', 'zk' },
           { 'j', 'zj' },
+        }
+      })
+
+      local gitsigns = require('gitsigns')
+      hydra({
+        name = 'Git',
+        hint = [[
+_J_: next hunk   _s_: stage hunk        _d_: show deleted   _b_: blame line
+_K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
+^ ^              _S_: stage buffer      ^ ^
+^
+^ ^              _<Enter>_: Neogit            _<Esc>_: exit
+        ]],
+        config = {
+          color = 'pink',
+          invoke_on_body = true,
+          hint = {
+            position = 'bottom',
+            border = 'rounded'
+          },
+          on_enter = function()
+            vim.bo.modifiable = false
+            gitsigns.toggle_linehl(true)
+          end,
+          on_exit = function()
+            gitsigns.toggle_linehl(false)
+            gitsigns.toggle_deleted(false)
+            vim.cmd 'echo' -- clear the echo area
+          end
+        },
+        mode = { 'n', 'x' },
+        body = '<C-g>',
+        heads = {
+          { 'J', function()
+            if vim.wo.diff then return ']c' end
+            vim.schedule(function() gitsigns.next_hunk() end)
+            return '<Ignore>'
+          end, { expr = true } },
+          { 'K', function()
+            if vim.wo.diff then return '[c' end
+            vim.schedule(function() gitsigns.prev_hunk() end)
+            return '<Ignore>'
+          end, { expr = true } },
+          { 's', ':Gitsigns stage_hunk<CR>', { silent = true } },
+          { 'u', gitsigns.undo_stage_hunk },
+          { 'S', gitsigns.stage_buffer },
+          { 'p', gitsigns.preview_hunk },
+          { 'd', gitsigns.toggle_deleted, { nowait = true } },
+          { 'b', gitsigns.blame_line },
+          { 'B', function() gitsigns.blame_line { full = true } end },
+          { '<Enter>', '<cmd>Neogit<CR>', { exit = true } },
+          { '<Esc>', nil, { exit = true, nowait = true } },
         }
       })
     end
@@ -695,11 +751,10 @@ return require('packer').startup(function()
   }
   use { 'lewis6991/gitsigns.nvim',
     config = function()
-      require('gitsigns').setup()
-      vim.cmd [[
-      nnoremap <C-g>n :Gitsigns next_hunk<CR>
-      nnoremap <C-g>p :Gitsigns prev_hunk<CR>
-    ]]
+      require('gitsigns').setup({
+        signcolumn = false,
+        numhl      = true,
+      })
     end
   }
   -- [LSP]
