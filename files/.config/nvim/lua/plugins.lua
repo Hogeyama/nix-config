@@ -1138,7 +1138,7 @@ return require('packer').startup(function()
         },
         mapping = {
           ['<CR>']    = cmp.mapping.confirm({ select = false }),
-          ['<C-e>']   = cmp.mapping.abort(),
+          ['<C-c>']   = cmp.mapping.abort(),
           ['<C-f>']   = cmp.mapping.complete_common_string(),
           ['<C-j>']   = cmp.mapping.scroll_docs(-4),
           ['<C-k>']   = cmp.mapping.scroll_docs(4),
