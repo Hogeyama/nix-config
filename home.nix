@@ -109,6 +109,7 @@ in
       commitizen
       curl
       deno
+      difftastic
       docker
       docker-compose
       docker-credential-helpers
@@ -468,6 +469,7 @@ in
         core.autoCRLF = false;
         core.autoLF = false;
         core.quotePath = false;
+        diff.external = "difft";
         fetch.prune = true;
         init.defaultBranch = "main";
         blame.date = "short";
