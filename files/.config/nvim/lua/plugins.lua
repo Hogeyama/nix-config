@@ -12,6 +12,19 @@ return require('packer').startup(function()
   use { 'nvim-telescope/telescope.nvim' }
   use { 'ibhagwan/fzf-lua' }
   -- [Love]
+  use({
+    "jackMort/ChatGPT.nvim",
+    requires = {
+      "MunifTanjim/nui.nvim",
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope.nvim"
+    },
+    config = function()
+      require("chatgpt").setup({
+        -- optional configuration
+      })
+    end,
+  })
   use { 'miversen33/netman.nvim',
     config = function()
       require("netman")
