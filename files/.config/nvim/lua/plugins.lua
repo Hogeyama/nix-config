@@ -25,6 +25,11 @@ return require('packer').startup(function()
       })
     end,
   })
+  use { 'haringsrob/nvim_context_vt',
+    config = function()
+      require('nvim_context_vt').setup()
+    end
+  }
   use { 'miversen33/netman.nvim',
     config = function()
       require("netman")
@@ -1358,6 +1363,9 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       hi! DiagnosticLineNrWarn  guibg=#51412A guifg=#FFA500 gui=bold
       hi! DiagnosticLineNrInfo  guibg=#1E535D guifg=#00FFFF gui=bold
       hi! DiagnosticLineNrHint  guibg=#1E205D guifg=#0000FF gui=bold
+
+      hi! ContextVt             guibg=None    guifg=#444444
+
       sign define DiagnosticSignError text= texthl=DiagnosticSignError linehl= numhl=DiagnosticLineNrError
       sign define DiagnosticSignWarn  text= texthl=DiagnosticSignWarn  linehl= numhl=DiagnosticLineNrWarn
       sign define DiagnosticSignInfo  text= texthl=DiagnosticSignInfo  linehl= numhl=DiagnosticLineNrInfo
