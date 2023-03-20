@@ -454,11 +454,12 @@ in
         DU = "du -hd1 | sort -h";
         open = "xdg-open";
         v = "neovim";
-        # vi = "neovim";
-        # vim = "neovim";
         gs = "git status";
         glog = "git log --pretty=format:\"%C(yellow)%h%Creset %C(green)%ad%Creset %s %Cred%d%Creset %Cblue[%an]\" --date=short --graph";
         j = "just";
+        da = "direnv allow";
+        dr = "direnv reload";
+        nb = "nix build";
       };
     };
     git = {
