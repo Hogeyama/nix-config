@@ -120,6 +120,7 @@ return require('packer').startup(function()
       vim.g.startify_session_persistence = 1
     end
   }
+  use { 'nvim-treesitter/playground' }
   use { 'nvim-treesitter/nvim-treesitter',
     run = ':TSUpdate',
     config = function()
