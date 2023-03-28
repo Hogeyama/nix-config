@@ -405,7 +405,7 @@ in
         export JAVA11_HOME=${pkgs.openjdk11}/lib/openjdk
         export JAVA17_HOME=${pkgs.amazon-corretto17}
         export JAVA_HOME="''$JAVA17_HOME"
-        export PATH="''$PATH:JAVA_HOME/bin"
+        export PATH="''$PATH:''$JAVA_HOME/bin"
       '';
       initExtra = ''
         zstyle ':completion:*' verbose yes
