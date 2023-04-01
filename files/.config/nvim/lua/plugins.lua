@@ -294,23 +294,27 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   use { 'phaazon/hop.nvim',
     config = function()
       require 'hop'.setup()
-      vim.keymap.set('', 'w', function()
+      vim.keymap.set('', 'r', function()
         require 'hop'.hint_words({
           current_line_only = false,
           hint_position = require 'hop.hint'.HintPosition.BEGIN,
           multi_windows = false,
         })
       end, { remap = true })
-      vim.keymap.set('', 'e', function()
-        require 'hop'.hint_words({
-          current_line_only = false,
-          hint_position = require 'hop.hint'.HintPosition.END,
-          multi_windows = false,
-        })
-      end, { remap = true })
       vim.cmd [[
         nnoremap cw cw
       ]]
+    end
+  }
+  use { "chrisgrieser/nvim-spider",
+    config = function()
+      require("spider").setup({
+        skipInsignificantPunctuation = true
+      })
+      vim.keymap.set({ "n", "o", "x" }, "w", "<cmd>lua require('spider').motion('w')<CR>", { desc = "Spider-w" })
+      vim.keymap.set({ "n", "o", "x" }, "e", "<cmd>lua require('spider').motion('e')<CR>", { desc = "Spider-e" })
+      vim.keymap.set({ "n", "o", "x" }, "W", "<cmd>lua require('spider').motion('b')<CR>", { desc = "Spider-b" })
+      vim.keymap.set({ "n", "o", "x" }, "E", "<cmd>lua require('spider').motion('ge')<CR>", { desc = "Spider-ge" })
     end
   }
   use { 'godlygeek/tabular' }
@@ -383,7 +387,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   }
   use { 'AndrewRadev/linediff.vim' }
   use { 'machakann/vim-highlightedyank' }
-  use { 'wellle/visual-split.vim' }
   use { 'glidenote/memolist.vim',
     config = function()
       vim.g.memolist_path = '~/.memo'
