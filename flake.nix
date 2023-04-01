@@ -62,7 +62,7 @@
         inherit system;
         modules = [
           # overlay
-          ({ pkgs, ... }@args: { nixpkgs.overlays = overlays; })
+          ({ pkgs, ... }: { nixpkgs.overlays = overlays; })
           # system configuration
           ({ pkgs, ... }@args: import ./configuration.nix (args // { inherit nixpkgs; }))
           # home-manager configuration
@@ -79,7 +79,7 @@
           }
           # nix-alien
           ({ pkgs, ... }: {
-            environment.systemPackages = with self.inputs.nix-alien.packages.${system}; [
+            environment.systemPackages = [
               nix-alien
             ];
             # Optional, needed for `nix-alien-ld`
