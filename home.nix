@@ -486,6 +486,7 @@ in
         rebase.abbreviateCommands = true;
         rerere.enabled = true;
         credential."https://github.com".helper = "!${pkgs.gh}/bin/gh auth git-credential";
+        include.path = "config.local";
       };
       delta.enable = true;
     };
