@@ -482,6 +482,7 @@ in
         push.autoSetupRemote = true;
         push.default = "current";
         rebase.autoStash = true;
+        rebase.updateRefs = true;
         rebase.missingCommitsCheck = "warn";
         rebase.abbreviateCommands = true;
         rerere.enabled = true;
