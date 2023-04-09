@@ -1146,7 +1146,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   use { 'glepnir/lspsaga.nvim',
     config = function()
       require('lspsaga').setup({
-        request_timeout = 15000, -- jdtlsが重いので15秒くらい待つ
+        request_timeout = 1000,
         ui = {
           border = 'rounded'
         },
@@ -1157,6 +1157,19 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         symbol_in_winbar = {
           enable = false,
         },
+        finder = {
+          keys = {
+            expand_or_jump = '<CR>',
+            quit = { 'q', '<ESC>' },
+            close_in_preview = '<ESC>',
+          },
+        },
+        outline = {
+          keys = {
+            expand_or_jump = '<CR>',
+            quit = "q",
+          },
+        }
       })
     end
   }
