@@ -27,7 +27,9 @@ return require('packer').startup(function()
   })
   use { 'haringsrob/nvim_context_vt',
     config = function()
-      require('nvim_context_vt').setup()
+      require('nvim_context_vt').setup({
+        disable_ft = { 'markdown', 'yaml', 'json' },
+      })
     end
   }
   use { 'miversen33/netman.nvim',
