@@ -1331,6 +1331,12 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       vim.g.vim_markdown_new_list_item_indent = 2
     end
   }
+  use { "iamcco/markdown-preview.nvim",
+    run = "cd app && npm install",
+    config = function()
+      vim.g.mkdp_filetypes = { "markdown" }
+    end,
+  }
   use { 'vim-voom/VOoM' }
   use { 'hashivim/vim-terraform' }
   -- [[Textile]]
