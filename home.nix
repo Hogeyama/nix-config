@@ -452,6 +452,7 @@ in
         da = "direnv allow";
         dr = "direnv reload";
         nb = "nix build";
+        awslocal = ''AWS_ACCESS_KEY_ID=dummy AWS_SECRET_ACCESS_KEY=dummy AWS_DEFAULT_REGION=''${DEFAULT_REGION:-''${AWS_DEFAULT_REGION:-ap-northeast-1}} aws --endpoint-url=http://''${LOCALSTACK_HOST:-localhost.localstack.cloud}:4566'';
       };
     };
     git = {
