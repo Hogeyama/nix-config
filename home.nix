@@ -190,7 +190,7 @@ in
       };
     };
     sessionVariables = {
-      EDITOR = ''bash -c 'nvim --server \"\''$NVIM\" --remote-tab-silent \"\''$@\"' --'';
+      EDITOR = "nvimw";
       BROWSER = env.user.browser;
 
       # aws
@@ -426,16 +426,8 @@ in
         mkcd(){
           mkdir -p "$1" && cd "$1"
         }
-        neovim(){
-          if [[ -z "$NVIM_LISTEN_ADDRESS" ]] && [[ -z "$NVIM" ]]
-          then
-            nvim "$@"
-          else
-            nvr -p "$@"
-          fi
-        }
         ncd() {
-          nvr -c "cd '$(realpath $1)'"
+          nvr -c "cd $(realpath $1)"
         }
         # なぜか fzf の completion がうまく動かないのでもう一度読む
         export FZF_COMPLETION_TRIGGER="::"
@@ -453,7 +445,7 @@ in
         la = "ls -a";
         DU = "du -hd1 | sort -h";
         open = "xdg-open";
-        v = "neovim";
+        v = "nvimw";
         gs = "git status";
         glog = "git log --pretty=format:\"%C(yellow)%h%Creset %C(green)%ad%Creset %s %Cred%d%Creset %Cblue[%an]\" --date=short --graph";
         j = "just";

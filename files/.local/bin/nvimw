@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+NVIM=${NVIM:-"${NVIM_LISTEN_ADDRESS:-}"}
+if [[ -z "$NVIM" ]]; then
+    nvim "$@"
+else
+    if [[ -t 0 ]]; then
+        # stdin is a terminal
+        nvim --server "$NVIM" --remote-tab-silent "$@"
+    else
+        # stdin is a pipe
+        TMP=$(mktemp)
+        trap 'rm -f "$TMP"' EXIT
+        tee "$TMP"
+        nvim --server "$NVIM" --remote-tab-silent "$TMP" "$@"
+    fi
+fi
