@@ -116,16 +116,6 @@ nnoremap gj j
 nnoremap gk k
 vnoremap gj j
 vnoremap gk k
-nmap <Leader>w <Plug>(easymotion-bd-w)
-nmap <Leader>W <Plug>(easymotion-bd-W)
-nmap <Leader>e <Plug>(easymotion-bd-e)
-nmap <Leader>E <Plug>(easymotion-bd-E)
-vmap <Leader>w <Plug>(easymotion-bd-w)
-vmap <Leader>W <Plug>(easymotion-bd-W)
-vmap <Leader>e <Plug>(easymotion-bd-e)
-vmap <Leader>E <Plug>(easymotion-bd-E)
-nmap <Leader>r <Plug>(easymotion-repeat)
-nmap <Leader>; <Plug>(easymotion-next)
 """moving: insert mode
 inoremap <C-j> <down>
 inoremap <C-k> <up>
