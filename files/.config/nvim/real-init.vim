@@ -199,6 +199,12 @@ nnoremap <C-c> :call CursorColumnForAWhile()<CR>
 "" Per file-type configuration (TODO move to ftplugin){{{
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+"terminal"{{{
+"nvim_treesitter#foldexpr()が有効になっているとめちゃくちゃ重くなる
+"なぜかnofoldenableでも重いので、foldmethod=manualにする
+autocmd FileType floaterm setlocal foldmethod=manual
+"}}}
+
 "C"{{{
 autocmd FileType c setlocal expandtab ts=4 sts=4 sw=4
 "}}}
