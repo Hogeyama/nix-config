@@ -8,7 +8,12 @@ return require('packer').startup(function()
   use { 'nvim-lua/popup.nvim' }
   use { 'MunifTanjim/nui.nvim' }
   use { 'kyazdani42/nvim-web-devicons' }
-  use { 'rcarriga/nvim-notify' }
+  use { 'rcarriga/nvim-notify',
+    config = function()
+      vim.o.termguicolors = true
+      require("notify").setup()
+    end
+  }
   use { 'nvim-telescope/telescope.nvim' }
   use { 'ibhagwan/fzf-lua' }
   -- [Love]
