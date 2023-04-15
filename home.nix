@@ -270,7 +270,10 @@ in
           '';
         }
         {
-          plugin = tmuxPlugins.nord;
+          plugin = tmuxPlugins.power-theme;
+          extraConfig = ''
+            set -g @tmux_power_theme 'snow'
+          '';
         }
       ];
       extraConfig = ''
