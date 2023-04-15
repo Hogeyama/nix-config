@@ -1,4 +1,5 @@
 vim.cmd [[packadd packer.nvim]]
+local xuse = function(_) end
 return require('packer').startup(function()
   -- [Packer]
   use { 'wbthomason/packer.nvim' }
