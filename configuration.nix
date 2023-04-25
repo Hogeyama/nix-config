@@ -15,7 +15,7 @@ in
     ];
 
   nix = {
-    package = pkgs.unstable.nix;
+    package = pkgs.unstable.nixVersions.nix_2_15;
     settings = {
       substituters = [
         "s3://hogeyama-nix-cache?region=ap-northeast-1"
