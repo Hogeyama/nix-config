@@ -164,6 +164,7 @@ in
       libreoffice
       lsof
       mercurial
+      moreutils
       neovim-remote
       nil
       nixpkgs-fmt
