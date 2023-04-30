@@ -1,16 +1,33 @@
 #!/usr/bin/env bash
 NVIM=${NVIM:-"${NVIM_LISTEN_ADDRESS:-}"}
+
+# `nvim --remote` resolves paths relative to the cwd in *nvim*.
+# To resolve paths relative to the cwd in *bash/zsh*,
+# we need to convert them to absolute paths.
+to_abspath() {
+    for ARG in "$@"; do
+        if [[ -f "$ARG" ]]; then
+            realpath "$ARG"
+        else
+            echo "$ARG"
+        fi
+    done
+}
+
+mapfile -t ARGS < <(to_abspath "$@")
+
 if [[ -z "$NVIM" ]]; then
     nvim "$@"
 else
     if [[ -t 0 ]]; then
         # stdin is a terminal
-        nvim --server "$NVIM" --remote-tab-silent "$@"
+        nvim --server "$NVIM" --remote-tab-silent "${ARGS[@]}"
+        read -rp "Press any key to continue..." # for hg commit, sops, etc.
     else
         # stdin is a pipe
         TMP=$(mktemp)
         trap 'rm -f "$TMP"' EXIT
         tee "$TMP"
-        nvim --server "$NVIM" --remote-tab-silent "$TMP" "$@"
+        nvim --server "$NVIM" --remote-tab-silent "$TMP" "${ARGS[@]}"
     fi
 fi
