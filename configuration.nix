@@ -122,8 +122,10 @@ in
   # Remenber display layout
   services.autorandr.enable = true;
 
-  # Enable docker
+  # Enable docker/podman
   virtualisation.docker.enable = true;
+  virtualisation.podman.enable = true;
+  virtualisation.podman.dockerCompat = false; # Do not create alias docker=podman
 
   # Enable gnupg-agent
   programs.gnupg = {
@@ -168,6 +170,7 @@ in
       neovim-remote
       nil
       nixpkgs-fmt
+      podman-compose
       python3
       ripgrep
       scrot
