@@ -6,6 +6,8 @@
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
     nix-index-database.url = "github:Mic92/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
     nix-alien.url = "github:thiagokokada/nix-alien";
@@ -20,6 +22,7 @@
     { self
     , nixpkgs
     , nixpkgs-unstable
+    , sops-nix
     , home-manager
     , neovim-nightly-overlay
     , nix-index-database
@@ -80,6 +83,8 @@
               nix-index-database.hmModules.nix-index
             ];
           }
+          # sops-nix
+          sops-nix.nixosModules.sops
           # env-unique config
           env.extraConfig
         ];

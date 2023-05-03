@@ -174,6 +174,8 @@ in
       python3
       ripgrep
       scrot
+      sops
+      ssh-to-age
       textql
       unar
       vifm

@@ -30,5 +30,10 @@
   extraConfig = { ... }: {
     # example
     programs.steam.enable = true;
+    sops.secrets."aws/hogeyama" = {
+      sopsFile = ./secrets/common.yaml;
+      mode = "0440";
+      path = "/root/.aws/credentials";
+    };
   };
 }

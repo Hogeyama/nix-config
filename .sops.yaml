@@ -1,0 +1,16 @@
+# yamllint disable rule:document-start
+# yamllint disable rule:line-length
+#
+# To generate a public key from SSH host key, run:
+#   sudo ssh-to-age -i /etc/ssh/ssh_host_ed25519_key.pub
+# To edit secrets.yaml, run:
+#   SOPS_AGE_KEY=$(sudo ssh-to-age -private-key -i /etc/ssh/ssh_host_ed25519_key) sops secrets.yaml
+keys:
+  - &home age1yf6qufzs04ehgta7cnheengu9vcxyxkl2h0t6dazlprn7wkr5v4qn7fhtv
+  - &work age1adr6p6r2rz3q8n4usptmav8crrfl7ttj7uj489r5ez069n8w4ytqrf3hu5
+creation_rules:
+  - path_regex: secrets/common\.yaml
+    key_groups:
+      - age:
+          - *home
+          - *work
