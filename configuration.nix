@@ -135,8 +135,6 @@ in
 
   programs.nix-ld.enable = true;
 
-  programs.steam.enable = env.steam.enable or false;
-
   environment = {
     systemPackages = with pkgs; [
       awscli2
@@ -170,6 +168,7 @@ in
       neovim-remote
       nil
       nixpkgs-fmt
+      nix-alien
       podman-compose
       python3
       ripgrep

@@ -52,6 +52,7 @@
       overlays = [
         my-overlay
         neovim-nightly-overlay.overlay
+        nix-alien.overlays.default
       ];
 
       pkgs = import nixpkgs { inherit system overlays; };
@@ -62,9 +63,11 @@
         inherit system;
         modules = [
           # overlay
-          ({ pkgs, ... }: { nixpkgs.overlays = overlays; })
+          (_: { nixpkgs.overlays = overlays; })
           # system configuration
-          ({ pkgs, ... }@args: import ./configuration.nix (args // { inherit nixpkgs; }))
+          ({ config, pkgs, ... }: import ./configuration.nix ({
+            inherit config pkgs nixpkgs;
+          }))
           # home-manager configuration
           home-manager.nixosModules.home-manager
           {
@@ -77,14 +80,8 @@
               nix-index-database.hmModules.nix-index
             ];
           }
-          # nix-alien
-          ({ pkgs, ... }: {
-            environment.systemPackages = [
-              nix-alien
-            ];
-            # Optional, needed for `nix-alien-ld`
-            programs.nix-ld.enable = true;
-          })
+          # env-unique config
+          env.extraConfig
         ];
       };
 

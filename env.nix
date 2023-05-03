@@ -27,5 +27,8 @@
       terminal = "konsole";
     };
 
-  steam.enable = true;
+  extraConfig = { ... }: {
+    # example
+    programs.steam.enable = true;
+  };
 }
