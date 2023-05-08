@@ -12,7 +12,7 @@ local java_test_root = mason_root .. '/java-test'
 local jdtls_jar = vim.fn.glob(jdtls_root .. '/plugins/org.eclipse.equinox.launcher_*.jar')
 local lombok_jar = jdtls_root .. '/lombok.jar'
 
-local bundles = {} -- TODO 環境変数で渡す？
+local bundles = {}
 vim.list_extend(bundles,
   vim.split(
     vim.fn.glob(java_debug_adapter_root .. "/extension/server/com.microsoft.java.debug.plugin-*.jar"),
@@ -51,7 +51,7 @@ local on_attach = function(client, bufnr)
   require'jdtls'.setup_dap({
     hotcodereplace = 'auto',
     config_overrides = {
-      javaExec = vim.env.JAVA_HOME .. '/bin/java',
+      javaExec = vim.env.JAVA17_HOME .. '/bin/java',
       vmArgs = vim.env.JAVA_OPTS,
     },
   })
@@ -97,9 +97,12 @@ local vmargs = {
 }
 vim.list_extend(vmargs, vim.env.JAVA_OPTS and vim.split(vim.env.JAVA_OPTS, " ") or {})
 
-local cmd = vim.list_extend(
-  {jdtls_bin},
-  vim.tbl_map(
+-- jdtls.py requires that JAVA_HOME is pointed to java>=17
+local cmd = {}
+vim.list_extend(cmd, {"env"})
+vim.list_extend(cmd, {"JAVA_HOME=" .. vim.env.JAVA17_HOME})
+vim.list_extend(cmd, {jdtls_bin})
+vim.list_extend(cmd, vim.tbl_map(
     function(a) return "--jvm-arg=" .. a end,
     (vim.tbl_filter(function(a) return a ~= "" end, vmargs))
   )
