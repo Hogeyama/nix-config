@@ -206,7 +206,7 @@ autocmd FileType floaterm setlocal foldmethod=manual
 "}}}
 
 "C"{{{
-autocmd FileType c setlocal expandtab ts=4 sts=4 sw=4
+autocmd FileType c setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
 "}}}
 
 "Java"{{{
@@ -214,8 +214,12 @@ autocmd FileType java setlocal tabstop=4 shiftwidth=4 softtabstop=4
 "}}}
 
 "sh"{{{
-autocmd FileType sh   setlocal expandtab shiftwidth=2
-autocmd FileType bash setlocal expandtab shiftwidth=2
+autocmd FileType sh   setlocal expandtab shiftwidth=4
+autocmd FileType bash setlocal expandtab shiftwidth=4
+"}}}
+
+"markdown"{{{
+autocmd FileType markdown setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
 "}}}
 
 "Haskell"{{{
