@@ -446,6 +446,45 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     ]]
     end
   }
+  use { 'nvim-neorg/neorg',
+    config = function()
+      require('neorg').setup {
+        load = {
+          ["core.defaults"] = {}, -- Loads default behaviour
+          ["core.completion"] = {
+            config = { engine = "nvim-cmp" }
+          },
+          ["core.dirman"] = { -- Manages Neorg workspaces
+            config = {
+              workspaces = {
+                notes = "~/notes",
+              },
+            },
+          },
+          -- ["core.concealer"] = {}, -- Adds pretty icons to your documents
+        },
+      }
+    end,
+    run = ":Neorg sync-parsers",
+    after = { "plenary.nvim", "nvim-cmp" },
+  }
+  use { 'jubnzv/mdeval.nvim',
+    config = function()
+      require('mdeval').setup {
+        require_confirmation = false,
+        eval_options = {
+          bash = {
+            command = { "bash" },
+          },
+        }
+      }
+    end,
+  }
+  use { 'michaelb/sniprun',
+    config = function()
+    end,
+    run = 'bash ./install.sh',
+  }
   use { 'folke/noice.nvim',
     after = { "nui.nvim", "nvim-notify", "nvim-cmp" },
     config = function()
