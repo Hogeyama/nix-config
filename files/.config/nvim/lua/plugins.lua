@@ -470,7 +470,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           ["core.defaults"] = {
             config = {
               disable = {
-                "core.clipboard.code-blocks"
+                "core.clipboard.code-blocks",
+                "core.esupports.indent",
               }
             }
           },
@@ -607,7 +608,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           view = "mini",
           view_error = "mini",
           view_warn = "mini",
-          view_history = "mini",
+          view_history = "messages",
           view_search = "mini",
         },
         popupmenu = {
