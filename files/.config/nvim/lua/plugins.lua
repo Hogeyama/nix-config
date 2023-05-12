@@ -126,9 +126,14 @@ return require('packer').startup(function()
       vim.g.startify_session_persistence = 1
     end
   }
-  use { 'nvim-treesitter/playground' }
   use { 'nvim-treesitter/nvim-treesitter',
     run = ':TSUpdate',
+    requires = {
+      'nvim-treesitter/playground',
+      "nvim-treesitter/nvim-treesitter-textobjects",
+      'RRethy/nvim-treesitter-textsubjects',
+      'mfussenegger/nvim-treehopper',
+    },
     config = function()
       require 'nvim-treesitter.configs'.setup {
         -- A list of parser names, or "all"
@@ -166,8 +171,21 @@ return require('packer').startup(function()
           end,
           additional_vim_regex_highlighting = false,
         },
+
+        --
+        textsubjects = {
+          enable = true,
+          keymaps = {
+            ['.'] = 'textsubjects-smart',
+          },
+        },
       }
-    end
+      -- nvim-treehopper
+      vim.cmd [[
+        omap     <silent> m :<C-U>lua require('tsht').nodes()<CR>
+        xnoremap <silent> m :lua require('tsht').nodes()<CR>
+      ]]
+    end,
   }
   use { 'anuvyklack/hydra.nvim',
     after = {
@@ -299,6 +317,13 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         require 'hop'.hint_words({
           current_line_only = false,
           hint_position = require 'hop.hint'.HintPosition.BEGIN,
+          multi_windows = false,
+        })
+      end, { remap = true })
+      vim.keymap.set('', 'R', function()
+        require 'hop'.hint_words({
+          current_line_only = false,
+          hint_position = require 'hop.hint'.HintPosition.END,
           multi_windows = false,
         })
       end, { remap = true })
@@ -436,52 +461,52 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       }
     end
   }
-  use { 'gpanders/vim-medieval',
-    -- markdown-runner と同じようなプラグイン。
-    -- 依存関係を記述できる点が便利だが、targetをコメントで指定する必要がある点が不便。
-    -- 複雑なものを書くときにはこっちを使うべきか。
-    config = function()
-      vim.cmd [[
-      let g:medieval_langs = ['python', 'sh', 'bash', 'console=bash']
-    ]]
-    end
-  }
   use { 'nvim-neorg/neorg',
+    run = ":Neorg sync-parsers",
+    after = { "plenary.nvim", "nvim-cmp", "nvim-treesitter" },
     config = function()
       require('neorg').setup {
         load = {
-          ["core.defaults"] = {}, -- Loads default behaviour
+          ["core.defaults"] = {
+            config = {
+              disable = {
+                "core.clipboard.code-blocks"
+              }
+            }
+          },
           ["core.completion"] = {
             config = { engine = "nvim-cmp" }
           },
-          ["core.dirman"] = { -- Manages Neorg workspaces
+          ["core.export"] = {},
+          ["core.dirman"] = {
             config = {
               workspaces = {
                 notes = "~/notes",
               },
             },
           },
-          -- ["core.concealer"] = {}, -- Adds pretty icons to your documents
         },
       }
-    end,
-    run = ":Neorg sync-parsers",
-    after = { "plenary.nvim", "nvim-cmp" },
-  }
-  use { 'jubnzv/mdeval.nvim',
-    config = function()
-      require('mdeval').setup {
-        require_confirmation = false,
-        eval_options = {
-          bash = {
-            command = { "bash" },
-          },
-        }
-      }
+      vim.cmd [[
+        autocmd FileType norg nnoremap <buffer> <Leader>q <Plug>SnipRunOperator
+        autocmd FileType norg nnoremap <buffer> <C-l>f gg=G<C-o>
+      ]]
     end,
   }
   use { 'michaelb/sniprun',
     config = function()
+      require 'sniprun'.setup({
+        display = {
+          "Terminal",
+          "Api",
+        },
+      })
+      require('sniprun.api').register_listener(function(d)
+        vim.api.nvim_call_function("setreg", { "@", d.message })
+        if d.status == 'error' then
+          vim.notify("failed", vim.log.levels.ERROR)
+        end
+      end)
     end,
     run = 'bash ./install.sh',
   }
@@ -1291,6 +1316,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           { name = 'nvim_lsp' },
           { name = 'vsnip' },
           { name = 'buffer' },
+          { name = 'neorg' },
         }, {
           { name = 'rg',
             keyword_length = 3, },
