@@ -258,8 +258,11 @@ in
       enable = true;
       nix-direnv.enable = false;
     };
-    fzf = {
+    atuin = {
       enable = true;
+    };
+    fzf = {
+      enable = false;
     };
     neovim = {
       enable = true;
