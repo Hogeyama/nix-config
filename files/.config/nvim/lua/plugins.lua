@@ -15,7 +15,39 @@ return require('packer').startup(function()
       require("notify").setup()
     end
   }
-  use { 'nvim-telescope/telescope.nvim' }
+  use { 'nvim-telescope/telescope.nvim',
+    after = {
+      'telescope-fzf-native.nvim',
+      'telescope-ui-select.nvim',
+      'yanky.nvim',
+    },
+    config = function()
+      require('telescope').setup {
+        defaults = {
+          mappings = {
+            i = {
+              ["<Esc>"] = require('telescope.actions').close,
+            },
+          },
+        },
+        extensions = {
+          fzf = {
+            fuzzy = true,
+            override_generic_sorter = true,
+            override_file_sorter = true,
+            case_mode = "smart_case",
+          },
+          ["ui-select"] = {
+            require("telescope.themes").get_dropdown {}
+          }
+        }
+      }
+      require('telescope').load_extension('fzf')
+      require("telescope").load_extension("ui-select")
+    end
+  }
+  use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
+  use { 'nvim-telescope/telescope-ui-select.nvim' }
   use { 'ibhagwan/fzf-lua' }
   -- [Love]
   use({
