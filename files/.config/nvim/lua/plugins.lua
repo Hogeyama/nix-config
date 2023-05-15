@@ -44,14 +44,15 @@ return require('packer').startup(function()
       }
       require('telescope').load_extension('fzf')
       require("telescope").load_extension("ui-select")
+      require("telescope").load_extension("yank_history")
+      vim.keymap.set("n", "P", "<Cmd>Telescope yank_history<CR>")
     end
   }
   use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
   use { 'nvim-telescope/telescope-ui-select.nvim' }
   use { 'ibhagwan/fzf-lua' }
   -- [Love]
-  use({
-    "jackMort/ChatGPT.nvim",
+  use { "jackMort/ChatGPT.nvim",
     requires = {
       "MunifTanjim/nui.nvim",
       "nvim-lua/plenary.nvim",
@@ -62,7 +63,39 @@ return require('packer').startup(function()
         -- optional configuration
       })
     end,
-  })
+  }
+  use { 'gbprod/yanky.nvim',
+    config = function()
+      require("yanky").setup {
+        ring = {
+          history_length = 100,
+          storage = "shada",
+          sync_with_numbered_registers = true,
+          cancel_event = "update",
+        },
+        picker = {
+          select = {
+            action = nil, -- nil to use default put action
+          },
+          telescope = {
+            mappings = nil, -- nil to use default mappings
+          },
+        },
+        system_clipboard = {
+          sync_with_ring = true,
+        },
+        highlight = {
+          on_put = false,
+          on_yank = true,
+          timer = 100,
+        },
+        preserve_cursor_position = {
+          enabled = true,
+        },
+      }
+      vim.cmd [[set clipboard+=unnamedplus]]
+    end,
+  }
   use { 'miversen33/netman.nvim',
     config = function()
       require("netman")
