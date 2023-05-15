@@ -493,56 +493,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       }
     end
   }
-  use { 'nvim-neorg/neorg',
-    run = ":Neorg sync-parsers",
-    after = { "plenary.nvim", "nvim-cmp", "nvim-treesitter" },
-    config = function()
-      require('neorg').setup {
-        load = {
-          ["core.defaults"] = {
-            config = {
-              disable = {
-                "core.clipboard.code-blocks",
-                "core.esupports.indent",
-              }
-            }
-          },
-          ["core.completion"] = {
-            config = { engine = "nvim-cmp" }
-          },
-          ["core.export"] = {},
-          ["core.dirman"] = {
-            config = {
-              workspaces = {
-                notes = "~/notes",
-              },
-            },
-          },
-        },
-      }
-      vim.cmd [[
-        autocmd FileType norg nnoremap <buffer> <Leader>q <Plug>SnipRunOperator
-        autocmd FileType norg nnoremap <buffer> <C-l>f gg=G<C-o>
-      ]]
-    end,
-  }
-  use { 'michaelb/sniprun',
-    config = function()
-      require 'sniprun'.setup({
-        display = {
-          "Terminal",
-          "Api",
-        },
-      })
-      require('sniprun.api').register_listener(function(d)
-        vim.api.nvim_call_function("setreg", { "@", d.message })
-        if d.status == 'error' then
-          vim.notify("failed", vim.log.levels.ERROR)
-        end
-      end)
-    end,
-    run = 'bash ./install.sh',
-  }
   use { 'folke/noice.nvim',
     after = { "nui.nvim", "nvim-notify", "nvim-cmp" },
     config = function()
@@ -1349,7 +1299,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           { name = 'nvim_lsp' },
           { name = 'vsnip' },
           { name = 'buffer' },
-          { name = 'neorg' },
         }, {
           { name = 'rg',
             keyword_length = 3, },
