@@ -249,6 +249,7 @@ in
         gmp5
         openssl_1_1
       ];
+      ATUIN_NOBIND = "1";
     };
   };
   programs = {
@@ -261,9 +262,12 @@ in
     };
     atuin = {
       enable = true;
+      # TODO wait for home-manager 23.05
+      # flags = [ "--disable-up-arrow" ];
     };
     fzf = {
       enable = false;
+      enableZshIntegration = false;
     };
     neovim = {
       enable = true;
@@ -417,6 +421,9 @@ in
           }}/share/zsh/site-functions)
           # for ddc-zsh
           zmodload zsh/zpty
+          # for atuin
+          # TODO Use --disable-up-arrow when home-manager supports it
+          bindkey '^r' _atuin_search_widget
         '';
       };
       envExtra = ''
