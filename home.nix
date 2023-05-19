@@ -569,6 +569,16 @@ in
         };
       };
     };
+    vscode = {
+      enable = true;
+      package = (pkgs.vscode.override { isInsiders = true; }).overrideAttrs (oldAttrs: {
+        src = (builtins.fetchTarball {
+          url = "https://update.code.visualstudio.com/latest/linux-x64/insider";
+          sha256 = "sha256:0nb7iavknf4rpdc7fi54x0hnhp4acgfb4yrf0xl4h5h599y651q3";
+        });
+        version = "latest";
+      });
+    };
     navi = {
       enable = true;
     };
