@@ -247,7 +247,6 @@ in
         zlib
         ncurses
         gmp5
-        openssl_1_1
       ];
       ATUIN_NOBIND = "1";
     };
