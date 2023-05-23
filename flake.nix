@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
-    home-manager.url = "github:nix-community/home-manager/release-22.11";
+    home-manager.url = "github:nix-community/home-manager/release-23.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
@@ -13,9 +13,11 @@
     nix-alien.url = "github:thiagokokada/nix-alien";
     nix-alien.inputs.nixpkgs.follows = "nixpkgs";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
+    neovim-nightly-overlay.inputs.flake-compat.follows = "flake-compat";
+    flake-compat.url = "github:edolstra/flake-compat";
+    flake-compat.flake = false;
     # mine
     my-fzf-wrapper.url = "github:Hogeyama/my-fzf-wrapper";
-    my-fzf-wrapper.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -49,7 +51,7 @@
         my-xmobar = import ./pkgs/my-xmobar { pkgs = final; };
         my-xmonad = import ./pkgs/my-xmonad { pkgs = final; };
         my-fzf = import ./pkgs/my-fzf { pkgs = final; };
-        my-fzf-wrapper = my-fzf-wrapper.defaultPackage.${system};
+        my-fzf-wrapper = my-fzf-wrapper.outputs.packages.${system}.default;
       };
 
       overlays = [
