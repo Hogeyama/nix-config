@@ -1,4 +1,4 @@
-{ config, pkgs, nixpkgs, ... }:
+{ pkgs, nixpkgs, ... }:
 let
   env = import ./env.nix;
 in
@@ -131,6 +131,8 @@ in
     agent.enable = true;
     agent.pinentryFlavor = "tty";
   };
+
+  programs.zsh.enable = true;
 
   programs.nix-ld.enable = true;
 
