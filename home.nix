@@ -248,7 +248,6 @@ in
         ncurses
         gmp5
       ];
-      ATUIN_NOBIND = "1";
     };
   };
   programs = {
@@ -261,8 +260,7 @@ in
     };
     atuin = {
       enable = true;
-      # TODO wait for home-manager 23.05
-      # flags = [ "--disable-up-arrow" ];
+      flags = [ "--disable-up-arrow" ];
     };
     fzf = {
       enable = false;
@@ -383,7 +381,6 @@ in
           "docker"
           "docker-compose"
           "fd"
-          "fzf"
           "gcloud"
           "git"
           "git-auto-fetch"
@@ -420,9 +417,6 @@ in
           }}/share/zsh/site-functions)
           # for ddc-zsh
           zmodload zsh/zpty
-          # for atuin
-          # TODO Use --disable-up-arrow when home-manager supports it
-          bindkey '^r' _atuin_search_widget
         '';
       };
       envExtra = ''
