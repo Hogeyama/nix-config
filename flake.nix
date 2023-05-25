@@ -81,7 +81,6 @@
             home-manager.users.${username} =
               { config, pkgs, ... }: import ./home.nix { inherit config pkgs self; };
             home-manager.sharedModules = [
-              # TODO Use NixOS module when 23.05 comes
               nix-index-database.hmModules.nix-index
             ];
           }
