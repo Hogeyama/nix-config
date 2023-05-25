@@ -2,6 +2,57 @@
 { config, self, pkgs, ... }:
 let
   env = import ./env.nix;
+
+  dotfilesSymlinks =
+    { rootDir ? "files"
+    , clonedPath ? "${config.home.homeDirectory}/nix-config"
+    }:
+    let
+      # /nix/store/.../files 以下を traverse して相対パスを取得する。
+      # それを "${config.home.homeDirectory}/nix-config/${rootDir}" 以下の絶対パスに変換して、
+      # $HOME 以下にシンボリックリンクを貼る。
+      linksRootDirInStore = "${self}/${rootDir}";
+      linksRootDirInVCS = "${clonedPath}/${rootDir}";
+      toAbsPathInStore = s: "${linksRootDirInStore}/${s}";
+      toAbsPathInVCS = s: "${linksRootDirInVCS}/${s}";
+      dotfilesSymlinks' = dirPath:
+        let
+          # 相対パスの取得
+          items = builtins.readDir (toAbsPathInStore dirPath);
+          funcInner = name: type:
+            let
+              newDirPath = if dirPath == "" then name else "${dirPath}/${name}";
+              fileOrSymlink =
+                {
+                  "${newDirPath}" = {
+                    source = config.lib.file.mkOutOfStoreSymlink
+                      (toAbsPathInVCS newDirPath);
+                  };
+                };
+              cases = {
+                "regular" = fileOrSymlink;
+                "symlink" = fileOrSymlink;
+                "directory" = dotfilesSymlinks' newDirPath;
+              };
+              otherwise = abort ("unknown item type: " + toAbsPathInVCS newDirPath);
+            in
+              cases.${type} or otherwise;
+        in
+        pkgs.lib.concatMapAttrs (name: type: funcInner name type) items;
+    in
+    dotfilesSymlinks' "";
+
+  xmonad = pkgs.symlinkJoin {
+    name = "xmonad-x86_64-linux";
+    paths = [ pkgs.my-xmonad ];
+    buildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram $out/bin/xmonad-x86_64-linux \
+        --set BROWSER  ${env.user.browser} \
+        --set TERMINAL ${env.user.terminal}
+    '';
+  };
+
   checkstyle = pkgs.writeScriptBin "checkstyle" ''
     #!${pkgs.stdenv.shell}
     set -eu
@@ -66,55 +117,6 @@ let
         echo "Disabled nix-daemon S3 credentials..."
       fi
     '';
-
-  xmonad = pkgs.symlinkJoin {
-    name = "xmonad-x86_64-linux";
-    paths = [ pkgs.my-xmonad ];
-    buildInputs = [ pkgs.makeWrapper ];
-    postBuild = ''
-      wrapProgram $out/bin/xmonad-x86_64-linux \
-        --set BROWSER  ${env.user.browser} \
-        --set TERMINAL ${env.user.terminal}
-    '';
-  };
-  dotfilesSymlinks =
-    { rootDir ? "files"
-    , clonedPath ? "${config.home.homeDirectory}/nix-config"
-    }:
-    let
-      # /nix/store/.../files 以下を traverse して相対パスを取得する。
-      # それを "${config.home.homeDirectory}/nix-config/${rootDir}" 以下の絶対パスに変換して、
-      # $HOME 以下にシンボリックリンクを貼る。
-      linksRootDirInStore = "${self}/${rootDir}";
-      linksRootDirInVCS = "${clonedPath}/${rootDir}";
-      toAbsPathInStore = s: "${linksRootDirInStore}/${s}";
-      toAbsPathInVCS = s: "${linksRootDirInVCS}/${s}";
-      dotfilesSymlinks' = dirPath:
-        let
-          # 相対パスの取得
-          items = builtins.readDir (toAbsPathInStore dirPath);
-          funcInner = name: type:
-            let
-              newDirPath = if dirPath == "" then name else "${dirPath}/${name}";
-              fileOrSymlink =
-                {
-                  "${newDirPath}" = {
-                    source = config.lib.file.mkOutOfStoreSymlink
-                      (toAbsPathInVCS newDirPath);
-                  };
-                };
-              cases = {
-                "regular" = fileOrSymlink;
-                "symlink" = fileOrSymlink;
-                "directory" = dotfilesSymlinks' newDirPath;
-              };
-              otherwise = abort ("unknown item type: " + toAbsPathInVCS newDirPath);
-            in
-              cases.${type} or otherwise;
-        in
-        pkgs.lib.concatMapAttrs (name: type: funcInner name type) items;
-    in
-    dotfilesSymlinks' "";
 in
 {
   nixpkgs.config = {
