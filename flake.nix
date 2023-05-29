@@ -94,10 +94,17 @@
 
       # For Nix package manager only
       homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs system username;
-        configuration = import ./home.nix;
-        homeDirectory = "/home/${username}";
-        stateVersion = "21.11";
+        inherit pkgs;
+        modules = [
+          ({ config, pkgs, ... }: import ./home.nix { inherit config pkgs self; })
+          {
+            home = {
+              inherit username;
+              homeDirectory = "/home/${username}";
+              stateVersion = "22.11";
+            };
+          }
+        ];
       };
 
       devShells.${system}.xmonad = import ./pkgs/my-xmonad/shell.nix { inherit pkgs; };
