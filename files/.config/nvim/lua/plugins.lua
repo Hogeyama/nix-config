@@ -52,18 +52,6 @@ return require('packer').startup(function()
   use { 'nvim-telescope/telescope-ui-select.nvim' }
   use { 'ibhagwan/fzf-lua' }
   -- [Love]
-  use { "jackMort/ChatGPT.nvim",
-    requires = {
-      "MunifTanjim/nui.nvim",
-      "nvim-lua/plenary.nvim",
-      "nvim-telescope/telescope.nvim"
-    },
-    config = function()
-      require("chatgpt").setup({
-        -- optional configuration
-      })
-    end,
-  }
   use { 'gbprod/yanky.nvim',
     config = function()
       require("yanky").setup {
