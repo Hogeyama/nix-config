@@ -110,12 +110,7 @@ in
       then { sddm.enable = true; }
       else { };
     desktopManager.plasma5.enable = true;
-    windowManager = {
-      xmonad = {
-        enable = true;
-        haskellPackages = pkgs.haskell.packages.ghc8107;
-      };
-    };
+    windowManager.xmonad.enable = true;
   };
 
   # Remenber display layout
