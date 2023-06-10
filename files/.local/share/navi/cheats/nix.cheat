@@ -9,4 +9,8 @@ git add --intent-to-add flake.{nix,lock} && git update-index --assume-unchanged 
 # profile remove
 nix profile remove <installed>
 
+# install packages from nix-index
+nix profile install <nix-index-package>
+
 $ installed: nix profile list --- --map "awk '{print $1}'"
+$ nix-index-package: nix-locate -r <pattern> --- --map "awk '{print $4}'"
