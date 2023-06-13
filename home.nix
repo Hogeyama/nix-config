@@ -404,6 +404,7 @@ in
           "docker"
           "docker-compose"
           "fd"
+          "fzf"
           "gcloud"
           "git"
           "git-auto-fetch"
