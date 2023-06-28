@@ -484,6 +484,8 @@ in
         v = "nvimw";
         gs = "git status";
         glog = "git log --pretty=format:\"%C(yellow)%h%Creset %C(green)%ad%Creset %s %Cred%d%Creset %Cblue[%an]\" --date=short --graph";
+        grc = "git rebase --continue";
+        gra = "git rebase --abort";
         j = "just";
         da = "direnv allow";
         dr = "direnv reload";
