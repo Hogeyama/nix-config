@@ -878,7 +878,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           "jdtls",
           "json-lsp",
           "lua-language-server",
-          "ocaml-lsp",
           "pyright",
           "terraform-ls",
           "tflint",
@@ -1085,7 +1084,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       require 'lspconfig'['tflint'].setup {}
       require 'lspconfig'['dockerls'].setup {}
       require 'lspconfig'['sqlls'].setup {}
-      require 'lspconfig'['ocamllsp'].setup {}
     end
   }
   use { 'jose-elias-alvarez/null-ls.nvim',
