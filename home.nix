@@ -505,8 +505,11 @@ in
         blame.date = "short";
         merge.ff = false;
         merge.conflictstyle = "diff3";
-        merge.tool = "my-nvimdiff3";
-        mergetool.my-nvimdiff3.cmd = "nvim -d -c 'wincmd J' $MERGED $LOCAL $BASE $REMOTE";
+        merge.tool = "nvimdiff";
+        mergetool.keepBackup = false;
+        mergetool.vimdiff.layout = "(LOCAL,BASE,REMOTE)/MERGED + MERGED";
+        mergetool.nvimdiff.layout = "(LOCAL,BASE,REMOTE)/MERGED + MERGED";
+        mergetool.nvimdiff.trustExitCode = false;
         pull.rebase = true;
         push.autoSetupRemote = true;
         push.default = "current";
