@@ -143,10 +143,10 @@ return require('packer').startup(function()
   use { 'mhinz/vim-startify',
     config = function()
       vim.g.startify_lists = {
-        { type = 'sessions', header = { '   Sessions' } },
-        { type = 'files', header = { '   MRU' } },
+        { type = 'sessions',  header = { '   Sessions' } },
+        { type = 'files',     header = { '   MRU' } },
         { type = 'bookmarks', header = { '   Bookmarks' } },
-        { type = 'commands', header = { '   Commands' } },
+        { type = 'commands',  header = { '   Commands' } },
       }
       vim.g.startify_commands = {
         { g = 'Neogit' },
@@ -312,15 +312,15 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
             vim.schedule(function() gitsigns.prev_hunk() end)
             return '<Ignore>'
           end, { expr = true } },
-          { 's', ':Gitsigns stage_hunk<CR>', { silent = true } },
-          { 'u', gitsigns.undo_stage_hunk },
-          { 'S', gitsigns.stage_buffer },
-          { 'p', gitsigns.preview_hunk },
-          { 'd', gitsigns.toggle_deleted, { nowait = true } },
-          { 'b', gitsigns.blame_line },
-          { 'B', function() gitsigns.blame_line { full = true } end },
-          { '<Enter>', '<cmd>Neogit<CR>', { exit = true } },
-          { '<Esc>', nil, { exit = true, nowait = true } },
+          { 's',       ':Gitsigns stage_hunk<CR>',                        { silent = true } },
+          { 'u',       gitsigns.undo_stage_hunk },
+          { 'S',       gitsigns.stage_buffer },
+          { 'p',       gitsigns.preview_hunk },
+          { 'd',       gitsigns.toggle_deleted,                           { nowait = true } },
+          { 'b',       gitsigns.blame_line },
+          { 'B',       function() gitsigns.blame_line { full = true } end },
+          { '<Enter>', '<cmd>Neogit<CR>',                                 { exit = true } },
+          { '<Esc>',   nil,                                               { exit = true, nowait = true } },
         }
       })
     end
@@ -519,10 +519,10 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     config = function()
       require("noice").setup {
         presets = {
-          bottom_search = false, -- use a classic bottom cmdline for search
+          bottom_search = false,        -- use a classic bottom cmdline for search
           long_message_to_split = true, -- long messages will be sent to a split
-          inc_rename = false, -- enables an input dialog for inc-rename.nvim
-          lsp_doc_border = true, -- add a border to hover docs and signature help
+          inc_rename = false,           -- enables an input dialog for inc-rename.nvim
+          lsp_doc_border = true,        -- add a border to hover docs and signature help
         },
         lsp = {
           override = {
@@ -568,11 +568,11 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
               enabled = true,
               trigger = true, -- Automatically show signature help when typing a trigger character from the LSP
               luasnip = true, -- Will open signature help when jumping to Luasnip insert nodes
-              throttle = 50, -- Debounce lsp signature help request by 50ms
+              throttle = 50,  -- Debounce lsp signature help request by 50ms
             },
-            view = nil, -- when nil, use defaults from documentation
+            view = nil,       -- when nil, use defaults from documentation
             ---type NoiceViewOptions
-            opts = {}, -- merged with defaults from documentation
+            opts = {},        -- merged with defaults from documentation
           },
           message = {
             -- Messages shown by lsp servers
@@ -594,7 +594,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           },
         },
         cmdline = {
-          enabled = true, -- disable if you use native command line UI
+          enabled = true,         -- disable if you use native command line UI
           view = "cmdline_popup", -- view for rendering the cmdline. Change to `cmdline` to get a classic cmdline at the bottom
           format = {
             cmdline = { pattern = "^:", icon = "", lang = "vim" },
@@ -615,7 +615,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           view_search = "mini",
         },
         popupmenu = {
-          enabled = true, -- disable if you use something like cmp-cmdline
+          enabled = true,  -- disable if you use something like cmp-cmdline
           ---@type 'nui'|'cmp'
           backend = "cmp", -- backend to use to show regular cmdline completions
         },
@@ -790,7 +790,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           kind = "vsplit",
         },
         status = {
-          recent_commit_count = 25
+          recent_commit_count = 50
         },
         -- customize displayed signs
         signs = {
@@ -1243,7 +1243,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     end
   }
   use { 'aznhe21/actions-preview.nvim', }
-  use { 'j-hui/fidget.nvim',
+  use { 'j-hui/fidget.nvim', tag = 'legacy',
     config = function()
       require 'fidget'.setup {}
     end
@@ -1321,11 +1321,15 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           { name = 'vsnip' },
           { name = 'buffer' },
         }, {
-          { name = 'rg',
-            keyword_length = 3, },
-          { name = 'path',
+          {
+            name = 'rg',
+            keyword_length = 3,
+          },
+          {
+            name = 'path',
             options = { trailing_slash = false, },
-            trigger_characters = { '/', '.', '~' }, },
+            trigger_characters = { '/', '.', '~' },
+          },
         })
       })
       cmp.setup.cmdline({ '/', '?' }, {
@@ -1345,8 +1349,10 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           }
         }),
         sources = cmp.config.sources({
-          { name = 'path',
-            options = { trailing_slash = false, }, },
+          {
+            name = 'path',
+            options = { trailing_slash = false, },
+          },
         }, {
           { name = 'cmdline' }
         })
