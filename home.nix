@@ -501,10 +501,11 @@ in
         core.autoCRLF = false;
         core.autoLF = false;
         core.quotePath = false;
+        blame.date = "short";
         diff.external = "difft";
+        difftool.gron.cmd = ''diff --color -u <(gron "$LOCAL") <(gron "$REMOTE")'';
         fetch.prune = true;
         init.defaultBranch = "main";
-        blame.date = "short";
         merge.ff = false;
         merge.conflictstyle = "diff3";
         merge.tool = "nvimdiff";
