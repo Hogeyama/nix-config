@@ -849,7 +849,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         disable_signs = false,
         disable_hint = false,
         disable_context_highlighting = false,
-        disable_commit_confirmation = false,
+        disable_commit_confirmation = true,
         auto_refresh = true,
         sort_branches = "-committerdate",
         disable_builtin_notifications = false,
