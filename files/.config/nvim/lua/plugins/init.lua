@@ -342,6 +342,9 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
             let g:floaterm_fzf_exists=1
           endif
         endfunction
+        "nvim_treesitter#foldexpr()が有効になっているとめちゃくちゃ重くなる
+        "なぜかnofoldenableでも重いので、foldmethod=manualにする
+        autocmd FileType floaterm setlocal foldmethod=manual
       ]]
     end
   },

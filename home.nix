@@ -273,10 +273,14 @@ in
       package = pkgs.neovim-nightly;
       withNodeJs = true;
       withPython3 = true;
-      extraConfig = ''
-        source  ~/.config/nvim/real-init.vim
-      '';
       extraLuaConfig = "\n" + ''
+        -- config
+        require("config.options")
+        require("config.keymaps")
+        require("config.commands")
+        pcall(require, "config.local")
+
+        -- plugins
         local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
         if not vim.loop.fs_stat(lazypath) then
           vim.fn.system({
