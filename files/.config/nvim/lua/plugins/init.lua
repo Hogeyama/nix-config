@@ -1,27 +1,13 @@
-vim.cmd [[packadd packer.nvim]]
-local xuse = function(_) end
-return require('packer').startup(function()
-  -- [Packer]
-  use { 'wbthomason/packer.nvim' }
-  -- [Lib]
-  use { 'nvim-lua/plenary.nvim' }
-  -- [UI]
-  use { 'nvim-lua/popup.nvim' }
-  use { 'MunifTanjim/nui.nvim' }
-  use { 'kyazdani42/nvim-web-devicons' }
-  use { 'rcarriga/nvim-notify',
-    config = function()
-      vim.o.termguicolors = true
-      require("notify").setup()
-    end
-  }
-  use { 'nvim-telescope/telescope.nvim',
-    after = {
-      'telescope-fzf-native.nvim',
-      'telescope-ui-select.nvim',
-      'yanky.nvim',
-    },
-    config = function()
+return {
+  { 'nvim-lua/plenary.nvim' },
+  { 'nvim-lua/popup.nvim' },
+  { 'MunifTanjim/nui.nvim' },
+  { 'nvim-tree/nvim-web-devicons' },
+  { 'rcarriga/nvim-notify',
+    config = true,
+  },
+  { 'nvim-telescope/telescope.nvim',
+    init = function()
       require('telescope').setup {
         defaults = {
           mappings = {
@@ -46,65 +32,48 @@ return require('packer').startup(function()
       require("telescope").load_extension("ui-select")
       require("telescope").load_extension("yank_history")
       vim.keymap.set("n", "P", "<Cmd>Telescope yank_history<CR>")
-    end
-  }
-  use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
-  use { 'nvim-telescope/telescope-ui-select.nvim' }
-  use { 'ibhagwan/fzf-lua' }
-  -- [Love]
-  use { 'gbprod/yanky.nvim',
-    config = function()
-      require("yanky").setup {
-        ring = {
-          history_length = 100,
-          storage = "shada",
-          sync_with_numbered_registers = true,
-          cancel_event = "update",
-        },
-        picker = {
-          select = {
-            action = nil, -- nil to use default put action
-          },
-          telescope = {
-            mappings = nil, -- nil to use default mappings
-          },
-        },
-        system_clipboard = {
-          sync_with_ring = true,
-        },
-        highlight = {
-          on_put = false,
-          on_yank = true,
-          timer = 100,
-        },
-        preserve_cursor_position = {
-          enabled = true,
-        },
-      }
-      vim.cmd [[set clipboard+=unnamedplus]]
     end,
-  }
-  use { 'miversen33/netman.nvim',
-    config = function()
-      require("netman")
-    end
-  }
-  use { 'echasnovski/mini.nvim',
-    config = function()
-      require('mini.ai').setup()
-      require('mini.align').setup({
-        mappings = {
-          start = '',
-          start_with_preview = 'ga',
-        },
-      })
-      require('mini.pairs').setup()
-    end,
-  }
-  use { 'glacambre/firenvim',
-    requires = { "ibhagwan/fzf-lua", },
-    run = function() vim.fn['firenvim#install'](0) end,
-    config = function()
+    dependencies = {
+      { 'gbprod/yanky.nvim',
+        init = function()
+          require("yanky").setup {
+            ring = {
+              history_length = 100,
+              storage = "shada",
+              sync_with_numbered_registers = true,
+              cancel_event = "update",
+            },
+            picker = {
+              select = {
+                action = nil, -- nil to use default put action
+              },
+              telescope = {
+                mappings = nil, -- nil to use default mappings
+              },
+            },
+            system_clipboard = {
+              sync_with_ring = true,
+            },
+            highlight = {
+              on_put = false,
+              on_yank = true,
+              timer = 100,
+            },
+            preserve_cursor_position = {
+              enabled = true,
+            },
+          }
+          vim.cmd [[set clipboard+=unnamedplus]]
+        end,
+      },
+      { 'nvim-telescope/telescope-fzf-native.nvim',
+        build = 'make'
+      },
+      { 'nvim-telescope/telescope-ui-select.nvim' },
+    },
+  },
+  { 'glacambre/firenvim',
+    init = function()
       if vim.g.started_by_firenvim == true then
         vim.o.number = false
         vim.o.laststatus = 0
@@ -125,23 +94,44 @@ return require('packer').startup(function()
         vim.g.firenvim_config.localSettings['.*'] = { cmdline = 'firenvim' }
         vim.api.nvim_set_keymap("n", "<Esc><Esc>", "<Cmd>call firenvim#focus_page()<CR>", {})
       end
-    end
-  }
-  use { 'github/copilot.vim',
-    config = function()
+    end,
+    build = function()
+      vim.fn['firenvim#install'](0)
+    end,
+    dependencies = {
+      { 'ibhagwan/fzf-lua' },
+    },
+  },
+  { 'miversen33/netman.nvim',
+    config = true,
+  },
+  { 'echasnovski/mini.nvim',
+    init = function()
+      require('mini.ai').setup()
+      require('mini.align').setup({
+        mappings = {
+          start = '',
+          start_with_preview = 'ga',
+        },
+      })
+      require('mini.pairs').setup()
+    end,
+  },
+  { 'github/copilot.vim',
+    init = function()
       vim.g.copilot_no_tab_map = true
       vim.g.copilot_filetypes = {
         ['*'] = true
       }
       vim.cmd [[
-      imap <silent><expr><C-Right> copilot#Accept("\<Right>")
-      "imap <silent><expr><Tab> copilot#Accept("\<Tab>")
-      let g:copilot_no_tab_map = v:true
-    ]]
-    end
-  }
-  use { 'mhinz/vim-startify',
-    config = function()
+        imap <silent><expr><C-Right> copilot#Accept("\<Right>")
+        "imap <silent><expr><Tab> copilot#Accept("\<Tab>")
+        let g:copilot_no_tab_map = v:true
+      ]]
+    end,
+  },
+  { 'mhinz/vim-startify', -- TODO
+    init = function()
       vim.g.startify_lists = {
         { type = 'sessions', header = { '   Sessions' } },
         { type = 'files', header = { '   MRU' } },
@@ -157,64 +147,19 @@ return require('packer').startup(function()
         "/nix/store/.*",
         "~/.local/share/nvim/site/pack/packer/.*",
       }
-      vim.g.startify_custom_header = vim.api.nvim_call_function("startify#pad",
-        {
-          vim.split([[
-        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣴⣶⣶⣶⣤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣴⣶⣶⣶⣤⣄⡀⠀⠀⠀⠀⠀⠀
-        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⠿⢋⣉⠀⠀⠀⠀⠀⠉⠻⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⠿⢋⣉⠀⠀⠀⠀⠀⠉⠻⣷⡀⠀⠀⠀⠀
-        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⡿⠋⠀⢾⣿⡆⢠⣾⡿⢿⣦⢸⣿⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⡿⠋⠀⢾⣿⡆⢠⣾⡿⢿⣦⢸⣿⣷⡀⠀⠀⠀
-        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⠁⠀⠀⠈⠉⠀⣾⡏⠀⠈⣿⡇⠀⠹⣷⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⠁⠀⠀⠈⠉⠀⣾⡏⠀⠈⣿⡇⠀⠹⣷⠀⠀⠀
-        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⡟⠀⠀⠀⠀⠀⠀⢿⣇⠀⠀⣿⡇⠀⠀⢻⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⡟⠀⠀⠀⠀⠀⠀⢿⣇⠀⠀⣿⡇⠀⠀⢻⡇⠀⠀
-        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣿⠀⠀⠀⠀⠀⠀⠀⠘⣿⣆⣰⣿⠃⠀⠀⣸⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣿⠀⠀⠀⠀⠀⠀⠀⠘⣿⣆⣰⣿⠃⠀⠀⣸⡇⠀⠀
-        ⠀⠀⠀⠀⠀⠀⠀⠀⣰⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠘⢿⣿⠃⠀⠀⢀⣿⠁⠀⠀⠀⠀⠀⠀⠀⠀⣰⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠘⢿⣿⠃⠀⠀⢀⣿⠁⠀⠀
-        ⠀⠀⠀⠀⠀⠀⢀⣼⠟⠀⠻⣷⡀⠀⠀⠀⠀⠀⠀⠀⠈⠃⠀⠀⠀⣾⠇⠀⠀⠀⠀⠀⠀⠀⢀⣼⠟⠀⠻⣷⡀⠀⠀⠀⠀⠀⠀⠀⠈⠃⠀⠀⠀⣾⠇⠀⠀⠀
-        ⠀⠀⠀⠀⠀⣰⡿⠋⠀⠀⠀⠘⠿⣶⣤⣤⡄⠀⠀⠀⠀⠀⠀⠀⢸⡿⠀⠀⠀⠀⠀⠀⠀⣰⡿⠋⠀⠀⠀⠘⠿⣶⣤⣤⡄⠀⠀⠀⠀⠀⠀⠀⢸⡿⠀⠀⠀⠀
-        ⠀⠀⠀⣠⡾⠋⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀⢸⣇⠀⠀⠀⠀⠀⣠⡾⠋⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀⢸⣇⠀⠀⠀⠀
-        ⠀⠀⣼⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⡀⠀⠀⠀⣼⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⡀⠀⠀⠀
-          ]], '\n')
-        }
-      )
       -- autoload & autosave
       vim.g.startify_session_autoload = 1
       vim.g.startify_session_persistence = 1
     end
-  }
-  use { 'nvim-treesitter/nvim-treesitter',
-    run = ':TSUpdate',
-    requires = {
-      'nvim-treesitter/playground',
-      "nvim-treesitter/nvim-treesitter-textobjects",
-      'RRethy/nvim-treesitter-textsubjects',
-      'mfussenegger/nvim-treehopper',
-    },
-    config = function()
+  },
+  { 'nvim-treesitter/nvim-treesitter',
+    init = function()
       require 'nvim-treesitter.configs'.setup {
-        -- A list of parser names, or "all"
-        ensure_installed = {
-          "lua",
-          "java",
-          "jsonc",
-          "json5",
-          "just",
-          "haskell",
-          "json",
-          "markdown",
-          "yaml",
-          "typescript",
-        },
-
-        -- Install parsers synchronously (only applied to `ensure_installed`)
+        ensure_installed = {},
         sync_install = false,
-
-        -- Automatically install missing parsers when entering buffer
-        -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
         auto_install = false,
-
-        -- List of parsers to ignore installing (for "all")
-        ignore_install = { "nix" },
         highlight = {
           enable = true,
-          -- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
           disable = function(_, buf)
             local max_filesize = 100 * 1024 -- 100 KB
             local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
@@ -224,8 +169,6 @@ return require('packer').startup(function()
           end,
           additional_vim_regex_highlighting = false,
         },
-
-        --
         textsubjects = {
           enable = true,
           keymaps = {
@@ -239,12 +182,16 @@ return require('packer').startup(function()
         xnoremap <silent> m :lua require('tsht').nodes()<CR>
       ]]
     end,
-  }
-  use { 'anuvyklack/hydra.nvim',
-    after = {
-      'gitsigns.nvim',
+    dependencies = {
+      { 'nvim-treesitter/playground' },
+      { 'nvim-treesitter/nvim-treesitter-textobjects' },
+      { 'RRethy/nvim-treesitter-textsubjects' },
+      { 'mfussenegger/nvim-treehopper' },
+      { 'IndianBoy42/tree-sitter-just' },
     },
-    config = function()
+  },
+  { 'anuvyklack/hydra.nvim',
+    init = function()
       local hydra = require('hydra')
       hydra({
         name = 'resize',
@@ -323,48 +270,86 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           { '<Esc>', nil, { exit = true, nowait = true } },
         }
       })
-    end
-  }
-  use { 'editorconfig/editorconfig-vim',
-    config = function()
+    end,
+    dependencies = {
+      { 'gitsigns.nvim' },
+      { 'neogit' },
+    },
+  },
+  { 'cocopon/iceberg.vim',
+    init = function()
       vim.cmd [[
-      let g:EditorConfig_max_line_indicator = 'exceeding'
-    ]]
+        set background=dark
+        set termguicolors
+        colorscheme iceberg
+        hi! Pmenu                         guibg=None guifg=cyan
+        hi! Folded                        guibg=None
+        hi! LineNr                        guibg=None
+        hi! MatchParen                    guibg=black guifg=#dadada
+        hi! FloatBorder                   guibg=None  guifg=#555555 "LSPのCursorHold
+        hi! FloatermBorder                guibg=None  guifg=cyan
+        hi! DiagnosticSignInfo            guibg=None
+        hi! DiagnosticSignWarn            guibg=None
+        hi! LspCodeLens                   guibg=None  guifg=#555555
+        hi! LspReferenceRead              guibg=black
+        hi! LspReferenceText              guibg=black
+        hi! LspReferenceWrite             guibg=black
+        hi! NoiceCmdlineIcon                          guifg=cyan
+        hi! NoiceSplitBorder              guibg=None  guifg=#555555
+        hi! LspSagaCodeActionBorder       guibg=None  guifg=#555555
+
+        hi! DiagnosticLineNrError guibg=#51202A guifg=#FF0000 gui=bold
+        hi! DiagnosticLineNrWarn  guibg=#51412A guifg=#FFA500 gui=bold
+        hi! DiagnosticLineNrInfo  guibg=#1E535D guifg=#00FFFF gui=bold
+        hi! DiagnosticLineNrHint  guibg=#1E205D guifg=#0000FF gui=bold
+
+        hi! ContextVt             guibg=None    guifg=#444444
+
+        sign define DiagnosticSignError text= texthl=DiagnosticSignError linehl= numhl=DiagnosticLineNrError
+        sign define DiagnosticSignWarn  text= texthl=DiagnosticSignWarn  linehl= numhl=DiagnosticLineNrWarn
+        sign define DiagnosticSignInfo  text= texthl=DiagnosticSignInfo  linehl= numhl=DiagnosticLineNrInfo
+        sign define DiagnosticSignHint  text= texthl=DiagnosticSignHint  linehl= numhl=DiagnosticLineNrHint
+      ]]
     end
-  }
-  use { 'voldikss/vim-floaterm',
-    config = function()
+  },
+  { 'editorconfig/editorconfig-vim',
+    init = function()
       vim.cmd [[
-      let g:floaterm_width = 0.9
-      let g:floaterm_height = 0.9
-      nnoremap <F6> :FloatermToggle shell6<CR>
-      tnoremap <F6> <C-\><C-n>:FloatermToggle shell6<CR>
-      nnoremap <F7> :FloatermToggle shell7<CR>
-      tnoremap <F7> <C-\><C-n>:FloatermToggle shell7<CR>
-      nnoremap <F8> :ToggleFloatermFzf<CR>
-      tnoremap <F8> <C-\><C-n>:ToggleFloatermFzf<CR>
-      nnoremap <F9> :FloatermToggle shell9<CR>
-      tnoremap <F9> <C-\><C-n>:FloatermToggle shell9<CR>
-      command! ToggleFloatermFzf call ToggleFloatermFzfFun()
-      function! ToggleFloatermFzfFun() abort
-        if get(g:,'floaterm_fzf_exists',0)
-          FloatermToggle fzf
-        else
-          FloatermNew  --name=fzf
-          FloatermSend --name=fzf fzfw
-          let g:floaterm_fzf_exists=1
-        endif
-      endfunction
-    ]]
+        let g:EditorConfig_max_line_indicator = 'exceeding'
+      ]]
+    end,
+  },
+  { 'voldikss/vim-floaterm',
+    init = function()
+      vim.cmd [[
+        let g:floaterm_width = 0.9
+        let g:floaterm_height = 0.9
+        nnoremap <F6> :FloatermToggle shell6<CR>
+        tnoremap <F6> <C-\><C-n>:FloatermToggle shell6<CR>
+        nnoremap <F7> :FloatermToggle shell7<CR>
+        tnoremap <F7> <C-\><C-n>:FloatermToggle shell7<CR>
+        nnoremap <F8> :ToggleFloatermFzf<CR>
+        tnoremap <F8> <C-\><C-n>:ToggleFloatermFzf<CR>
+        nnoremap <F9> :FloatermToggle shell9<CR>
+        tnoremap <F9> <C-\><C-n>:FloatermToggle shell9<CR>
+        command! ToggleFloatermFzf call ToggleFloatermFzfFun()
+        function! ToggleFloatermFzfFun() abort
+          if get(g:,'floaterm_fzf_exists',0)
+            FloatermToggle fzf
+          else
+            FloatermNew  --name=fzf
+            FloatermSend --name=fzf fzfw
+            let g:floaterm_fzf_exists=1
+          endif
+        endfunction
+      ]]
     end
-  }
-  use { 'lukas-reineke/indent-blankline.nvim',
-    config = function()
-      require("indent_blankline").setup {}
-    end
-  }
-  use { 'phaazon/hop.nvim',
-    config = function()
+  },
+  { 'lukas-reineke/indent-blankline.nvim',
+    config = true
+  },
+  { 'phaazon/hop.nvim',
+    init = function()
       require 'hop'.setup()
       vim.keymap.set('', 'r', function()
         require 'hop'.hint_words({
@@ -384,9 +369,9 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         nnoremap cw cw
       ]]
     end
-  }
-  use { "chrisgrieser/nvim-spider",
-    config = function()
+  },
+  { 'chrisgrieser/nvim-spider',
+    init = function()
       require("spider").setup({
         skipInsignificantPunctuation = true
       })
@@ -395,10 +380,10 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       vim.keymap.set({ "n", "o", "x" }, "W", "<cmd>lua require('spider').motion('b')<CR>", { desc = "Spider-b" })
       vim.keymap.set({ "n", "o", "x" }, "E", "<cmd>lua require('spider').motion('ge')<CR>", { desc = "Spider-ge" })
     end
-  }
-  use { 'godlygeek/tabular' }
-  use { 'numToStr/Comment.nvim',
-    config = function()
+  },
+  { 'godlygeek/tabular' },
+  { 'numToStr/Comment.nvim',
+    init = function()
       require('Comment').setup({
         ---Add a space b/w comment and the line
         padding = true,
@@ -421,17 +406,16 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         },
       })
     end
-  }
-  use { 'machakann/vim-sandwich',
-    config = function()
+  },
+  { 'machakann/vim-sandwich',
+    init = function()
       vim.cmd [[
-      vmap s <Plug>(operator-sandwich-add)
-    ]]
+        vmap s <Plug>(operator-sandwich-add)
+      ]]
     end
-  }
-  use { 'nvim-lualine/lualine.nvim',
-    requires = { 'kyazdani42/nvim-web-devicons' },
-    config = function()
+  },
+  { 'nvim-lualine/lualine.nvim',
+    init = function()
       if not vim.g.started_by_firenvim then
         vim.o.laststatus = 3
         require('lualine').setup {
@@ -463,32 +447,33 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         }
       end
     end,
-  }
-  use { 'AndrewRadev/linediff.vim' }
-  use { 'machakann/vim-highlightedyank' }
-  use { 'glidenote/memolist.vim',
-    config = function()
+    dependencies = { 'nvim-web-devicons', 'firenvim' },
+  },
+  { 'AndrewRadev/linediff.vim' },
+  { 'machakann/vim-highlightedyank' },
+  { 'glidenote/memolist.vim',
+    init = function()
       vim.g.memolist_path = '~/.memo'
       vim.g.memolist_template_dir_path = '~/.memo/template'
       vim.cmd [[
-      command! MemoToday MemoNewWithMeta 'note', 'daily', 'daily'
-      nnoremap <C-t> :MemoToday<CR>
-    ]]
+        command! MemoToday MemoNewWithMeta 'note', 'daily', 'daily'
+        nnoremap <C-t> :MemoToday<CR>
+      ]]
     end
-  }
-  use { 'kana/vim-metarw' }
-  use { 'mattn/webapi-vim' }
-  use { 'rhysd/clever-f.vim',
-    config = function()
+  },
+  { 'kana/vim-metarw' },
+  { 'mattn/webapi-vim' },
+  { 'rhysd/clever-f.vim',
+    init = function()
       vim.cmd [[
       let g:clever_f_smart_case = 1
     ]]
     end
-  }
-  use { 'haya14busa/vim-asterisk' }
-  use { 'Shougo/deol.nvim' }
-  use { 'dbridges/vim-markdown-runner',
-    config = function()
+  },
+  { 'haya14busa/vim-asterisk' },
+  { 'Shougo/deol.nvim' },
+  { 'dbridges/vim-markdown-runner',
+    init = function()
       vim.cmd [[
         autocmd FileType markdown nnoremap <buffer> <Leader>q :MarkdownRunnerInsert<CR>
         autocmd FileType markdown nnoremap <buffer> <Leader>w :MarkdownRunner<CR>
@@ -513,9 +498,9 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         end,
       }
     end
-  }
-  use { 'folke/noice.nvim',
-    after = { "nui.nvim", "nvim-notify", "nvim-cmp" },
+  },
+  { 'folke/noice.nvim',
+    dependencies = { "nui.nvim", "nvim-notify", "nvim-cmp" },
     config = function()
       require("noice").setup {
         presets = {
@@ -665,15 +650,15 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         format = {}, -- @see section on formatting
       }
     end,
-  }
-  use { 'nvim-neo-tree/neo-tree.nvim',
-    requires = {
-      "nvim-lua/plenary.nvim",
-      "nvim-tree/nvim-web-devicons",
-      "MunifTanjim/nui.nvim",
-      "miversen33/netman.nvim",
+  },
+  { 'nvim-neo-tree/neo-tree.nvim',
+    dependencies = {
+      "plenary.nvim",
+      "nvim-web-devicons",
+      "nui.nvim",
+      "netman.nvim",
     },
-    config = function()
+    init = function()
       require("neo-tree").setup({
         sources = {
           "filesystem",
@@ -732,14 +717,14 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         },
       })
       vim.cmd [[
-      nnoremap <Leader>f :Neotree<CR>
-    ]]
+        nnoremap <Leader>f :Neotree<CR>
+      ]]
     end
-  }
-  use { 'jrudess/vim-foldtext' }
-  use { 'gennaro-tedesco/nvim-possession',
-    requires = { 'ibhagwan/fzf-lua' },
-    config = function()
+  },
+  { 'jrudess/vim-foldtext' },
+  { 'gennaro-tedesco/nvim-possession',
+    dependencies = { 'fzf-lua' },
+    init = function()
       local possession = require("nvim-possession")
       possession.setup {
         autoload = true,
@@ -759,25 +744,107 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         possession.update()
       end)
     end,
-  }
+  },
+  { 'hrsh7th/nvim-cmp',
+    config = function()
+      local cmp = require("cmp")
+      ---@diagnostic disable-next-line: redundant-parameter
+      cmp.setup({
+        snippet = {
+          expand = function(args)
+            vim.fn['vsnip#anonymous'](args.body)
+          end,
+        },
+        window = {
+          completion = cmp.config.window.bordered(),
+          documentation = cmp.config.window.bordered(),
+        },
+        mapping = {
+          ['<CR>']    = cmp.mapping.confirm({ select = false }),
+          ['<C-c>']   = cmp.mapping.abort(),
+          ['<C-f>']   = cmp.mapping.complete_common_string(),
+          ['<C-j>']   = cmp.mapping.scroll_docs(-4),
+          ['<C-k>']   = cmp.mapping.scroll_docs(4),
+          -- NOTE: 挿入したくない場合は insert の代わりに select にする
+          ['<Tab>']   = cmp.mapping.select_next_item({ behavior = "insert" }),
+          ['<Down>']  = cmp.mapping.select_next_item({ behavior = "insert" }),
+          ['<S-Tab>'] = cmp.mapping.select_prev_item({ behavior = "insert" }),
+          ['<Up>']    = cmp.mapping.select_prev_item({ behavior = "insert" }),
+        },
+        sources = cmp.config.sources({
+          { name = 'nvim_lsp' },
+          { name = 'vsnip' },
+          { name = 'buffer' },
+        }, {
+          {
+            name = 'rg',
+            keyword_length = 3,
+          },
+          {
+            name = 'path',
+            options = { trailing_slash = false, },
+            trigger_characters = { '/', '.', '~' },
+          },
+        })
+      })
+      cmp.setup.cmdline({ '/', '?' }, {
+        mapping = cmp.mapping.preset.cmdline({
+          ['<C-f>'] = {
+            c = cmp.mapping.complete_common_string(),
+          }
+        }),
+        sources = {
+          { name = 'buffer' }
+        }
+      })
+      cmp.setup.cmdline(':', {
+        mapping = cmp.mapping.preset.cmdline({
+          ['<C-f>'] = {
+            c = cmp.mapping.complete_common_string(),
+          }
+        }),
+        sources = cmp.config.sources({
+          {
+            name = 'path',
+            options = { trailing_slash = false, },
+          },
+        }, {
+          { name = 'cmdline' }
+        })
+      })
+    end,
+    dependencies = {
+      { 'hrsh7th/cmp-nvim-lsp' },
+      { 'hrsh7th/cmp-nvim-lsp-signature-help' },
+      { 'hrsh7th/cmp-nvim-lsp-document-symbol' },
+      { 'hrsh7th/cmp-buffer' },
+      { 'hrsh7th/cmp-path' },
+      { 'hrsh7th/cmp-emoji' },
+      { 'hrsh7th/cmp-cmdline' },
+      { 'hrsh7th/cmp-vsnip' },
+      { 'lukas-reineke/cmp-rg' },
+      { 'hrsh7th/vim-vsnip',
+        init = function()
+          vim.cmd [[
+            let g:vsnip_snippet_dir = expand('~/.config/nvim/vsnip')
+            imap <expr> <C-f> vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-f>'
+            smap <expr> <C-f> vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-f>'
+            xmap        <C-f> <Plug>(vsnip-cut-text)
+          ]]
+        end,
+      },
+      { 'hrsh7th/vim-vsnip-integ',
+        init = function()
+          vim.cmd [[
+            autocmd User PumCompleteDone call vsnip_integ#on_complete_done(g:pum#completed_item)
+          ]]
+        end,
+      },
+    },
+  },
   -- [Git]
-  use { 'tpope/vim-fugitive' }
-  use { 'jreybert/vimagit' }
-  use { 'lambdalisue/gina.vim',
-    config = function()
-      vim.cmd [[
-      call gina#custom#action#alias(
-        \ '/.*', 'p', 'diff:preview'
-        \)
-      autocmd FileType gina-log nmap F <Plug>(gina-show-commit-vsplit)zv
-      "autocmd FileType gina-log nmap F <Plug>(gina-show-commit-preview)zv
-    ]]
-    end
-  }
-  use { 'sindrets/diffview.nvim' }
-  use { 'NeogitOrg/neogit',
-    after = { "iceberg.vim" },
-    config = function()
+  { 'NeogitOrg/neogit',
+    init = function()
       require("neogit").setup {
         disable_signs = false,
         disable_hint = false,
@@ -815,81 +882,35 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         },
       }
       vim.cmd [[
-      nnoremap <Leader>g :Neogit<CR>
-      autocmd FileType NeogitStatus       setlocal foldmethod=diff
-      autocmd FileType NeogitCommitReview setlocal foldmethod=diff
-    ]]
+        nnoremap <Leader>g :Neogit<CR>
+        autocmd FileType NeogitStatus       setlocal foldmethod=diff
+        autocmd FileType NeogitCommitReview setlocal foldmethod=diff
+      ]]
+    end,
+    dependencies = {
+      { 'iceberg.vim' },
+      { 'sindrets/diffview.nvim' },
+    },
+  },
+  { 'tpope/vim-fugitive' },
+  { 'lambdalisue/gina.vim',
+    init = function()
+      vim.cmd [[
+        autocmd FileType gina-log nmap F <Plug>(gina-show-commit-vsplit)zv
+        "autocmd FileType gina-log nmap F <Plug>(gina-show-commit-preview)zv
+      ]]
     end
-  }
-  use { 'lewis6991/gitsigns.nvim',
-    config = function()
+  },
+  { 'lewis6991/gitsigns.nvim',
+    init = function()
       require('gitsigns').setup({
         signcolumn = false,
         numhl      = true,
       })
-    end
-  }
+    end,
+  },
   -- [LSP]
-  use { 'williamboman/mason.nvim',
-    config = function()
-      require('mason').setup()
-    end
-  }
-  use { 'williamboman/mason-lspconfig.nvim',
-    config = function()
-      require('mason-lspconfig').setup()
-    end
-  }
-  use { 'WhoIsSethDaniel/mason-tool-installer.nvim',
-    after = {
-      'mason.nvim',
-      'mason-lspconfig.nvim',
-    },
-    config = function()
-      require('mason-tool-installer').setup {
-        ensure_installed = {
-          -- [LSP]
-          "bash-language-server",
-          "dhall-lsp",
-          "diagnostic-languageserver",
-          "dockerfile-language-server",
-          "eslint-lsp",
-          "gopls",
-          "graphql-language-service-cli",
-          "jdtls",
-          "json-lsp",
-          "lua-language-server",
-          "pyright",
-          "terraform-ls",
-          "tflint",
-          "typescript-language-server",
-          "yaml-language-server",
-          "sqls",
-          -- [DAP]
-          "java-debug-adapter",
-          "java-test",
-          -- [null-ls]
-          "actionlint",
-          "black",
-          "flake8",
-          "hadolint",
-          "prettier",
-          "shfmt",
-          "yamllint",
-        },
-        auto_update = false,
-        run_on_start = true,
-        start_delay = 3000, -- 3 second delay
-      }
-    end
-  }
-  use { 'neovim/nvim-lspconfig',
-    after = {
-      "mason-tool-installer.nvim",
-      "lsp-format.nvim",
-      "diagnosticls-configs-nvim",
-      'actions-preview.nvim',
-    },
+  { 'neovim/nvim-lspconfig',
     config = function()
       -- [Common]
       -- [[diagnostic]]
@@ -902,7 +923,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       vim.keymap.set('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', { noremap = true, silent = true })
 
       -- [[code lens]]
-
+      -- NOP
 
       -- [[on_attach]]
       ---@diagnostic disable-next-line: duplicate-set-field
@@ -1065,106 +1086,167 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       require 'lspconfig'['tflint'].setup {}
       require 'lspconfig'['dockerls'].setup {}
       require 'lspconfig'['sqlls'].setup {}
-    end
-  }
-  use { 'jose-elias-alvarez/null-ls.nvim',
-    after = { "plenary.nvim", "nvim-lspconfig" },
-    config = function()
-      local null_ls = require("null-ls")
-      local h = require("null-ls.helpers")
-      local methods = require("null-ls.methods")
-
-      local spotbugs = h.make_builtin({
-        name = "spotbugs",
-        meta = {
-          url = "https://spotbugs.github.io/",
-          description = "SpotBugs is a program which uses static analysis to look for bugs in Java code",
-        },
-        method = methods.internal.DIAGNOSTICS_ON_SAVE,
-        filetypes = { "java" },
-        generator_opts = {
-          command = "spotbugs",
-          args = { "$ROOT" },
-          format = "json",
-          on_output = function(params)
-            local parser = h.diagnostics.from_json({})
-            return parser({ output = params.output.comments })
-          end,
-          multiple_files = true,
-          check_exit_code = function(code)
-            return code >= 1
-          end,
-          from_stderr = true, -- なぜかstderrに出力される？
-        },
-        factory = h.generator_factory,
-      })
-
-      local spotless = h.make_builtin({
-        name = "spotless",
-        timeout = 50000,
-        meta = {
-          url = "https://github.com/diffplug/spotless",
-          description = "Spotless is a general-purpose formatter",
-        },
-        method = methods.internal.FORMATTING,
-        filetypes = { "java", "groovy" },
-        generator_opts = {
-          command = "bash",
-          args = {
-            '-c',
-            'cd "$ROOT" && ./gradlew spotlessApply -PspotlessIdeHook="$FILENAME" --quiet',
-          },
-          to_stdin = false,
-          to_temp_file = true,
-          from_temp_file = true,
-        },
-        factory = h.formatter_factory,
-      })
-
-      null_ls.setup {
-        log_level = "trace",
-        on_attach = vim.g.lsp_default_on_attach,
-        default_timeout = 50000,
-        sources = {
-          -- diagnostics
-          null_ls.builtins.diagnostics.actionlint,
-          null_ls.builtins.diagnostics.flake8,
-          null_ls.builtins.diagnostics.hadolint,
-          null_ls.builtins.diagnostics.yamllint,
-          -- null_ls.builtins.diagnostics.checkstyle.with({
-          --   extra_args = { "--", "-f", "sarif", "$FILENAME" },
-          -- }),
-          -- spotbugs,
-          -- formatter
-          null_ls.builtins.formatting.black,
-          null_ls.builtins.formatting.jq,
-          null_ls.builtins.formatting.just,
-          null_ls.builtins.formatting.prettier.with({
-            filetypes = {
-              "javascript",
-              "javascriptreact",
-              "typescript",
-              "typescriptreact",
-              "json",
-              "jsonc",
-              "yaml",
-              "css",
-              "scss",
-              "html",
+    end,
+    dependencies = {
+      { 'WhoIsSethDaniel/mason-tool-installer.nvim',
+        config = function()
+          require('mason-tool-installer').setup {
+            ensure_installed = {
+              -- [LSP]
+              "bash-language-server",
+              "dhall-lsp",
+              "diagnostic-languageserver",
+              "dockerfile-language-server",
+              "eslint-lsp",
+              "gopls",
+              "graphql-language-service-cli",
+              "jdtls",
+              "json-lsp",
+              "lua-language-server",
+              "pyright",
+              "terraform-ls",
+              "tflint",
+              "typescript-language-server",
+              "yaml-language-server",
+              "sqls",
+              -- [DAP]
+              "java-debug-adapter",
+              "java-test",
+              -- [null-ls]
+              "actionlint",
+              "black",
+              "flake8",
+              "hadolint",
+              "prettier",
+              "shfmt",
+              "yamllint",
             },
-          }),
-          null_ls.builtins.formatting.shfmt.with({
-            extra_args = { "-i", "4", "-ci" },
-          }),
-          -- spotless,
-        }
-      }
-      -- require("null-ls").disable({ name = "spotbugs" })
-    end
-  }
-  use { 'tamago324/nlsp-settings.nvim',
-    after = 'nvim-lspconfig',
-    config = function()
+            auto_update = false,
+            run_on_start = true,
+            start_delay = 3000, -- 3 second delay
+          }
+        end,
+        dependencies = {
+          { 'williamboman/mason-lspconfig.nvim',
+            config = true,
+          },
+          { 'williamboman/mason.nvim',
+            config = true,
+          },
+        },
+      },
+      { 'lukas-reineke/lsp-format.nvim',
+        config = function()
+          require "lsp-format".setup {
+            java = {
+              exclude = { "jdtls" }
+            }
+          }
+          -- 自動フォーマット
+          vim.cmd [[cabbrev wq execute "Format sync" <bar> wq]]
+        end
+      },
+      { 'jose-elias-alvarez/null-ls.nvim',
+        config = function()
+          local null_ls = require("null-ls")
+          local h = require("null-ls.helpers")
+          local methods = require("null-ls.methods")
+
+          local spotbugs = h.make_builtin({
+            name = "spotbugs",
+            meta = {
+              url = "https://spotbugs.github.io/",
+              description = "SpotBugs is a program which uses static analysis to look for bugs in Java code",
+            },
+            method = methods.internal.DIAGNOSTICS_ON_SAVE,
+            filetypes = { "java" },
+            generator_opts = {
+              command = "spotbugs",
+              args = { "$ROOT" },
+              format = "json",
+              on_output = function(params)
+                local parser = h.diagnostics.from_json({})
+                return parser({ output = params.output.comments })
+              end,
+              multiple_files = true,
+              check_exit_code = function(code)
+                return code >= 1
+              end,
+              from_stderr = true, -- なぜかstderrに出力される？
+            },
+            factory = h.generator_factory,
+          })
+
+          local spotless = h.make_builtin({
+            name = "spotless",
+            timeout = 50000,
+            meta = {
+              url = "https://github.com/diffplug/spotless",
+              description = "Spotless is a general-purpose formatter",
+            },
+            method = methods.internal.FORMATTING,
+            filetypes = { "java", "groovy" },
+            generator_opts = {
+              command = "bash",
+              args = {
+                '-c',
+                'cd "$ROOT" && ./gradlew spotlessApply -PspotlessIdeHook="$FILENAME" --quiet',
+              },
+              to_stdin = false,
+              to_temp_file = true,
+              from_temp_file = true,
+            },
+            factory = h.formatter_factory,
+          })
+
+          null_ls.setup {
+            log_level = "trace",
+            on_attach = vim.g.lsp_default_on_attach,
+            default_timeout = 50000,
+            sources = {
+              -- diagnostics
+              null_ls.builtins.diagnostics.actionlint,
+              null_ls.builtins.diagnostics.flake8,
+              null_ls.builtins.diagnostics.hadolint,
+              null_ls.builtins.diagnostics.yamllint,
+              -- null_ls.builtins.diagnostics.checkstyle.with({
+              --   extra_args = { "--", "-f", "sarif", "$FILENAME" },
+              -- }),
+              -- spotbugs,
+              -- formatter
+              null_ls.builtins.formatting.black,
+              null_ls.builtins.formatting.jq,
+              null_ls.builtins.formatting.just,
+              null_ls.builtins.formatting.prettier.with({
+                filetypes = {
+                  "javascript",
+                  "javascriptreact",
+                  "typescript",
+                  "typescriptreact",
+                  "json",
+                  "jsonc",
+                  "yaml",
+                  "css",
+                  "scss",
+                  "html",
+                },
+              }),
+              null_ls.builtins.formatting.shfmt.with({
+                extra_args = { "-i", "4", "-ci" },
+              }),
+              -- spotless,
+            }
+          }
+          -- require("null-ls").disable({ name = "spotbugs" })
+        end,
+        dependencies = { "plenary.nvim" },
+      },
+      { 'aznhe21/actions-preview.nvim' },
+    },
+  },
+  { 'tamago324/nlsp-settings.nvim',
+    dependencies = { 'nvim-lspconfig' },
+    init = function()
       require 'nlspsettings'.setup({
         append_default_schemas = true,
         loader = 'yaml',
@@ -1172,27 +1254,16 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           enable = true,
         },
       })
-    end
-  }
-  use { 'folke/trouble.nvim',
-    config = function()
-      require('trouble').setup {
-        -- icons = false,
-        -- fold_open = 'v',
-        -- fold_closed = '>',
-        -- signs = {
-        --   error = 'E',
-        --   warning = 'W',
-        --   hint = 'H',
-        --   information = 'I',
-        --   other = 'O'
-        -- },
-      }
+    end,
+  },
+  { 'folke/trouble.nvim',
+    init = function()
+      require('trouble').setup {}
       vim.keymap.set('n', '<space>q', '<cmd>TroubleToggle<CR>', { noremap = true, silent = true })
-    end
-  }
-  use { 'glepnir/lspsaga.nvim',
-    config = function()
+    end,
+  },
+  { 'glepnir/lspsaga.nvim',
+    init = function()
       require('lspsaga').setup({
         request_timeout = 1000,
         ui = {
@@ -1219,234 +1290,70 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           },
         }
       })
-    end
-  }
-  use { 'aznhe21/actions-preview.nvim', }
-  use { 'j-hui/fidget.nvim', tag = 'legacy',
-    config = function()
+    end,
+  },
+  { 'j-hui/fidget.nvim', tag = 'legacy',
+    init = function()
       require 'fidget'.setup {}
     end
-  }
-  use { 'mfussenegger/nvim-jdtls' }
-  use { 'lukas-reineke/lsp-format.nvim',
-    config = function()
-      require "lsp-format".setup {
-        java = {
-          exclude = { "jdtls" }
-        }
-      }
-      -- 自動フォーマット
-      vim.cmd [[cabbrev wq execute "Format sync" <bar> wq]]
-    end
-  }
-  use { 'creativenull/diagnosticls-configs-nvim',
-  }
+  },
+  { 'mfussenegger/nvim-jdtls' },
   -- [DAP]
-  use { 'mfussenegger/nvim-dap',
-    config = function()
+  { 'mfussenegger/nvim-dap',
+    init = function()
       vim.cmd [[
       autocmd FileType dap-repl lua require('dap.ext.autocompl').attach()
     ]]
     end
-  }
-  use { 'theHamsta/nvim-dap-virtual-text',
-    after = 'nvim-dap',
-    config = function()
+  },
+  { 'theHamsta/nvim-dap-virtual-text',
+    dependencies = { 'nvim-dap' },
+    init = function()
       require("nvim-dap-virtual-text").setup({})
     end
-  }
-  use { "rcarriga/nvim-dap-ui",
-    after = 'nvim-dap',
-    config = function()
+  },
+  { "rcarriga/nvim-dap-ui",
+    dependencies = { 'nvim-dap' },
+    init = function()
       require("dapui").setup()
     end
-  }
-  -- [Completion]
-  use { 'hrsh7th/nvim-cmp',
-    after = {
-      'cmp-cmdline',
-      'cmp-path',
-      'cmp-buffer',
-      'cmp-nvim-lsp',
-      'cmp-rg',
-    },
-    config = function()
-      local cmp = require("cmp")
-      ---@diagnostic disable-next-line: redundant-parameter
-      cmp.setup({
-        snippet = {
-          expand = function(args)
-            vim.fn['vsnip#anonymous'](args.body)
-          end,
-        },
-        window = {
-          completion = cmp.config.window.bordered(),
-          documentation = cmp.config.window.bordered(),
-        },
-        mapping = {
-          ['<CR>']    = cmp.mapping.confirm({ select = false }),
-          ['<C-c>']   = cmp.mapping.abort(),
-          ['<C-f>']   = cmp.mapping.complete_common_string(),
-          ['<C-j>']   = cmp.mapping.scroll_docs(-4),
-          ['<C-k>']   = cmp.mapping.scroll_docs(4),
-          -- NOTE: 挿入したくない場合は insert の代わりに select にする
-          ['<Tab>']   = cmp.mapping.select_next_item({ behavior = "insert" }),
-          ['<Down>']  = cmp.mapping.select_next_item({ behavior = "insert" }),
-          ['<S-Tab>'] = cmp.mapping.select_prev_item({ behavior = "insert" }),
-          ['<Up>']    = cmp.mapping.select_prev_item({ behavior = "insert" }),
-        },
-        sources = cmp.config.sources({
-          { name = 'nvim_lsp' },
-          { name = 'vsnip' },
-          { name = 'buffer' },
-        }, {
-          {
-            name = 'rg',
-            keyword_length = 3,
-          },
-          {
-            name = 'path',
-            options = { trailing_slash = false, },
-            trigger_characters = { '/', '.', '~' },
-          },
-        })
-      })
-      cmp.setup.cmdline({ '/', '?' }, {
-        mapping = cmp.mapping.preset.cmdline({
-          ['<C-f>'] = {
-            c = cmp.mapping.complete_common_string(),
-          }
-        }),
-        sources = {
-          { name = 'buffer' }
-        }
-      })
-      cmp.setup.cmdline(':', {
-        mapping = cmp.mapping.preset.cmdline({
-          ['<C-f>'] = {
-            c = cmp.mapping.complete_common_string(),
-          }
-        }),
-        sources = cmp.config.sources({
-          {
-            name = 'path',
-            options = { trailing_slash = false, },
-          },
-        }, {
-          { name = 'cmdline' }
-        })
-      })
-    end
-  }
-  use { 'hrsh7th/vim-vsnip',
-    config = function()
-      vim.cmd [[
-      let g:vsnip_snippet_dir = expand('~/.config/nvim/vsnip')
-      imap <expr> <C-f> vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-f>'
-      smap <expr> <C-f> vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-f>'
-      xmap        <C-f> <Plug>(vsnip-cut-text)
-    ]]
-    end
-  }
-  use { 'hrsh7th/vim-vsnip-integ',
-    config = function()
-      vim.cmd [[
-      autocmd User PumCompleteDone call vsnip_integ#on_complete_done(g:pum#completed_item)
-    ]]
-    end
-  }
-  use { 'hrsh7th/cmp-nvim-lsp' }
-  use { 'hrsh7th/cmp-nvim-lsp-signature-help' }
-  use { 'hrsh7th/cmp-nvim-lsp-document-symbol' }
-  use { 'hrsh7th/cmp-buffer' }
-  use { 'hrsh7th/cmp-path' }
-  use { 'hrsh7th/cmp-emoji' }
-  use { 'hrsh7th/cmp-cmdline' }
-  use { 'hrsh7th/cmp-vsnip' }
-  use { 'lukas-reineke/cmp-rg' }
+  },
   -- [Filetype]
   -- [[Haskell]]
-  use { 'neovimhaskell/haskell-vim' }
+  { 'neovimhaskell/haskell-vim' },
   -- [[dhall]]
-  use { 'vmchale/dhall-vim' }
+  { 'vmchale/dhall-vim' },
   -- [[Rust]]
-  use { 'rust-lang/rust.vim' }
+  { 'rust-lang/rust.vim' },
   -- [[GraphQL]]
-  use { 'jparise/vim-graphql',
-    config = function()
-    end
-  }
+  { 'jparise/vim-graphql' },
   -- [[nix]]
-  use { 'LnL7/vim-nix' }
+  { 'LnL7/vim-nix' },
   -- [[Markdown]]
-  use { 'preservim/vim-markdown',
-    config = function()
+  { 'preservim/vim-markdown',
+    init = function()
       vim.g.vim_markdown_folding_disabled = 1
       vim.g.vim_markdown_new_list_item_indent = 2
     end
-  }
-  use { "iamcco/markdown-preview.nvim",
-    run = "cd app && npm install",
-    config = function()
+  },
+  { "iamcco/markdown-preview.nvim",
+    build = "cd app && npm install",
+    init = function()
       vim.g.mkdp_filetypes = { "markdown" }
     end,
-  }
-  use { 'vim-voom/VOoM' }
-  use { 'hashivim/vim-terraform' }
+  },
+  { 'vim-voom/VOoM' },
+  -- [[terraform]]
+  { 'hashivim/vim-terraform' },
   -- [[Textile]]
-  use { 's3rvac/vim-syntax-redminewiki',
-    config = function()
+  { 's3rvac/vim-syntax-redminewiki',
+    init = function()
       vim.cmd [[
-      autocmd BufEnter *.redmine set ft=redminewiki
-    ]]
+        autocmd BufEnter *.redmine set ft=redminewiki
+      ]]
     end
-  }
+  },
   -- [[JavaScript/TypeScript]]
-  use { 'jelera/vim-javascript-syntax' }
-  use { 'leafgarland/typescript-vim' }
-  -- [[justfile]]
-  use { "IndianBoy42/tree-sitter-just",
-    after = { "nvim-treesitter" },
-    config = function()
-      require('tree-sitter-just').setup({})
-    end
-  }
-  -- [[Color scheme]]
-  use { 'cocopon/iceberg.vim',
-    after = { "vim-floaterm", "nvim-cmp", "noice.nvim", "nui.nvim", "popup.nvim", "nvim-notify", "hop.nvim" },
-    config = function()
-      vim.cmd [[
-      set background=dark
-      set termguicolors
-      colorscheme iceberg
-      hi! Pmenu                         guibg=None guifg=cyan
-      hi! Folded                        guibg=None
-      hi! LineNr                        guibg=None
-      hi! MatchParen                    guibg=black guifg=#dadada
-      hi! FloatBorder                   guibg=None  guifg=#555555 "LSPのCursorHold
-      hi! FloatermBorder                guibg=None  guifg=cyan
-      hi! DiagnosticSignInfo            guibg=None
-      hi! DiagnosticSignWarn            guibg=None
-      hi! LspCodeLens                   guibg=None  guifg=#555555
-      hi! LspReferenceRead              guibg=black
-      hi! LspReferenceText              guibg=black
-      hi! LspReferenceWrite             guibg=black
-      hi! NoiceCmdlineIcon                          guifg=cyan
-      hi! NoiceSplitBorder              guibg=None  guifg=#555555
-      hi! LspSagaCodeActionBorder       guibg=None  guifg=#555555
-
-      hi! DiagnosticLineNrError guibg=#51202A guifg=#FF0000 gui=bold
-      hi! DiagnosticLineNrWarn  guibg=#51412A guifg=#FFA500 gui=bold
-      hi! DiagnosticLineNrInfo  guibg=#1E535D guifg=#00FFFF gui=bold
-      hi! DiagnosticLineNrHint  guibg=#1E205D guifg=#0000FF gui=bold
-
-      hi! ContextVt             guibg=None    guifg=#444444
-
-      sign define DiagnosticSignError text= texthl=DiagnosticSignError linehl= numhl=DiagnosticLineNrError
-      sign define DiagnosticSignWarn  text= texthl=DiagnosticSignWarn  linehl= numhl=DiagnosticLineNrWarn
-      sign define DiagnosticSignInfo  text= texthl=DiagnosticSignInfo  linehl= numhl=DiagnosticLineNrInfo
-      sign define DiagnosticSignHint  text= texthl=DiagnosticSignHint  linehl= numhl=DiagnosticLineNrHint
-    ]]
-    end
-  }
-end)
+  { 'jelera/vim-javascript-syntax' },
+  { 'leafgarland/typescript-vim' },
+}

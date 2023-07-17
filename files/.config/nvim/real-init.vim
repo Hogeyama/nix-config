@@ -1,23 +1,5 @@
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"" Plugins{{{
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" Install packer if not installed
-if !filereadable(expand('~/.local/share/nvim/site/pack/packer/start/packer.nvim'))
-  silent !git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim
-endif
-
-" Load plugins
-lua require('plugins')
-
-augroup packer_user_config
-  autocmd!
-  autocmd BufWritePost plugins.lua source <afile> | PackerCompile
-augroup end
-"}}}
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "" Options{{{
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -25,6 +7,7 @@ syntax on
 filetype plugin indent on
 set fileencodings=utf-8,cp932
 set termencoding=utf-8
+set termguicolors
 set mouse=n
 set ambiwidth=single
 set foldmethod=expr
