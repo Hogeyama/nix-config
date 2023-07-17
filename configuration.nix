@@ -182,6 +182,7 @@ in
       textql
       unar
       vifm
+      wezterm
       wget
       xsel
       yq
