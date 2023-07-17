@@ -775,63 +775,44 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     end
   }
   use { 'sindrets/diffview.nvim' }
-  use { 'TimUntersberger/neogit',
+  use { 'NeogitOrg/neogit',
+    after = { "iceberg.vim" },
     config = function()
       require("neogit").setup {
+        disable_signs = false,
+        disable_hint = false,
+        disable_context_highlighting = false,
+        disable_commit_confirmation = false,
         auto_refresh = true,
+        sort_branches = "-committerdate",
         disable_builtin_notifications = false,
-        disable_commit_confirmation = true,
+        use_telescope = true,
         use_magit_keybindings = false,
-        kind = "tab",
-        commit_popup = {
-          kind = "vsplit",
-        },
+        kind = "replace",
+        console_timeout = 2000,
+        auto_show_console = true,
+        remember_settings = true,
+        use_per_project_settings = true,
+        ignored_settings = {},
         popup = {
           kind = "vsplit",
         },
         status = {
-          recent_commit_count = 50
-        },
-        -- customize displayed signs
-        signs = {
-          section = { "", "" },
-          item = { "", "" },
-          hunk = { ">", "v" },
+          recent_commit_count = 50,
         },
         integrations = {
-          diffview = true
-        },
-        sections = {
-          untracked = {
-            folded = true
-          },
-          unstaged = {
-            folded = false
-          },
-          staged = {
-            folded = false
-          },
-          stashes = {
-            folded = true
-          },
-          unpulled = {
-            folded = true
-          },
-          unmerged = {
-            folded = false
-          },
-          recent = {
-            folded = true
-          },
+          diffview = true,
         },
         mappings = {
           status = {
-            ["L"] = "",
+            ["b"] = "",
             ["B"] = "BranchPopup",
-            ["e"] = "LogPopup",
-            ["<enter>"] = "TabOpen",
+            ["<c-t>"] = "disabled-<c-t>",
+            ["t"] = "TabOpen",
+          },
+          finder = {
           }
-        }
+        },
       }
       vim.cmd [[
       nnoremap <Leader>g :Neogit<CR>
