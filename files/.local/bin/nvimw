@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 NVIM=${NVIM:-"${NVIM_LISTEN_ADDRESS:-}"}
 
 # `nvim --remote` resolves paths relative to the cwd in *nvim*.
@@ -6,10 +7,11 @@ NVIM=${NVIM:-"${NVIM_LISTEN_ADDRESS:-}"}
 # we need to convert them to absolute paths.
 to_abspath() {
     for ARG in "$@"; do
-        if [[ -f "$ARG" ]]; then
-            realpath "$ARG"
-        else
+        # ARG seems an option
+        if [[ $ARG =~ ^- ]]; then
             echo "$ARG"
+        else
+            realpath -m "$ARG"
         fi
     done
 }
@@ -17,7 +19,9 @@ to_abspath() {
 mapfile -t ARGS < <(to_abspath "$@")
 
 if [[ -z "$NVIM" ]]; then
-    nvim "$@"
+    NVIM=$(mktemp -p "${TMPDIR:-/tmp}" -u nvim.XXXXX)
+    export NVIM
+    nvim --listen "$NVIM" "$@"
 else
     if [[ -t 0 ]]; then
         # stdin is a terminal
