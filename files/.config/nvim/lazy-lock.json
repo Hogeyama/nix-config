@@ -39,7 +39,7 @@
   "memolist.vim": { "branch": "master", "commit": "8090f7a973f266a600c2ea84ec6941346414300a" },
   "mini.nvim": { "branch": "main", "commit": "34acb9bd6d2f88c57d21f6a261ddba6a740651f7" },
   "neo-tree.nvim": { "branch": "main", "commit": "293395c80224fd6f179dffc1c641430c85f999b0" },
-  "neogit": { "branch": "hard-code-colors", "commit": "ca7cc06d66bbbc60bf1a6f656879f268fd03a93a" },
+  "neogit": { "branch": "master", "commit": "94b5d98a3381594e91c445842192f1d2f1375b96" },
   "netman.nvim": { "branch": "main", "commit": "cd5b2c4802d2014df1bc1d07c37aa2271e6ba725" },
   "nlsp-settings.nvim": { "branch": "main", "commit": "64976a5ac70a9a43f3b1b42c5b1564f7f0e4077e" },
   "noice.nvim": { "branch": "main", "commit": "bfd2368b3f1fdd5766885b0115238d1f47113c6d" },
