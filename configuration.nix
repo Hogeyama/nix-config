@@ -87,6 +87,8 @@ in
   };
   services.blueman.enable = true;
 
+  services.atd.enable = true;
+
   time.timeZone = "Asia/Tokyo";
 
   i18n = {
