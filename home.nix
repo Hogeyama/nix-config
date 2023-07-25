@@ -505,6 +505,9 @@ in
         open = "xdg-open";
         v = "nvimw";
         gs = "git status";
+        gsw = "git switch";
+        gre = "git restore";
+        gmt = "git mergetool";
         glog = "git log --pretty=format:\"%C(yellow)%h%Creset %C(green)%ad%Creset %s %Cred%d%Creset %Cblue[%an]\" --date=short --graph";
         grc = "git rebase --continue";
         gra = "git rebase --abort";
@@ -532,8 +535,11 @@ in
         merge.conflictstyle = "diff3";
         merge.tool = "nvimdiff";
         mergetool.keepBackup = false;
-        mergetool.vimdiff.layout = "(LOCAL,BASE,REMOTE)/MERGED + MERGED";
-        mergetool.nvimdiff.layout = "(LOCAL,BASE,REMOTE)/MERGED + MERGED";
+        # otameshi: rebaseを考えるとこっちの方がいいかも
+        mergetool.vimdiff.layout = "(BASE,REMOTE)/(LOCAL,MERGED) + MERGED";
+        mergetool.nvimdiff.layout = "(BASE,REMOTE)/(LOCAL,MERGED) + MERGED";
+        # mergetool.vimdiff.layout = "(LOCAL,BASE,REMOTE)/MERGED + MERGED";
+        # mergetool.nvimdiff.layout = "(LOCAL,BASE,REMOTE)/MERGED + MERGED";
         mergetool.nvimdiff.trustExitCode = false;
         pull.rebase = true;
         push.autoSetupRemote = true;
@@ -547,6 +553,10 @@ in
         include.path = "config.local";
       };
       delta.enable = true;
+      delta.options = {
+        side-by-side = true;
+        line-numbers = true;
+      };
     };
     zoxide = {
       enable = true;
