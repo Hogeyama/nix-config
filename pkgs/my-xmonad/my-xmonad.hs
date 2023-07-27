@@ -76,6 +76,7 @@ main = do
               [ "zsh -c albert"
               , "autorandr -l default"
               , "feh --bg-scale $HOME/Pictures/reflexion.jpg"
+              , "fcitx5"
               ]
         , handleExtraArgs = \xs conf -> do
             mborder <- tryAnyDeep $ read <$> readFile "/tmp/xmonad_borderwidth"
