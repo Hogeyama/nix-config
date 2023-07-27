@@ -1,7 +1,6 @@
 vim.g.mapleader = ","
 vim.opt.fileencodings = "utf-8,cp932"
 vim.opt.shell = "zsh"
-vim.opt.termencoding = "utf-8"
 vim.opt.termguicolors = true
 vim.opt.mouse = "n"
 vim.opt.ambiwidth = "single"
