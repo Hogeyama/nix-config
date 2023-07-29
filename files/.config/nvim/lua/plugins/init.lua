@@ -935,7 +935,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           vim.keymap.set(mode, key, cmd, { noremap = true, silent = true })
         end
         bmap('n', '<C-h>', vim.lsp.buf.hover)
-        bmap('n', '<C-j>', '<cmd>Lspsaga lsp_finder<CR>')
+        bmap('n', '<C-j>', '<cmd>Lspsaga finder def+ref<CR>')
         bmap('n', '<C-k>', '<cmd>Lspsaga peek_definition<CR>')
         bmap('n', '<C-l>a', require("actions-preview").code_actions)
         bmap('n', '<C-l>o', '<cmd>Lspsaga outline<CR>')
@@ -1265,7 +1265,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       vim.keymap.set('n', '<space>q', '<cmd>TroubleToggle<CR>', { noremap = true, silent = true })
     end,
   },
-  { 'glepnir/lspsaga.nvim',
+  { 'nvimdev/lspsaga.nvim',
     init = function()
       require('lspsaga').setup({
         request_timeout = 1000,
@@ -1281,14 +1281,14 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         },
         finder = {
           keys = {
-            expand_or_jump = '<CR>',
+            toggle_or_open = '<CR>',
+            shuttle = 'zl',
             quit = { 'q', '<ESC>' },
-            close_in_preview = '<ESC>',
           },
         },
         outline = {
           keys = {
-            expand_or_jump = '<CR>',
+            toggle_or_jump = '<CR>',
             quit = "q",
           },
         }
