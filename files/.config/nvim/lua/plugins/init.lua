@@ -145,11 +145,11 @@ return {
       vim.g.startify_skiplist = {
         "/run/user/.*",
         "/nix/store/.*",
-        "~/.local/share/nvim/site/pack/packer/.*",
       }
       -- autoload & autosave
       vim.g.startify_session_autoload = 1
       vim.g.startify_session_persistence = 1
+      vim.g.startify_change_to_dir = 0
     end
   },
   { 'nvim-treesitter/nvim-treesitter',
