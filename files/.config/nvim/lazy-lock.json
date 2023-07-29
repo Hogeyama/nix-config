@@ -16,6 +16,7 @@
   "deol.nvim": { "branch": "master", "commit": "6a471522fa69ec2cabc5fdbb55f5224fe10460a8" },
   "dhall-vim": { "branch": "master", "commit": "68500ef46ff3706f46c99db3be7a0c8abcf6a3ae" },
   "diffview.nvim": { "branch": "main", "commit": "b0cc22f5708f6b2b4f873b44fbc5eb93020f4e0c" },
+  "dropbar.nvim": { "branch": "master", "commit": "90fc6aa051d31f22b512f967cd1485dc0d1cf32a" },
   "editorconfig-vim": { "branch": "master", "commit": "7f4e4dfc58c480d154116614e616d90aac77204d" },
   "fidget.nvim": { "branch": "main", "commit": "0ba1e16d07627532b6cae915cc992ecac249fb97" },
   "firenvim": { "branch": "master", "commit": "3c4babfa0a561d1dc3640a902e67ca0b8af70927" },

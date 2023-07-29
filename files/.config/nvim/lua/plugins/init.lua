@@ -417,6 +417,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       ]]
     end
   },
+  { 'Bekaboo/dropbar.nvim' },
   { 'nvim-lualine/lualine.nvim',
     init = function()
       if not vim.g.started_by_firenvim then
@@ -667,6 +668,10 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           "filesystem",
           "netman.ui.neo-tree",
         },
+        source_selector = {
+          winbar = true,
+          statusline = false
+        },
         window = {
           mappings = {
             ["z"] = {},
@@ -678,7 +683,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
             vim.cmd [[wincmd l]]
           end,
         },
-        ["netman.ui.neo-tree"] = {
+        filesystem = {
+          bind_to_cwd = false,
           filtered_items = {
             hide_dotfiles = false,
             hide_hidden = false,
@@ -698,7 +704,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
             end,
           },
         },
-        filesystem = {
+        ["netman.ui.neo-tree"] = {
           filtered_items = {
             hide_dotfiles = false,
             hide_hidden = false,
