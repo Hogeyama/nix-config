@@ -944,7 +944,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         bmap('n', '<C-j>', '<cmd>Lspsaga finder def+ref<CR>')
         bmap('n', '<C-k>', '<cmd>Lspsaga peek_definition<CR>')
         bmap('n', '<C-l>a', require("actions-preview").code_actions)
-        bmap('n', '<C-l>o', '<cmd>Lspsaga outline<CR>')
+        bmap('n', '<C-l>o', '<cmd>Navbuddy<CR>')
         bmap('n', '<C-l>f', vim.lsp.buf.format)
         bmap('v', '<C-l>f', vim.lsp.buf.format)
         bmap('n', '<C-l>h', vim.lsp.buf.signature_help)
@@ -1251,6 +1251,15 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         dependencies = { "plenary.nvim" },
       },
       { 'aznhe21/actions-preview.nvim' },
+      { "SmiteshP/nvim-navbuddy",
+        dependencies = {
+          { "SmiteshP/nvim-navic",
+            opts = { lsp = { auto_attach = true } },
+          },
+          { "MunifTanjim/nui.nvim" }
+        },
+        opts = { lsp = { auto_attach = true } }
+      },
     },
   },
   { 'tamago324/nlsp-settings.nvim',
