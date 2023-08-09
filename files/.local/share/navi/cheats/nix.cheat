@@ -12,5 +12,8 @@ nix profile remove <installed>
 # install packages from nix-index
 nix profile install <nix-index-package>
 
+# update google-chrome
+NIXPKGS_ALLOW_UNFREE=1 nix profile install nixpkgs\#google-chrome --impure
+
 $ installed: nix profile list --- --map "awk '{print $1}'"
 $ nix-index-package: nix-locate -r <pattern> --- --map "awk '{print $4}'"
