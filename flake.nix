@@ -56,7 +56,6 @@
         unstable = builtins.getAttr system nixpkgs-unstable.outputs.legacyPackages;
         # my packages
         illusion = import ./pkgs/illusion { pkgs = final; };
-        Cica = import ./pkgs/Cica { inherit (final) fetchzip unzip; };
         amazon-corretto17 = import ./pkgs/amazon-corretto17 { pkgs = final; };
         aws2-wrap = import ./pkgs/aws2-wrap { pkgs = final; };
 
