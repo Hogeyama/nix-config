@@ -56,6 +56,7 @@
         unstable = builtins.getAttr system nixpkgs-unstable.outputs.legacyPackages;
         # my packages
         illusion = import ./pkgs/illusion { pkgs = final; };
+        udev-gothic = import ./pkgs/udev-gothic { inherit (final) fetchzip; };
         amazon-corretto17 = import ./pkgs/amazon-corretto17 { pkgs = final; };
         aws2-wrap = import ./pkgs/aws2-wrap { pkgs = final; };
 

@@ -204,6 +204,8 @@ in
 
   fonts = {
     fonts = [
+      pkgs.udev-gothic.nerdfont
+      pkgs.udev-gothic.jpdoc
       pkgs.rounded-mgenplus
       (pkgs.nerdfonts.override { fonts = [ "Hack" ]; })
       pkgs.noto-fonts-emoji
