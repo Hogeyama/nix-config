@@ -558,8 +558,8 @@ in
       };
       delta.enable = true;
       delta.options = {
-        side-by-side = true;
-        line-numbers = true;
+        side-by-side = false;
+        line-numbers = false;
       };
     };
     zoxide = {
