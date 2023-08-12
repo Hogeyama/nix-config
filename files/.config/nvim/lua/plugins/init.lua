@@ -187,7 +187,9 @@ return {
       { 'nvim-treesitter/nvim-treesitter-textobjects' },
       { 'RRethy/nvim-treesitter-textsubjects' },
       { 'mfussenegger/nvim-treehopper' },
-      { 'IndianBoy42/tree-sitter-just' },
+      { 'IndianBoy42/tree-sitter-just',
+        opts = {}, -- これがないとエラーになる
+      },
     },
   },
   { 'anuvyklack/hydra.nvim',
