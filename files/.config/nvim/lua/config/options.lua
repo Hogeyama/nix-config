@@ -39,3 +39,4 @@ vim.opt.wildoptions = "pum"
 vim.opt.showtabline = 2
 vim.opt.switchbuf = "split"
 vim.opt.updatetime = 300
+vim.opt.winbar = '%f' -- dropbarを使うときに `G blame` などが1行ずれるのを防ぐ

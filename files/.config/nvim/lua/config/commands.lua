@@ -67,12 +67,3 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
     vim.opt_local.softtabstop = 4
   end,
 })
-
--- G blame などが1行ずれるのを防ぐ
-vim.api.nvim_create_autocmd({ "VimEnter" }, {
-  pattern = { "*" },
-  callback = function()
-    vim.o.winbar = '[No winbar]'
-    vim.o.winbar = '%f'
-  end,
-})
