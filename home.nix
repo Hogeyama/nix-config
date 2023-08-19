@@ -437,6 +437,7 @@ in
               dasel completion zsh > $out/share/zsh/site-functions/_dasel
             '';
           }}/share/zsh/site-functions)
+          export -T FPATH fpath :
         '';
       };
       envExtra = ''
