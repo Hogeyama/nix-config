@@ -438,8 +438,6 @@ in
               dasel completion zsh > $out/share/zsh/site-functions/_dasel
             '';
           }}/share/zsh/site-functions)
-          # for ddc-zsh
-          zmodload zsh/zpty
         '';
       };
       envExtra = ''
