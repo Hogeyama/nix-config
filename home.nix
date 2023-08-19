@@ -415,7 +415,6 @@ in
           # [language]
           "cabal"
           "stack"
-          "rust"
           "node"
           "npm"
           "deno"
