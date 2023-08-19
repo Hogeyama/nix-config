@@ -15,3 +15,34 @@ use_secret() {
     eval "export $VAR='$SECRET'"
   fi
 }
+
+# Usage:
+#
+# ```
+# # Using stdin
+# add_command foo <<-EOF
+# 	#!/usr/bin/env bash
+# 	echo "foo"
+# EOF
+# ```
+#
+# ```
+# # Using arguments
+# add_command bar 'echo "bar"'
+# ```
+add_command() {
+    local bindir="$(direnv_layout_dir)/bin"
+    mkdir -p "$bindir"
+    if ! grep -qE "(^|:)${bindir}(:|$)" <<< "$PATH"; then
+        PATH_add "$bindir"
+    fi
+
+    local command=$1
+    shift
+    if [[ -t 0 ]]; then
+        echo "$@" >"$bindir/$command"
+    else
+        cat >"$bindir/$command"
+    fi
+    chmod +x "$bindir/$command"
+}
