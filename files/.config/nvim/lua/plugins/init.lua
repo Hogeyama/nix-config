@@ -115,6 +115,11 @@ return {
         },
       })
       require('mini.pairs').setup()
+      require('mini.trailspace').setup()
+      vim.api.nvim_create_user_command('RmTrailingWhiteSpaces',
+        function() require('mini.trailspace').trim() end,
+        {}
+      )
     end,
   },
   { 'github/copilot.vim',

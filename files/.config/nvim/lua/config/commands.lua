@@ -45,11 +45,6 @@ vim.api.nvim_create_user_command('TabEditBehind',
   { nargs = 1, complete = "file" }
 )
 
-vim.api.nvim_create_user_command('RmTrailingWhiteSpaces',
-  [[%s/\s\+$//g | :noh]],
-  {}
-)
-
 vim.api.nvim_create_autocmd({ "FileType" }, {
   pattern = { "markdown" },
   callback = function()
