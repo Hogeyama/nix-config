@@ -90,5 +90,3 @@ nmap('<Space>cd', '<Cmd>cd %:h<CR>')
 nmap('^', '<Cmd>noh<CR>')
 vmap('*', '"zy:let @/ = @z<CR>n')
 nmap(':w<CR>', '<Cmd>echom "yo"<CR>')
-
-nmap('<C-c>', '<Cmd>set cursorcolumn!<CR>')
