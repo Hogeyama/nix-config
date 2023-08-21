@@ -248,6 +248,7 @@ in
         zlib
         ncurses
         gmp5
+        icu
       ];
     };
   };
