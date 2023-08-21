@@ -19,7 +19,6 @@ in
     settings = {
       substituters = [
         "https://cache.iog.io"
-        "https://hydra.iohk.io"
         "s3://hogeyama-nix-cache?region=ap-northeast-1"
       ];
       trusted-public-keys = [
