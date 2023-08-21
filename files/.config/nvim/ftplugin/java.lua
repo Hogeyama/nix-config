@@ -77,9 +77,10 @@ local on_attach = function(client, bufnr)
   bnmap('<Leader>lp', '<Cmd>lua require("dap").set_breakpoint(nil, nil, vim.fn.input("Log point message: "))<CR>')
   bnmap('<Leader>dr', '<Cmd>lua require("dap").repl.open()<CR>')
   bnmap('<Leader>dl', '<Cmd>lua require("dap").run_last()<CR>')
+  bnmap('<Leader>du', '<Cmd>lua require("dapui").toggle()<CR>')
   bnmap('<Leader>df', '<Cmd>lua require("jdtls").test_class()<CR>')
   bnmap('<Leader>dn', '<Cmd>lua require("jdtls").test_nearest_method()<CR>')
-  bnmap('<Leader>du', '<Cmd>lua require("dapui").toggle()<CR>')
+  bnmap('<Leader>oi', '<Cmd>lua require("jdtls").organize_imports()<CR>')
 end
 
 local settings = {
