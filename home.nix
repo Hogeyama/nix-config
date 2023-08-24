@@ -261,12 +261,12 @@ in
       nix-direnv.enable = false;
     };
     atuin = {
-      enable = true;
+      enable = false;
       flags = [ "--disable-up-arrow" ];
     };
     fzf = {
-      enable = false;
-      enableZshIntegration = false;
+      enable = true;
+      enableZshIntegration = true;
     };
     neovim = {
       enable = true;
