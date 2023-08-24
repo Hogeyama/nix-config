@@ -62,3 +62,10 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
     vim.opt_local.softtabstop = 4
   end,
 })
+
+vim.api.nvim_create_autocmd({ "FileType" }, {
+  pattern = { "just" },
+  callback = function()
+    vim.cmd [[TSBufEnable highlight]]
+  end,
+})
