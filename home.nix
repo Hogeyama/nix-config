@@ -508,7 +508,8 @@ in
         gmt = "git mergetool";
         gra = "git rebase --abort";
         grc = "git rebase --continue";
-        gre = "git restore";
+        grs = "git restore";
+        gre = "git reset";
         gs = "git status --short --branch";
         gsh = "git show";
         gshn = "git show --no-ext";
