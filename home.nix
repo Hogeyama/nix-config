@@ -539,11 +539,8 @@ in
         merge.conflictstyle = "diff3";
         merge.tool = "nvimdiff";
         mergetool.keepBackup = false;
-        # otameshi: rebaseを考えるとこっちの方がいいかも
-        mergetool.vimdiff.layout = "(BASE,REMOTE)/(LOCAL,MERGED) + MERGED";
-        mergetool.nvimdiff.layout = "(BASE,REMOTE)/(LOCAL,MERGED) + MERGED";
-        # mergetool.vimdiff.layout = "(LOCAL,BASE,REMOTE)/MERGED + MERGED";
-        # mergetool.nvimdiff.layout = "(LOCAL,BASE,REMOTE)/MERGED + MERGED";
+        mergetool.vimdiff.layout = "(BASE,REMOTE)/(@LOCAL) + (REMOTE,LOCAL) + MERGED";
+        mergetool.nvimdiff.layout = "(BASE,REMOTE)/(@LOCAL) + (REMOTE,LOCAL) + MERGED";
         mergetool.nvimdiff.trustExitCode = false;
         pull.rebase = true;
         push.autoSetupRemote = true;
