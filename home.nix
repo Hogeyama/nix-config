@@ -505,6 +505,7 @@ in
         gd = "git diff";
         gdn = "git diff --no-ext";
         glog = ''git log --pretty=format:"%C(yellow)%h%Creset %C(green)%ad%Creset %s %Cred%d%Creset %Cblue[%an]" --date=short --graph'';
+        rlog = ''git reflog --format="%C(yellow)%h%Creset %C(green)%gd%Creset %gs %Cred%d%Creset %Cblue[%an]" --date=iso-strict'';
         gmt = "git mergetool";
         gra = "git rebase --abort";
         grc = "git rebase --continue";
