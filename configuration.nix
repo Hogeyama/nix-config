@@ -15,7 +15,7 @@ in
     ];
 
   nix = {
-    package = pkgs.unstable.nixVersions.nix_2_15;
+    package = pkgs.unstable.nixVersions.nix_2_17;
     settings = {
       substituters = [
         "https://cache.iog.io"
