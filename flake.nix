@@ -57,7 +57,6 @@
         # my packages
         illusion = import ./pkgs/illusion { pkgs = final; };
         udev-gothic = import ./pkgs/udev-gothic { inherit (final) fetchzip; };
-        amazon-corretto17 = import ./pkgs/amazon-corretto17 { pkgs = final; };
         aws2-wrap = import ./pkgs/aws2-wrap { pkgs = final; };
 
         my-xmobar = import ./pkgs/my-xmobar { pkgs = final; };
