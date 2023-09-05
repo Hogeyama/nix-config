@@ -1,4 +1,4 @@
-{ pkgs, compiler ? "ghc924" }:
+{ pkgs }:
 let
   src = pkgs.lib.sourceByRegex ./. [
     "my-xmonad.hs"
@@ -9,7 +9,6 @@ let
     "LICENSE"
   ];
   # xmonad 0.17.0
-  haskPkgs = pkgs.haskell.packages.${compiler};
-  drv = (haskPkgs.callCabal2nix "xmonad-config" src { });
+  drv = (pkgs.haskellPackages.callCabal2nix "xmonad-config" src { });
 in
 drv

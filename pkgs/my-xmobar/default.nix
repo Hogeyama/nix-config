@@ -1,4 +1,4 @@
-{ pkgs, compiler ? "ghc924" }:
+{ pkgs }:
 let
   src = pkgs.lib.sourceByRegex ./. [
     "my-xmobar.hs"
@@ -8,14 +8,14 @@ let
     "CHANGELOG.md"
     "LICENSE"
   ];
-  haskPkgs = pkgs.haskell.packages.${compiler}.override {
+  haskellPackages = pkgs.haskellPackages.override {
     overrides = haskellPackagesNew: haskellPackagesOld: {
       xmobar = haskellPackagesOld.xmobar.overrideAttrs (old: {
         configureFlags = [ "-f" "all_extensions" ];
       });
     };
   };
-  drv = (haskPkgs.callCabal2nix "my-xmobar" src { }).overrideAttrs (old: {
+  drv = (haskellPackages.callCabal2nix "my-xmobar" src { }).overrideAttrs (old: {
     buildInputs = old.buildInputs ++ [
       pkgs.dropbox
       pkgs.alsa-lib
