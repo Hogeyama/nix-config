@@ -1,0 +1,245 @@
+#!/usr/bin/env bash
+set -eu
+
+info() {
+    printf '\033[1;32m%s\033[0m\n' "$*"
+}
+
+warn() {
+    printf '\033[1;33m%s\033[0m\n' "$*"
+}
+
+usage() {
+    cat <<EOF
+Usage: gh-merge [options] <pr-number>
+
+Options:
+  --help              Show this help
+  --remote <remote>   Default: origin
+EOF
+}
+
+parse_args() {
+    PR_NUMBER=
+    REMOTE=origin
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -h | --help)
+                usage
+                exit 0
+                ;;
+            --remote)
+                REMOTE=$2
+                shift
+                ;;
+            *)
+                if [[ -n "$PR_NUMBER" ]]; then
+                    usage
+                    exit 1
+                fi
+                PR_NUMBER=$1
+                ;;
+        esac
+        shift
+    done
+    if [[ -z "$PR_NUMBER" ]]; then
+        usage
+        exit 1
+    fi
+}
+
+parse_pr_description() {
+    declare description
+    declare -g PR_URL
+    declare -g PR_TITLE
+    declare -g BASE_REF
+    declare -g HEAD_REF
+    declare -g ADDITIONS
+    declare -g DELETIONS
+    description=$(
+        gh pr list --json number,url,title,baseRefName,headRefName,additions,deletions |
+            jq --argjson pr "$PR_NUMBER" '.[]|select(.number==$pr)'
+    )
+    if [[ -z "$description" ]]; then
+        info "PR $PR_NUMBER not found" >&2
+        exit 1
+    fi
+    PR_URL=$(jq -r '.url' <<<"$description")
+    PR_TITLE=$(jq -r '.title' <<<"$description")
+    BASE_REF=$(jq -r '.baseRefName' <<<"$description")
+    HEAD_REF=$(jq -r '.headRefName' <<<"$description")
+    ADDITIONS=$(jq -r '.additions' <<<"$description")
+    DELETIONS=$(jq -r '.deletions' <<<"$description")
+}
+
+confirm() {
+    info "Target: #$PR_NUMBER $PR_TITLE ($BASE_REF ← $HEAD_REF, +$ADDITIONS/-$DELETIONS))"
+    echo "URL: $PR_URL"
+    read -r -p "Continue? [Y/n]" yn
+    case $yn in
+        [Yy] | yes | Yes | YES) ;;
+        *)
+            info "Aborted"
+            exit 1
+            ;;
+    esac
+}
+
+fetch() {
+    git fetch "$REMOTE" "$BASE_REF" "$HEAD_REF"
+}
+
+update_remote_head_by_local_head() {
+    declare -g LOCAL_HEAD_AHEAD
+    declare -g LOCAL_HEAD_BEHIND
+    declare -g FORCE_PUSHED=0
+    LOCAL_HEAD_AHEAD=$(git rev-list --count "$REMOTE/$HEAD_REF..$HEAD_REF")
+    LOCAL_HEAD_BEHIND=$(git rev-list --count "$HEAD_REF..$REMOTE/$HEAD_REF")
+    if [[ $LOCAL_HEAD_BEHIND == 0 ]] && [[ $LOCAL_HEAD_AHEAD == 0 ]]; then
+        info "$HEAD_REF is up-to-date with $REMOTE/$HEAD_REF"
+        return
+    fi
+    info "$HEAD_REF is $LOCAL_HEAD_BEHIND behind and $LOCAL_HEAD_AHEAD ahead of $REMOTE/$HEAD_REF"
+    read -r -p "Force push? [Y/n]" yn
+    case $yn in
+        [Yy] | yes | Yes | YES)
+            git push --force-with-lease "$REMOTE" "$HEAD_REF"
+            FORCE_PUSHED=1
+            ;;
+        *)
+            echo "Skipped"
+            ;;
+    esac
+}
+
+update_remote_head_by_remote_base() {
+    declare -g REMOTE_HEAD_SHA
+    if git merge-base --is-ancestor "$REMOTE/$BASE_REF" "$REMOTE/$HEAD_REF"; then
+        info "$REMOTE/$HEAD_REF is up-to-date with $REMOTE/$BASE_REF"
+        REMOTE_HEAD_SHA=$(git rev-parse "$REMOTE/$HEAD_REF")
+        return 0
+    else
+        info "$REMOTE/$HEAD_REF is not up-to-date with $REMOTE/$BASE_REF"
+        read -r -p "Rebase(r) or abort(a)? [r/a]" ra
+        case $ra in
+            [Rr] | rebase | Rebase | REBASE)
+                git switch -d "$REMOTE/$HEAD_REF"
+                git rebase --no-update-refs "$REMOTE/$BASE_REF"
+                REMOTE_HEAD_SHA=$(git rev-parse HEAD)
+                info "Pushing..."
+                git push "$REMOTE" "$REMOTE_HEAD_SHA:$HEAD_REF" --force-with-lease
+                # ロジック上必要なわけではないがdetachしたHEADを元に戻しておく
+                git switch "$BASE_REF"
+                ;;
+            *)
+                info "Aborted"
+                exit 1
+                ;;
+        esac
+    fi
+}
+
+merge_pr() {
+    info "Merging #$PR_NUMBER..."
+    read -r -p "Continue? [Y/n]" yn
+    case $yn in
+        [Yy] | yes | Yes | YES)
+            declare subject body
+            subject="$PR_TITLE (#$PR_NUMBER)"
+            body=$(printf "Merged %s into %s\n%s" "$HEAD_REF" "$BASE_REF" "$PR_URL")
+            for _ in {1..5}; do
+                sleep 1
+                if gh pr merge "$PR_NUMBER" \
+                    --merge \
+                    --subject "$subject" \
+                    --body "$body" \
+                    --match-head-commit "$REMOTE_HEAD_SHA"; then
+                    return
+                fi
+                info "Retrying..."
+            done
+            info "Failed to merge PR #$PR_NUMBER"
+            exit 1
+            ;;
+        *)
+            info "Aborted"
+            exit 1
+            ;;
+    esac
+}
+
+update_next_prs_base() {
+    mapfile -t NEXT < <(
+        gh pr list --json number,baseRefName,headRefName |
+            jq -c --arg head "$HEAD_REF" '.[]|select(.baseRefName==$head)|.number'
+    )
+    for n in "${NEXT[@]}"; do
+        info "PR #$n has $HEAD_REF as base"
+        read -r -p "Do you want to update? [Y/n]" yn
+        case $yn in
+            [Yy] | yes | Yes | YES)
+                gh pr edit "$n" --base "$BASE_REF"
+                ;;
+            *)
+                echo "Skipped"
+                continue
+                ;;
+        esac
+    done
+}
+
+remove_head_ref() {
+    if [[ $LOCAL_HEAD_AHEAD != 0 ]] && [[ $FORCE_PUSHED == 0 ]]; then
+        warn "Warning: $HEAD_REF has $LOCAL_HEAD_AHEAD commits ahead of $REMOTE/$HEAD_REF"
+    fi
+    read -rp "Do you want to remove remote $HEAD_REF? [Y/n]" yn
+    case $yn in
+        [Yy] | yes | Yes | YES)
+            git push --delete "$REMOTE" "$HEAD_REF"
+            ;;
+        *)
+            echo "Skipped"
+            return 0
+            ;;
+    esac
+    read -rp "Do you want to remove local $HEAD_REF? [Y/n]" yn
+    case $yn in
+        [Yy] | yes | Yes | YES)
+            git switch "$BASE_REF"
+            git branch -D "$HEAD_REF"
+            ;;
+        *)
+            echo "Skipped"
+            return 0
+            ;;
+    esac
+}
+
+update_local_base_ref() {
+    read -rp "Do you want to update local $BASE_REF? [Y/n]" yn
+    case $yn in
+        [Yy] | yes | Yes | YES)
+            git switch "$BASE_REF"
+            git pull "$REMOTE" "$BASE_REF"
+            ;;
+        *)
+            info "Skipped"
+            return 0
+            ;;
+    esac
+}
+
+main() {
+    parse_args "$@"
+    parse_pr_description
+    confirm
+    fetch
+    update_remote_head_by_local_head
+    update_remote_head_by_remote_base
+    merge_pr
+    update_next_prs_base
+    remove_head_ref
+    update_local_base_ref
+}
+
+main "$@"
