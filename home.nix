@@ -605,10 +605,10 @@ in
     };
     vscode = {
       enable = true;
-      package = (pkgs.vscode.override { isInsiders = true; }).overrideAttrs (oldAttrs: {
+      package = (pkgs.vscode.override { isInsiders = false; }).overrideAttrs (oldAttrs: {
         src = (builtins.fetchTarball {
-          url = "https://code.visualstudio.com/sha/download?build=insider&os=linux-x64";
-          sha256 = "sha256:06bamqmhp6z6c7kaph84hnykvsrm9fvgpfbahb2d2bac29ir7v9r";
+          url = "https://update.code.visualstudio.com/latest/linux-x64/stable";
+          sha256 = "sha256:0mqfxrdpfx0dlhvwv64c9mxc5whhdc27890xsakfs7h80i5aav2a";
         });
         buildInputs = oldAttrs.buildInputs ++ [ pkgs.libkrb5 ];
         version = "latest";
