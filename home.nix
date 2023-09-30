@@ -231,6 +231,10 @@ in
       AWS_VAULT_BACKEND = "pass";
       AWS_VAULT_PASS_PREFIX = "aws-vault/";
 
+      # fzf
+      FZF_TMUX = 1;
+      FZF_TMUX_OPTS = "-p 80%";
+
       # direnv
       DIRENV_LOG_FORMAT = "";
 
@@ -490,6 +494,27 @@ in
         . ${pkgs.fzf}/share/fzf/completion.zsh
         # source machine local configuration
         source-if-exists $HOME/.zshrc.local
+
+        # tmux起動中はCtrl-Oでpopupを開いてコマンドラインを編集する
+        if [[ -n "''$TMUX" ]]; then
+            declare -a VISUAL_CMD=(
+              tmux popup -E
+              nvim
+              -c "'set showtabline=0'"
+              -c "'set winbar=\"\"'"
+              -c "'set statusline=\"\"'"
+              -c "'set laststatus=0'"
+              -c "'set noshowcmd'"
+              -c "'set winbar=\"\"'"
+              -c "'startinsert'"
+              -c "'noremap q :wq<CR>'"
+              -c "'inoremap <C-q> <Esc>:wq<CR>'"
+            )
+            export VISUAL="''${VISUAL_CMD[*]}"
+            autoload -Uz edit-command-line
+            zle -N edit-command-line
+            bindkey "^O" edit-command-line
+        fi
       '';
       shellAliases = {
         ls = "exa -s name";
