@@ -859,6 +859,14 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       },
     },
   },
+  {
+    "sontungexpt/url-open",
+    event = "VeryLazy",
+    cmd = "URLOpenUnderCursor",
+    config = function()
+      require("url-open").setup({})
+    end,
+  },
   -- [Git]
   { 'NeogitOrg/neogit',
     init = function()
