@@ -1018,6 +1018,10 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         if client.name == "tsserver" then
           client.server_capabilities.documentFormattingProvider = false
         end
+        -- hls
+        if client.name == "hls" then
+          vim.cmd[[LspSettings update hls]]
+        end
         -- 自動Format
         require 'lsp-format'.on_attach(client, bufnr)
       end
