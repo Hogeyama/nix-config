@@ -38,6 +38,7 @@ nmap('dk', 'ddk')
 nmap('dj', 'dd')
 
 nmap('Y', 'y$')
+nmap('yw', 'ye')
 
 nmap('zh', '<C-w>h')
 nmap('zj', '<C-w>j')
