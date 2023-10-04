@@ -135,25 +135,20 @@ return {
       ]]
     end,
   },
-  { 'mhinz/vim-startify', -- TODO
+  { 'mhinz/vim-startify',
     init = function()
       vim.g.startify_lists = {
-        { type = 'sessions', header = { '   Sessions' } },
-        { type = 'files', header = { '   MRU' } },
-        { type = 'bookmarks', header = { '   Bookmarks' } },
         { type = 'commands', header = { '   Commands' } },
       }
       vim.g.startify_commands = {
+        { s = 'PossessionList' },
+        { f = 'ToggleFloatermFzf' },
         { g = 'Neogit' },
         { n = 'Neotree remote' },
       }
-      vim.g.startify_skiplist = {
-        "/run/user/.*",
-        "/nix/store/.*",
-      }
       -- autoload & autosave
-      vim.g.startify_session_autoload = 1
-      vim.g.startify_session_persistence = 1
+      vim.g.startify_session_autoload = 0
+      vim.g.startify_session_persistence = 0
       vim.g.startify_change_to_dir = 0
     end
   },
@@ -716,22 +711,36 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     init = function()
       local possession = require("nvim-possession")
       possession.setup {
-        autoload = true,
+        autoload = false,
         autosave = true,
         autoswitch = {
           enable = true,
           exclude_ft = {}, -- list of filetypes to exclude from autoswitch
         },
+        fzf_winopts = {
+          -- any valid fzf-lua winopts options, for instance
+          width = 0.5,
+          preview = {
+            vertical = "right:30%"
+          }
+        }
       }
-      vim.keymap.set("n", "<leader>sl", function()
-        possession.list()
-      end)
-      vim.keymap.set("n", "<leader>sn", function()
-        possession.new()
-      end)
-      vim.keymap.set("n", "<leader>su", function()
-        possession.update()
-      end)
+      vim.api.nvim_create_user_command('PossessionList',
+        function() possession.list() end,
+        {}
+      )
+      vim.api.nvim_create_user_command('PossessionNew',
+        function() possession.new() end,
+        {}
+      )
+      vim.api.nvim_create_user_command('PossessionUpdate',
+        function() possession.update() end,
+        {}
+      )
+      vim.api.nvim_create_user_command('PossessionDelete',
+        function() possession.delete() end,
+        {}
+      )
     end,
   },
   { 'hrsh7th/nvim-cmp',

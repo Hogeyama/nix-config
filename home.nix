@@ -300,6 +300,10 @@ in
         require("lazy").setup("plugins", {
           lockfile = vim.fn.getenv('HOME') .. "/nix-config/files/.config/nvim/lazy-lock.json",
         })
+
+        if vim.fn.argc() == 0 then
+          vim.cmd[[Startify]]
+        end
       '';
     };
     tmux = {
