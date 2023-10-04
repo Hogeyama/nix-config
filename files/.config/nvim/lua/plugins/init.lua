@@ -426,40 +426,12 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     end
   },
   { 'Bekaboo/dropbar.nvim' },
-  { 'nvim-lualine/lualine.nvim',
+  { 'bluz71/nvim-linefly',
     init = function()
-      if not vim.g.started_by_firenvim then
-        vim.o.laststatus = 3
-        require('lualine').setup {
-          globalstatus = true,
-          winbar = {},
-          inactive_winbar = {},
-          sections = {
-            lualine_a = { 'mode' },
-            lualine_b = { { 'filename', path = 1 } },
-            lualine_c = { 'location' },
-            lualine_x = { 'encoding', 'fileformat', 'filetype' },
-            lualine_y = { 'progress' },
-            lualine_z = { 'branch', 'diff', 'diagnostics' },
-          },
-          tabline = {
-            lualine_a = {
-              {
-                'tabs',
-                mode = 2,
-                max_length = vim.o.columns,
-              }
-            },
-            lualine_b = {},
-            lualine_c = {},
-            lualine_x = {},
-            lualine_y = {},
-            lualine_z = {},
-          },
-        }
-      end
+      vim.g.linefly_options = {
+        tabline = true,
+      }
     end,
-    dependencies = { 'nvim-web-devicons', 'firenvim' },
   },
   { 'AndrewRadev/linediff.vim' },
   { 'machakann/vim-highlightedyank' },
@@ -1020,7 +992,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         end
         -- hls
         if client.name == "hls" then
-          vim.cmd[[LspSettings update hls]]
+          vim.cmd [[LspSettings update hls]]
         end
         -- 自動Format
         require 'lsp-format'.on_attach(client, bufnr)
