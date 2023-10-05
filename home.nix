@@ -402,7 +402,10 @@ in
       enableSyntaxHighlighting = true;
       enableVteIntegration = true;
       autocd = true;
+      history.save = 1000000; # x100 of default
+      history.size = 1000000; # x100 of default
       history.extended = true;
+      history.ignoreSpace = false;
       oh-my-zsh = {
         enable = true;
         theme = "frisk";
@@ -459,8 +462,6 @@ in
         source-if-exists "$HOME/.ghcup/env"
         source-if-exists "$HOME/.cargo/env"
         source-if-exists "$HOME/.opam/opam-init/init.zsh"
-        source-if-exists "$HOME/.nix-profile/etc/profile.d/nix.sh"
-        source-if-exists "$HOME/.autojump/etc/profile.d/autojump.sh"
         source-if-exists "$HOME/.poetry/env"
         source-if-exists "$HOME/.zshenv.local"
         export FZF_DEFAULT_COMMAND='fd --hidden --follow --exclude .git'
