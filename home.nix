@@ -556,6 +556,7 @@ in
       inherit (env.user.git) userName userEmail;
       extraConfig = {
         alias.stash-all = "stash save --include-untracked";
+        alias.show-upstream = "git rev-parse --abbrev-ref --symbolic-full-name @{u}";
         core.autoCRLF = false;
         core.autoLF = false;
         core.quotePath = false;
