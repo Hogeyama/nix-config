@@ -543,7 +543,7 @@ in
         gs = "git status --short --branch";
         gsh = "git show";
         gshn = "git show --no-ext";
-        gsw = "git switch";
+        gsw = "git switch -m";
         j = "just";
         da = "direnv allow";
         dr = "direnv reload";
