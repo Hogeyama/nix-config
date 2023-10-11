@@ -296,6 +296,7 @@ in
   services.keybase = {
     enable = true;
   };
+  services.passSecretService.enable = true;
 
   nix.settings.trusted-users = [ env.user.name ];
 }
