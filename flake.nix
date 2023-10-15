@@ -61,7 +61,6 @@
 
         my-xmobar = import ./pkgs/my-xmobar { pkgs = final; };
         my-xmonad = import ./pkgs/my-xmonad { pkgs = final; };
-        my-fzf = import ./pkgs/my-fzf { pkgs = final; };
         my-fzf-wrapper = my-fzf-wrapper.outputs.packages.${system}.default;
       };
 
