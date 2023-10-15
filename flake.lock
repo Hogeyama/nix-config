@@ -1,5 +1,27 @@
 {
   "nodes": {
+    "fenix": {
+      "inputs": {
+        "nixpkgs": [
+          "my-fzf-wrapper",
+          "nixpkgs"
+        ],
+        "rust-analyzer-src": "rust-analyzer-src"
+      },
+      "locked": {
+        "lastModified": 1692425915,
+        "narHash": "sha256-nU0eB3EZdQwFzWr/QHTYIx1m7+cVnvGvi2lv1nML4BM=",
+        "owner": "nix-community",
+        "repo": "fenix",
+        "rev": "ce22ab2b2c8aec8593713d077bbce8f0e3fe8d3e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "fenix",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -194,22 +216,46 @@
     },
     "my-fzf-wrapper": {
       "inputs": {
+        "fenix": "fenix",
         "flake-utils": [
           "flake-utils"
         ],
-        "nixpkgs": "nixpkgs"
+        "naersk": "naersk",
+        "nixpkgs": "nixpkgs",
+        "nixpkgs-old": "nixpkgs-old"
       },
       "locked": {
-        "lastModified": 1685019963,
-        "narHash": "sha256-9nk0XC1h8XBC7t8B7ua/DmxoKEeFPHaWtSo0Fkochvc=",
+        "lastModified": 1697369035,
+        "narHash": "sha256-2EfkLRwHewZnsuy4OeYdQEDD55KzeJq43AektM015NU=",
         "owner": "Hogeyama",
         "repo": "my-fzf-wrapper",
-        "rev": "d0d1d471f4ba64a3124bc2cde72e2202014eeffa",
+        "rev": "18726b0bf209af26f7a9df039fcbd963fc3f9ec4",
         "type": "github"
       },
       "original": {
         "owner": "Hogeyama",
         "repo": "my-fzf-wrapper",
+        "type": "github"
+      }
+    },
+    "naersk": {
+      "inputs": {
+        "nixpkgs": [
+          "my-fzf-wrapper",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1692351612,
+        "narHash": "sha256-KTGonidcdaLadRnv9KFgwSMh1ZbXoR/OBmPjeNMhFwU=",
+        "owner": "nix-community",
+        "repo": "naersk",
+        "rev": "78789c30d64dea2396c9da516bbcc8db3a475207",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "naersk",
         "type": "github"
       }
     },
@@ -312,16 +358,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1655983783,
-        "narHash": "sha256-0h1FzkYWei24IdKNpCX93onkF/FMiXQG8SdEbTc0r8A=",
+        "lastModified": 1691709280,
+        "narHash": "sha256-zmfH2OlZEXwv572d0g8f6M5Ac6RiO8TxymOpY3uuqrM=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "6141b8932a5cf376fe18fcd368cecd9ad946cb68",
+        "rev": "cf73a86c35a84de0e2f3ba494327cf6fb51c0dfd",
         "type": "github"
       },
       "original": {
         "owner": "nixos",
-        "ref": "master",
+        "ref": "nixpkgs-unstable",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -341,6 +387,22 @@
         "owner": "NixOS",
         "ref": "nixos-unstable",
         "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs-old": {
+      "locked": {
+        "lastModified": 1655983783,
+        "narHash": "sha256-0h1FzkYWei24IdKNpCX93onkF/FMiXQG8SdEbTc0r8A=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "6141b8932a5cf376fe18fcd368cecd9ad946cb68",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "6141b8932a5cf376fe18fcd368cecd9ad946cb68",
         "type": "github"
       }
     },
@@ -436,6 +498,23 @@
         "nixpkgs": "nixpkgs_4",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "sops-nix": "sops-nix"
+      }
+    },
+    "rust-analyzer-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1692375387,
+        "narHash": "sha256-p3szK3Amt3l+Fyh6E8fAfNXC1vlQ/iclikGyaMb7Gec=",
+        "owner": "rust-lang",
+        "repo": "rust-analyzer",
+        "rev": "c0f6ece3c47b6486731367153a66be0790d13dec",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rust-lang",
+        "ref": "nightly",
+        "repo": "rust-analyzer",
+        "type": "github"
       }
     },
     "sops-nix": {
