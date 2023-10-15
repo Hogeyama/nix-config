@@ -865,7 +865,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         console_timeout = 2000,
         auto_show_console = true,
         remember_settings = true,
-        use_per_project_settings = true,
+        use_per_project_settings = false,
         ignored_settings = {},
         popup = {
           kind = "vsplit",
