@@ -423,9 +423,69 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   { 'Bekaboo/dropbar.nvim' },
   { 'bluz71/nvim-linefly',
     init = function()
-      vim.g.linefly_options = {
-        tabline = true,
+      vim.o.laststatus = 3
+    end,
+  },
+  { 'nanozuki/tabby.nvim',
+    init = function()
+      vim.opt.sessionoptions = 'curdir,folds,globals,help,tabpages,terminal,winsize'
+      local api = require('tabby.module.api')
+      local buf_name = require('tabby.feature.buf_name')
+      local theme = {
+        fill = 'TabLineFill',
+        sep = 'TabLine',
+        head = 'TabLine',
+        current_tab = 'TabLineSel',
+        tab = 'TabLine',
+        win = 'TabLine',
       }
+      require('tabby.tabline').set(function(line)
+        return {
+          {
+            { '  ', hl = theme.head },
+          },
+          line.tabs().foreach(function(tab)
+            local hl = tab.is_current() and theme.current_tab or theme.tab
+            return {
+              line.sep(' ', hl, theme.sep),
+              tab.name(),
+              tab.close_btn(''),
+              hl = hl,
+              margin = ' ',
+            }
+          end),
+          line.spacer(),
+          line.wins_in_tab(line.api.get_current_tab()).foreach(function(win)
+            return {
+              line.sep(' ', theme.win, theme.sep),
+              win.is_current() and '' or '',
+              win.buf_name(),
+              hl = theme.win,
+              margin = ' ',
+            }
+          end),
+        }
+      end, {
+        tab_name = {
+          name_fallback = function(tabid)
+            local wins = api.get_tab_wins(tabid)
+            local cur_win = api.get_tab_current_win(tabid)
+            local name = ''
+            if api.is_float_win(cur_win) then
+              name = '[Floating]'
+            else
+              name = buf_name.get(cur_win)
+            end
+            if #wins > 1 then
+              name = string.format('%s…', name)
+            end
+            return name
+          end,
+        },
+        buf_name = {
+          mode = 'relative'
+        }
+      })
     end,
   },
   { 'AndrewRadev/linediff.vim' },
