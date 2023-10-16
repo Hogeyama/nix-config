@@ -1157,7 +1157,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           vim.cmd [[cabbrev wq execute "Format sync" <bar> wq]]
         end
       },
-      { 'jose-elias-alvarez/null-ls.nvim',
+      { 'nvimtools/none-ls.nvim',
         config = function()
           local null_ls = require("null-ls")
           local h = require("null-ls.helpers")
