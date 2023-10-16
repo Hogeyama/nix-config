@@ -421,7 +421,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     end
   },
   { 'Bekaboo/dropbar.nvim' },
-  { 'bluz71/nvim-linefly',
+  { 'vim-airline/vim-airline',
     init = function()
       vim.o.laststatus = 3
     end,
