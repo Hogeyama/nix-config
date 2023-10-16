@@ -46,3 +46,18 @@ add_command() {
     fi
     chmod +x "$bindir/$command"
 }
+
+clean_commands() {
+    local bindir="$(direnv_layout_dir)/bin"
+    if [[ -d "$bindir" ]]; then
+        rm -rf "$bindir"
+    fi
+}
+
+sepby() {
+    local IFS=$1
+    shift
+    printf "%s" "$*"
+}
+
+# vim:ft=bash:
