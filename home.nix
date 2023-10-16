@@ -541,8 +541,8 @@ in
         grs = "git restore";
         gre = "git reset";
         gs = "git status --short --branch";
-        gsh = "git show";
-        gshn = "git show --no-ext";
+        gsh = "git show --ext-diff";
+        gshn = "git show";
         gsw = "git switch -m";
         j = "just";
         da = "direnv allow";
