@@ -22,6 +22,14 @@ vim.api.nvim_create_user_command('TabEditBehind',
   { nargs = 1, complete = "file" }
 )
 
+vim.api.nvim_create_user_command('OpenGitHub',
+  function(opts)
+    local relpath = vim.fn.fnamemodify(vim.fn.expand("%"), ":~:.")
+    vim.cmd("!gh browse " .. relpath .. " " .. opts.args)
+  end,
+  { nargs = "*" }
+)
+
 --------------------------------------------------------------------------------
 -- Autocommands
 --------------------------------------------------------------------------------
