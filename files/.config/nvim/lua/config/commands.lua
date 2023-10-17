@@ -1,3 +1,31 @@
+--------------------------------------------------------------------------------
+-- User commands
+--------------------------------------------------------------------------------
+
+vim.api.nvim_create_user_command('MoveToLastWin',
+  [[execute "normal! ".g:last_win."<C-w><C-w>"]],
+  {}
+)
+
+vim.api.nvim_create_user_command('MoveToLastTab',
+  [[execute "tabnext ".g:last_tab ]],
+  {}
+)
+
+vim.api.nvim_create_user_command('EditBehind',
+  [[edit <args> | MoveToLastWin]],
+  { nargs = 1, complete = "file" }
+)
+
+vim.api.nvim_create_user_command('TabEditBehind',
+  [[tabedit <args> | MoveToLastTab]],
+  { nargs = 1, complete = "file" }
+)
+
+--------------------------------------------------------------------------------
+-- Autocommands
+--------------------------------------------------------------------------------
+
 vim.g.last_win = 1
 vim.api.nvim_create_autocmd({ "WinLeave" }, {
   pattern = { "*" },
@@ -24,26 +52,6 @@ vim.api.nvim_create_autocmd({ "BufLeave" }, {
     vim.g.current_buf = vim.fn.bufnr("%")
   end,
 })
-
-vim.api.nvim_create_user_command('MoveToLastWin',
-  [[execute "normal! ".g:last_win."<C-w><C-w>"]],
-  {}
-)
-
-vim.api.nvim_create_user_command('MoveToLastTab',
-  [[execute "tabnext ".g:last_tab ]],
-  {}
-)
-
-vim.api.nvim_create_user_command('EditBehind',
-  [[edit <args> | MoveToLastWin]],
-  { nargs = 1, complete = "file" }
-)
-
-vim.api.nvim_create_user_command('TabEditBehind',
-  [[tabedit <args> | MoveToLastTab]],
-  { nargs = 1, complete = "file" }
-)
 
 vim.api.nvim_create_autocmd({ "FileType" }, {
   pattern = { "markdown" },
