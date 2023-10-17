@@ -352,7 +352,12 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     end
   },
   { 'lukas-reineke/indent-blankline.nvim',
-    config = true
+     main = "ibl",
+     opts = {
+       indent = {
+         char = "▏",
+       },
+     },
   },
   { 'phaazon/hop.nvim',
     init = function()
@@ -938,9 +943,9 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         },
         mappings = {
           status = {
-            ["b"] = "",
+            ["b"] = false,
             ["B"] = "BranchPopup",
-            ["<c-t>"] = "disabled-<c-t>",
+            ["<c-t>"] = false,
             ["t"] = "TabOpen",
           },
           finder = {
