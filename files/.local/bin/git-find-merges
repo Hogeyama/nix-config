@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+    cat <<EOF
+NAME
+       git-find-merges - Lists merge commits that contain a commit
+
+SYNOPSIS
+       git find-merges <contained> [<head>]
+EOF
+}
+
+main() {
+    while (($# > 0)); do
+        case $1 in
+            -h | --help)
+                usage
+                exit 0
+                ;;
+            -*)
+                echo "Unknown option: $1" >&2
+                exit 1
+                ;;
+            *)
+                break
+                ;;
+        esac
+    done
+    if (($# < 1)); then
+        usage
+        exit 1
+    fi
+    declare contained=$1
+    declare head=${2:-HEAD}
+
+    if [[ -z ${GIT_FIND_MERGES_FORMAT:-} ]]; then
+        GIT_FIND_MERGES_FORMAT="%C(yellow)%h%Creset %C(green)%ad%Creset %s %Cred%d%Creset %Cblue[%an]"
+    fi
+
+    declare -a merge_commits
+    while true; do
+        merge_commit=$(latest_merge_commit "$contained" "$head")
+        if [ -z "$merge_commit" ]; then
+            break
+        fi
+        merge_commits+=("$merge_commit")
+        head=$(git rev-parse "$merge_commit^2")
+    done
+
+    for merge_commit in "${merge_commits[@]}"; do
+        git show \
+            --pretty=format:"$GIT_FIND_MERGES_FORMAT" \
+            --date=short \
+            "$merge_commit"
+    done
+}
+
+# thx: https://stackoverflow.com/a/30998048/8075159
+latest_merge_commit() {
+    declare contained=$1
+    declare head=$2
+    if git rev-list --first-parent "$contained^..$head" | grep -q "$contained"; then
+        return
+    fi
+    {
+        git rev-list "$contained..$head" --ancestry-path --merges | cat -n
+        git rev-list "$contained..$head" --first-parent --merges | cat -n
+    } |
+        sort -k2 -s |
+        uniq -f1 -d |
+        sort -n |
+        tail -1 |
+        cut -f2
+}
+
+main "$@"
