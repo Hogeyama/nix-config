@@ -121,8 +121,8 @@ local vmargs = {
   "-XX:+UseStringDeduplication",
   -- "-javaagent:" .. lombok_jar,
   "-javaagent:" ..
-      vim.env.HOME ..
-      "/.gradle/caches/modules-2/files-2.1/org.jmockit/jmockit/1.34/fb816db2cdb251ebaa4349c6934905939ea1c0e7/jmockit-1.34.jar",
+  vim.env.HOME ..
+  "/.gradle/caches/modules-2/files-2.1/org.jmockit/jmockit/1.34/fb816db2cdb251ebaa4349c6934905939ea1c0e7/jmockit-1.34.jar",
 }
 vim.list_extend(vmargs, vim.env.JAVA_OPTS and vim.split(vim.env.JAVA_OPTS, " ") or {})
 

@@ -3,10 +3,12 @@ return {
   { 'nvim-lua/popup.nvim' },
   { 'MunifTanjim/nui.nvim' },
   { 'nvim-tree/nvim-web-devicons' },
-  { 'rcarriga/nvim-notify',
+  {
+    'rcarriga/nvim-notify',
     config = true,
   },
-  { 'nvim-telescope/telescope.nvim',
+  {
+    'nvim-telescope/telescope.nvim',
     init = function()
       require('telescope').setup {
         defaults = {
@@ -34,7 +36,8 @@ return {
       vim.keymap.set("n", "P", "<Cmd>Telescope yank_history<CR>")
     end,
     dependencies = {
-      { 'gbprod/yanky.nvim',
+      {
+        'gbprod/yanky.nvim',
         init = function()
           require("yanky").setup {
             ring = {
@@ -66,13 +69,15 @@ return {
           vim.cmd [[set clipboard+=unnamedplus]]
         end,
       },
-      { 'nvim-telescope/telescope-fzf-native.nvim',
+      {
+        'nvim-telescope/telescope-fzf-native.nvim',
         build = 'make'
       },
       { 'nvim-telescope/telescope-ui-select.nvim' },
     },
   },
-  { 'glacambre/firenvim',
+  {
+    'glacambre/firenvim',
     init = function()
       if vim.g.started_by_firenvim == true then
         vim.o.number = false
@@ -102,10 +107,12 @@ return {
       { 'ibhagwan/fzf-lua' },
     },
   },
-  { 'miversen33/netman.nvim',
+  {
+    'miversen33/netman.nvim',
     config = true,
   },
-  { 'echasnovski/mini.nvim',
+  {
+    'echasnovski/mini.nvim',
     init = function()
       require('mini.ai').setup()
       require('mini.align').setup({
@@ -122,7 +129,8 @@ return {
       )
     end,
   },
-  { 'github/copilot.vim',
+  {
+    'github/copilot.vim',
     init = function()
       vim.g.copilot_no_tab_map = true
       vim.g.copilot_filetypes = {
@@ -135,7 +143,8 @@ return {
       ]]
     end,
   },
-  { 'mhinz/vim-startify',
+  {
+    'mhinz/vim-startify',
     init = function()
       vim.g.startify_lists = {
         { type = 'commands', header = { '   Commands' } },
@@ -152,7 +161,8 @@ return {
       vim.g.startify_change_to_dir = 0
     end
   },
-  { 'nvim-treesitter/nvim-treesitter',
+  {
+    'nvim-treesitter/nvim-treesitter',
     init = function()
       require 'nvim-treesitter.configs'.setup {
         ensure_installed = {},
@@ -188,12 +198,14 @@ return {
       { 'nvim-treesitter/nvim-treesitter-textobjects' },
       { 'RRethy/nvim-treesitter-textsubjects' },
       { 'mfussenegger/nvim-treehopper' },
-      { 'IndianBoy42/tree-sitter-just',
+      {
+        'IndianBoy42/tree-sitter-just',
         opts = {}, -- これがないとエラーになる
       },
     },
   },
-  { 'anuvyklack/hydra.nvim',
+  {
+    'anuvyklack/hydra.nvim',
     init = function()
       local hydra = require('hydra')
       hydra({
@@ -262,15 +274,15 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
             vim.schedule(function() gitsigns.prev_hunk() end)
             return '<Ignore>'
           end, { expr = true } },
-          { 's', ':Gitsigns stage_hunk<CR>', { silent = true } },
-          { 'u', gitsigns.undo_stage_hunk },
-          { 'S', gitsigns.stage_buffer },
-          { 'p', gitsigns.preview_hunk },
-          { 'd', gitsigns.toggle_deleted, { nowait = true } },
-          { 'b', gitsigns.blame_line },
-          { 'B', function() gitsigns.blame_line { full = true } end },
-          { '<Enter>', '<cmd>Neogit<CR>', { exit = true } },
-          { '<Esc>', nil, { exit = true, nowait = true } },
+          { 's',       ':Gitsigns stage_hunk<CR>',                        { silent = true } },
+          { 'u',       gitsigns.undo_stage_hunk },
+          { 'S',       gitsigns.stage_buffer },
+          { 'p',       gitsigns.preview_hunk },
+          { 'd',       gitsigns.toggle_deleted,                           { nowait = true } },
+          { 'b',       gitsigns.blame_line },
+          { 'B',       function() gitsigns.blame_line { full = true } end },
+          { '<Enter>', '<cmd>Neogit<CR>',                                 { exit = true } },
+          { '<Esc>',   nil,                                               { exit = true, nowait = true } },
         }
       })
     end,
@@ -279,7 +291,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       { 'neogit' },
     },
   },
-  { 'cocopon/iceberg.vim',
+  {
+    'cocopon/iceberg.vim',
     init = function()
       vim.cmd [[
         set background=dark
@@ -315,14 +328,16 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       ]]
     end
   },
-  { 'editorconfig/editorconfig-vim',
+  {
+    'editorconfig/editorconfig-vim',
     init = function()
       vim.cmd [[
         let g:EditorConfig_max_line_indicator = 'exceeding'
       ]]
     end,
   },
-  { 'voldikss/vim-floaterm',
+  {
+    'voldikss/vim-floaterm',
     init = function()
       vim.cmd [[
         let g:floaterm_width = 0.9
@@ -351,15 +366,17 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       ]]
     end
   },
-  { 'lukas-reineke/indent-blankline.nvim',
-     main = "ibl",
-     opts = {
-       indent = {
-         char = "▏",
-       },
-     },
+  {
+    'lukas-reineke/indent-blankline.nvim',
+    main = "ibl",
+    opts = {
+      indent = {
+        char = "▏",
+      },
+    },
   },
-  { 'phaazon/hop.nvim',
+  {
+    'phaazon/hop.nvim',
     init = function()
       require 'hop'.setup()
       vim.keymap.set('', 'r', function()
@@ -381,7 +398,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       ]]
     end
   },
-  { 'chrisgrieser/nvim-spider',
+  {
+    'chrisgrieser/nvim-spider',
     init = function()
       require("spider").setup({
         skipInsignificantPunctuation = true
@@ -393,7 +411,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     end
   },
   { 'godlygeek/tabular' },
-  { 'numToStr/Comment.nvim',
+  {
+    'numToStr/Comment.nvim',
     init = function()
       require('Comment').setup({
         ---Add a space b/w comment and the line
@@ -418,7 +437,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       })
     end
   },
-  { 'machakann/vim-sandwich',
+  {
+    'machakann/vim-sandwich',
     init = function()
       vim.cmd [[
         vmap s <Plug>(operator-sandwich-add)
@@ -426,12 +446,14 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     end
   },
   { 'Bekaboo/dropbar.nvim' },
-  { 'vim-airline/vim-airline',
+  {
+    'vim-airline/vim-airline',
     init = function()
       vim.o.laststatus = 3
     end,
   },
-  { 'nanozuki/tabby.nvim',
+  {
+    'nanozuki/tabby.nvim',
     init = function()
       vim.opt.sessionoptions = 'curdir,folds,globals,help,tabpages,terminal,winsize'
       local api = require('tabby.module.api')
@@ -495,7 +517,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   { 'AndrewRadev/linediff.vim' },
   { 'machakann/vim-highlightedyank' },
-  { 'glidenote/memolist.vim',
+  {
+    'glidenote/memolist.vim',
     init = function()
       vim.g.memolist_path = '~/.memo'
       vim.g.memolist_template_dir_path = '~/.memo/template'
@@ -507,7 +530,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   { 'kana/vim-metarw' },
   { 'mattn/webapi-vim' },
-  { 'rhysd/clever-f.vim',
+  {
+    'rhysd/clever-f.vim',
     init = function()
       vim.cmd [[
       let g:clever_f_smart_case = 1
@@ -516,7 +540,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   { 'haya14busa/vim-asterisk' },
   { 'Shougo/deol.nvim' },
-  { 'dbridges/vim-markdown-runner',
+  {
+    'dbridges/vim-markdown-runner',
     init = function()
       vim.cmd [[
         autocmd FileType markdown nnoremap <buffer> <Leader>q :MarkdownRunnerInsert<CR>
@@ -543,15 +568,16 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       }
     end
   },
-  { 'folke/noice.nvim',
+  {
+    'folke/noice.nvim',
     dependencies = { "nui.nvim", "nvim-notify", "nvim-cmp" },
     config = function()
       require("noice").setup {
         presets = {
-          bottom_search = false, -- use a classic bottom cmdline for search
+          bottom_search = false,        -- use a classic bottom cmdline for search
           long_message_to_split = true, -- long messages will be sent to a split
-          inc_rename = false, -- enables an input dialog for inc-rename.nvim
-          lsp_doc_border = true, -- add a border to hover docs and signature help
+          inc_rename = false,           -- enables an input dialog for inc-rename.nvim
+          lsp_doc_border = true,        -- add a border to hover docs and signature help
         },
         lsp = {
           override = {
@@ -597,11 +623,11 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
               enabled = true,
               trigger = true, -- Automatically show signature help when typing a trigger character from the LSP
               luasnip = true, -- Will open signature help when jumping to Luasnip insert nodes
-              throttle = 50, -- Debounce lsp signature help request by 50ms
+              throttle = 50,  -- Debounce lsp signature help request by 50ms
             },
-            view = nil, -- when nil, use defaults from documentation
+            view = nil,       -- when nil, use defaults from documentation
             ---type NoiceViewOptions
-            opts = {}, -- merged with defaults from documentation
+            opts = {},        -- merged with defaults from documentation
           },
           message = {
             -- Messages shown by lsp servers
@@ -623,7 +649,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           },
         },
         cmdline = {
-          enabled = true, -- disable if you use native command line UI
+          enabled = true,         -- disable if you use native command line UI
           view = "cmdline_popup", -- view for rendering the cmdline. Change to `cmdline` to get a classic cmdline at the bottom
           format = {
             cmdline = { pattern = "^:", icon = "", lang = "vim" },
@@ -644,7 +670,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           view_search = "mini",
         },
         popupmenu = {
-          enabled = true, -- disable if you use something like cmp-cmdline
+          enabled = true,  -- disable if you use something like cmp-cmdline
           ---@type 'nui'|'cmp'
           backend = "cmp", -- backend to use to show regular cmdline completions
         },
@@ -695,7 +721,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       }
     end,
   },
-  { 'nvim-neo-tree/neo-tree.nvim',
+  {
+    'nvim-neo-tree/neo-tree.nvim',
     dependencies = {
       "plenary.nvim",
       "nvim-web-devicons",
@@ -771,7 +798,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     end
   },
   { 'jrudess/vim-foldtext' },
-  { 'gennaro-tedesco/nvim-possession',
+  {
+    'gennaro-tedesco/nvim-possession',
     dependencies = { 'fzf-lua' },
     init = function()
       local possession = require("nvim-possession")
@@ -808,7 +836,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       )
     end,
   },
-  { 'hrsh7th/nvim-cmp',
+  {
+    'hrsh7th/nvim-cmp',
     config = function()
       local cmp = require("cmp")
       ---@diagnostic disable-next-line: redundant-parameter
@@ -886,7 +915,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       { 'hrsh7th/cmp-cmdline' },
       { 'hrsh7th/cmp-vsnip' },
       { 'lukas-reineke/cmp-rg' },
-      { 'hrsh7th/vim-vsnip',
+      {
+        'hrsh7th/vim-vsnip',
         init = function()
           vim.cmd [[
             let g:vsnip_snippet_dir = expand('~/.config/nvim/vsnip')
@@ -896,7 +926,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           ]]
         end,
       },
-      { 'hrsh7th/vim-vsnip-integ',
+      {
+        'hrsh7th/vim-vsnip-integ',
         init = function()
           vim.cmd [[
             autocmd User PumCompleteDone call vsnip_integ#on_complete_done(g:pum#completed_item)
@@ -905,7 +936,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       },
     },
   },
-  { "sontungexpt/url-open",
+  {
+    "sontungexpt/url-open",
     event = "VeryLazy",
     cmd = "URLOpenUnderCursor",
     config = function()
@@ -914,7 +946,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   { 'direnv/direnv.vim' },
   -- [Git]
-  { 'NeogitOrg/neogit',
+  {
+    'NeogitOrg/neogit',
     init = function()
       require("neogit").setup {
         disable_signs = false,
@@ -964,7 +997,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     },
   },
   { 'tpope/vim-fugitive' },
-  { 'lambdalisue/gina.vim',
+  {
+    'lambdalisue/gina.vim',
     init = function()
       vim.cmd [[
         autocmd FileType gina-log nmap F <Plug>(gina-show-commit-vsplit)zv
@@ -972,7 +1006,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       ]]
     end
   },
-  { 'lewis6991/gitsigns.nvim',
+  {
+    'lewis6991/gitsigns.nvim',
     init = function()
       require('gitsigns').setup({
         signcolumn = false,
@@ -981,7 +1016,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     end,
   },
   -- [LSP]
-  { 'neovim/nvim-lspconfig',
+  {
+    'neovim/nvim-lspconfig',
     config = function()
       -- [Common]
       -- [[diagnostic]]
@@ -1164,7 +1200,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       require 'lspconfig'['sqlls'].setup {}
     end,
     dependencies = {
-      { 'WhoIsSethDaniel/mason-tool-installer.nvim',
+      {
+        'WhoIsSethDaniel/mason-tool-installer.nvim',
         config = function()
           require('mason-tool-installer').setup {
             ensure_installed = {
@@ -1203,15 +1240,18 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           }
         end,
         dependencies = {
-          { 'williamboman/mason-lspconfig.nvim',
+          {
+            'williamboman/mason-lspconfig.nvim',
             config = true,
           },
-          { 'williamboman/mason.nvim',
+          {
+            'williamboman/mason.nvim',
             config = true,
           },
         },
       },
-      { 'lukas-reineke/lsp-format.nvim',
+      {
+        'lukas-reineke/lsp-format.nvim',
         config = function()
           require "lsp-format".setup {
             java = {
@@ -1222,7 +1262,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           vim.cmd [[cabbrev wq execute "Format sync" <bar> wq]]
         end
       },
-      { 'nvimtools/none-ls.nvim',
+      {
+        'nvimtools/none-ls.nvim',
         config = function()
           local null_ls = require("null-ls")
           local h = require("null-ls.helpers")
@@ -1318,9 +1359,11 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         dependencies = { "plenary.nvim" },
       },
       { 'aznhe21/actions-preview.nvim' },
-      { "SmiteshP/nvim-navbuddy",
+      {
+        "SmiteshP/nvim-navbuddy",
         dependencies = {
-          { "SmiteshP/nvim-navic",
+          {
+            "SmiteshP/nvim-navic",
             opts = { lsp = { auto_attach = true } },
           },
           { "MunifTanjim/nui.nvim" }
@@ -1329,7 +1372,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       },
     },
   },
-  { 'tamago324/nlsp-settings.nvim',
+  {
+    'tamago324/nlsp-settings.nvim',
     dependencies = { 'nvim-lspconfig' },
     init = function()
       require 'nlspsettings'.setup({
@@ -1341,13 +1385,15 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       })
     end,
   },
-  { 'folke/trouble.nvim',
+  {
+    'folke/trouble.nvim',
     init = function()
       require('trouble').setup {}
       vim.keymap.set('n', '<space>q', '<cmd>TroubleToggle<CR>', { noremap = true, silent = true })
     end,
   },
-  { 'nvimdev/lspsaga.nvim',
+  {
+    'nvimdev/lspsaga.nvim',
     init = function()
       require('lspsaga').setup({
         request_timeout = 1000,
@@ -1377,27 +1423,32 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       })
     end,
   },
-  { 'j-hui/fidget.nvim', tag = 'legacy',
+  {
+    'j-hui/fidget.nvim',
+    tag = 'legacy',
     init = function()
       require 'fidget'.setup {}
     end
   },
   { 'mfussenegger/nvim-jdtls' },
   -- [DAP]
-  { 'mfussenegger/nvim-dap',
+  {
+    'mfussenegger/nvim-dap',
     init = function()
       vim.cmd [[
       autocmd FileType dap-repl lua require('dap.ext.autocompl').attach()
     ]]
     end
   },
-  { 'theHamsta/nvim-dap-virtual-text',
+  {
+    'theHamsta/nvim-dap-virtual-text',
     dependencies = { 'nvim-dap' },
     init = function()
       require("nvim-dap-virtual-text").setup({})
     end
   },
-  { "rcarriga/nvim-dap-ui",
+  {
+    "rcarriga/nvim-dap-ui",
     dependencies = { 'nvim-dap' },
     init = function()
       require("dapui").setup()
@@ -1415,13 +1466,15 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   -- [[nix]]
   { 'LnL7/vim-nix' },
   -- [[Markdown]]
-  { 'preservim/vim-markdown',
+  {
+    'preservim/vim-markdown',
     init = function()
       vim.g.vim_markdown_folding_disabled = 1
       vim.g.vim_markdown_new_list_item_indent = 2
     end
   },
-  { "iamcco/markdown-preview.nvim",
+  {
+    "iamcco/markdown-preview.nvim",
     build = "cd app && npm install",
     init = function()
       vim.g.mkdp_filetypes = { "markdown" }
@@ -1431,7 +1484,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   -- [[terraform]]
   { 'hashivim/vim-terraform' },
   -- [[Textile]]
-  { 's3rvac/vim-syntax-redminewiki',
+  {
+    's3rvac/vim-syntax-redminewiki',
     init = function()
       vim.cmd [[
         autocmd BufEnter *.redmine set ft=redminewiki
