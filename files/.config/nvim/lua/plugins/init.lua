@@ -1039,7 +1039,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           vim.keymap.set(mode, key, cmd, { noremap = true, silent = true })
         end
         bmap('n', '<C-h>', vim.lsp.buf.hover)
-        bmap('n', '<C-j>', '<cmd>Lspsaga finder def+ref<CR>')
+        bmap('n', '<C-j>', '<cmd>FzfLua lsp_references<CR>')
         bmap('n', '<C-k>', '<cmd>Lspsaga peek_definition<CR>')
         bmap('n', '<C-l>a', require("actions-preview").code_actions)
         bmap('n', '<C-l>o', '<cmd>Navbuddy<CR>')
