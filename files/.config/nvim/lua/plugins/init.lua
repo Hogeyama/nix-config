@@ -1249,6 +1249,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       require 'lspconfig'['tflint'].setup {}
       require 'lspconfig'['dockerls'].setup {}
       require 'lspconfig'['sqlls'].setup {}
+      require 'lspconfig'['gradle_ls'].setup {}
     end,
     dependencies = {
       {
@@ -1263,6 +1264,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
               "dockerfile-language-server",
               "eslint-lsp",
               "gopls",
+              "gradle-language-server",
               "graphql-language-service-cli",
               "jdtls",
               "json-lsp",
