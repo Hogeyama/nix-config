@@ -1457,6 +1457,14 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   -- [Filetype]
   -- [[Haskell]]
   { 'neovimhaskell/haskell-vim' },
+  {
+    'mrcjkb/haskell-tools.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+    },
+    version = '^2',
+    ft = { 'haskell', 'lhaskell', 'cabal', 'cabalproject' },
+  },
   -- [[dhall]]
   { 'vmchale/dhall-vim' },
   -- [[Rust]]
