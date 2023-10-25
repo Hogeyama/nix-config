@@ -993,7 +993,26 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     end,
     dependencies = {
       { 'iceberg.vim' },
-      { 'sindrets/diffview.nvim' },
+      {
+        'sindrets/diffview.nvim',
+        init = function()
+          local actions = require("diffview.config").actions
+          require("diffview").setup {
+            view = {
+              merge_tool = {
+                layout = "diff4_mixed",
+                disable_diagnostics = true,
+                winbar_info = true,
+              },
+            },
+            keymaps = {
+              file_panel = {
+                { 'n', 'q', function() vim.cmd("tabclose") end, { desc = "Close" } },
+              },
+            },
+          }
+        end,
+      },
     },
   },
   { 'tpope/vim-fugitive' },
