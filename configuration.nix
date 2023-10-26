@@ -186,6 +186,7 @@ in
       wezterm
       wget
       xsel
+      xsv
       yq
       # unstable packages
       unstable.deno
