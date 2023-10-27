@@ -1076,6 +1076,10 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
             vim.diagnostic.open_float(nil, opts)
           end
         })
+        -- 重いので一旦無効化
+        client.server_capabilities.codeLensProvider = false
+        client.server_capabilities.documentHighlightProvider = false
+        client.server_capabilities.semanticTokensProvider = nil
         -- Highlight symbol under cursor
         -- https://github.com/neovim/nvim-lspconfig/wiki/UI-customization#highlight-symbol-under-cursor
         if client.server_capabilities.documentHighlightProvider then
