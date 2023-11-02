@@ -79,7 +79,6 @@ cmap('<C-j>', '<Down>')
 cmap('<C-k>', '<Up>')
 
 nmap('te', '<Cmd>terminal<CR>')
-tmap('<C-j><C-k>', '<C-\\><C-n>')
 tmap('JK', '<C-\\><C-n><C-w>h')
 tmap('zh', '<C-\\><C-n><C-w>h')
 tmap('zj', '<C-\\><C-n><C-w>j')
