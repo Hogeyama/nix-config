@@ -16,12 +16,15 @@ Usage: gh-merge [options] <pr-number>
 Options:
   --help              Show this help
   --remote <remote>   Default: origin
+  --message           Either "default" or "title". Default: default
+                      See https://github.blog/changelog/2022-08-23-new-options-for-controlling-the-default-commit-message-when-merging-a-pull-request/
 EOF
 }
 
 parse_args() {
     PR_NUMBER=
     REMOTE=origin
+    MESSAGE_FORMAT=default
     while [[ $# -gt 0 ]]; do
         case $1 in
             -h | --help)
@@ -30,6 +33,10 @@ parse_args() {
                 ;;
             --remote)
                 REMOTE=$2
+                shift
+                ;;
+            --message)
+                MESSAGE_FORMAT=$2
                 shift
                 ;;
             *)
@@ -43,6 +50,10 @@ parse_args() {
         shift
     done
     if [[ -z "$PR_NUMBER" ]]; then
+        usage
+        exit 1
+    fi
+    if [[ $MESSAGE_FORMAT != default ]] && [[ $MESSAGE_FORMAT != title ]]; then
         usage
         exit 1
     fi
@@ -149,12 +160,20 @@ merge_pr() {
             body=$(printf "Merged %s into %s\n%s" "$HEAD_REF" "$BASE_REF" "$PR_URL")
             for _ in {1..5}; do
                 sleep 1
-                if gh pr merge "$PR_NUMBER" \
-                    --merge \
-                    --subject "$subject" \
-                    --body "$body" \
-                    --match-head-commit "$REMOTE_HEAD_SHA"; then
-                    return
+                if [[ "$MESSAGE_FORMAT" == default ]]; then
+                  if gh pr merge "$PR_NUMBER" \
+                      --merge \
+                      --match-head-commit "$REMOTE_HEAD_SHA"; then
+                      return
+                  fi
+                else
+                  if gh pr merge "$PR_NUMBER" \
+                      --merge \
+                      --subject "$subject" \
+                      --body "$body" \
+                      --match-head-commit "$REMOTE_HEAD_SHA"; then
+                      return
+                  fi
                 fi
                 info "Retrying..."
             done
