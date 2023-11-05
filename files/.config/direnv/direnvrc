@@ -32,6 +32,11 @@ use_secret() {
 # ```
 add_command() {
     local bindir="$(direnv_layout_dir)/bin"
+    if [[ -z "${ANY_COMMAND_ADDED:-}" ]]; then
+        rm -rf "$bindir"
+    fi
+    ANY_COMMAND_ADDED=1
+    local bindir="$(direnv_layout_dir)/bin"
     mkdir -p "$bindir"
     if ! grep -qE "(^|:)${bindir}(:|$)" <<< "$PATH"; then
         PATH_add "$bindir"
@@ -45,13 +50,6 @@ add_command() {
         cat >"$bindir/$command"
     fi
     chmod +x "$bindir/$command"
-}
-
-clean_commands() {
-    local bindir="$(direnv_layout_dir)/bin"
-    if [[ -d "$bindir" ]]; then
-        rm -rf "$bindir"
-    fi
 }
 
 sepby() {
