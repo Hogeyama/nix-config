@@ -32,6 +32,7 @@ in
     '';
   };
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.firefox.speechSynthesisSupport = true;
 
   # Use the systemd-boot EFI boot loader.
   boot = if env.type == "nixos-virtualbox" then { } else {
