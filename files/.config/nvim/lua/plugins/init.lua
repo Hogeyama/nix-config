@@ -381,7 +381,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     },
   },
   {
-    'phaazon/hop.nvim',
+    'smoka7/hop.nvim',
     init = function()
       require 'hop'.setup()
       vim.keymap.set('', 'r', function()
