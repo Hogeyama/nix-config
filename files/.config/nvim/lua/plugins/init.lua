@@ -453,8 +453,40 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   { 'Bekaboo/dropbar.nvim' },
   {
     'vim-airline/vim-airline',
+    enabled = false,
     init = function()
       vim.o.laststatus = 3
+    end,
+  },
+  {
+    "sontungexpt/sttusline",
+    dependencies = {
+      "nvim-tree/nvim-web-devicons",
+    },
+    event = { "BufEnter" },
+    config = function(_, _)
+      require("sttusline").setup {
+        statusline_color = "StatusLine",
+        laststatus = 3,
+        disabled = {
+          filetypes = {},
+          buftypes = {},
+        },
+        components = {
+          "mode",
+          "filename",
+          "git-branch",
+          "git-diff",
+          "%=",
+          "diagnostics",
+          "lsps-formatters",
+          "copilot",
+          "indent",
+          "encoding",
+          "pos-cursor",
+          "pos-cursor-progress",
+        },
+      }
     end,
   },
   {
