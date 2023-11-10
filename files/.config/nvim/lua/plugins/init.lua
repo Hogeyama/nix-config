@@ -190,7 +190,6 @@ return {
             ['.'] = 'textsubjects-smart',
           },
         },
-        parser_install_dir = vim.fn.stdpath("data") .. "/treesitter",
       }
       -- nvim-treehopper
       vim.cmd [[
