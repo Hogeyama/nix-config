@@ -261,7 +261,7 @@ in
     };
     direnv = {
       enable = true;
-      nix-direnv.enable = false;
+      nix-direnv.enable = true;
     };
     atuin = {
       enable = false;
