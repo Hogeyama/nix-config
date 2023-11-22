@@ -126,7 +126,6 @@ in
     stateVersion = "22.11";
     packages = with pkgs; [
       albert
-      aws2-wrap
       awscli2
       aws-sam-cli
       aws-vault
