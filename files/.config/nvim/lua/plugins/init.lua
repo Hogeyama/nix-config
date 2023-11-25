@@ -136,6 +136,7 @@ return {
   },
   {
     'github/copilot.vim',
+    enabled = false,
     init = function()
       vim.g.copilot_no_tab_map = true
       vim.g.copilot_filetypes = {
@@ -146,6 +147,26 @@ return {
         "imap <silent><expr><Tab> copilot#Accept("\<Tab>")
         let g:copilot_no_tab_map = v:true
       ]]
+    end,
+  },
+  {
+    -- See copilot-cmp
+    'zbirenbaum/copilot.lua',
+    init = function()
+      require('copilot').setup({
+        panel = {
+          enabled = false,
+        },
+        suggestion = {
+          enabled = false,
+        },
+        filetypes = {
+          yaml = true,
+          gitcommit = true,
+          gitrebase = true,
+          hgcommit = true,
+        },
+      })
     end,
   },
   {
@@ -900,9 +921,18 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           ['<Up>']    = cmp.mapping.select_prev_item({ behavior = "insert" }),
         },
         sources = cmp.config.sources({
-          { name = 'nvim_lsp' },
-          { name = 'vsnip' },
-          { name = 'buffer' },
+          {
+            name = 'nvim_lsp'
+          },
+          {
+            name = 'vsnip'
+          },
+          {
+            name = 'copilot'
+          },
+          {
+            name = 'buffer'
+          },
         }, {
           {
             name = 'rg',
@@ -969,6 +999,12 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
             autocmd User PumCompleteDone call vsnip_integ#on_complete_done(g:pum#completed_item)
           ]]
         end,
+      },
+      {
+        "zbirenbaum/copilot-cmp",
+        config = function()
+          require("copilot_cmp").setup()
+        end
       },
     },
   },
