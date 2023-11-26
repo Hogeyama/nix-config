@@ -150,7 +150,7 @@ in
       curl
       docker
       docker-compose
-      exa
+      eza
       fd
       feh
       file
@@ -204,7 +204,7 @@ in
   };
 
   fonts = {
-    fonts = [
+    packages = [
       pkgs.udev-gothic.nerdfont
       pkgs.udev-gothic.jpdoc
       pkgs.rounded-mgenplus

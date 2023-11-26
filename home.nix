@@ -141,7 +141,7 @@ in
       docker
       docker-compose
       docker-credential-helpers
-      exa
+      eza
       fd
       feh
       fuse
@@ -398,8 +398,8 @@ in
     zsh = {
       enable = true;
       enableAutosuggestions = true;
-      enableSyntaxHighlighting = true;
       enableVteIntegration = true;
+      syntaxHighlighting.enable = true;
       autocd = true;
       history.save = 1000000; # x100 of default
       history.size = 1000000; # x100 of default
@@ -485,7 +485,7 @@ in
         bindkey "^I" expand-or-complete-prefix
         # functions
         cd-ls(){
-          \cd $* && exa -s name
+          \cd $* && eza -s name
         }
         mkcd(){
           mkdir -p "$1" && cd "$1"
@@ -521,7 +521,7 @@ in
         fi
       '';
       shellAliases = {
-        ls = "exa -s name";
+        ls = "eza -s name";
         cd = "cd-ls";
         mv = "mv -i";
         cp = "cp -iL";
