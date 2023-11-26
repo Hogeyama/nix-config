@@ -85,3 +85,10 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
     vim.cmd [[TSBufEnable highlight]]
   end,
 })
+
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+  pattern = { "*.nu" },
+  callback = function()
+    vim.bo.filetype = "nu"
+  end,
+})
