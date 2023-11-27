@@ -300,5 +300,7 @@ in
   };
   services.passSecretService.enable = true;
 
+  services.flatpak.enable = true;
+
   nix.settings.trusted-users = [ env.user.name ];
 }
