@@ -547,7 +547,7 @@ in
         # tmux起動中はCtrl-Oでpopupを開いてコマンドラインを編集する
         if [[ -n "''$TMUX" ]]; then
             declare -a VISUAL_CMD=(
-              tmux popup -E
+              tmux popup -w80% -h80% -E
               nvim
               -c "'set showtabline=0'"
               -c "'set winbar=\"\"'"
