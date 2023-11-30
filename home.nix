@@ -332,6 +332,20 @@ in
             set -g @tmux_power_theme 'snow'
           '';
         }
+        {
+          plugin = tmuxPlugins.mkTmuxPlugin {
+            pluginName = "tmux-timetrap";
+            rtpFilePath = "timetrap.tmux";
+            version = "v1";
+            src = pkgs.fetchFromGitHub {
+              owner = "croxarens";
+              repo = "tmux-timetrap";
+              rev = "8033567e626be876532c537e966ad8af2a27755b";
+              sha256 = "sha256-DuZs0AIoNN5rThCp5lELEOpcG5Sl5VXYEscGu0IBrWc=";
+            };
+          };
+          extraConfig = "";
+        }
       ];
       escapeTime = 100;
       extraConfig = ''
