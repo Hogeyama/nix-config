@@ -150,21 +150,6 @@ return {
     end,
   },
   {
-    'github/copilot.vim',
-    enabled = false,
-    init = function()
-      vim.g.copilot_no_tab_map = true
-      vim.g.copilot_filetypes = {
-        ['*'] = true
-      }
-      vim.cmd [[
-        imap <silent><expr><C-Right> copilot#Accept("\<Right>")
-        "imap <silent><expr><Tab> copilot#Accept("\<Tab>")
-        let g:copilot_no_tab_map = v:true
-      ]]
-    end,
-  },
-  {
     -- See copilot-cmp
     'zbirenbaum/copilot.lua',
     init = function()
@@ -483,13 +468,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     end
   },
   { 'Bekaboo/dropbar.nvim' },
-  {
-    'vim-airline/vim-airline',
-    enabled = false,
-    init = function()
-      vim.o.laststatus = 3
-    end,
-  },
   {
     "sontungexpt/sttusline",
     dependencies = {
