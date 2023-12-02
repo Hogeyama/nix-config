@@ -135,6 +135,7 @@ return {
         },
         footer = '',
       })
+      require('mini.bracketed').setup()
 
       vim.api.nvim_create_user_command('RmTrailingWhiteSpaces',
         function() require('mini.trailspace').trim() end,
