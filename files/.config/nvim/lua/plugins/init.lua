@@ -980,6 +980,16 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   { 'direnv/direnv.vim' },
   { 'cshuaimin/ssr.nvim' },
+  {
+    'folke/zen-mode.nvim',
+    opts = {
+      plugins = {
+        tmux = {
+          enabled = true,
+        }
+      }
+    },
+  },
   -- [Git]
   {
     'NeogitOrg/neogit',

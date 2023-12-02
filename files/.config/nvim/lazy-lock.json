@@ -91,5 +91,6 @@
   "vim-vsnip": { "branch": "master", "commit": "be277461265f1e5c7db470aa479f30956597ea9e" },
   "vim-vsnip-integ": { "branch": "master", "commit": "1914e72cf3de70df7f5dde476cd299aba2440aef" },
   "webapi-vim": { "branch": "master", "commit": "70c49ada7827d3545a65cbdab04c5c89a3a8464e" },
-  "yanky.nvim": { "branch": "main", "commit": "cc3fc03c780a14f189290edcf1c47dc1306626d4" }
+  "yanky.nvim": { "branch": "main", "commit": "cc3fc03c780a14f189290edcf1c47dc1306626d4" },
+  "zen-mode.nvim": { "branch": "main", "commit": "50e2e2a36cc97847d9ab3b1a3555ba2ef6839b50" }
 }
