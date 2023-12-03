@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-for-haskell.url = "github:NixOS/nixpkgs/3fb937a1e9f4157f57011965b99fcb7f4139d9ad";
 
     flake-utils.url = "github:numtide/flake-utils";
 
@@ -36,6 +37,7 @@
     { self
     , nixpkgs
     , nixpkgs-unstable
+    , nixpkgs-for-haskell
     , sops-nix
     , home-manager
     , neovim-nightly-overlay
@@ -53,13 +55,14 @@
 
       my-overlay = final: prev: {
         # unstable packages are available as pkgs.unstable.${package}
-        unstable = builtins.getAttr system nixpkgs-unstable.outputs.legacyPackages;
+        unstable = nixpkgs-unstable.outputs.legacyPackages.${system};
+        haskell-updates = nixpkgs-for-haskell.outputs.legacyPackages.${system};
         # my packages
         illusion = import ./pkgs/illusion { pkgs = final; };
         udev-gothic = import ./pkgs/udev-gothic { inherit (final) fetchzip; };
 
-        my-xmobar = import ./pkgs/my-xmobar { pkgs = final; };
-        my-xmonad = import ./pkgs/my-xmonad { pkgs = final; };
+        my-xmobar = import ./pkgs/my-xmobar { pkgs = pkgs.haskell-updates; };
+        my-xmonad = import ./pkgs/my-xmonad { pkgs = pkgs.haskell-updates; };
         my-fzf-wrapper = my-fzf-wrapper.outputs.packages.${system}.default;
       };
 
@@ -115,6 +118,6 @@
         ];
       };
 
-      devShells.${system}.xmonad = import ./pkgs/my-xmonad/shell.nix { inherit pkgs; };
+      devShells.${system}.xmonad = import ./pkgs/my-xmonad/shell.nix { pkgs = pkgs.haskell-updates; };
     };
 }

@@ -1,9 +1,9 @@
-{ pkgs, compiler ? "ghc924" }:
-pkgs.haskell.packages.${compiler}.shellFor {
+{ pkgs }:
+pkgs.haskellPackages.shellFor {
   withHoogle = true;
-  packages = _: [ pkgs.my-xmonad ];
+  packages = _: [ (import ./. { inherit pkgs; }) ];
   buildInputs = with pkgs; [
-    haskell.packages.${compiler}.haskell-language-server
+    haskell-language-server
     cabal-install
   ];
 }
