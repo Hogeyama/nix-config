@@ -557,7 +557,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           end,
         },
         buf_name = {
-          mode = 'relative'
+          mode = 'unique'
         }
       })
     end,
