@@ -530,8 +530,6 @@ in
         export JAVA8_HOME=${pkgs.openjdk8}/lib/openjdk
         export JAVA11_HOME=${pkgs.openjdk11}/lib/openjdk
         export JAVA17_HOME=${pkgs.openjdk17}/lib/openjdk
-        export JAVA_HOME="''$JAVA17_HOME"
-        export PATH="''$PATH:''$JAVA_HOME/bin"
         source-if-exists "$HOME/.zshenv.local"
       '';
       initExtra = ''
