@@ -16,6 +16,14 @@ to_abspath() {
     done
 }
 
+ansifilter_if_available() {
+    if command -v ansifilter >/dev/null; then
+        ansifilter
+    else
+        cat
+    fi
+}
+
 mapfile -t ARGS < <(to_abspath "$@")
 
 if [[ -z "$NVIM" ]]; then
@@ -31,7 +39,7 @@ else
         # stdin is a pipe
         TMP=$(mktemp)
         trap 'rm -f "$TMP"' EXIT
-        tee "$TMP"
+        ansifilter_if_available | sponge "$TMP"
         nvim --server "$NVIM" --remote-tab-silent "$TMP" "${ARGS[@]}"
     fi
 fi
