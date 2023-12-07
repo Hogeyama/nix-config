@@ -556,20 +556,7 @@ in
 
         # tmux起動中はCtrl-Oでpopupを開いてコマンドラインを編集する
         if [[ -n "''$TMUX" ]]; then
-            declare -a VISUAL_CMD=(
-              tmux popup -w80% -h80% -E
-              nvim
-              -c "'set showtabline=0'"
-              -c "'set winbar=\"\"'"
-              -c "'set statusline=\"\"'"
-              -c "'set laststatus=0'"
-              -c "'set noshowcmd'"
-              -c "'set winbar=\"\"'"
-              -c "'startinsert'"
-              -c "'noremap q :wq<CR>'"
-              -c "'inoremap <C-q> <Esc>:wq<CR>'"
-            )
-            export VISUAL="''${VISUAL_CMD[*]}"
+            export VISUAL="nvimw --tmux-popup --light-mode --"
             autoload -Uz edit-command-line
             zle -N edit-command-line
             bindkey "^O" edit-command-line

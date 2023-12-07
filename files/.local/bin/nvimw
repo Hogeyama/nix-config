@@ -8,6 +8,9 @@ parse_args() {
     local -a args=()
     while [[ $# -gt 0 ]]; do
         case $1 in
+            --tmux-popup)
+                TMUX_POPUP=1
+                ;;
             --light-mode)
                 export NVIM_LIGHT_MODE=1
                 ;;
@@ -53,7 +56,8 @@ ansifilter_if_available() {
 }
 
 open_in_new_instance_on_tmux_popup() {
-    tmux popup -w80% -h80% -E \
+    tmux popup -w80% -h80% -d "$PWD" -E \
+        env NVIM_LIGHT_MODE="${NVIM_LIGHT_MODE:-}" \
         nvim \
         -c 'set showtabline=0' \
         -c 'set winbar=""' \
@@ -81,7 +85,9 @@ open_in_existent_instance() {
 main() {
     parse_args "$@"
 
-    if [[ -z "$NVIM" ]]; then
+    if [[ $TMUX_POPUP -eq 1 ]]; then
+        open_in_new_instance_on_tmux_popup "${NVIM_ARGS[@]}"
+    elif [[ -z "$NVIM" ]]; then
         open_in_new_instance "${NVIM_ARGS[@]}"
     elif [[ -t 0 ]]; then
         open_in_existent_instance "${NVIM_ARGS[@]}"
