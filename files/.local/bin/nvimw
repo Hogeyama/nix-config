@@ -8,6 +8,9 @@ parse_args() {
     local -a args=()
     while [[ $# -gt 0 ]]; do
         case $1 in
+            --light-mode)
+                export NVIM_LIGHT_MODE=1
+                ;;
             --)
                 shift
                 args+=("$@")

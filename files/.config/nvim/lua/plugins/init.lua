@@ -1,3 +1,5 @@
+local is_light_mode = vim.env.NVIM_LIGHT_MODE == "1"
+
 return {
   { 'nvim-lua/plenary.nvim' },
   { 'nvim-lua/popup.nvim' },
@@ -5,6 +7,7 @@ return {
   { 'nvim-tree/nvim-web-devicons' },
   {
     'rcarriga/nvim-notify',
+    enabled = not is_light_mode,
     opts = {
       on_open = function(win)
         vim.api.nvim_win_set_option(win, "winblend", 30)
@@ -14,6 +17,7 @@ return {
   },
   {
     'nvim-telescope/telescope.nvim',
+    enabled = not is_light_mode,
     init = function()
       require('telescope').setup {
         defaults = {
@@ -83,6 +87,7 @@ return {
   },
   {
     'glacambre/firenvim',
+    enabled = not is_light_mode,
     init = function()
       if vim.g.started_by_firenvim == true then
         vim.o.number = false
@@ -225,6 +230,7 @@ return {
   },
   {
     'anuvyklack/hydra.nvim',
+    enabled = not is_light_mode,
     init = function()
       local hydra = require('hydra')
       hydra({
@@ -357,6 +363,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'voldikss/vim-floaterm',
+    enabled = not is_light_mode,
     init = function()
       vim.cmd [[
         let g:floaterm_width = 0.9
@@ -387,6 +394,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'lukas-reineke/indent-blankline.nvim',
+    enabled = not is_light_mode,
     main = "ibl",
     opts = {
       indent = {
@@ -467,9 +475,13 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       ]]
     end
   },
-  { 'Bekaboo/dropbar.nvim' },
+  {
+    'Bekaboo/dropbar.nvim',
+    enabled = not is_light_mode,
+  },
   {
     "sontungexpt/sttusline",
+    enabled = not is_light_mode,
     dependencies = {
       "nvim-tree/nvim-web-devicons",
     },
@@ -501,6 +513,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'nanozuki/tabby.nvim',
+    enabled = not is_light_mode,
     init = function()
       vim.opt.sessionoptions = 'curdir,folds,globals,help,tabpages,terminal,winsize'
       local api = require('tabby.module.api')
@@ -566,6 +579,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   { 'machakann/vim-highlightedyank' },
   {
     'glidenote/memolist.vim',
+    enabled = not is_light_mode,
     init = function()
       vim.g.memolist_path = '~/.memo'
       vim.g.memolist_template_dir_path = '~/.memo/template'
@@ -576,7 +590,10 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     end
   },
   { 'kana/vim-metarw' },
-  { 'mattn/webapi-vim' },
+  {
+    'mattn/webapi-vim',
+    enabled = not is_light_mode,
+  },
   {
     'rhysd/clever-f.vim',
     init = function()
@@ -589,6 +606,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   { 'Shougo/deol.nvim' },
   {
     'dbridges/vim-markdown-runner',
+    enabled = not is_light_mode,
     init = function()
       vim.cmd [[
         autocmd FileType markdown nnoremap <buffer> <Leader>q :MarkdownRunnerInsert<CR>
@@ -617,6 +635,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'folke/noice.nvim',
+    enabled = not is_light_mode,
     dependencies = { "nui.nvim", "nvim-notify", "nvim-cmp" },
     config = function()
       require("noice").setup {
@@ -770,6 +789,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'nvim-neo-tree/neo-tree.nvim',
+    enabled = not is_light_mode,
     dependencies = {
       "plenary.nvim",
       "nvim-web-devicons",
@@ -960,10 +980,17 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       },
     },
   },
-  { 'direnv/direnv.vim' },
-  { 'cshuaimin/ssr.nvim' },
+  {
+    'direnv/direnv.vim',
+    enabled = not is_light_mode,
+  },
+  {
+    'cshuaimin/ssr.nvim',
+    enabled = not is_light_mode,
+  },
   {
     'folke/zen-mode.nvim',
+    enabled = not is_light_mode,
     opts = {
       plugins = {
         tmux = {
@@ -975,6 +1002,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   -- [Git]
   {
     'NeogitOrg/neogit',
+    enabled = not is_light_mode,
     init = function()
       require("neogit").setup {
         disable_signs = false,
@@ -1042,9 +1070,13 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       },
     },
   },
-  { 'tpope/vim-fugitive' },
+  {
+    'tpope/vim-fugitive',
+    enabled = not is_light_mode,
+  },
   {
     'lambdalisue/gina.vim',
+    enabled = not is_light_mode,
     init = function()
       vim.cmd [[
         autocmd FileType gina-log nmap F <Plug>(gina-show-commit-vsplit)zv
@@ -1054,6 +1086,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'lewis6991/gitsigns.nvim',
+    enabled = not is_light_mode,
     init = function()
       require('gitsigns').setup({
         signcolumn = false,
@@ -1064,6 +1097,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   -- [LSP]
   {
     'neovim/nvim-lspconfig',
+    enabled = not is_light_mode,
     config = function()
       -- [Common]
       -- [[diagnostic]]
@@ -1417,6 +1451,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'tamago324/nlsp-settings.nvim',
+    enabled = not is_light_mode,
     dependencies = { 'nvim-lspconfig' },
     init = function()
       require 'nlspsettings'.setup({
@@ -1430,6 +1465,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'folke/trouble.nvim',
+    enabled = not is_light_mode,
     init = function()
       require('trouble').setup {}
       vim.keymap.set('n', '<space>q', '<cmd>TroubleToggle<CR>', { noremap = true, silent = true })
@@ -1437,6 +1473,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'nvimdev/lspsaga.nvim',
+    enabled = not is_light_mode,
     init = function()
       require('lspsaga').setup({
         request_timeout = 1000,
@@ -1468,15 +1505,20 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'j-hui/fidget.nvim',
+    enabled = not is_light_mode,
     tag = 'legacy',
     init = function()
       require 'fidget'.setup {}
     end
   },
-  { 'mfussenegger/nvim-jdtls' },
+  {
+    'mfussenegger/nvim-jdtls',
+    enabled = not is_light_mode,
+  },
   -- [DAP]
   {
     'mfussenegger/nvim-dap',
+    enabled = not is_light_mode,
     init = function()
       vim.cmd [[
       autocmd FileType dap-repl lua require('dap.ext.autocompl').attach()
@@ -1485,6 +1527,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'theHamsta/nvim-dap-virtual-text',
+    enabled = not is_light_mode,
     dependencies = { 'nvim-dap' },
     init = function()
       require("nvim-dap-virtual-text").setup({})
@@ -1492,6 +1535,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     "rcarriga/nvim-dap-ui",
+    enabled = not is_light_mode,
     dependencies = { 'nvim-dap' },
     init = function()
       require("dapui").setup()
@@ -1499,18 +1543,34 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   -- [Filetype]
   -- [[Haskell]]
-  { 'neovimhaskell/haskell-vim' },
+  {
+    'neovimhaskell/haskell-vim',
+    enabled = not is_light_mode,
+  },
   -- [[dhall]]
-  { 'vmchale/dhall-vim' },
+  {
+    'vmchale/dhall-vim',
+    enabled = not is_light_mode,
+  },
   -- [[Rust]]
-  { 'rust-lang/rust.vim' },
+  {
+    'rust-lang/rust.vim',
+    enabled = not is_light_mode,
+  },
   -- [[GraphQL]]
-  { 'jparise/vim-graphql' },
+  {
+    'jparise/vim-graphql',
+    enabled = not is_light_mode,
+  },
   -- [[nix]]
-  { 'LnL7/vim-nix' },
+  {
+    'LnL7/vim-nix',
+    enabled = not is_light_mode,
+  },
   -- [[Markdown]]
   {
     'preservim/vim-markdown',
+    enabled = not is_light_mode,
     init = function()
       vim.g.vim_markdown_folding_disabled = 1
       vim.g.vim_markdown_new_list_item_indent = 2
@@ -1518,17 +1578,25 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     "iamcco/markdown-preview.nvim",
+    enabled = not is_light_mode,
     build = "cd app && npm install",
     init = function()
       vim.g.mkdp_filetypes = { "markdown" }
     end,
   },
-  { 'vim-voom/VOoM' },
+  {
+    'vim-voom/VOoM',
+    enabled = not is_light_mode,
+  },
   -- [[terraform]]
-  { 'hashivim/vim-terraform' },
+  {
+    'hashivim/vim-terraform',
+    enabled = not is_light_mode,
+  },
   -- [[Textile]]
   {
     's3rvac/vim-syntax-redminewiki',
+    enabled = not is_light_mode,
     init = function()
       vim.cmd [[
         autocmd BufEnter *.redmine set ft=redminewiki
@@ -1536,6 +1604,12 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     end
   },
   -- [[JavaScript/TypeScript]]
-  { 'jelera/vim-javascript-syntax' },
-  { 'leafgarland/typescript-vim' },
+  {
+    'jelera/vim-javascript-syntax',
+    enabled = not is_light_mode,
+  },
+  {
+    'leafgarland/typescript-vim',
+    enabled = not is_light_mode,
+  },
 }
