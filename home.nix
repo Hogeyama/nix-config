@@ -316,6 +316,9 @@ in
             set-option -g @save-complete-history-path "$HOME/log/tmux"
             set-option -g @save-complete-history-filename "%Y%m%dT%H%M%S.history"
             set-option -g history-limit 100000
+            # style
+            set-option -g popup-border-style "fg=#c6c8d1,bg=#161821"
+            set-option -g popup-border-lines "rounded"
             # screen-capture
             set-option -g @screen-capture-key "M-Z"
           '';
