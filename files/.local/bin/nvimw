@@ -30,11 +30,11 @@ parse_args() {
     # To resolve paths relative to the cwd in *bash/zsh*,
     # we need to convert them to absolute paths.
     for arg in "${args[@]}"; do
-        # arg seems an option
-        if [[ $arg =~ ^- ]]; then
-            NVIM_ARGS+=("$arg")
-        else
+        # arg is a path
+        if [[ -e "$arg" ]]; then
             NVIM_ARGS+=("$(realpath -m "$arg")")
+        else
+            NVIM_ARGS+=("$arg")
         fi
     done
 }
