@@ -275,6 +275,12 @@ in
       package = pkgs.neovim-nightly;
       withNodeJs = true;
       withPython3 = true;
+      extraPython3Packages = pyPkgs: with pyPkgs; [
+        # for molten-nvim
+        jupyter-client
+        pyperclip
+        nbformat
+      ];
       extraLuaConfig = "\n" + ''
         -- config
         require("config.options")
