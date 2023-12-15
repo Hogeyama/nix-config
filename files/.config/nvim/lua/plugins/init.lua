@@ -1,4 +1,6 @@
 local is_light_mode = vim.env.NVIM_LIGHT_MODE == "1"
+local completion_engin = "ddc"
+if is_light_mode then completion_engin = "cmp" end
 
 return {
   { 'nvim-lua/plenary.nvim' },
@@ -157,6 +159,7 @@ return {
   {
     -- See copilot-cmp
     'zbirenbaum/copilot.lua',
+    enabled = false,
     init = function()
       require('copilot').setup({
         panel = {
@@ -866,7 +869,239 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   { 'jrudess/vim-foldtext' },
   {
+    'Shougo/ddc.vim',
+    enabled = completion_engin == "ddc",
+    dependencies = {
+      { 'vim-denops/denops.vim', },
+      { 'Shougo/ddc-ui-pum', },
+      {
+        'Shougo/pum.vim',
+        config = function()
+          vim.fn["pum#set_option"]({
+            -- auto_select = false,
+            border = "rounded",
+            scrollbar_char = "┃",
+            direction = "below",
+            max_height = 20,
+          })
+        end,
+      },
+      -- sources
+      { 'Shougo/ddc-source-rg', },
+      { 'Shougo/ddc-source-lsp', },
+      { 'Shougo/ddc-source-copilot', },
+      { 'Shougo/ddc-source-cmdline', },
+      { 'Shougo/ddc-source-cmdline-history', },
+      { 'Shougo/ddc-source-shell-native', },
+      { 'Shougo/ddc-source-nvim-lua', },
+      { 'uga-rosa/ddc-source-buffer', },
+      { 'uga-rosa/ddc-source-vsnip', },
+      { 'LumaKernel/ddc-source-file', },
+      { 'tani/ddc-path', },
+      -- matchers, rankers
+      { 'Shougo/ddc-matcher_head' },
+      { 'tani/ddc-fuzzy', },
+      -- other dependencies
+      { 'hrsh7th/nvim-insx' },
+      {
+        'uga-rosa/ddc-source-lsp-setup',
+        config = function()
+          require("ddc_source_lsp_setup").setup({
+            override_capabilities = false, -- 手動でやってるので
+            respect_trigger = true,
+          })
+        end,
+      },
+      {
+        'hrsh7th/vim-vsnip',
+        init = function()
+          vim.cmd [[
+            let g:vsnip_snippet_dir = stdpath('config') . '/vsnip'
+            imap <expr> <C-f> vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-f>'
+            smap <expr> <C-f> vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-f>'
+            xmap        <C-f> <Plug>(vsnip-cut-text)
+          ]]
+        end,
+      },
+      {
+        'github/copilot.vim',
+        config = function()
+          vim.g.copilot_no_tab_map = true
+        end,
+      },
+    },
+    config = function()
+      vim.fn["ddc#custom#patch_global"]({
+        ui = 'pum',
+        sources = {
+          'copilot',
+          'lsp',
+          'buffer',
+          'rg',
+          'file',
+        },
+        cmdlineSources = {
+          [':'] = {
+            'nvim-lua',
+            'cmdline',
+            'cmdline-history',
+            'path',
+            'file',
+          },
+          ['/'] = {
+            'buffer',
+          },
+          ['?'] = {
+            'buffer',
+          },
+        },
+        autoCompleteEvents = {
+          "InsertEnter",
+          "TextChangedI",
+          "TextChangedP",
+          "TextChangedT",
+          "CmdlineEnter",
+          "CmdlineChanged",
+        },
+        backspaceCompletion = true,
+        sourceOptions = {
+          _ = {
+            minAutoCompleteLength = 1,
+            keywordPattern = [[(?:-?\d+(?:\.\d+)?|[a-zA-Z_][\w\.]*(?:-\w*)*)]],
+            matchers = { "matcher_fuzzy", },
+            sorters = { "sorter_fuzzy", },
+            converters = { "converter_fuzzy", },
+            ignoreCase = false,
+          },
+          copilot = {
+            mark = ' ',
+            matchers = {},
+            minAutoCompleteLength = 0,
+          },
+          buffer = {
+            mark = "📃"
+          },
+          rg = {
+            mark = "🔍",
+            minAutoCompleteLength = 4,
+          },
+          file = {
+            mark = "📁",
+            isVolatile = true,
+            forceCompletionPattern = [[\S?/\S*|~/\S*]],
+          },
+          lsp = {
+            mark = "🗿",
+            keywordPattern = [[\k+]],
+            sorters = { 'sorter_lsp-kind' },
+          },
+          path = {
+            mark = '🛣️',
+          },
+          lua = {
+            mark = '',
+          },
+        },
+        sourceParams = {
+          lsp = {
+            snippetEngine = vim.fn["denops#callback#register"](function(body)
+              vim.fn["vsnip#anonymous"](body)
+            end),
+            enableResolveItem = true,
+            enableAdditionalTextEdit = true,
+            confirmBehavior = 'replace',
+          },
+          path = {
+            cmd = { 'fd', '--max-depth', 6 },
+            absolute = false,
+          },
+        },
+        filterParams = {
+          ['matcher_fuzzy'] = {
+            splitMode = 'word',
+          },
+        },
+      })
+      vim.fn["ddc#custom#patch_filetype"]({ 'zsh', 'floaterm', 'deol' }, {
+        specialBufferCompletion = true,
+        sources = {
+          'shell-native',
+          'copilot',
+        },
+        sourceOptions = {
+          _ = {
+            keywordPattern = "[0-9a-zA-Z_./#:-]*",
+          },
+          copilot = {
+            mark = ' ',
+            matchers = {},
+            minAutoCompleteLength = 0,
+          },
+          ['shell-native'] = {
+            mark = '🐚',
+          },
+        },
+        sourceParams = {
+          ['shell-native'] = {
+            shell = 'zsh',
+          },
+        },
+      })
+      vim.fn["ddc#enable"]()
+
+      -- mapping
+      local map = function(mode, key, on_pum_visible, on_pum_invisible)
+        vim.keymap.set(mode, key, function()
+          local info = vim.fn["pum#complete_info"]()
+          if info.pum_visible then
+            on_pum_visible(info)
+          else
+            if on_pum_invisible then
+              return on_pum_invisible(info)
+            else
+              return key
+            end
+          end
+        end, { expr = true, silent = true })
+      end
+      -- insert mode
+      map('i', '<CR>', function() vim.fn["pum#map#confirm"]() end)
+      map('i', '<Tab>', function() vim.fn["pum#map#select_relative"](1) end)
+      map('i', '<Down>', function() vim.fn["pum#map#select_relative"](1) end)
+      map('i', '<S-Tab>', function() vim.fn["pum#map#select_relative"](-1) end)
+      map('i', '<Up>', function() vim.fn["pum#map#select_relative"](-1) end)
+      map('i', '<C-c>', function() vim.fn["pum#map#cancel"]() end)
+
+      -- cmdline mode
+      vim.keymap.set('n', ":", "<Cmd>call ddc#enable_cmdline_completion()<CR>:",
+        { noremap = true })
+      vim.keymap.set('n', "/", "<Cmd>call ddc#enable_cmdline_completion()<CR>/",
+        { noremap = true })
+      vim.keymap.set('n', "?", "<Cmd>call ddc#enable_cmdline_completion()<CR>?",
+        { noremap = true })
+      map('c', '<CR>',
+        function(info)
+          if info.selected >= 0 then
+            vim.fn["pum#map#confirm"]()
+          else
+            vim.fn["pum#map#cancel"]()
+          end
+          vim.api.nvim_feedkeys(
+            vim.api.nvim_replace_termcodes('<CR>', true, false, true),
+            'n',
+            false)
+        end)
+      map('c', '<Tab>', function() vim.fn["pum#map#insert_relative"](1) end,
+        function() vim.fn["ddc#map#manual_complete"]() end)
+      map('c', '<Down>', function() vim.fn["pum#map#insert_relative"](1) end)
+      map('c', '<S-Tab>', function() vim.fn["pum#map#insert_relative"](-1) end)
+      map('c', '<Up>', function() vim.fn["pum#map#insert_relative"](-1) end)
+      map('c', '<C-c>', function() vim.fn["pum#map#cancel"]() end)
+    end,
+  },
+  {
     'hrsh7th/nvim-cmp',
+    enabled = completion_engin == "cmp",
     config = function()
       local cmp = require("cmp")
       ---@diagnostic disable-next-line: redundant-parameter
@@ -1128,7 +1363,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     init = function()
       vim.cmd [[
         autocmd FileType gina-log nmap F <Plug>(gina-show-commit-vsplit)zv
-        "autocmd FileType gina-log nmap F <Plug>(gina-show-commit-preview)zv
       ]]
     end
   },
@@ -1241,7 +1475,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
 
       -- [[capabilities]]
       -- enable completion
-      vim.g.lsp_default_capabilities = require('cmp_nvim_lsp').default_capabilities()
+      vim.g.lsp_default_capabilities = require("ddc_source_lsp").make_client_capabilities()
+      -- vim.g.lsp_default_capabilities = require('cmp_nvim_lsp').default_capabilities()
       -- enable snippet support
       vim.g.lsp_default_capabilities.textDocument.completion.completionItem.snippetSupport = true
       -- [[set default]]
@@ -1495,6 +1730,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         dependencies = { "plenary.nvim" },
       },
       { 'aznhe21/actions-preview.nvim' },
+      { 'Shougo/ddc-source-lsp', },
     },
   },
   {
