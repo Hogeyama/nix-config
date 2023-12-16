@@ -878,7 +878,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         'Shougo/pum.vim',
         config = function()
           vim.fn["pum#set_option"]({
-            -- auto_select = false,
+            auto_select = false,
             border = "rounded",
             scrollbar_char = "┃",
             direction = "below",
@@ -977,6 +977,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
             mark = ' ',
             matchers = {},
             minAutoCompleteLength = 0,
+            forceCompletionPattern = [[.+]],
           },
           buffer = {
             mark = "📃"
@@ -1065,7 +1066,17 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         end, { expr = true, silent = true })
       end
       -- insert mode
-      map('i', '<CR>', function() vim.fn["pum#map#confirm"]() end)
+      map('i', '<CR>', function(info)
+        if info.selected >= 0 then
+          vim.fn["pum#map#confirm"]()
+        else
+          vim.fn["pum#map#cancel"]()
+          vim.api.nvim_feedkeys(
+            vim.api.nvim_replace_termcodes('<CR>', true, false, true),
+            'n',
+            false)
+        end
+      end)
       map('i', '<Tab>', function() vim.fn["pum#map#select_relative"](1) end)
       map('i', '<Down>', function() vim.fn["pum#map#select_relative"](1) end)
       map('i', '<S-Tab>', function() vim.fn["pum#map#select_relative"](-1) end)
