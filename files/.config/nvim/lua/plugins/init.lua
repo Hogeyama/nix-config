@@ -1,6 +1,7 @@
 local is_light_mode = vim.env.NVIM_LIGHT_MODE == "1"
-local completion_engin = "ddc"
-if is_light_mode then completion_engin = "cmp" end
+local completion_engin = "cmp"
+-- local completion_engin = "ddc"
+-- if is_light_mode then completion_engin = "cmp" end
 
 return {
   { 'nvim-lua/plenary.nvim' },
