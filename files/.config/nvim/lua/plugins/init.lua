@@ -1185,7 +1185,10 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         sources = cmp.config.sources({
           {
             name = 'path',
-            options = { trailing_slash = false, },
+            options = {
+              trailing_slash = false,
+              label_trailing_slash = false,
+            },
           },
         }, {
           { name = 'cmdline' }
