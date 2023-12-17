@@ -1144,6 +1144,9 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
             name = 'nvim_lsp'
           },
           {
+            name = 'nvim_lsp_document_symbol'
+          },
+          {
             name = 'vsnip'
           },
           {
@@ -1162,7 +1165,10 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           },
           {
             name = 'path',
-            options = { trailing_slash = false, },
+            options = {
+              trailing_slash = false,
+              label_trailing_slash = false,
+            },
             trigger_characters = { '/', '.', '~' },
           },
         })
@@ -1192,19 +1198,20 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
             },
           },
         }, {
-          { name = 'cmdline' }
+          { name = 'cmdline' },
+          { name = 'cmp-nvim-lua' },
         })
       })
     end,
     dependencies = {
       { 'hrsh7th/cmp-nvim-lsp' },
-      { 'hrsh7th/cmp-nvim-lsp-signature-help' },
       { 'hrsh7th/cmp-nvim-lsp-document-symbol' },
       { 'hrsh7th/cmp-buffer' },
       { 'hrsh7th/cmp-path' },
       { 'hrsh7th/cmp-emoji' },
       { 'hrsh7th/cmp-cmdline' },
       { 'hrsh7th/cmp-vsnip' },
+      { 'hrsh7th/cmp-nvim-lua' },
       { 'lukas-reineke/cmp-rg' },
       {
         'hrsh7th/vim-vsnip',
