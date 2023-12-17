@@ -40,7 +40,7 @@ parse_args() {
 }
 
 pipe_to_tmp() {
-    local tmp
+    declare -g tmp
     tmp=$(mktemp)
     trap 'rm -f "$tmp"' EXIT
     ansifilter_if_available | sponge "$tmp"
@@ -94,7 +94,7 @@ main() {
     else
         local tmp
         tmp=$(pipe_to_tmp)
-        open_in_existent_instance "$TMP" "${NVIM_ARGS[@]}"
+        open_in_existent_instance "$tmp" "${NVIM_ARGS[@]}"
     fi
 
 }
