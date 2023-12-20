@@ -1,0 +1,8 @@
+% ssh
+
+# ssh
+ssh <known_host>
+
+$ known_host: \
+    cat ~/.ssh/known_hosts | awk '{print $1}' | sort -r | uniq; \
+    grep -P "^Host ([^*]+)$" ~/.ssh/config | sed 's/Host //'
