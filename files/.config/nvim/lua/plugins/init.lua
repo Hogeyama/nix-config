@@ -160,7 +160,6 @@ return {
   {
     -- See copilot-cmp
     'zbirenbaum/copilot.lua',
-    enabled = false,
     init = function()
       require('copilot').setup({
         panel = {
