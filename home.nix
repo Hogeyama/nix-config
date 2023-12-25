@@ -1,4 +1,4 @@
-# https://rycee.gitlab.io/home-manager/options.html
+# https://nix-community.github.io/home-manager/options.xhtml
 { config, self, pkgs, ... }:
 let
   env = import ./env.nix;
