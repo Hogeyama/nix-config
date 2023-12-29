@@ -8,9 +8,6 @@
 
     flake-utils.url = "github:numtide/flake-utils";
 
-    flake-compat.url = "github:edolstra/flake-compat";
-    flake-compat.flake = false;
-
     home-manager.url = "github:nix-community/home-manager/release-23.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -23,11 +20,9 @@
     nix-alien.url = "github:thiagokokada/nix-alien";
     nix-alien.inputs.nixpkgs.follows = "nixpkgs";
     nix-alien.inputs.nix-index-database.follows = "nix-index-database";
-    nix-alien.inputs.flake-compat.follows = "flake-compat";
     nix-alien.inputs.flake-utils.follows = "flake-utils";
 
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
-    neovim-nightly-overlay.inputs.flake-compat.follows = "flake-compat";
 
     my-fzf-wrapper.url = "github:Hogeyama/my-fzf-wrapper";
     my-fzf-wrapper.inputs.flake-utils.follows = "flake-utils";
