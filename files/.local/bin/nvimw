@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 NVIM=${NVIM:-"${NVIM_LISTEN_ADDRESS:-}"}
+NVIMW_TMPDIR=$(mktemp -d -t nvimw.XXXXX)
+trap 'rm -rf "$NVIMW_TMPDIR"' EXIT
 
 declare -g TMUX_POPUP=0
 declare -g -a NVIM_ARGS
@@ -41,8 +43,7 @@ parse_args() {
 
 pipe_to_tmp() {
     declare -g tmp
-    tmp=$(mktemp)
-    trap 'rm -f "$tmp"' EXIT
+    tmp=$(mktemp -p "$NVIMW_TMPDIR")
     ansifilter_if_available | sponge "$tmp"
     echo "$tmp"
 }
