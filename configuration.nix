@@ -65,6 +65,9 @@ in
   # enable sshd
   services.openssh = {
     enable = true;
+    settings = {
+      PasswordAuthentication = false;
+    };
     extraConfig = ''
       ClientAliveInterval 30
       ClientAliveCountMax 120
