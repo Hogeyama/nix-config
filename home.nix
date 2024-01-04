@@ -308,6 +308,20 @@ in
     };
     tmux = {
       enable = true;
+      package = pkgs.tmux.overrideAttrs (oldAttrs: {
+        # --enable-sixel is not available on 3.3a.
+        version = "next-3.4";
+        src = pkgs.fetchFromGitHub {
+          owner = "tmux";
+          repo = "tmux";
+          rev = "e809c2ec359b0fd6151cf33929244b7a7d637119";
+          sha256 = "sha256-Ok9axRS15Ot+Z9VABF5fvuC2SSE1YNdIb1rBWZY6sNk=";
+        };
+        configureFlags = oldAttrs.configureFlags ++ [
+          "--enable-sixel"
+        ];
+        patches = [ ];
+      });
       terminal = "tmux-256color";
       plugins = with pkgs; [
         {
