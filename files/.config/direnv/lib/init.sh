@@ -19,24 +19,24 @@ use_secret() {
 # Usage:
 #
 # ```
-# # Using stdin
 # add_command foo <<-EOF
 # 	#!/usr/bin/env bash
 # 	echo "foo"
 # EOF
 # ```
 #
+# or
+#
 # ```
-# # Using arguments
 # add_command bar 'echo "bar"'
 # ```
 add_command() {
-    local bindir="$(direnv_layout_dir)/bin"
+    local bindir
+    bindir="$(direnv_layout_dir)/bin"
     if [[ -z "${ANY_COMMAND_ADDED:-}" ]]; then
         rm -rf "$bindir"
     fi
     ANY_COMMAND_ADDED=1
-    local bindir="$(direnv_layout_dir)/bin"
     mkdir -p "$bindir"
     if ! grep -qE "(^|:)${bindir}(:|$)" <<< "$PATH"; then
         PATH_add "$bindir"
