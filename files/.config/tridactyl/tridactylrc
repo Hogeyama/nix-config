@@ -1,6 +1,4 @@
 unbind <C-f>
-unbind >>
-unbind <<
 unbind s
 bind j scrollline  5
 bind k scrollline -5
@@ -9,6 +7,7 @@ bind K scrollpage -0.5
 bind <C-j> tabnext
 bind <C-k> tabprev
 
+bind <C-l> fillcmdline open
 bind O fillcmdline tabopen
 bind t fillcmdline tabopen
 bind v hint -b
