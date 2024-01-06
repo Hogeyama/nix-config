@@ -659,47 +659,6 @@ in
     zoxide = {
       enable = true;
     };
-    gnome-terminal = {
-      enable = false;
-      showMenubar = false;
-      profile = {
-        test = {
-          default = true;
-          visibleName = "test";
-          font = "Illusion N 13";
-          allowBold = true;
-          audibleBell = false;
-          colors = {
-            foregroundColor = "#cacacececdcd";
-            backgroundColor = "#111112121313";
-            boldColor = "#cacacececdcd";
-            cursor = {
-              foreground = "#111112121313";
-              background = "#cacacececdcd";
-            };
-            palette = [
-              "#323232323232"
-              "#c2c228283232"
-              "#8e8ec4c43d3d"
-              "#e0e0c6c64f4f"
-              "#4343a5a5d5d5"
-              "#8b8b5757b5b5"
-              "#8e8ec4c43d3d"
-              "#eeeeeeeeeeee"
-              "#323232323232"
-              "#c2c228283232"
-              "#8e8ec4c43d3d"
-              "#e0e0c6c64f4f"
-              "#4343a5a5d5d5"
-              "#8b8b5757b5b5"
-              "#8e8ec4c43d3d"
-              "#ffffffffffff"
-            ];
-
-          };
-        };
-      };
-    };
     vscode = {
       enable = true;
       package = (pkgs.vscode.override { isInsiders = false; }).overrideAttrs (oldAttrs: {
