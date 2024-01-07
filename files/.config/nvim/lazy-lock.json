@@ -44,7 +44,7 @@
   "mini.nvim": { "branch": "main", "commit": "ea1af8c7d5e72148cae8a04e9887322a53fe66cf" },
   "molten-nvim": { "branch": "main", "commit": "b626f8d848ed01d648357f5b3d223fddcc732dcf" },
   "neo-tree.nvim": { "branch": "main", "commit": "77d9f484b88fd380386b46ed9206e5374d69d9d8" },
-  "neogit": { "branch": "master", "commit": "265e96128cf3bc3ba467c45f8fc112e91021e579" },
+  "neogit": { "branch": "master", "commit": "760d6d74c328ce2a38b02677bf5161999b992da2" },
   "netman.nvim": { "branch": "main", "commit": "cd5b2c4802d2014df1bc1d07c37aa2271e6ba725" },
   "nlsp-settings.nvim": { "branch": "main", "commit": "2a52e793d4f293c0e1d61ee5794e3ff62bfbbb5d" },
   "noice.nvim": { "branch": "main", "commit": "92433164e2f7118d4122c7674c3834d9511722ba" },
