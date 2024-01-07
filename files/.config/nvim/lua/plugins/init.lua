@@ -867,6 +867,19 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       ]]
     end
   },
+  {
+    'klen/nvim-config-local',
+    init = function()
+      require('config-local').setup {
+        config_files = { ".nvim.lua" },
+        hashfile = vim.fn.stdpath("data") .. "/config-local",
+        autocommands_create = true, -- default
+        commands_create = true,     -- default
+        silent = false,             -- default
+        lookup_parents = false,     -- default
+      }
+    end
+  },
   { 'jrudess/vim-foldtext' },
   {
     'Shougo/ddc.vim',

@@ -1,3 +1,4 @@
 .git-blame-ignore-revs
 .envrc.local
+.nvim.lua
 .local/
