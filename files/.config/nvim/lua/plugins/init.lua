@@ -10,7 +10,7 @@ return {
   { 'nvim-tree/nvim-web-devicons' },
   {
     'rcarriga/nvim-notify',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     opts = {
       on_open = function(win)
         vim.api.nvim_win_set_option(win, "winblend", 30)
@@ -397,7 +397,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'lukas-reineke/indent-blankline.nvim',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     main = "ibl",
     opts = {
       indent = {
@@ -484,7 +484,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     "sontungexpt/sttusline",
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     dependencies = {
       "nvim-tree/nvim-web-devicons",
     },
@@ -638,7 +638,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'folke/noice.nvim',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     dependencies = { "nui.nvim", "nvim-notify", "nvim-cmp" },
     config = function()
       require("noice").setup {
