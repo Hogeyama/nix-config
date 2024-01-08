@@ -1630,7 +1630,15 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       require 'lspconfig'['eslint'].setup {}
       require 'lspconfig'['gopls'].setup {}
       require 'lspconfig'['jsonls'].setup {}
-      require 'lspconfig'['rust_analyzer'].setup {}
+      require 'lspconfig'['rust_analyzer'].setup {
+        settings = {
+          ['rust-analyzer'] = {
+            check = {
+              command = "clippy"
+            }
+          }
+        }
+      }
       require 'lspconfig'['graphql'].setup {}
       require 'lspconfig'['pyright'].setup {}
       require 'lspconfig'['yamlls'].setup {}
