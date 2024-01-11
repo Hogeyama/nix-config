@@ -1540,12 +1540,10 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         if client.name == "tsserver" then
           client.server_capabilities.documentFormattingProvider = false
         end
-        -- hls
-        if client.name == "hls" then
-          vim.cmd [[LspSettings update hls]]
-        end
         -- 自動Format
         require 'lsp-format'.on_attach(client, bufnr)
+        -- Force load
+        vim.cmd("LspSettings update " .. client.name)
       end
 
       -- [[capabilities]]
@@ -1823,7 +1821,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     init = function()
       require 'nlspsettings'.setup({
         append_default_schemas = true,
-        loader = 'yaml',
+        loader = 'json',
         nvim_notify = {
           enable = true,
         },
