@@ -1359,6 +1359,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       },
     }
   },
+  { 'mateuszwieloch/automkdir.nvim' },
   -- [Git]
   {
     'NeogitOrg/neogit',
