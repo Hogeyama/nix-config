@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+    echo "Usage: $0 <flake-output-attribute>"
+}
+
+run() {
+    printf "$ %s\n" "$*"
+    "$@"
+}
+
+if [[ "$#" -ne 1 ]]; then
+    usage
+    exit 1
+fi
+
+FLAKE_ATTR="$1" # format: "flakeref[#attrpath]"
+if [[ "$FLAKE_ATTR" =~ ^[^#]+$ ]]; then
+    FLAKEREF="$FLAKE_ATTR"
+    ATTRPATH="default"
+elif [[ "$FLAKE_ATTR" =~ ^([^#]+)#(.*)$ ]]; then
+    FLAKEREF="${BASH_REMATCH[1]}"
+    ATTRPATH="${BASH_REMATCH[2]:-default}"
+else
+    usage
+    exit 1
+fi
+
+ORIGINAL_URL=$(nix flake metadata "$FLAKEREF" --json | jq -r .originalUrl)
+SYSTEM=$(nix eval --raw --impure --expr builtins.currentSystem)
+ATTRPATH1="packages.$SYSTEM.$ATTRPATH"
+ATTRPATH2="legacyPackages.$SYSTEM.$ATTRPATH"
+
+mapfile -t INSTALLED < <(
+    nix profile list --json | jq -r \
+        --arg url "$ORIGINAL_URL" \
+        --argjson paths "[\"$ATTRPATH1\", \"$ATTRPATH2\"]" '.
+        | .elements[]
+        | select(.originalUrl == $url and ([.attrPath]|inside($paths)))
+        | .storePaths[]
+    '
+)
+
+for p in "${INSTALLED[@]}"; do
+    run nix profile remove "$p"
+done
+run nix profile install "$FLAKE_ATTR"
