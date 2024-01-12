@@ -1,48 +1,37 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/usr/bin/env -S deno run -A --ext ts
+import "npm:zx@7.2.3/globals";
+$.verbose = false;
 
-usage() {
-    echo "Usage: $0 <flake-output-attribute>"
+const flake_attr = Deno.args[0] ?? ".";
+const [flake_ref, mattr] = flake_attr.split("#", 1);
+const attr = mattr ?? "default";
+
+const installed: {
+  elements: {
+    originalUrl: string;
+    attrPath: string;
+    storePaths: string[];
+  }[];
+} = await $`nix profile list --json`
+  .then((x) => JSON.parse(x.stdout));
+
+const original_url: string = await $`nix flake metadata --json ${flake_ref}`
+  .then((x) => JSON.parse(x.stdout).originalUrl);
+
+const system: string =
+  await $`nix eval --raw --impure --expr builtins.currentSystem`
+    .then((x) => x.stdout);
+
+const to_be_uninstalled: string[] = installed.elements.filter((e) => {
+  return e.originalUrl === original_url &&
+    (e.attrPath === `packages.${system}.${attr}` ||
+      e.attrPath === `legacyPackages.${system}.${attr}`);
+}).map((e) => e.storePaths).flat();
+
+$.verbose = true;
+for (const e of to_be_uninstalled) {
+  await $`nix profile remove ${e}`;
 }
+await $`nix profile install ${flake_attr}`;
 
-run() {
-    printf "$ %s\n" "$*"
-    "$@"
-}
-
-if [[ "$#" -ne 1 ]]; then
-    usage
-    exit 1
-fi
-
-FLAKE_ATTR="$1" # format: "flakeref[#attrpath]"
-if [[ "$FLAKE_ATTR" =~ ^[^#]+$ ]]; then
-    FLAKEREF="$FLAKE_ATTR"
-    ATTRPATH="default"
-elif [[ "$FLAKE_ATTR" =~ ^([^#]+)#(.*)$ ]]; then
-    FLAKEREF="${BASH_REMATCH[1]}"
-    ATTRPATH="${BASH_REMATCH[2]:-default}"
-else
-    usage
-    exit 1
-fi
-
-ORIGINAL_URL=$(nix flake metadata "$FLAKEREF" --json | jq -r .originalUrl)
-SYSTEM=$(nix eval --raw --impure --expr builtins.currentSystem)
-ATTRPATH1="packages.$SYSTEM.$ATTRPATH"
-ATTRPATH2="legacyPackages.$SYSTEM.$ATTRPATH"
-
-mapfile -t INSTALLED < <(
-    nix profile list --json | jq -r \
-        --arg url "$ORIGINAL_URL" \
-        --argjson paths "[\"$ATTRPATH1\", \"$ATTRPATH2\"]" '.
-        | .elements[]
-        | select(.originalUrl == $url and ([.attrPath]|inside($paths)))
-        | .storePaths[]
-    '
-)
-
-for p in "${INSTALLED[@]}"; do
-    run nix profile remove "$p"
-done
-run nix profile install "$FLAKE_ATTR"
+// vim:ft=typescript
