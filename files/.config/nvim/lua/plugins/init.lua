@@ -1587,6 +1587,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         init_options = {
           lint = true,
         },
+        single_file_support = true,
       }
 
       -- [[tsserver]]
@@ -1595,6 +1596,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         init_options = {
           lint = true,
         },
+        single_file_support = false,
       }
 
       -- [[lua_ls]]
