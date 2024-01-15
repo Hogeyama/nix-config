@@ -1360,6 +1360,29 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     }
   },
   { 'mateuszwieloch/automkdir.nvim' },
+  {
+    'nvim-neorg/neorg',
+    build = ":Neorg sync-parsers",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      require("neorg").setup {
+        load = {
+          ["core.defaults"] = {},  -- Loads default behaviour
+          ["core.concealer"] = {}, -- Adds pretty icons to your documents
+          ["core.dirman"] = {      -- Manages Neorg workspaces
+            config = {
+              workspaces = {
+                notes = "~/neorg",
+              },
+            },
+          },
+          ["core.summary"] = {},
+          ["core.export"] = {},
+          ["core.export.markdown"] = {},
+        },
+      }
+    end,
+  },
   -- [Git]
   {
     'NeogitOrg/neogit',
