@@ -1679,7 +1679,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
               -- [null-ls]
               "actionlint",
               "black",
-              "flake8",
               "hadolint",
               "prettier",
               "shfmt",
@@ -1777,7 +1776,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
             sources = {
               -- diagnostics
               null_ls.builtins.diagnostics.actionlint,
-              null_ls.builtins.diagnostics.flake8,
               null_ls.builtins.diagnostics.hadolint,
               null_ls.builtins.diagnostics.yamllint,
               -- null_ls.builtins.diagnostics.checkstyle.with({
