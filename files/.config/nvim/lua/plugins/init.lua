@@ -225,10 +225,6 @@ return {
       { 'nvim-treesitter/nvim-treesitter-textobjects' },
       { 'RRethy/nvim-treesitter-textsubjects' },
       { 'mfussenegger/nvim-treehopper' },
-      {
-        'IndianBoy42/tree-sitter-just',
-        opts = {}, -- これがないとエラーになる
-      },
     },
   },
   {
@@ -2000,4 +1996,9 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     'leafgarland/typescript-vim',
     enabled = not is_light_mode,
   },
+  -- [[just]]
+  {
+    "NoahTheDuke/vim-just",
+    ft = { "just" },
+  }
 }
