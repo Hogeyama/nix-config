@@ -1631,21 +1631,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       }
 
       -- [[lua_ls]]
-      require 'lspconfig'.lua_ls.setup {
-        settings = {
-          Lua = {
-            runtime = {
-              version = 'LuaJIT',
-            },
-            diagnostics = {
-              globals = { 'vim', 'use' },
-            },
-            telemetry = {
-              enable = false,
-            },
-          },
-        },
-      }
+      require 'lspconfig'.lua_ls.setup {}
       -- [[nil_ls]]
       require 'lspconfig'['nil_ls'].setup {
         settings = {
