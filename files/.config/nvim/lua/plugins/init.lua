@@ -1594,7 +1594,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
 
       -- [Per server]
       -- [[hls]]
-      require 'lspconfig'['hls'].setup {
+      require 'lspconfig'.hls.setup {
         cmd = {
           -- a wrapper of haskell-language-server-wrapper that
           -- fall backs to haskell-language-server
@@ -1613,7 +1613,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       }
 
       -- [[denols]]
-      require 'lspconfig'['denols'].setup {
+      require 'lspconfig'.denols.setup {
         root_dir = require 'lspconfig'.util.root_pattern("deno.json"),
         init_options = {
           lint = true,
@@ -1622,7 +1622,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       }
 
       -- [[tsserver]]
-      require 'lspconfig'['tsserver'].setup {
+      require 'lspconfig'.tsserver.setup {
         root_dir = require 'lspconfig'.util.root_pattern("package.json"),
         init_options = {
           lint = true,
@@ -1633,7 +1633,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       -- [[lua_ls]]
       require 'lspconfig'.lua_ls.setup {}
       -- [[nil_ls]]
-      require 'lspconfig'['nil_ls'].setup {
+      require 'lspconfig'.nil_ls.setup {
         settings = {
           ["nil"] = {
             formatting = {
@@ -1643,12 +1643,12 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         },
       }
       -- [[others]]
-      require 'lspconfig'['bashls'].setup {}
-      require 'lspconfig'['dhall_lsp_server'].setup {}
-      require 'lspconfig'['eslint'].setup {}
-      require 'lspconfig'['gopls'].setup {}
-      require 'lspconfig'['jsonls'].setup {}
-      require 'lspconfig'['rust_analyzer'].setup {
+      require 'lspconfig'.bashls.setup {}
+      require 'lspconfig'.dhall_lsp_server.setup {}
+      require 'lspconfig'.eslint.setup {}
+      require 'lspconfig'.gopls.setup {}
+      require 'lspconfig'.jsonls.setup {}
+      require 'lspconfig'.rust_analyzer.setup {
         settings = {
           ['rust-analyzer'] = {
             check = {
@@ -1657,14 +1657,14 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           }
         }
       }
-      require 'lspconfig'['graphql'].setup {}
-      require 'lspconfig'['pyright'].setup {}
-      require 'lspconfig'['yamlls'].setup {}
-      require 'lspconfig'['terraformls'].setup {}
-      require 'lspconfig'['tflint'].setup {}
-      require 'lspconfig'['dockerls'].setup {}
-      require 'lspconfig'['sqlls'].setup {}
-      require 'lspconfig'['gradle_ls'].setup {}
+      require 'lspconfig'.graphql.setup {}
+      require 'lspconfig'.pyright.setup {}
+      require 'lspconfig'.yamlls.setup {}
+      require 'lspconfig'.terraformls.setup {}
+      require 'lspconfig'.tflint.setup {}
+      require 'lspconfig'.dockerls.setup {}
+      require 'lspconfig'.sqlls.setup {}
+      require 'lspconfig'.gradle_ls.setup {}
     end,
     dependencies = {
       {
