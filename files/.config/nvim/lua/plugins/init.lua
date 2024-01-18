@@ -364,31 +364,31 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     'voldikss/vim-floaterm',
     enabled = not is_light_mode,
     init = function()
-      vim.cmd [[
-        let g:floaterm_width = 0.9
-        let g:floaterm_height = 0.9
-        nnoremap <F6> :FloatermToggle shell6<CR>
-        tnoremap <F6> <C-\><C-n>:FloatermToggle shell6<CR>
-        nnoremap <F7> :FloatermToggle shell7<CR>
-        tnoremap <F7> <C-\><C-n>:FloatermToggle shell7<CR>
-        nnoremap <F8> :ToggleFloatermFzf<CR>
-        tnoremap <F8> <C-\><C-n>:ToggleFloatermFzf<CR>
-        nnoremap <F9> :FloatermToggle shell9<CR>
-        tnoremap <F9> <C-\><C-n>:FloatermToggle shell9<CR>
-        command! ToggleFloatermFzf call ToggleFloatermFzfFun()
-        function! ToggleFloatermFzfFun() abort
-          if get(g:,'floaterm_fzf_exists',0)
-            FloatermToggle fzf
-          else
-            FloatermNew  --name=fzf
-            FloatermSend --name=fzf fzfw
-            let g:floaterm_fzf_exists=1
-          endif
-        endfunction
-        "nvim_treesitter#foldexpr()が有効になっているとめちゃくちゃ重くなる
-        "なぜかnofoldenableでも重いので、foldmethod=manualにする
-        autocmd FileType floaterm setlocal foldmethod=manual
-      ]]
+      vim.g.floaterm_width = 0.9
+      vim.g.floaterm_height = 0.9
+      vim.keymap.set("n", "<F6>", "<Cmd>FloatermToggle shell6<CR>")
+      vim.keymap.set("t", "<F6>", "<C-\\><C-n><Cmd>FloatermToggle shell6<CR>")
+      vim.keymap.set("n", "<F7>", "<Cmd>FloatermToggle shell7<CR>")
+      vim.keymap.set("t", "<F7>", "<C-\\><C-n><Cmd>FloatermToggle shell7<CR>")
+      vim.keymap.set("n", "<F8>", "<Cmd>ToggleFloatermFzf<CR>")
+      vim.keymap.set("t", "<F8>", "<C-\\><C-n><Cmd>ToggleFloatermFzf<CR>")
+      vim.keymap.set("n", "<F9>", "<Cmd>FloatermToggle shell9<CR>")
+      vim.keymap.set("t", "<F9>", "<C-\\><C-n><Cmd>FloatermToggle shell9<CR>")
+      vim.api.nvim_create_user_command('ToggleFloatermFzf', function()
+        if vim.g.floaterm_fzf_exists == 1 then
+          vim.cmd [[FloatermToggle fzf]]
+        else
+          vim.cmd [[FloatermNew  --name=fzf]]
+          vim.cmd [[FloatermSend --name=fzf fzfw]]
+          vim.g.floaterm_fzf_exists = 1
+        end
+      end, {})
+      -- nvim_treesitter#foldexpr()が有効になっているとめちゃくちゃ重くなる
+      -- なぜかnofoldenableでも重いので、foldmethod=manualにする
+      vim.api.nvim_create_autocmd({ 'FileType' }, {
+        pattern = 'floaterm',
+        command = "setlocal foldmethod=manual nonumber norelativenumber",
+      })
     end
   },
   {
