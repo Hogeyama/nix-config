@@ -1450,7 +1450,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       {
         'sindrets/diffview.nvim',
         init = function()
-          local actions = require("diffview.config").actions
           require("diffview").setup {
             view = {
               merge_tool = {
@@ -1749,6 +1748,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           local h = require("null-ls.helpers")
           local methods = require("null-ls.methods")
 
+          ---@diagnostic disable-next-line: unused-local
           local spotbugs = h.make_builtin({
             name = "spotbugs",
             meta = {
@@ -1774,6 +1774,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
             factory = h.generator_factory,
           })
 
+          ---@diagnostic disable-next-line: unused-local
           local spotless = h.make_builtin({
             name = "spotless",
             timeout = 50000,
