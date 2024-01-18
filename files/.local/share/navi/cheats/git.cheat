@@ -7,10 +7,13 @@ git rebase -i --keep-base --update-refs <commit>^
 git worktree add -B {,,<remote>/}<remote-branch-no-prefix>
 
 # add worktree for PR review
-<add_worktree_for_pr>
+<add-worktree-for-pr>
+
+# checkout branch for PR review
+git switch <pr-branch>
 
 # remove worktree
-git worktree remove <worktree_path>
+git worktree remove <worktree-path>
 
 # squash/fixup automatically
 GIT_SEQUENCE_EDITOR=: git rebase --update-refs --autosquash --autostash -i <commit>
@@ -35,5 +38,6 @@ $ commit-any:              git log --oneline --color=always --all --- --map "awk
 $ remote:                  git remote show
 $ remote-branch:           git branch -r | sed -e 's/\(.*->\)//' -e 's/^\s*//'
 $ remote-branch-no-prefix: git branch -r | sed -e 's/\(.*->\)//' -e 's/^[^\/]*\///'
-$ worktree_path:           git worktree list | tail -n+2 --- --map "awk '{print $1}'"
-$ add_worktree_for_pr:     gh pr list --json number,headRefName,title | jq -r '.[]| [.number,.title,.headRefName]|join("\t")' --- --multi --expand --map "read -r line; num=$(awk -F'\t' '{print $1}' <<<\"$line\"); title=$(awk -F'\t' '{print $2}' <<<\"$line\"); branch=$(awk -F'\t' '{print $3}' <<<\"$line\"); echo -n \"git worktree add 'pr/$num-$title' -b {,origin/}$branch\""
+$ worktree-path:           git worktree list | tail -n+2 --- --map "awk '{print $1}'"
+$ pr-branch:               gh pr list --json number,headRefName,title | jq -r '.[]| [.number,.title,.headRefName]|join("\t")' --- --multi --expand --map "awk -F'\t' '{print $3}'"
+$ add-worktree-for-pr:     gh pr list --json number,headRefName,title | jq -r '.[]| [.number,.title,.headRefName]|join("\t")' --- --multi --expand --map "read -r line; num=$(awk -F'\t' '{print $1}' <<<\"$line\"); title=$(awk -F'\t' '{print $2}' <<<\"$line\"); branch=$(awk -F'\t' '{print $3}' <<<\"$line\"); echo -n \"git worktree add 'pr/$num-$title' -b {,origin/}$branch\""
