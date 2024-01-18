@@ -73,7 +73,7 @@
   "quarto-nvim": { "branch": "main", "commit": "0a35b3890e9d723b730506d7d8b3ba3d0d6aae2e" },
   "rust.vim": { "branch": "master", "commit": "889b9a7515db477f4cb6808bef1769e53493c578" },
   "ssr.nvim": { "branch": "main", "commit": "bb323ba621ac647b4ac5638b47666e3ef3c279e1" },
-  "sttusline": { "branch": "main", "commit": "133bb40d249e0167c89bb352ff8442b821fb07e9" },
+  "sttusline": { "branch": "table_version", "commit": "c4c8efe6319f1f65c46199ec27167923d7ef961a" },
   "tabby.nvim": { "branch": "main", "commit": "55712426431b12beae5f12e731cfb1d707632a3d" },
   "tabular": { "branch": "master", "commit": "339091ac4dd1f17e225fe7d57b48aff55f99b23a" },
   "telescope-fzf-native.nvim": { "branch": "main", "commit": "6c921ca12321edaa773e324ef64ea301a1d0da62" },

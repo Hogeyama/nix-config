@@ -480,6 +480,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     "sontungexpt/sttusline",
+    branch = "table_version",
     enabled = not is_light_mode and not vim.g.vscode,
     dependencies = {
       "nvim-tree/nvim-web-devicons",
@@ -488,10 +489,9 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     config = function(_, _)
       require("sttusline").setup {
         statusline_color = "StatusLine",
-        laststatus = 3,
         disabled = {
           filetypes = {},
-          buftypes = {},
+          buftypes = { "terminal" },
         },
         components = {
           "mode",
@@ -504,15 +504,25 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           "copilot",
           "indent",
           "encoding",
-          "pos-cursor",
-          "pos-cursor-progress",
+          {
+            "pos-cursor",
+            {
+              update = function()
+                -- Use display offset instead of byte offset
+                local cursor = vim.api.nvim_win_get_cursor(0)
+                local line = vim.api.nvim_get_current_line()
+                local display_offset = vim.fn.strdisplaywidth(line:sub(1, cursor[2] + 1))
+                return cursor[1] .. ":" .. display_offset
+              end,
+            }
+          },
         },
       }
     end,
   },
   {
     'nanozuki/tabby.nvim',
-    enabled = not is_light_mode and false,
+    enabled = not is_light_mode,
     init = function()
       vim.opt.sessionoptions = 'curdir,folds,globals,help,tabpages,terminal,winsize'
       local api = require('tabby.module.api')
