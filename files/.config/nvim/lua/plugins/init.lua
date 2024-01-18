@@ -512,7 +512,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'nanozuki/tabby.nvim',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and false,
     init = function()
       vim.opt.sessionoptions = 'curdir,folds,globals,help,tabpages,terminal,winsize'
       local api = require('tabby.module.api')
