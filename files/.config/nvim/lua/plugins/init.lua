@@ -361,8 +361,46 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     end,
   },
   {
+    'numToStr/FTerm.nvim',
+    enabled = true,
+    config = function()
+      local fterm = require 'FTerm'
+      local zsh = {
+        cmd = "zsh",
+        border = "rounded",
+        dimensions = {
+          height = 0.9,
+          width = 0.9
+        }
+      }
+      local fzfw = {
+        cmd = "fzfw",
+        border = "rounded",
+        dimensions = {
+          height = 0.9,
+          width = 0.9
+        }
+      }
+      vim.shell6 = fterm:new(zsh)
+      vim.shell7 = fterm:new(zsh)
+      vim.shell8 = fterm:new(fzfw)
+      vim.shell9 = fterm:new(zsh)
+      vim.keymap.set({ "n", "t" }, "<F6>", function() vim.shell6:toggle() end)
+      vim.keymap.set({ "n", "t" }, "<F7>", function() vim.shell7:toggle() end)
+      vim.keymap.set({ "n", "t" }, "<F8>", function() vim.shell8:toggle() end)
+      vim.keymap.set({ "n", "t" }, "<F9>", function() vim.shell9:toggle() end)
+      vim.keymap.set({ "n", "t" }, "<F10>", "<Cmd>FloatermHide<CR>")
+      vim.api.nvim_create_user_command('FloatermHide', function() -- TODO rename
+        vim.shell6:close()
+        vim.shell7:close()
+        vim.shell8:close()
+        vim.shell9:close()
+      end, { bang = true, nargs = "*" })
+    end,
+  },
+  {
     'voldikss/vim-floaterm',
-    enabled = not is_light_mode,
+    enabled = false,
     init = function()
       vim.g.floaterm_width = 0.9
       vim.g.floaterm_height = 0.9
