@@ -378,8 +378,10 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         if vim.g.floaterm_fzf_exists == 1 then
           vim.cmd [[FloatermToggle fzf]]
         else
+          local old_shell = vim.g.floaterm_shell
+          vim.g.floaterm_shell = 'fzfw'
           vim.cmd [[FloatermNew  --name=fzf]]
-          vim.cmd [[FloatermSend --name=fzf fzfw]]
+          vim.g.floaterm_shell = old_shell
           vim.g.floaterm_fzf_exists = 1
         end
       end, {})
