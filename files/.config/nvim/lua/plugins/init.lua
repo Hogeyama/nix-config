@@ -1498,6 +1498,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       {
         'sindrets/diffview.nvim',
         init = function()
+          local actions = require("diffview.actions")
           require("diffview").setup {
             view = {
               merge_tool = {
@@ -1508,7 +1509,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
             },
             keymaps = {
               file_panel = {
-                { 'n', 'q', function() vim.cmd("tabclose") end, { desc = "Close" } },
+                { "n", "<CR>", actions.goto_file_edit },
+                { 'n', 'q',    function() vim.cmd("tabclose") end, { desc = "Close" } },
               },
             },
           }
