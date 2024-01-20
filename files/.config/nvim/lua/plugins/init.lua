@@ -394,6 +394,10 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         -- switch to buffer mode
         vim.shell8:run(vim.api.nvim_replace_termcodes('<C-b>', true, true, true))
       end)
+      vim.keymap.set({ "n" }, "M", function()
+        -- switch to mark mode
+        vim.shell8:run(vim.api.nvim_replace_termcodes('<C-d>', true, true, true))
+      end)
       vim.api.nvim_create_user_command('FloatermHide', function() -- TODO rename
         vim.shell6:close()
         vim.shell7:close()
