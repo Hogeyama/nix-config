@@ -483,6 +483,7 @@ in
       history.size = 1000000; # x100 of default
       history.extended = true;
       history.ignoreSpace = false;
+
       oh-my-zsh = {
         enable = true;
         theme = "frisk";
@@ -511,22 +512,6 @@ in
         extraConfig = ''
           # do not load any identities on start
           zstyle :omz:plugins:ssh-agent lazy yes
-          # home-manager's module seems broken. Manually set fpath
-          fpath+=(${pkgs.watson}/share/zsh/site-functions)
-          fpath+=(${pkgs.just}/share/zsh/site-functions)
-          fpath+=(${pkgs.pass}/share/zsh/site-functions)
-          # dasel completion
-          fpath+=(${pkgs.stdenv.mkDerivation {
-            name = "dasel-completion";
-            unpackPhase = "true";
-            buildInputs = [ pkgs.unstable.dasel ];
-            installPhase = ''
-              mkdir -p $out/share/zsh/site-functions
-              dasel --version
-              dasel completion zsh > $out/share/zsh/site-functions/_dasel
-            '';
-          }}/share/zsh/site-functions)
-          export -T FPATH fpath :
         '';
       };
       envExtra = ''
@@ -536,11 +521,6 @@ in
         test -z "''${ZSHENV_LOADED}" || return
         export ZSHENV_LOADED=1
         export PATH="$HOME/.local/bin:$PATH" # prefer .local/bin
-        source-if-exists "$HOME/.ghcup/env"
-        source-if-exists "$HOME/.cargo/env"
-        source-if-exists "$HOME/.opam/opam-init/init.zsh"
-        source-if-exists "$HOME/.poetry/env"
-        source-if-exists "$HOME/.zshenv.local"
         export FZF_DEFAULT_COMMAND='fd --hidden --follow --exclude .git'
         export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
         export JAVA8_HOME=${pkgs.openjdk8}/lib/openjdk
@@ -548,6 +528,7 @@ in
         export JAVA17_HOME=${pkgs.openjdk17}/lib/openjdk
         export JAVA_HOME="''$JAVA17_HOME"
         export PATH="''$PATH:''$JAVA_HOME/bin"
+        source-if-exists "$HOME/.zshenv.local"
       '';
       initExtra = ''
         zstyle ':completion:*' verbose yes
@@ -571,9 +552,6 @@ in
         ncd() {
           nvr -c "cd $(realpath $1)"
         }
-        # なぜか fzf の completion がうまく動かないのでもう一度読む
-        export FZF_COMPLETION_TRIGGER="::"
-        . ${pkgs.fzf}/share/fzf/completion.zsh
         # source machine local configuration
         source-if-exists $HOME/.zshrc.local
 
