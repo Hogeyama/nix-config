@@ -385,11 +385,19 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       vim.shell7 = fterm:new(zsh)
       vim.shell8 = fterm:new(fzfw)
       vim.shell9 = fterm:new(zsh)
-      vim.keymap.set({ "n", "t" }, "<F6>", function() vim.shell6:toggle() end)
-      vim.keymap.set({ "n", "t" }, "<F7>", function() vim.shell7:toggle() end)
-      vim.keymap.set({ "n", "t" }, "<F8>", function() vim.shell8:toggle() end)
-      vim.keymap.set({ "n", "t" }, "<F9>", function() vim.shell9:toggle() end)
-      vim.keymap.set({ "n", "t" }, "<F10>", "<Cmd>FloatermHide<CR>")
+      vim.shells = { vim.shell6, vim.shell7, vim.shell8, vim.shell9 }
+      local toggle_shell = function(shell)
+        for _, s in ipairs(vim.shells) do
+          if s ~= shell then
+            s:close()
+          end
+        end
+        shell:toggle()
+      end
+      vim.keymap.set({ "n", "t" }, "<F6>", function() toggle_shell(vim.shell6) end)
+      vim.keymap.set({ "n", "t" }, "<F7>", function() toggle_shell(vim.shell7) end)
+      vim.keymap.set({ "n", "t" }, "<F8>", function() toggle_shell(vim.shell8) end)
+      vim.keymap.set({ "n", "t" }, "<F9>", function() toggle_shell(vim.shell9) end)
       vim.keymap.set({ "n" }, "B", function()
         -- switch to buffer mode
         vim.shell8:run(vim.api.nvim_replace_termcodes('<C-b>', true, true, true))
