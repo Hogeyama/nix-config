@@ -1,4 +1,4 @@
-#!/usr/bin/env -S deno run -A --ext ts
+#!/usr/bin/env -S DENO_NO_UPDATE_CHECK=1 deno run -A --ext ts
 import "npm:zx@7.2.3/globals";
 $.verbose = false;
 
