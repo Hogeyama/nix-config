@@ -1533,7 +1533,9 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     'lambdalisue/gina.vim',
     init = function()
       vim.cmd [[
-        autocmd FileType gina-log nmap F <Plug>(gina-show-commit-vsplit)zv
+        autocmd FileType gina-log   nmap F <Plug>(gina-show-commit-vsplit)zv
+        autocmd FileType gina-blame nmap F <Plug>(gina-show-commit-tab)zv
+        command Gblame Gina blame
       ]]
     end
   },
