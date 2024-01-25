@@ -1528,11 +1528,9 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'tpope/vim-fugitive',
-    enabled = not is_light_mode,
   },
   {
     'lambdalisue/gina.vim',
-    enabled = not is_light_mode,
     init = function()
       vim.cmd [[
         autocmd FileType gina-log nmap F <Plug>(gina-show-commit-vsplit)zv
