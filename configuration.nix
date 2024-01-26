@@ -25,7 +25,7 @@ in
         "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
         "hogeyama-nix-cache:23HHz6x8J47bSCM0z6kZ++3x1ZXVPorsv3AJg1yqwAQ="
       ];
-      auto-optimise-store = true;
+      auto-optimise-store = false;
     };
     extraOptions = ''
       experimental-features = nix-command flakes
