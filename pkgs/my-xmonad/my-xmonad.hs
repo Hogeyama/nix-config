@@ -114,7 +114,7 @@ main = do
         , ("M-S-l", sendMessage Expand)
         , ("M-S-o", spawn "amixer sset Master mute")
         , ("M-S-t", spawn "amixer sset Master toggle")
-        , ("M-S-s", spawn $ unwords ["scrot", screenShotName])
+        , ("M-S-s", spawn "sh -c 'flameshot gui; pkill .flameshot-wrap'")
         , ("M-C-s", spawn $ unwords ["scrot", "-s", screenShotName])
         , ("M-S-b", spawn "$HOME/.local/bin/bttoggle")
         , ("M-m", toggleTouchPad)

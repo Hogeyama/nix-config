@@ -661,7 +661,10 @@ in
       enable = true;
     };
   };
-  services.dropbox.enable = true;
+  services = {
+    dropbox.enable = true;
+    flameshot.enable = true;
+  };
   manual.manpages.enable = false;
 }
 # vim:foldmethod=indent:
