@@ -92,8 +92,7 @@ main = do
         `additionalKeysP`
         --
         [ ("M-g", spawn browser)
-        , --
-          ("M-p", spawn "ulauncher")
+        , ("M-p", spawn "rofi -show combi -modes combi -combi-modes window,drun,run")
         , ("M-S-q", kill)
         , ("M-S-C-q", io exitSuccess)
         , ("M-x", spawn "sudo pm-suspend")

@@ -654,6 +654,9 @@ in
     starship = {
       enable = true;
     };
+    rofi = {
+      enable = true;
+    };
     nix-index = {
       enable = true;
     };
