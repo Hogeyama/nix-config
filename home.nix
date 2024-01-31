@@ -149,6 +149,7 @@ in
       gh
       gitflow
       git-remote-codecommit
+      glow
       go
       golangci-lint
       google-cloud-sdk
