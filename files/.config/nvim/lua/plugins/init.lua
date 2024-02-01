@@ -1732,6 +1732,9 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       require 'lspconfig'.dockerls.setup {}
       require 'lspconfig'.sqlls.setup {}
       require 'lspconfig'.gradle_ls.setup {}
+      require 'lspconfig'.volar.setup {
+        root_dir = require 'lspconfig'.util.root_pattern("vue.config.js", "nuxt.config.ts"),
+      }
     end,
     dependencies = {
       {
@@ -1884,6 +1887,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
                   "css",
                   "scss",
                   "html",
+                  "vue",
                 },
               }),
               null_ls.builtins.formatting.shfmt.with({
