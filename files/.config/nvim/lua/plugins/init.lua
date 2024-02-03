@@ -1712,7 +1712,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       -- [[others]]
       require 'lspconfig'.bashls.setup {}
       require 'lspconfig'.dhall_lsp_server.setup {}
-      require 'lspconfig'.eslint.setup {}
+      -- require 'lspconfig'.eslint.setup {}
       require 'lspconfig'.gopls.setup {}
       require 'lspconfig'.jsonls.setup {}
       require 'lspconfig'.rust_analyzer.setup {
@@ -1867,6 +1867,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
               null_ls.builtins.diagnostics.actionlint,
               null_ls.builtins.diagnostics.hadolint,
               null_ls.builtins.diagnostics.yamllint,
+              null_ls.builtins.diagnostics.eslint,
               -- null_ls.builtins.diagnostics.checkstyle.with({
               --   extra_args = { "--", "-f", "sarif", "$FILENAME" },
               -- }),
