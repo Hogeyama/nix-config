@@ -1897,6 +1897,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
               -- spotless,
               -- [code_action]
               null_ls.builtins.code_actions.eslint_d,
+              null_ls.builtins.code_actions.shellcheck,
+              null_ls.builtins.code_actions.gitrebase,
             }
           }
           -- require("null-ls").disable({ name = "spotbugs" })
