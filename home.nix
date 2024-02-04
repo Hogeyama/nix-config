@@ -643,8 +643,8 @@ in
       enable = true;
       package = (pkgs.vscode.override { isInsiders = false; }).overrideAttrs (oldAttrs: {
         src = (builtins.fetchTarball {
-          url = "https://update.code.visualstudio.com/latest/linux-x64/stable";
-          sha256 = "sha256:0mqfxrdpfx0dlhvwv64c9mxc5whhdc27890xsakfs7h80i5aav2a";
+          url = "https://vscode.download.prss.microsoft.com/dbazure/download/stable/05047486b6df5eb8d44b2ecd70ea3bdf775fd937/code-stable-x64-1706696875.tar.gz";
+          sha256 = "sha256:1r88dhqlk5f48bsnfhkc64pqxgwz5rqkf9rr2d3ip844364zlr9p";
         });
         buildInputs = oldAttrs.buildInputs ++ [ pkgs.libkrb5 ];
         version = "latest";
