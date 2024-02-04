@@ -1863,16 +1863,16 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
             on_attach = vim.g.lsp_default_on_attach,
             default_timeout = 50000,
             sources = {
-              -- diagnostics
+              -- [diagnostics]
               null_ls.builtins.diagnostics.actionlint,
               null_ls.builtins.diagnostics.hadolint,
               null_ls.builtins.diagnostics.yamllint,
-              null_ls.builtins.diagnostics.eslint,
+              null_ls.builtins.diagnostics.eslint_d,
               -- null_ls.builtins.diagnostics.checkstyle.with({
               --   extra_args = { "--", "-f", "sarif", "$FILENAME" },
               -- }),
               -- spotbugs,
-              -- formatter
+              -- [formatter]
               null_ls.builtins.formatting.black,
               null_ls.builtins.formatting.jq,
               null_ls.builtins.formatting.just,
@@ -1895,6 +1895,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
                 extra_args = { "-i", "4", "-ci" },
               }),
               -- spotless,
+              -- [code_action]
+              null_ls.builtins.code_actions.eslint_d,
             }
           }
           -- require("null-ls").disable({ name = "spotbugs" })

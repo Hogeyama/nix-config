@@ -142,6 +142,7 @@ in
       docker
       docker-compose
       docker-credential-helpers
+      eslint_d
       eza
       fd
       feh
