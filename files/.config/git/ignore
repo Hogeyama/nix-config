@@ -2,3 +2,4 @@
 .envrc.local
 .nvim.lua
 .local/
+.vim-bookmarks

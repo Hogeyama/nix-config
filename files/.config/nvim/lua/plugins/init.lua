@@ -1423,6 +1423,22 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   { 'mateuszwieloch/automkdir.nvim' },
   {
+    'MattesGroeger/vim-bookmarks',
+    event = "VeryLazy",
+    keys = {
+      { 'mm', "<Plug>BookmarkToggle", mode = { 'n' } },
+      { 'mx', "<Plug>BookmarkClear",  mode = { 'n' } },
+    },
+    cmd = {
+      'BookmarkShowAll'
+    },
+    init = function()
+      vim.g.bookmark_save_per_working_dir = 1
+      vim.g.bookmark_no_default_key_mappings = 1
+      vim.g.bookmark_sign = ''
+    end,
+  },
+  {
     'nvim-neorg/neorg',
     build = ":Neorg sync-parsers",
     dependencies = { "nvim-lua/plenary.nvim" },
