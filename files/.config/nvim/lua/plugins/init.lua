@@ -1476,6 +1476,13 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       { "ga.", "<cmd>TextCaseOpenTelescope<CR>", mode = { "n", "v" }, desc = "Telescope" },
     },
   },
+  {
+    'soulis-1256/eagle.nvim',
+    enabled = not is_light_mode,
+    config = function()
+      require("eagle").setup {}
+    end,
+  },
   -- [Git]
   {
     'NeogitOrg/neogit',

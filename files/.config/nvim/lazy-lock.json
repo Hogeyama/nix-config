@@ -22,6 +22,7 @@
   "diffview.nvim": { "branch": "main", "commit": "3dc498c9777fe79156f3d32dddd483b8b3dbd95f" },
   "direnv.vim": { "branch": "master", "commit": "ab2a7e08dd630060cd81d7946739ac7442a4f269" },
   "dropbar.nvim": { "branch": "master", "commit": "a920a73d7c0a6a25163439dca4f2b078202f6f03" },
+  "eagle.nvim": { "branch": "main", "commit": "95211cf4f29a6617078b7fb3bba140304b050a75" },
   "editorconfig-vim": { "branch": "master", "commit": "0956bc257ca4eaa3e087e0ba2253a3e980805820" },
   "fidget.nvim": { "branch": "main", "commit": "0ba1e16d07627532b6cae915cc992ecac249fb97" },
   "firenvim": { "branch": "master", "commit": "f2dd6d3bcf3309a7dd30c79b3b3c03ab55cea6e2" },
