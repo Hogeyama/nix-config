@@ -1483,6 +1483,19 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       require("eagle").setup {}
     end,
   },
+  {
+    'dlvhdr/gh-addressed.nvim',
+    enabled = not is_light_mode,
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'MunifTanjim/nui.nvim',
+      'folke/trouble.nvim',
+    },
+    cmd = "GhReviewComments",
+    keys = {
+      { "<leader>gc", "<cmd>GhReviewComments<cr>", desc = "GitHub Review Comments" },
+    },
+  },
   -- [Git]
   {
     'NeogitOrg/neogit',
