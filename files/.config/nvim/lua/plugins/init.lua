@@ -317,11 +317,70 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'cocopon/iceberg.vim',
+  },
+  {
+    'catppuccin/nvim',
+    name = "catppuccin",
     init = function()
+      require("catppuccin").setup {
+        flavour = "macchiato",
+        background = {
+          light = "latte",
+          dark = "macchiato",
+        },
+        term_colors = true,
+        dim_inactive = {
+          enabled = true,
+          shade = "dark",
+          percentage = 0.1,
+        },
+        styles = {
+          comments = {},
+          conditionals = {},
+          loops = {},
+          functions = {},
+          keywords = {},
+          strings = {},
+          variables = {},
+          numbers = {},
+          booleans = {},
+          properties = {},
+          types = {},
+          operators = {},
+        },
+        color_overrides = {},
+        custom_highlights = {},
+        integrations = {
+          cmp = true,
+          gitsigns = true,
+          nvimtree = true,
+          treesitter = true,
+          notify = true,
+          mini = {
+            enabled = true,
+            indentscope_color = "",
+          },
+          dropbar = {
+            enabled = true,
+            color_mode = false,
+          },
+          fidget = true,
+          hop = true,
+          indent_blankline = {
+            enabled = true,
+            colored_indent_levels = true,
+          },
+          markdown = true,
+          neotree = true,
+          noice = true,
+          dap = true,
+          dap_ui = true,
+        },
+      }
       vim.cmd [[
         set background=dark
         set termguicolors
-        colorscheme iceberg
+        colorscheme catppuccin
         hi! Pmenu                         guibg=None guifg=cyan
         hi! Folded                        guibg=None
         hi! LineNr                        guibg=None
