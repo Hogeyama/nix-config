@@ -1394,46 +1394,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     },
   },
   {
-    'benlubas/molten-nvim',
-    enabled = not is_light_mode,
-    build = ":UpdateRemotePlugins",
-    init = function()
-      vim.g.molten_output_win_max_height = 12
-    end,
-    dependencies = {
-      {
-        'quarto-dev/quarto-nvim',
-        dependencies = {
-          'jmbuhr/otter.nvim',
-          'hrsh7th/nvim-cmp',
-          'neovim/nvim-lspconfig',
-          'nvim-treesitter/nvim-treesitter',
-        },
-        config = function()
-          require('quarto').setup({
-            codeRunner = {
-              enabled = true,
-              default_method = 'molten',
-            },
-            keymap = {
-              hover = '<C-h>',
-              definition = '<C-l>j',
-              rename = '<F2>',
-              references = '<C-j>',
-            }
-          })
-          local runner = require("quarto.runner")
-          vim.keymap.set("n", "<leader>q", function()
-            runner.run_cell()
-          end, { desc = "run cell", silent = true })
-          vim.keymap.set("n", "<leader>c", function()
-            vim.cmd [[MoltenInterrupt]]
-          end, { desc = "interupt evaluation", silent = true })
-        end,
-      },
-    }
-  },
-  {
     "GCBallesteros/jupytext.nvim",
     enabled = not is_light_mode,
     config = true,
