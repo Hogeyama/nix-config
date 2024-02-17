@@ -249,6 +249,14 @@ return {
       { 'nvim-treesitter/nvim-treesitter-context' },
       { 'RRethy/nvim-treesitter-textsubjects' },
       { 'mfussenegger/nvim-treehopper' },
+      {
+        'JoosepAlviste/nvim-ts-context-commentstring',
+        config = function()
+          require('ts_context_commentstring').setup {
+            enable_autocmd = false,
+          }
+        end
+      },
     },
   },
   {
@@ -581,7 +589,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   { 'godlygeek/tabular' },
   {
     'numToStr/Comment.nvim',
-    init = function()
+    dependencies = { 'JoosepAlviste/nvim-ts-context-commentstring' },
+    config = function()
       require('Comment').setup({
         ---Add a space b/w comment and the line
         padding = true,
@@ -602,6 +611,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           ---Add comment at the end of line
           eol = ',>',
         },
+        pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
       })
     end
   },
