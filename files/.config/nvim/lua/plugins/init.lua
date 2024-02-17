@@ -201,6 +201,15 @@ return {
             ['.'] = 'textsubjects-smart',
           },
         },
+        incremental_selection = {
+          enable = true,
+          keymaps = {
+            init_selection = "b",
+            node_incremental = "b",
+            node_decremental = "v",
+            scope_incremental = false,
+          },
+        },
       }
       require 'treesitter-context'.setup {
         enable = true,
