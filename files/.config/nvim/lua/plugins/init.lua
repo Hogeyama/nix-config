@@ -766,10 +766,10 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     'dbridges/vim-markdown-runner',
     enabled = not is_light_mode,
     init = function()
-      vim.cmd [[
-        autocmd FileType markdown nnoremap <buffer> <Leader>q :MarkdownRunnerInsert<CR>
-        autocmd FileType markdown nnoremap <buffer> <Leader>w :MarkdownRunner<CR>
-      ]]
+      -- vim.cmd [[
+      --   autocmd FileType markdown nnoremap <buffer> <Leader>q :MarkdownRunnerInsert<CR>
+      --   autocmd FileType markdown nnoremap <buffer> <Leader>w :MarkdownRunner<CR>
+      -- ]]
       vim.g.markdown_runners = {
         mermaid = function(src)
           local n = os.tmpname()
@@ -1508,6 +1508,104 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     keys = {
       { "<leader>gc", "<cmd>GhReviewComments<cr>", desc = "GitHub Review Comments" },
     },
+  },
+  {
+    'michaelb/sniprun',
+    config = function()
+      local sa = require('sniprun.api')
+      local state = {}
+
+      local function find_code_fence()
+        local node = vim.treesitter.get_node()
+        while node do
+          if node:type() == 'code_fence_content' then
+            return node
+          end
+          node = node:parent()
+        end
+      end
+
+      local function remove_last_result()
+        local bufnr = state.last_sniprun_bufnr
+        local last_node = state.last_sniprun_node
+        local l0, c0, _, _ = last_node:range()
+        local mfence = vim.treesitter.get_node({ bufnr = bufnr, pos = { l0, c0 } })
+        while mfence do
+          if mfence:type() == 'fenced_code_block' then
+            break
+          end
+          mfence = mfence:parent()
+        end
+        if mfence == nil then
+          vim.notify("fenced_code_block not found")
+          return
+        end
+        local mresult = mfence:next_sibling()
+        if mresult == nil or mresult:type() ~= 'fenced_code_block' then
+          return
+        end
+        local info = mresult:child(1)
+        if info == nil or info:type() ~= 'info_string' then
+          vim.notify("info_string not found")
+          return
+        end
+        local lang = info:child(0)
+        if lang == nil or lang:type() ~= 'language' then
+          vim.notify("language not found")
+          return
+        end
+        local a, b, c, d = lang:range()
+        local val = vim.api.nvim_buf_get_text(bufnr, a, b, c, d, {})[1]
+        if val ~= 'result' then
+          return
+        end
+        local d0, _, d1, _ = mresult:range()
+        vim.api.nvim_buf_set_lines(bufnr, d0, d1, false, {})
+      end
+
+      sa.register_listener(function(d)
+        local bufnr = state.last_sniprun_bufnr
+        local node = state.last_sniprun_node
+        if node == nil then
+          return
+        end
+        remove_last_result()
+
+        local _, c0, l1, _ = node:range()
+        local indent = string.rep(' ', c0)
+        local lines = { indent .. "```result" }
+        for s in d.message:gmatch("[^\r\n]+") do
+          -- indent to the same level as the code fence
+          table.insert(lines, indent .. s)
+        end
+        table.insert(lines, indent .. "```")
+        vim.api.nvim_buf_set_lines(bufnr, l1 + 1, l1 + 1, false, lines)
+      end)
+
+      vim.api.nvim_create_autocmd({ 'FileType' }, {
+        pattern = 'markdown',
+        callback = function(_)
+          local opts = { noremap = true, silent = true, buffer = true }
+          vim.keymap.set('n', '<Leader>q', function()
+            vim.notify("Running sniprun")
+            local bufnr = vim.api.nvim_get_current_buf()
+            local node = find_code_fence()
+            if node == nil then
+              return
+            end
+            state.last_sniprun_bufnr = bufnr
+            state.last_sniprun_node = node
+            local l0, _, l1, _ = node:range()
+            sa.run_range(l0 + 1, l1, 'bash', { display = { 'Api' } })
+          end, opts)
+          vim.keymap.set('n', '<Leader>c', function()
+            vim.notify("Stopping sniprun")
+            vim.cmd [[SnipReset]]
+          end, opts)
+        end
+      })
+    end,
+    filetype = { "markdown" }
   },
   -- [Git]
   {
