@@ -608,12 +608,14 @@ in
         core.autoLF = false;
         core.quotePath = false;
         blame.date = "short";
+        branch.sort = "-committerdate";
         diff.external = "difft";
+        diff.algorithm = "histogram";
         difftool.gron.cmd = ''diff --color -u <(gron "$LOCAL") <(gron "$REMOTE")'';
         fetch.prune = true;
         init.defaultBranch = "main";
         merge.ff = false;
-        merge.conflictstyle = "diff3";
+        merge.conflictstyle = "zdiff3";
         merge.tool = "nvimdiff";
         mergetool.keepBackup = false;
         mergetool.vimdiff.layout = "(BASE,REMOTE)/(@LOCAL) + (REMOTE,LOCAL) + MERGED";
