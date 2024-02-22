@@ -54,7 +54,7 @@ local on_attach = function(client, bufnr)
     hotcodereplace = 'auto',
     config_overrides = {
       javaExec = vim.env.JAVA17_HOME .. '/bin/java',
-      vmArgs = vim.env.JAVA_OPTS,
+      vmArgs = vim.env.JAVA_OPTS .. " --add-opens java.base/java.lang=ALL-UNNAMED",
     },
   })
   require 'jdtls.setup'.add_commands()
@@ -120,9 +120,6 @@ local vmargs = {
   "-XX:+UseG1GC",
   "-XX:+UseStringDeduplication",
   "-javaagent:" .. lombok_jar,
-  --"-javaagent:" ..
-  --vim.env.HOME ..
-  --"/.gradle/caches/modules-2/files-2.1/org.jmockit/jmockit/1.34/fb816db2cdb251ebaa4349c6934905939ea1c0e7/jmockit-1.34.jar",
 }
 vim.list_extend(vmargs, vim.env.JAVA_OPTS and vim.split(vim.env.JAVA_OPTS, " ") or {})
 
