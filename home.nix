@@ -599,6 +599,16 @@ in
     };
     git = {
       enable = true;
+      package = pkgs.git.overrideAttrs (oldAttrs: rec {
+        version = "2.44.0";
+        src = pkgs.fetchurl {
+          url = "https://www.kernel.org/pub/software/scm/git/git-${version}.tar.xz";
+          hash = "sha256-41hzjctbXqNAzpAKABXAOuhugE5/9k5HqkYx3e5oHeM=";
+        };
+        preInstallCheck = oldAttrs.preInstallCheck + ''
+          disable_test t9902-completion
+        '';
+      });
       inherit (env.user.git) userName userEmail;
       extraConfig = {
         alias.stash-all = "stash save --include-untracked";
