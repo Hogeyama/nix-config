@@ -1,0 +1,89 @@
+#!/usr/bin/env -S deno run --allow-env --allow-net --ext ts
+import { parseArgs } from "https://deno.land/std@0.207.0/cli/parse_args.ts";
+import Anthropic from "npm:@anthropic-ai/sdk@0.17.1";
+
+const anthropic = new Anthropic({
+  apiKey: Deno.env.get("ANTHROPIC_API_KEY"),
+});
+
+const args = parseArgs(Deno.args, {
+  string: ["model", "max-history"],
+  boolean: ["help"],
+  default: {
+    model: "sonnet",
+    ["max-history"]: "5",
+  },
+  alias: {
+    model: "m",
+    help: "h",
+  },
+  unknown: (arg) => {
+    console.error(`Unknown option: ${arg}`);
+    usage();
+    Deno.exit(1);
+  },
+});
+
+if (args.help) {
+  usage();
+  Deno.exit(0);
+}
+
+const model = args.model === "opus"
+  ? "claude-3-opus-20240229"
+  : args.model === "sonnet"
+  ? "claude-3-sonnet-20240229"
+  : (() => {
+    console.error("Invalid model");
+    Deno.exit(1);
+  })();
+
+const maxHistory = Number(args["max-history"]);
+
+function usage() {
+  console.log(`\
+Usage: ${Deno.args[0]} [OPTIONS]
+
+Options:
+  -m, --model=<model>    Select the model to use (default: sonnet)
+                         Allowed values: sonnet, opus
+  --max-history=<length> Set the maximum length of conversation history to keep (default: 5)
+  -h, --help             Show this help message and exit
+`);
+}
+
+function prompt_repeat(p: string): string {
+  const answer = prompt(p);
+  if (answer === null) {
+    Deno.exit(0);
+  } else if (answer === "") {
+    return prompt_repeat(p);
+  } else {
+    return answer;
+  }
+}
+
+async function main() {
+  let userPrompt = prompt_repeat(">");
+  const history: { role: "user" | "assistant"; content: string }[] = [];
+
+  while (userPrompt.toLowerCase() !== "exit") {
+    history.push({ role: "user", content: userPrompt });
+    const messages = [...history.slice(-maxHistory)];
+
+    const message = await anthropic.messages.create({
+      model,
+      max_tokens: 1024,
+      messages,
+    });
+
+    for (const m of message.content) {
+      console.log(m.text);
+      history.push({ role: "assistant", content: m.text });
+    }
+
+    userPrompt = prompt_repeat(">");
+  }
+}
+
+main();
