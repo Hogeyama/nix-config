@@ -165,6 +165,7 @@ in
       libreoffice
       lsof
       manix
+      maestral
       mercurial
       neovim-remote
       nix-du
@@ -677,8 +678,18 @@ in
     };
   };
   services = {
-    dropbox.enable = true;
+    dropbox.enable = false;
     flameshot.enable = true;
+  };
+  systemd.user.services.maestral = {
+    Unit.Description = "Maestral daemon";
+    Install.WantedBy = [ "default.target" ];
+    Service = {
+      ExecStart = "${pkgs.maestral}/bin/maestral start -f";
+      ExecStop = "${pkgs.maestral}/bin/maestral stop";
+      Restart = "on-failure";
+      Nice = 10;
+    };
   };
   manual.manpages.enable = false;
 }
