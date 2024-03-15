@@ -307,7 +307,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           invoke_on_body = true,
           hint = {
             position = 'bottom',
-            border = 'rounded'
           },
           on_enter = function()
             vim.bo.modifiable = false
@@ -1863,8 +1862,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       }
       -- [[others]]
       require 'lspconfig'.bashls.setup {}
+      require 'lspconfig'.eslint.setup {}
       require 'lspconfig'.dhall_lsp_server.setup {}
-      -- require 'lspconfig'.eslint.setup {}
       require 'lspconfig'.gopls.setup {}
       require 'lspconfig'.jsonls.setup {}
       require 'lspconfig'.rust_analyzer.setup {
@@ -2019,14 +2018,12 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
               null_ls.builtins.diagnostics.actionlint,
               null_ls.builtins.diagnostics.hadolint,
               null_ls.builtins.diagnostics.yamllint,
-              null_ls.builtins.diagnostics.eslint_d,
               -- null_ls.builtins.diagnostics.checkstyle.with({
               --   extra_args = { "--", "-f", "sarif", "$FILENAME" },
               -- }),
               -- spotbugs,
               -- [formatter]
               null_ls.builtins.formatting.black,
-              null_ls.builtins.formatting.jq,
               null_ls.builtins.formatting.just,
               null_ls.builtins.formatting.prettier.with({
                 filetypes = {
@@ -2048,8 +2045,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
               }),
               -- spotless,
               -- [code_action]
-              null_ls.builtins.code_actions.eslint_d,
-              null_ls.builtins.code_actions.shellcheck,
               null_ls.builtins.code_actions.gitrebase,
             }
           }
