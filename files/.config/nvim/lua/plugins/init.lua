@@ -262,7 +262,7 @@ return {
     },
   },
   {
-    'anuvyklack/hydra.nvim',
+    'nvimtools/hydra.nvim',
     enabled = not is_light_mode,
     init = function()
       local hydra = require('hydra')
