@@ -1617,6 +1617,12 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     end,
     filetype = { "markdown" }
   },
+  {
+    'nvim-pack/nvim-spectre',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+    },
+  },
   -- [Git]
   {
     'NeogitOrg/neogit',
