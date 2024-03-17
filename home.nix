@@ -213,7 +213,7 @@ in
       unstable.alacritty
       nixDaemonS3CredentialsBin
     ];
-    file = dotfilesSymlinks { } // {
+    file = {
       ".xmonad/xmonad-x86_64-linux".source = "${xmonad}/bin/xmonad-x86_64-linux";
       ".xmonad/build" = {
         executable = true;
