@@ -146,6 +146,14 @@ return {
         footer = '',
       })
       require('mini.bracketed').setup()
+      require('mini.visits').setup({
+        list = {
+          filter = function(path_data)
+            return not vim.endswith(path_data.path, 'COMMIT_EDITMSG')
+          end,
+          sort = require('mini.visits').gen_sort.default({ recency_weight = 1 })
+        },
+      })
 
       vim.api.nvim_create_user_command('RmTrailingWhiteSpaces',
         function() require('mini.trailspace').trim() end,
