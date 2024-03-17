@@ -241,7 +241,7 @@ in
       DIRENV_LOG_FORMAT = "";
 
       # my-fzf-wrapper
-      FZFW_FD_EXCLUDE_PATHS = ".git,.hg,.hie,dist-newstyle,__pycache__,Session.vim,.direnv";
+      FZFW_FD_EXCLUDE_PATHS = ".git,.hg,.hie,dist-newstyle,__pycache__,Session.vim,.direnv,node_modules,.next";
 
       # nix-ld
       # 典型的な実行ファイルはそのまま動くようにしておく。
