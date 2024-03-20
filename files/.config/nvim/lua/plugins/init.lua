@@ -189,6 +189,86 @@ return {
     end,
   },
   {
+    "olimorris/codecompanion.nvim",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-lua/plenary.nvim",
+      "stevearc/dressing.nvim",
+    },
+    config = function()
+      local anthropic = require("codecompanion.adapters").use("anthropic", {
+        env = {
+          api_key = "cmd:pass anthropic_api_key",
+        },
+      })
+      require("codecompanion").setup({
+        adapters = {
+          chat = anthropic,
+          inline = anthropic,
+        },
+        display = {
+          action_palette = {
+            width = 95,
+            height = 10,
+          },
+          chat = {                   -- Options for the chat strategy
+            type = "buffer",         -- float|buffer
+            show_settings = true,    -- Show the model settings in the chat buffer?
+            show_token_count = true, -- Show the token count for the current chat in the buffer?
+            buf_options = {          -- Buffer options for the chat buffer
+              buflisted = false,
+            },
+            float_options = { -- Float window options if the type is "float"
+              border = "single",
+              buflisted = false,
+              max_height = 0,
+              max_width = 0,
+              padding = 1,
+            },
+            win_options = { -- Window options for the chat buffer
+              cursorcolumn = false,
+              cursorline = false,
+              foldcolumn = "0",
+              linebreak = true,
+              list = false,
+              signcolumn = "no",
+              spell = false,
+              wrap = true,
+            },
+          },
+        },
+        keymaps = {
+          ["<C-s>"] = "keymaps.save",       -- Save the chat buffer and trigger the API
+          ["<C-c>"] = "keymaps.close",      -- Close the chat buffer
+          ["q"] = "keymaps.cancel_request", -- Cancel the currently streaming request
+          ["gc"] = "keymaps.clear",         -- Clear the contents of the chat
+          ["ga"] = "keymaps.codeblock",     -- Insert a codeblock into the chat
+          ["gs"] = "keymaps.save_chat",     -- Save the current chat
+          ["]"] = "keymaps.next",           -- Move to the next header in the chat
+          ["["] = "keymaps.previous",       -- Move to the previous header in the chat
+        },
+        log_level = "ERROR",                -- TRACE|DEBUG|ERROR
+        send_code = false,                  -- Send code context to the generative AI service? Disable to prevent leaking code outside of Neovim
+        silence_notifications = false,      -- Silence notifications for actions like saving saving chats?
+        use_default_actions = false,        -- Use the default actions in the action palette?
+      })
+    end,
+  },
+  {
+    "folke/edgy.nvim",
+    enabled = false,
+    event = "VeryLazy",
+    init = function()
+      vim.opt.laststatus = 3
+      vim.opt.splitkeep = "screen"
+    end,
+    opts = {
+      right = {
+        { ft = "codecompanion", title = "Code Companion Chat", size = { width = 1 } },
+      }
+    }
+  },
+  {
     'nvim-treesitter/nvim-treesitter',
     init = function()
       require 'nvim-treesitter.configs'.setup {
