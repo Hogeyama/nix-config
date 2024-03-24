@@ -125,8 +125,10 @@ in
 
   # Enable docker/podman
   virtualisation.docker.enable = true;
+  # https://nixos.wiki/wiki/Podman
   virtualisation.podman.enable = true;
   virtualisation.podman.dockerCompat = false; # Do not create alias docker=podman
+  virtualisation.podman.defaultNetwork.settings.dns_enabled = true;
 
   # Enable gnupg-agent
   programs.gnupg = {
