@@ -1,4 +1,4 @@
-{ pkgs, nixpkgs, ... }:
+{ pkgs, nixpkgs, self, ... }:
 let
   env = import ./env.nix;
 in
@@ -139,6 +139,7 @@ in
   programs.zsh.enable = true;
 
   programs.nix-ld.enable = true;
+  programs.nix-ld.package = self.inputs.nix-ld-rs.packages.${pkgs.hostPlatform.system}.nix-ld-rs;
 
   environment = {
     systemPackages = with pkgs; [

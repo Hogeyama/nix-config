@@ -24,6 +24,9 @@
 
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
 
+    nix-ld-rs.url = "github:nix-community/nix-ld-rs";
+    nix-ld-rs.inputs.flake-utils.follows = "flake-utils";
+
     my-fzf-wrapper.url = "github:Hogeyama/my-fzf-wrapper";
     my-fzf-wrapper.inputs.flake-utils.follows = "flake-utils";
   };
@@ -78,7 +81,7 @@
           (_: { nixpkgs.overlays = overlays; })
           # system configuration
           ({ config, pkgs, ... }: import ./configuration.nix ({
-            inherit config pkgs nixpkgs;
+            inherit config pkgs nixpkgs self;
           }))
           # home-manager configuration
           home-manager.nixosModules.home-manager
