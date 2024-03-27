@@ -1600,6 +1600,19 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     },
   },
   {
+    'pwntester/octo.nvim',
+    enabled = false,
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-telescope/telescope.nvim',
+      'ibhagwan/fzf-lua',
+      'nvim-tree/nvim-web-devicons',
+    },
+    config = function()
+      require "octo".setup()
+    end
+  },
+  {
     'michaelb/sniprun',
     config = function()
       local sa = require('sniprun.api')
