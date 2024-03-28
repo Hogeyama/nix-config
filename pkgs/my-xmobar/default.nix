@@ -17,7 +17,6 @@ let
   };
   drv = (haskellPackages.callCabal2nix "my-xmobar" src { }).overrideAttrs (old: {
     buildInputs = old.buildInputs ++ [
-      pkgs.dropbox
       pkgs.alsa-lib
       pkgs.apulse
       pkgs.pulseaudio
