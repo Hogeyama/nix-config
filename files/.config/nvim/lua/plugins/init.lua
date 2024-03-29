@@ -1995,6 +1995,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       require 'lspconfig'.volar.setup {
         root_dir = require 'lspconfig'.util.root_pattern("vue.config.js", "nuxt.config.ts"),
       }
+      require 'lspconfig'.unison.setup {}
     end,
     dependencies = {
       {
@@ -2163,6 +2164,17 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       },
       { 'aznhe21/actions-preview.nvim' },
       { 'Shougo/ddc-source-lsp', },
+      {
+        "unisonweb/unison",
+        branch = "trunk",
+        config = function(plugin)
+          vim.opt.rtp:append(plugin.dir .. "/editor-support/vim")
+          require("lazy.core.loader").packadd(plugin.dir .. "/editor-support/vim")
+        end,
+        init = function(plugin)
+          require("lazy.core.loader").ftdetect(plugin.dir .. "/editor-support/vim")
+        end,
+      },
     },
   },
   {
