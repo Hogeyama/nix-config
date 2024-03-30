@@ -9,11 +9,9 @@ rec {
     email = "gan13027830@gmail.com";
     browser = "firefox";
     terminal = "konsole";
-
-    hashedPassword = "$6$0VTZ2.H/6uC/TqaV$jon2WkKJZSmKJJyHgi6QlZWkr7dQ1F0rRlXVno48hxkco5ofY.FzeNnj6qBcDBjDjaK0qbxRz2sjR8OEF2mis/";
   };
 
-  extraConfig = { pkgs, ... }: {
+  extraConfig = { pkgs, config, ... }: {
     users = {
       users = {
         ${user.name} = {
@@ -22,7 +20,7 @@ rec {
           home = user.homeDirectory;
           group = user.name;
           extraGroups = [ "wheel" "networkmanager" "docker" ];
-          hashedPassword = user.hashedPassword;
+          hashedPasswordFile = config.sops.secrets.login-password.path;
           shell = pkgs.zsh;
         };
       };
@@ -46,11 +44,16 @@ rec {
       userEmail = user.email;
     };
 
-    programs.steam.enable = true;
+    sops.secrets."login-password" = {
+      sopsFile = ./secrets/common.yaml;
+      neededForUsers = true;
+    };
     sops.secrets."aws/hogeyama" = {
       sopsFile = ./secrets/common.yaml;
       mode = "0440";
       path = "/root/.aws/credentials";
     };
+
+    programs.steam.enable = true;
   };
 }
