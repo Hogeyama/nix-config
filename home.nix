@@ -222,7 +222,6 @@ in
       my-fzf-wrapper
       ### unstable
       unstable.dasel
-      unstable.alacritty
       nixDaemonS3CredentialsBin
     ];
     file = {

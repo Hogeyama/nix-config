@@ -15,7 +15,7 @@ in
     ];
 
   nix = {
-    package = pkgs.unstable.nixVersions.nix_2_19;
+    package = pkgs.nixVersions.nix_2_19;
     settings = {
       substituters = [
         "https://cache.iog.io"
@@ -154,6 +154,7 @@ in
       bluez-tools
       libsForQt5.bluez-qt
       curl
+      deno
       docker
       docker-compose
       eza
@@ -178,6 +179,8 @@ in
       mercurial
       moreutils
       neovim-remote
+      nodejs
+      nodePackages.npm
       nil
       nixpkgs-fmt
       nix-alien
@@ -195,12 +198,6 @@ in
       xsel
       xsv
       yq
-      # unstable packages
-      unstable.deno
-      unstable.nodejs
-      unstable.nodePackages.bash-language-server
-      unstable.nodePackages.npm
-      unstable.neovim
     ];
     sessionVariables = {
       PATH = [
