@@ -132,9 +132,6 @@ let
 
 in
 {
-  nixpkgs.config = {
-    allowUnfree = true;
-  };
   home = {
     stateVersion = "22.11";
     packages = with pkgs; [
