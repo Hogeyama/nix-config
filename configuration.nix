@@ -6,7 +6,7 @@ in
   system.stateVersion = "22.11";
 
   nix = {
-    package = pkgs.nixVersions.nix_2_19;
+    package = pkgs.nixVersions.stable;
     settings = {
       substituters = [
         "https://cache.iog.io"
@@ -19,7 +19,7 @@ in
       auto-optimise-store = false;
     };
     extraOptions = ''
-      experimental-features = nix-command flakes auto-allocate-uids configurable-impure-env
+      experimental-features = nix-command flakes auto-allocate-uids
     '';
   };
   nixpkgs.config.allowUnfree = true;
