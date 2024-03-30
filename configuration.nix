@@ -1,18 +1,13 @@
-{ pkgs, nixpkgs, self, ... }:
+{ pkgs, self, ... }:
 let
   env = import ./env.nix;
 in
 {
   system.stateVersion = "22.11";
 
-  imports =
-    if env.type == "nixos-virtualbox" then [
-      "${nixpkgs.outPath}/nixos/modules/profiles/graphical.nix"
-      "${nixpkgs.outPath}/nixos/modules/installer/cd-dvd/channel.nix"
-      "${nixpkgs.outPath}/nixos/modules/virtualisation/virtualbox-image.nix"
-    ] else [
-      ./hardware-configuration.nix
-    ];
+  imports = [
+    ./hardware-configuration.nix
+  ];
 
   nix = {
     package = pkgs.nixVersions.nix_2_19;
@@ -35,7 +30,7 @@ in
   nixpkgs.config.firefox.speechSynthesisSupport = true;
 
   # Use the systemd-boot EFI boot loader.
-  boot = if env.type == "nixos-virtualbox" then { } else {
+  boot = {
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
@@ -46,7 +41,7 @@ in
     kernelPackages = pkgs.linuxPackages_latest;
   };
 
-  networking = if env.type == "nixos-virtualbox" then { } else {
+  networking = {
     # Define your hostname.
     hostName = env.hostName;
     # Enables wireless support via wpa_supplicant.
@@ -112,10 +107,7 @@ in
     enable = true;
     layout = "jp";
 
-    displayManager =
-      if env.type == "nixos"
-      then { sddm.enable = true; }
-      else { };
+    displayManager.sddm.enable = true;
     desktopManager.plasma5.enable = true;
     windowManager.xmonad.enable = true;
   };
@@ -278,8 +270,7 @@ in
         isNormalUser = true;
         home = "/home/${env.user.name}";
         group = env.user.name;
-        extraGroups = [ "wheel" "networkmanager" "docker" ] ++
-          (if env.type == "nixos-virtualbox" then [ "vboxsf" ] else [ ]);
+        extraGroups = [ "wheel" "networkmanager" "docker" ];
         hashedPassword = env.user.hashedPassword;
         shell = pkgs.zsh;
       };

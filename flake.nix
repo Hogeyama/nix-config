@@ -81,7 +81,7 @@
           (_: { nixpkgs.overlays = overlays; })
           # system configuration
           ({ config, pkgs, ... }: import ./configuration.nix ({
-            inherit config pkgs nixpkgs self;
+            inherit config pkgs self;
           }))
           # home-manager configuration
           home-manager.nixosModules.home-manager

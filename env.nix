@@ -1,16 +1,8 @@
 {
-  # Choose one of
-  # * nixos
-  # * nixos-virtualbox
-  # * nix-package-manager
-  type = "nixos";
-
-  # required only if type="nixos"
   hostName = "nixos";
 
   interface = "enp0s31f6";
 
-  # required
   user =
     {
       name = "hogeyama";
@@ -28,7 +20,6 @@
     };
 
   extraConfig = { ... }: {
-    # example
     programs.steam.enable = true;
     sops.secrets."aws/hogeyama" = {
       sopsFile = ./secrets/common.yaml;
