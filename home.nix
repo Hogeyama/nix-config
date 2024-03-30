@@ -196,7 +196,6 @@ in
       python310
       python310Packages.httpie
       ripgrep
-      rnix-lsp
       scrot
       shellcheck
       shfmt
