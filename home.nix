@@ -618,7 +618,6 @@ in
           disable_test t9902-completion
         '';
       });
-      inherit (env.user.git) userName userEmail;
       extraConfig = {
         alias.stash-all = "stash save --include-untracked";
         alias.show-upstream = "git rev-parse --abbrev-ref --symbolic-full-name @{u}";

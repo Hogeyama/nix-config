@@ -105,7 +105,7 @@
           {
             home = {
               inherit username;
-              homeDirectory = "/home/${username}";
+              homeDirectory = env.user.homeDirectory;
               stateVersion = "22.11";
             };
           }

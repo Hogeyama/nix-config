@@ -93,12 +93,6 @@ in
     };
   };
 
-  xdg.mime.defaultApplications = {
-    "text/html" = "${env.user.browser}.desktop";
-    "x-scheme-handler/https" = "${env.user.browser}.desktop";
-    "x-scheme-handler/http" = "${env.user.browser}.desktop";
-  };
-
   services.xserver = {
     enable = true;
     layout = "jp";
@@ -259,38 +253,13 @@ in
     };
   };
 
-  users = {
-    users = {
-      ${env.user.name} = {
-        uid = 1000;
-        isNormalUser = true;
-        home = "/home/${env.user.name}";
-        group = env.user.name;
-        extraGroups = [ "wheel" "networkmanager" "docker" ];
-        hashedPassword = env.user.hashedPassword;
-        shell = pkgs.zsh;
-      };
-    };
-    groups = {
-      # singleton group
-      ${env.user.name} = {
-        gid = 1000;
-        members = [ env.user.name ];
-      };
-    };
-  };
   security.sudo.wheelNeedsPassword = false;
 
-  services.gitolite = {
-    enable = true;
-    adminPubkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK2Apn34HBo5o00uK04Qrm5ySRzZqcYXFwTCKZllS4uZ";
-  };
   services.keybase = {
     enable = true;
   };
+
   services.passSecretService.enable = true;
 
   services.flatpak.enable = true;
-
-  nix.settings.trusted-users = [ env.user.name ];
 }
