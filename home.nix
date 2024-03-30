@@ -1,6 +1,7 @@
 # https://nix-community.github.io/home-manager/options.xhtml
 # https://mipmip.github.io/home-manager-option-search/
-{ config, self, pkgs, ... }:
+{ self }:
+{ config, pkgs, ... }:
 let
   env = import ./env.nix;
 

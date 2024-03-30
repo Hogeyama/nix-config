@@ -77,16 +77,15 @@
           # overlay
           (_: { nixpkgs.overlays = overlays; })
           # system configuration
-          ({ config, pkgs, ... }: import ./configuration.nix ({
-            inherit config pkgs self;
-          }))
+          ./configuration.nix
+          # hardware configuration
+          ./hardware-configuration.nix
           # home-manager configuration
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.${username} =
-              { config, pkgs, ... }: import ./home.nix { inherit config pkgs self; };
+            home-manager.users.${username} = import ./home.nix { inherit self; };
             home-manager.sharedModules = [
               nix-index-database.hmModules.nix-index
             ];

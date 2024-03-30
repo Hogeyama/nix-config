@@ -5,10 +5,6 @@ in
 {
   system.stateVersion = "22.11";
 
-  imports = [
-    ./hardware-configuration.nix
-  ];
-
   nix = {
     package = pkgs.nixVersions.nix_2_19;
     settings = {
