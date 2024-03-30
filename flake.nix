@@ -24,9 +24,6 @@
 
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
 
-    nix-ld-rs.url = "github:nix-community/nix-ld-rs";
-    nix-ld-rs.inputs.flake-utils.follows = "flake-utils";
-
     my-fzf-wrapper.url = "github:Hogeyama/my-fzf-wrapper";
     my-fzf-wrapper.inputs.flake-utils.follows = "flake-utils";
   };
