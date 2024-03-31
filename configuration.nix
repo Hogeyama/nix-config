@@ -31,9 +31,7 @@ in
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
     };
-    kernelModules = [
-      "uhid"
-    ];
+    kernelModules = [ "uhid" ];
     kernelPackages = pkgs.linuxPackages_latest;
   };
 
@@ -89,7 +87,10 @@ in
     defaultLocale = "en_US.UTF-8";
     inputMethod = {
       enabled = "fcitx5";
-      fcitx5.addons = with pkgs; [ fcitx5-mozc fcitx5-gtk ];
+      fcitx5.addons = with pkgs; [
+        fcitx5-mozc
+        fcitx5-gtk
+      ];
     };
   };
 
@@ -182,9 +183,7 @@ in
       yq
     ];
     sessionVariables = {
-      PATH = [
-        ''''${HOME}/.local/bin''
-      ];
+      PATH = [ ''''${HOME}/.local/bin'' ];
     };
   };
 
@@ -212,9 +211,7 @@ in
           "Rounded Mgen+ 1cp"
           "Noto Sans CJK JP"
         ];
-        serif = [
-          "Noto Serif CJK JP"
-        ];
+        serif = [ "Noto Serif CJK JP" ];
       };
       localConf = ''
         <?xml version="1.0"?>

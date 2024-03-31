@@ -7,4 +7,3 @@ pkgs.haskellPackages.shellFor {
     cabal-install
   ];
 }
-

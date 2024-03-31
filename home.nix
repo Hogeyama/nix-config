@@ -6,8 +6,9 @@ let
   env = import ./env.nix;
 
   dotfilesSymlinks =
-    { rootDir ? "files"
-    , clonedPath ? "${config.home.homeDirectory}/nix-config"
+    {
+      rootDir ? "files",
+      clonedPath ? "${config.home.homeDirectory}/nix-config",
     }:
     let
       # /nix/store/.../files 以下を traverse して相対パスを取得する。
@@ -17,20 +18,20 @@ let
       linksRootDirInVCS = "${clonedPath}/${rootDir}";
       toAbsPathInStore = s: "${linksRootDirInStore}/${s}";
       toAbsPathInVCS = s: "${linksRootDirInVCS}/${s}";
-      dotfilesSymlinks' = dirPath:
+      dotfilesSymlinks' =
+        dirPath:
         let
           # 相対パスの取得
           items = builtins.readDir (toAbsPathInStore dirPath);
-          funcInner = name: type:
+          funcInner =
+            name: type:
             let
               newDirPath = if dirPath == "" then name else "${dirPath}/${name}";
-              fileOrSymlink =
-                {
-                  "${newDirPath}" = {
-                    source = config.lib.file.mkOutOfStoreSymlink
-                      (toAbsPathInVCS newDirPath);
-                  };
+              fileOrSymlink = {
+                "${newDirPath}" = {
+                  source = config.lib.file.mkOutOfStoreSymlink (toAbsPathInVCS newDirPath);
                 };
+              };
               cases = {
                 "regular" = fileOrSymlink;
                 "symlink" = fileOrSymlink;
@@ -38,7 +39,7 @@ let
               };
               otherwise = abort ("unknown item type: " + toAbsPathInVCS newDirPath);
             in
-              cases.${type} or otherwise;
+            cases.${type} or otherwise;
         in
         pkgs.lib.concatMapAttrs (name: type: funcInner name type) items;
     in
@@ -95,30 +96,29 @@ let
     "$JAVA" -jar $CHECKSTYLE "''${ARGS[@]}"
   '';
 
-  nixDaemonS3CredentialsBin =
-    pkgs.writeShellScriptBin "nix-daemon-s3-credentials" ''
-      set -euo pipefail
-      ACTION=''${1:-enable}
-      AWS_SOURCE=~/.aws
-      AWS_TARGET=/var/secrets/.aws
+  nixDaemonS3CredentialsBin = pkgs.writeShellScriptBin "nix-daemon-s3-credentials" ''
+    set -euo pipefail
+    ACTION=''${1:-enable}
+    AWS_SOURCE=~/.aws
+    AWS_TARGET=/var/secrets/.aws
 
-      if [ "$ACTION" = "enable" ]; then
-        sudo mkdir -p "$AWS_TARGET"
-        sudo ${pkgs.bindfs}/bin/bindfs -o ro \
-          -g nixbld \
-          -p g+rD \
-          "$AWS_SOURCE" "$AWS_TARGET"
-        sudo systemctl set-environment AWS_PROFILE="''${AWS_PROFILE:-default}"
-        sudo systemctl set-environment AWS_SHARED_CREDENTIALS_FILE="$AWS_TARGET/credentials"
-        sudo systemctl restart nix-daemon
-        echo "Enabled nix-daemon S3 credentials..."
-      else
-        sudo umount "$AWS_TARGET"
-        sudo systemctl unset-environment AWS_PROFILE AWS_SHARED_CREDENTIALS_FILE
-        sudo systemctl restart nix-daemon
-        echo "Disabled nix-daemon S3 credentials..."
-      fi
-    '';
+    if [ "$ACTION" = "enable" ]; then
+      sudo mkdir -p "$AWS_TARGET"
+      sudo ${pkgs.bindfs}/bin/bindfs -o ro \
+        -g nixbld \
+        -p g+rD \
+        "$AWS_SOURCE" "$AWS_TARGET"
+      sudo systemctl set-environment AWS_PROFILE="''${AWS_PROFILE:-default}"
+      sudo systemctl set-environment AWS_SHARED_CREDENTIALS_FILE="$AWS_TARGET/credentials"
+      sudo systemctl restart nix-daemon
+      echo "Enabled nix-daemon S3 credentials..."
+    else
+      sudo umount "$AWS_TARGET"
+      sudo systemctl unset-environment AWS_PROFILE AWS_SHARED_CREDENTIALS_FILE
+      sudo systemctl restart nix-daemon
+      echo "Disabled nix-daemon S3 credentials..."
+    fi
+  '';
 
   jnv = pkgs.fetchzip {
     name = "jnv-0.1.2";
@@ -129,7 +129,6 @@ let
       rm -f \$out/jnv
     '';
   };
-
 in
 {
   home = {
@@ -257,13 +256,15 @@ in
       # pkgs.lib.fileContents "${pkgs.stdenv.cc}/nix-support/dynamic-linker"; の方が正しそうだが
       # access to canonical path is forbidden in restricted mode エラーが出るので妥協。
       NIX_LD = "${pkgs.glibc}/lib/ld-linux-x86-64.so.2";
-      NIX_LD_LIBRARY_PATH = with pkgs; lib.makeLibraryPath [
-        stdenv.cc.cc
-        zlib
-        ncurses
-        gmp5
-        icu
-      ];
+      NIX_LD_LIBRARY_PATH =
+        with pkgs;
+        lib.makeLibraryPath [
+          stdenv.cc.cc
+          zlib
+          ncurses
+          gmp5
+          icu
+        ];
     };
   };
   programs = {
@@ -287,36 +288,39 @@ in
       package = pkgs.neovim-nightly;
       withNodeJs = true;
       withPython3 = true;
-      extraPython3Packages = pyPkgs: with pyPkgs; [
-        # for molten-nvim
-        jupyter-client
-        pyperclip
-        nbformat
-      ];
-      extraLuaConfig = "\n" + ''
-        -- config
-        require("config.options")
-        require("config.keymaps")
-        require("config.commands")
-        pcall(require, "config.local")
+      extraPython3Packages =
+        pyPkgs: with pyPkgs; [
+          # for molten-nvim
+          jupyter-client
+          pyperclip
+          nbformat
+        ];
+      extraLuaConfig =
+        "\n"
+        + ''
+          -- config
+          require("config.options")
+          require("config.keymaps")
+          require("config.commands")
+          pcall(require, "config.local")
 
-        -- plugins
-        local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-        if not vim.loop.fs_stat(lazypath) then
-          vim.fn.system({
-            "git",
-            "clone",
-            "--filter=blob:none",
-            "https://github.com/folke/lazy.nvim.git",
-            "--branch=stable", -- latest stable release
-            lazypath,
+          -- plugins
+          local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+          if not vim.loop.fs_stat(lazypath) then
+            vim.fn.system({
+              "git",
+              "clone",
+              "--filter=blob:none",
+              "https://github.com/folke/lazy.nvim.git",
+              "--branch=stable", -- latest stable release
+              lazypath,
+            })
+          end
+          vim.opt.rtp:prepend(lazypath)
+          require("lazy").setup("plugins", {
+            lockfile = vim.fn.getenv('HOME') .. "/nix-config/files/.config/nvim/lazy-lock.json",
           })
-        end
-        vim.opt.rtp:prepend(lazypath)
-        require("lazy").setup("plugins", {
-          lockfile = vim.fn.getenv('HOME') .. "/nix-config/files/.config/nvim/lazy-lock.json",
-        })
-      '';
+        '';
     };
     tmux = {
       enable = true;
@@ -329,9 +333,7 @@ in
           rev = "e809c2ec359b0fd6151cf33929244b7a7d637119";
           sha256 = "sha256-Ok9axRS15Ot+Z9VABF5fvuC2SSE1YNdIb1rBWZY6sNk=";
         };
-        configureFlags = oldAttrs.configureFlags ++ [
-          "--enable-sixel"
-        ];
+        configureFlags = oldAttrs.configureFlags ++ [ "--enable-sixel" ];
         patches = [ ];
       });
       terminal = "tmux-256color";
@@ -614,9 +616,11 @@ in
           url = "https://www.kernel.org/pub/software/scm/git/git-${version}.tar.xz";
           hash = "sha256-41hzjctbXqNAzpAKABXAOuhugE5/9k5HqkYx3e5oHeM=";
         };
-        preInstallCheck = oldAttrs.preInstallCheck + ''
-          disable_test t9902-completion
-        '';
+        preInstallCheck =
+          oldAttrs.preInstallCheck
+          + ''
+            disable_test t9902-completion
+          '';
       });
       extraConfig = {
         alias.stash-all = "stash save --include-untracked";
@@ -663,10 +667,12 @@ in
     vscode = {
       enable = true;
       package = (pkgs.vscode.override { isInsiders = false; }).overrideAttrs (oldAttrs: {
-        src = (builtins.fetchTarball {
-          url = "https://vscode.download.prss.microsoft.com/dbazure/download/stable/05047486b6df5eb8d44b2ecd70ea3bdf775fd937/code-stable-x64-1706696875.tar.gz";
-          sha256 = "sha256:1r88dhqlk5f48bsnfhkc64pqxgwz5rqkf9rr2d3ip844364zlr9p";
-        });
+        src = (
+          builtins.fetchTarball {
+            url = "https://vscode.download.prss.microsoft.com/dbazure/download/stable/05047486b6df5eb8d44b2ecd70ea3bdf775fd937/code-stable-x64-1706696875.tar.gz";
+            sha256 = "sha256:1r88dhqlk5f48bsnfhkc64pqxgwz5rqkf9rr2d3ip844364zlr9p";
+          }
+        );
         buildInputs = oldAttrs.buildInputs ++ [ pkgs.libkrb5 ];
         version = "latest";
       });
