@@ -125,8 +125,8 @@ let
     url = "https://github.com/ynqa/jnv/releases/download/v0.1.2/jnv-x86_64-unknown-linux-gnu.tar.xz";
     sha256 = "sha256-seooolfxOcC5RlFiK8RJY8dzVzxBFB+uzCF5k0O9ARY=";
     postFetch = ''
-      install -Dm755 \$out/jnv \$out/bin/jnv
-      rm -f \$out/jnv
+      install -Dm755 $out/jnv $out/bin/jnv
+      rm -f $out/jnv
     '';
   };
 
