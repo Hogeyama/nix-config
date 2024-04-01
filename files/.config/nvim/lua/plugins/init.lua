@@ -1719,7 +1719,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   -- [Git]
   {
     'NeogitOrg/neogit',
-    enabled = not is_light_mode,
+    enabled = false,
     init = function()
       require("neogit").setup {
         disable_signs = false,
