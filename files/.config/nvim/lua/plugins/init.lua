@@ -2215,7 +2215,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     enabled = not is_light_mode,
     init = function()
       require('trouble').setup {}
-      vim.keymap.set('n', '<space>q', '<cmd>TroubleToggle<CR>', { noremap = true, silent = true })
+      vim.keymap.set('n', '<space>q', '<cmd>Trouble diagnostics toggle<CR>', { noremap = true, silent = true })
     end,
   },
   {
