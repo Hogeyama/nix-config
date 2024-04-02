@@ -1,7 +1,4 @@
-{
-  pkgs,
-  compiler ? "ghc924",
-}:
+{ pkgs, compiler ? "ghc924" }:
 pkgs.haskell.packages.${compiler}.shellFor {
   withHoogle = true;
   packages = _: [ pkgs.my-package ];
@@ -10,3 +7,4 @@ pkgs.haskell.packages.${compiler}.shellFor {
     cabal-install
   ];
 }
+

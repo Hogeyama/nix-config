@@ -11,55 +11,49 @@ rec {
     terminal = "konsole";
   };
 
-  extraConfig =
-    { pkgs, config, ... }:
-    {
+  extraConfig = { pkgs, config, ... }: {
+    users = {
       users = {
-        users = {
-          ${user.name} = {
-            uid = 1000;
-            isNormalUser = true;
-            home = user.homeDirectory;
-            group = user.name;
-            extraGroups = [
-              "wheel"
-              "networkmanager"
-              "docker"
-            ];
-            hashedPasswordFile = config.sops.secrets.login-password.path;
-            shell = pkgs.zsh;
-          };
-        };
-        groups = {
-          ${user.name} = {
-            gid = 1000;
-            members = [ user.name ];
-          };
+        ${user.name} = {
+          uid = 1000;
+          isNormalUser = true;
+          home = user.homeDirectory;
+          group = user.name;
+          extraGroups = [ "wheel" "networkmanager" "docker" ];
+          hashedPasswordFile = config.sops.secrets.login-password.path;
+          shell = pkgs.zsh;
         };
       };
-      nix.settings.trusted-users = [ user.name ];
-
-      xdg.mime.defaultApplications = {
-        "text/html" = "${user.browser}.desktop";
-        "x-scheme-handler/https" = "${user.browser}.desktop";
-        "x-scheme-handler/http" = "${user.browser}.desktop";
+      groups = {
+        ${user.name} = {
+          gid = 1000;
+          members = [ user.name ];
+        };
       };
-
-      home-manager.users.${user.name}.programs.git = {
-        userName = user.name;
-        userEmail = user.email;
-      };
-
-      sops.secrets."login-password" = {
-        sopsFile = ./secrets/common.yaml;
-        neededForUsers = true;
-      };
-      sops.secrets."aws/hogeyama" = {
-        sopsFile = ./secrets/common.yaml;
-        mode = "0440";
-        path = "/root/.aws/credentials";
-      };
-
-      programs.steam.enable = true;
     };
+    nix.settings.trusted-users = [ user.name ];
+
+    xdg.mime.defaultApplications = {
+      "text/html" = "${user.browser}.desktop";
+      "x-scheme-handler/https" = "${user.browser}.desktop";
+      "x-scheme-handler/http" = "${user.browser}.desktop";
+    };
+
+    home-manager.users.${user.name}.programs.git = {
+      userName = user.name;
+      userEmail = user.email;
+    };
+
+    sops.secrets."login-password" = {
+      sopsFile = ./secrets/common.yaml;
+      neededForUsers = true;
+    };
+    sops.secrets."aws/hogeyama" = {
+      sopsFile = ./secrets/common.yaml;
+      mode = "0440";
+      path = "/root/.aws/credentials";
+    };
+
+    programs.steam.enable = true;
+  };
 }

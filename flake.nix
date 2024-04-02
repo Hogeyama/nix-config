@@ -29,18 +29,17 @@
   };
 
   outputs =
-    {
-      self,
-      nixpkgs,
-      nixpkgs-unstable,
-      nixpkgs-for-haskell,
-      sops-nix,
-      home-manager,
-      neovim-nightly-overlay,
-      nix-index-database,
-      nix-alien,
-      my-fzf-wrapper,
-      ...
+    { self
+    , nixpkgs
+    , nixpkgs-unstable
+    , nixpkgs-for-haskell
+    , sops-nix
+    , home-manager
+    , neovim-nightly-overlay
+    , nix-index-database
+    , nix-alien
+    , my-fzf-wrapper
+    , ...
     }:
     let
       system = "x86_64-linux";
@@ -87,7 +86,9 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.${username} = import ./home.nix { inherit self; };
-            home-manager.sharedModules = [ nix-index-database.hmModules.nix-index ];
+            home-manager.sharedModules = [
+              nix-index-database.hmModules.nix-index
+            ];
           }
           # sops-nix
           sops-nix.nixosModules.sops
