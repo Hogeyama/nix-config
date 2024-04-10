@@ -1996,6 +1996,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       require 'lspconfig'.bashls.setup {}
       require 'lspconfig'.eslint.setup {}
       require 'lspconfig'.biome.setup {}
+      require 'lspconfig'.tailwindcss.setup {}
       require 'lspconfig'.dhall_lsp_server.setup {}
       require 'lspconfig'.gopls.setup {}
       require 'lspconfig'.jsonls.setup {}
@@ -2044,6 +2045,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
               "terraform-ls",
               "tflint",
               "typescript-language-server",
+              "tailwindcss-language-server",
               "yaml-language-server",
               "sqls",
               -- [DAP]
