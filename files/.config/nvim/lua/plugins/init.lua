@@ -1619,7 +1619,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'pwntester/octo.nvim',
-    enabled = false,
+    enabled = true,
+    event = "VeryLazy",
     dependencies = {
       'nvim-lua/plenary.nvim',
       'nvim-telescope/telescope.nvim',
@@ -1627,7 +1628,12 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       'nvim-tree/nvim-web-devicons',
     },
     config = function()
-      require "octo".setup()
+      require "octo".setup({
+        picker = "fzf-lua",
+        suppress_missing_scope = {
+          projects_v2 = true,
+        }
+      })
     end
   },
   {
