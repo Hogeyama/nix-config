@@ -1883,6 +1883,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
             vim.diagnostic.open_float(nil, opts)
           end
         })
+        require("workspace-diagnostics").populate_workspace_diagnostics(client, bufnr)
         -- 重いので一旦無効化
         client.server_capabilities.codeLensProvider = false
         client.server_capabilities.documentHighlightProvider = false
@@ -2203,6 +2204,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           require("lazy.core.loader").ftdetect(plugin.dir .. "/editor-support/vim")
         end,
       },
+      { "artemave/workspace-diagnostics.nvim" }
     },
   },
   {
