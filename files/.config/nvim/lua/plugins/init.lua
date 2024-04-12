@@ -1867,7 +1867,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         bmap('n', '<C-l>d', vim.lsp.buf.type_definition)
         bmap('n', '<C-l>r', vim.lsp.buf.references)
         bmap('n', '<C-l>R', vim.lsp.buf.rename)
-        bmap('n', '<C-l>j', vim.lsp.buf.definition)
+        bmap('n', '<C-l>j', '<cmd>FzfLua lsp_definitions<CR>')
         bmap('n', '<C-l>l', vim.lsp.codelens.run)
         vim.api.nvim_create_autocmd("CursorHold", {
           buffer = bufnr,
