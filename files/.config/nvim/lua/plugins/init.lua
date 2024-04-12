@@ -1920,7 +1920,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           client.server_capabilities.documentFormattingProvider = true
         end
         -- preffer prettier
-        if client.name == "tsserver" then
+        if client.name == "tsserver" or client.name == "jsonls" then
           client.server_capabilities.documentFormattingProvider = false
         end
         -- 自動Format
