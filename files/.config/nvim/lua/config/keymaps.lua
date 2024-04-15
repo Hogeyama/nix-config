@@ -55,7 +55,7 @@ nmap('zn', 'za')
 nmap('<C-a>', 'I')
 nmap('<C-e>', 'A')
 
-nvmap('gJ', 'J')
+nvmap('fJ', 'J')
 nvmap('J', '5j')
 nvmap('K', '5k')
 nvmap('H', 'B')
