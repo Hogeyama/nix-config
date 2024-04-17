@@ -12,6 +12,9 @@ return {
     'rcarriga/nvim-notify',
     enabled = not is_light_mode and not vim.g.vscode,
     opts = {
+      timeout = 2000,
+      render = "compact",
+      stages = "static",
       on_open = function(win)
         vim.api.nvim_win_set_option(win, "winblend", 30)
         vim.api.nvim_win_set_config(win, { zindex = 100 })
@@ -2215,9 +2218,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       require 'nlspsettings'.setup({
         append_default_schemas = true,
         loader = 'json',
-        nvim_notify = {
-          enable = true,
-        },
       })
     end,
   },
