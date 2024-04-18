@@ -53,6 +53,21 @@ rec {
       mode = "0440";
       path = "/root/.aws/credentials";
     };
+    sops.secrets."gh-auth-token" = {
+      sopsFile = ./secrets/common.yaml;
+    };
+    sops.templates."nix-secret.conf" = {
+      content = ''
+        access-tokens = github.com=${config.sops.placeholder.gh-auth-token}
+      '';
+      owner = user.name;
+      group = user.name;
+      mode = "0400";
+    };
+    nix.extraOptions = ''
+      !include ${config.sops.templates."nix-secret.conf".path}
+    '';
+
 
     programs.steam.enable = true;
   };
