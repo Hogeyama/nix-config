@@ -547,54 +547,74 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   {
     'numToStr/FTerm.nvim',
     enabled = true,
+    event = "VeryLazy",
     config = function()
       local fterm = require 'FTerm'
-      local zsh = {
-        cmd = "zsh",
-        border = "rounded",
-        dimensions = {
-          height = 0.9,
-          width = 0.9
-        }
-      }
-      local fzfw = {
-        cmd = "fzfw",
-        border = "rounded",
-        dimensions = {
-          height = 0.9,
-          width = 0.9
-        }
-      }
-      vim.shell6 = fterm:new(zsh)
-      vim.shell7 = fterm:new(zsh)
-      vim.shell8 = fterm:new(fzfw)
-      vim.shell9 = fterm:new(zsh)
-      vim.shells = { vim.shell6, vim.shell7, vim.shell8, vim.shell9 }
+      local shells = {}
+      local open_background = function(shell)
+        shell:open()
+        shell:toggle()
+      end
       local toggle_shell = function(shell)
-        for _, s in ipairs(vim.shells) do
+        for _, s in pairs(shells) do
           if s ~= shell then
             s:close()
           end
         end
         shell:toggle()
       end
-      vim.keymap.set({ "n", "t" }, "<F6>", function() toggle_shell(vim.shell6) end)
-      vim.keymap.set({ "n", "t" }, "<F7>", function() toggle_shell(vim.shell7) end)
-      vim.keymap.set({ "n", "t" }, "<F8>", function() toggle_shell(vim.shell8) end)
-      vim.keymap.set({ "n", "t" }, "<F9>", function() toggle_shell(vim.shell9) end)
+      local zsh = function(name)
+        return {
+          cmd = "zsh",
+          border = "rounded",
+          dimensions = {
+            height = 0.9,
+            width = 0.9
+          },
+          on_exit = function()
+            open_background(shells[name])
+          end,
+        }
+      end
+      local fzfw = function(name)
+        return {
+          cmd = "fzfw",
+          border = "rounded",
+          dimensions = {
+            height = 0.9,
+            width = 0.9
+          },
+          on_exit = function()
+            open_background(shells[name])
+          end,
+        }
+      end
+      local shellDefs = {
+        zsh6 = { num = 6, def = zsh },
+        zsh7 = { num = 7, def = zsh },
+        fzfw = { num = 8, def = fzfw },
+        zsh9 = { num = 9, def = zsh },
+        zsh0 = { num = 0, def = zsh },
+      }
+      for name, shell in pairs(shellDefs) do
+        shells[name] = fterm:new(shell.def(name))
+        vim.keymap.set({ "n", "t" },
+          "<F" .. shell.num .. ">",
+          function() toggle_shell(shells[name]) end
+        )
+      end
       vim.keymap.set({ "n" }, "B", function()
         -- switch to buffer mode
-        vim.shell8:run(vim.api.nvim_replace_termcodes('<C-b>', true, true, true))
+        shells.fzfw:run(vim.api.nvim_replace_termcodes('<C-b>', true, true, true))
       end)
       vim.keymap.set({ "n" }, "M", function()
         -- switch to mark mode
-        vim.shell8:run(vim.api.nvim_replace_termcodes('<C-d>', true, true, true))
+        shells.fzfw:run(vim.api.nvim_replace_termcodes('<C-d>', true, true, true))
       end)
       vim.api.nvim_create_user_command('FloatermHide', function() -- TODO rename
-        vim.shell6:close()
-        vim.shell7:close()
-        vim.shell8:close()
-        vim.shell9:close()
+        for _, s in pairs(shells) do
+          s:close()
+        end
       end, { bang = true, nargs = "*" })
     end,
   },
