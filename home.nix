@@ -501,25 +501,20 @@ in
         theme = "frisk";
         plugins = [
           # [tool]
-          "aws"
           "docker"
-          "docker-compose"
           "fd"
-          "fzf"
-          "gcloud"
           "git"
           "git-auto-fetch"
           "gh"
+          "gradle"
           "ripgrep"
           "rsync"
           "ssh-agent"
           "zoxide"
           # [language]
           "cabal"
-          "stack"
-          "node"
-          "npm"
           "deno"
+          "yarn"
         ];
         extraConfig = ''
           # do not load any identities on start
