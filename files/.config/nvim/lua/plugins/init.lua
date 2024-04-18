@@ -1770,12 +1770,18 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         local bmap = function(mode, key, cmd)
           vim.keymap.set(mode, key, cmd, { noremap = true, silent = true })
         end
+        local format = function()
+          require 'conform'.format({
+            timeout_ms = 500,
+            lsp_fallback = true,
+          })
+        end
         bmap('n', '<C-h>', vim.lsp.buf.hover)
         bmap('n', '<C-j>', '<cmd>FzfLua lsp_references<CR>')
         bmap('n', '<C-k>', '<cmd>Lspsaga peek_definition<CR>')
         bmap('n', '<C-l>a', require("actions-preview").code_actions)
-        bmap('n', '<C-l>f', vim.lsp.buf.format)
-        bmap('v', '<C-l>f', vim.lsp.buf.format)
+        bmap('n', '<C-l>f', format)
+        bmap('v', '<C-l>f', format)
         bmap('n', '<C-l>h', vim.lsp.buf.signature_help)
         bmap('n', '<C-l>d', vim.lsp.buf.type_definition)
         bmap('n', '<C-l>r', vim.lsp.buf.references)
@@ -1836,8 +1842,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         if client.name == "tsserver" or client.name == "jsonls" then
           client.server_capabilities.documentFormattingProvider = false
         end
-        -- 自動Format
-        require 'lsp-format'.on_attach(client, bufnr)
         -- Force load
         vim.cmd("LspSettings update " .. client.name)
       end
@@ -1991,19 +1995,36 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         },
       },
       {
-        'lukas-reineke/lsp-format.nvim',
+        'stevearc/conform.nvim',
+        event = "VeryLazy",
         config = function()
-          require "lsp-format".setup {
-            java = {
-              exclude = { "jdtls" }
-            },
-            dockerfile = {
-              exclude = { "*" }
-            }
-          }
-          -- 自動フォーマット
-          vim.cmd [[cabbrev wq execute "Format sync" <bar> wq]]
-        end
+          vim.g.format_on_save_enabled = true
+          require("conform").setup({
+            format_on_save = function()
+              if vim.b.format_on_save_enabled ~= nil then
+                return vim.b.format_on_save_enabled and {
+                  timeout_ms = 500,
+                  lsp_fallback = true,
+                } or nil
+              else
+                return vim.g.format_on_save_enabled and {
+                  timeout_ms = 500,
+                  lsp_fallback = true,
+                } or nil
+              end
+            end,
+          })
+          vim.api.nvim_create_user_command('FormatToggle', function()
+            vim.g.format_on_save_enabled = not vim.g.format_on_save_enabled
+          end, {})
+          vim.api.nvim_create_user_command('FormatToggleBuf', function()
+            if vim.b.format_on_save_enabled == nil then
+              vim.b.format_on_save_enabled = false
+            else
+              vim.b.format_on_save_enabled = not vim.b.format_on_save_enabled
+            end
+          end, {})
+        end,
       },
       {
         'nvimtools/none-ls.nvim',
