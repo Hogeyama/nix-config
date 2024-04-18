@@ -7,7 +7,6 @@ trap 'rm -rf "$NVIMW_TMPDIR"' EXIT
 declare -g TMUX_POPUP=0
 declare -g -a NVIM_ARGS
 parse_args() {
-    local -a args=()
     while [[ $# -gt 0 ]]; do
         case $1 in
             --tmux-popup)
@@ -18,26 +17,14 @@ parse_args() {
                 ;;
             --)
                 shift
-                args+=("$@")
+                NVIM_ARGS+=("$@")
                 break
                 ;;
             *)
-                args+=("$1")
+                NVIM_ARGS+=("$1")
                 ;;
         esac
         shift
-    done
-
-    # `nvim --remote` resolves paths relative to the cwd in *nvim*.
-    # To resolve paths relative to the cwd in *bash/zsh*,
-    # we need to convert them to absolute paths.
-    for arg in "${args[@]}"; do
-        # arg is a path
-        if [[ -e "$arg" ]]; then
-            NVIM_ARGS+=("$(realpath -m "$arg")")
-        else
-            NVIM_ARGS+=("$arg")
-        fi
     done
 }
 
@@ -79,7 +66,11 @@ open_in_new_instance() {
 }
 
 open_in_existent_instance() {
-    nvim --server "$NVIM" --remote-tab-silent "$@"
+    local -a args=()
+    for arg in "$@"; do
+        args+=("$(realpath -m "$arg")")
+    done
+    nvim --server "$NVIM" --remote-tab-silent "${args[@]}"
     read -rp "Press any key to continue..." # for hg commit, sops, etc.
 }
 
