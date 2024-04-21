@@ -1,10 +1,7 @@
 # https://nix-community.github.io/home-manager/options.xhtml
 # https://mipmip.github.io/home-manager-option-search/
-{ self }:
-{ config, pkgs, ... }:
+{ config, pkgs, self, env, ... }:
 let
-  env = import ./env.nix;
-
   dotfilesSymlinks =
     { rootDir ? "files"
     , clonedPath ? "${config.home.homeDirectory}/nix-config"

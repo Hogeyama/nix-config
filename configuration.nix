@@ -1,7 +1,4 @@
-{ pkgs, ... }:
-let
-  env = import ./env.nix;
-in
+{ pkgs, env, ... }:
 {
   system.stateVersion = "22.11";
 

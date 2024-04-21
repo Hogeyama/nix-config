@@ -74,6 +74,8 @@
       nixosConfigurations.${hostName} = nixpkgs.lib.nixosSystem {
         inherit system;
         modules = [
+          # passing env
+          (_: { _module.args = { inherit env; }; })
           # overlay
           (_: { nixpkgs.overlays = overlays; })
           # system configuration
@@ -85,7 +87,8 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.${username} = import ./home.nix { inherit self; };
+            home-manager.users.${username} = ./home.nix;
+            home-manager.extraSpecialArgs = { inherit self env; };
             home-manager.sharedModules = [
               nix-index-database.hmModules.nix-index
             ];
