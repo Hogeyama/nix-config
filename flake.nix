@@ -58,6 +58,7 @@
           ./modules/locale
           ./modules/programs
           ./modules/fonts
+          ./modules/keyboard
           ./modules/gui
           ./modules/configuration
           ./modules/hardware-configuration
