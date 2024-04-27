@@ -55,6 +55,7 @@
           ./modules/boot
           ./modules/networking
           ./modules/sound
+          ./modules/programs
           ./modules/fonts
           ./modules/gui
           ./modules/configuration
