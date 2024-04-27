@@ -53,6 +53,7 @@
           ./modules/overlays
           ./modules/nix
           ./modules/boot
+          ./modules/networking
           ./modules/fonts
           ./modules/gui
           ./modules/configuration

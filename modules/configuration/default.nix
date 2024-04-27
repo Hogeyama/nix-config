@@ -1,21 +1,7 @@
-{ pkgs, env, ... }:
+{ pkgs, ... }:
 {
   system.stateVersion = "22.11";
 
-  networking = {
-    # Define your hostname.
-    hostName = env.hostName;
-    # Enables wireless support via wpa_supplicant.
-    # TODO
-    wireless = {
-      enable = false;
-    };
-    networkmanager = {
-      enable = true;
-    };
-    useDHCP = false;
-    interfaces.${env.interface}.useDHCP = true;
-  };
   # gui application for
   programs.nm-applet.enable = true;
   # enable sshd
