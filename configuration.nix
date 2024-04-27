@@ -62,6 +62,10 @@
     '';
   };
 
+  # Enable qmk and via
+  hardware.keyboard.qmk.enable = true;
+  services.udev.packages = [ pkgs.via ];
+
   # Enable sound.
   sound.enable = true;
   hardware.bluetooth.enable = true;
@@ -171,6 +175,7 @@
       ssh-to-age
       textql
       unar
+      via
       vifm
       wezterm
       wget
