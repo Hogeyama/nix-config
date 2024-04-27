@@ -53,13 +53,13 @@
       nixosConfigurations.${hostName} = nixpkgs.lib.nixosSystem {
         inherit system;
         modules = [
+          home-manager.nixosModules.home-manager
+          sops-nix.nixosModules.sops
           (_: { _module.args = { inherit self inputs system env; }; })
           ./modules/overlays
           ./modules/configuration
           ./modules/hardware-configuration
-          home-manager.nixosModules.home-manager
           ./modules/home
-          sops-nix.nixosModules.sops
           env.nixosModule
         ];
       };
