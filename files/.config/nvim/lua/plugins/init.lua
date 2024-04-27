@@ -551,10 +551,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     config = function()
       local fterm = require 'FTerm'
       local shells = {}
-      local open_background = function(shell)
-        shell:open()
-        shell:toggle()
-      end
       local toggle_shell = function(shell)
         for _, s in pairs(shells) do
           if s ~= shell then
@@ -563,7 +559,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         end
         shell:toggle()
       end
-      local zsh = function(name)
+      local zsh = function()
         return {
           cmd = "zsh",
           border = "rounded",
@@ -571,12 +567,9 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
             height = 0.9,
             width = 0.9
           },
-          on_exit = function()
-            open_background(shells[name])
-          end,
         }
       end
-      local fzfw = function(name)
+      local fzfw = function()
         return {
           cmd = "fzfw",
           border = "rounded",
@@ -584,9 +577,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
             height = 0.9,
             width = 0.9
           },
-          on_exit = function()
-            open_background(shells[name])
-          end,
         }
       end
       local shellDefs = {
@@ -597,7 +587,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         zsh0 = { num = 0, def = zsh },
       }
       for name, shell in pairs(shellDefs) do
-        shells[name] = fterm:new(shell.def(name))
+        shells[name] = fterm:new(shell.def())
         vim.keymap.set({ "n", "t" },
           "<F" .. shell.num .. ">",
           function() toggle_shell(shells[name]) end
