@@ -53,20 +53,12 @@
       nixosConfigurations.${hostName} = nixpkgs.lib.nixosSystem {
         inherit system;
         modules = [
-          (_: { _module.args = { inherit env inputs system; }; })
+          (_: { _module.args = { inherit self inputs system env; }; })
           ./modules/overlays
           ./modules/configuration
           ./modules/hardware-configuration
           home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.${username} = ./home.nix;
-            home-manager.extraSpecialArgs = { inherit self env; };
-            home-manager.sharedModules = [
-              nix-index-database.hmModules.nix-index
-            ];
-          }
+          ./modules/home
           sops-nix.nixosModules.sops
           env.extraConfig
         ];
@@ -76,7 +68,7 @@
       homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
         pkgs = self.nixosConfigurations.${hostName}.pkgs;
         modules = [
-          ({ config, pkgs, ... }: import ./home.nix { inherit config pkgs self; })
+          ({ config, pkgs, ... }: import ./modules/home/home.nix { inherit config pkgs self; })
           {
             home = {
               inherit username;
