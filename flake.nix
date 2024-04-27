@@ -29,7 +29,7 @@
   };
 
   outputs =
-    { self
+    inputs@{ self
     , nixpkgs
     , nixpkgs-unstable
     , nixpkgs-for-haskell
@@ -47,33 +47,14 @@
       env = import ./env.nix;
       hostName = env.hostName;
       username = env.user.name;
-
-      my-overlay = final: prev: {
-        # unstable packages are available as pkgs.unstable.${package}
-        unstable = nixpkgs-unstable.outputs.legacyPackages.${system};
-        haskell-updates = nixpkgs-for-haskell.outputs.legacyPackages.${system};
-        # my packages
-        illusion = import ./pkgs/illusion { pkgs = final; };
-        udev-gothic = import ./pkgs/udev-gothic { inherit (final) fetchzip; };
-
-        my-xmobar = import ./pkgs/my-xmobar { pkgs = final.haskell-updates; };
-        my-xmonad = import ./pkgs/my-xmonad { pkgs = final.haskell-updates; };
-        my-fzf-wrapper = my-fzf-wrapper.outputs.packages.${system}.default;
-      };
-
-      overlays = [
-        my-overlay
-        neovim-nightly-overlay.overlay
-        nix-alien.overlays.default
-      ];
     in
     {
       # For NixOS
       nixosConfigurations.${hostName} = nixpkgs.lib.nixosSystem {
         inherit system;
         modules = [
-          (_: { _module.args = { inherit env; }; })
-          (_: { nixpkgs.overlays = overlays; })
+          (_: { _module.args = { inherit env inputs system; }; })
+          ./modules/overlays
           ./modules/configuration
           ./modules/hardware-configuration
           home-manager.nixosModules.home-manager
