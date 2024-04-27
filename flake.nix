@@ -56,8 +56,8 @@
         illusion = import ./pkgs/illusion { pkgs = final; };
         udev-gothic = import ./pkgs/udev-gothic { inherit (final) fetchzip; };
 
-        my-xmobar = import ./pkgs/my-xmobar { pkgs = pkgs.haskell-updates; };
-        my-xmonad = import ./pkgs/my-xmonad { pkgs = pkgs.haskell-updates; };
+        my-xmobar = import ./pkgs/my-xmobar { pkgs = final.haskell-updates; };
+        my-xmonad = import ./pkgs/my-xmonad { pkgs = final.haskell-updates; };
         my-fzf-wrapper = my-fzf-wrapper.outputs.packages.${system}.default;
       };
 
@@ -66,8 +66,6 @@
         neovim-nightly-overlay.overlay
         nix-alien.overlays.default
       ];
-
-      pkgs = import nixpkgs { inherit system overlays; };
     in
     {
       # For NixOS
@@ -102,7 +100,7 @@
 
       # For Nix package manager only
       homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
+        pkgs = self.nixosConfigurations.${hostName}.pkgs;
         modules = [
           ({ config, pkgs, ... }: import ./home.nix { inherit config pkgs self; })
           {
@@ -115,6 +113,8 @@
         ];
       };
 
-      devShells.${system}.xmonad = import ./pkgs/my-xmonad/shell.nix { pkgs = pkgs.haskell-updates; };
+      devShells.${system}.xmonad = import ./pkgs/my-xmonad/shell.nix {
+        pkgs = self.nixosConfigurations.${hostName}.pkgs;
+      };
     };
 }
