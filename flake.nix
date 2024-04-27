@@ -52,6 +52,7 @@
           (_: { _module.args = { inherit self inputs system env; }; })
           ./modules/overlays
           ./modules/nix
+          ./modules/boot
           ./modules/fonts
           ./modules/gui
           ./modules/configuration
