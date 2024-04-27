@@ -113,8 +113,7 @@
         ];
       };
 
-      devShells.${system}.xmonad = import ./pkgs/my-xmonad/shell.nix {
-        pkgs = self.nixosConfigurations.${hostName}.pkgs;
-      };
+      devShells.${system}.xmonad =
+        self.nixosConfigurations.${hostName}.pkgs.my-xmonad.passthru.shell;
     };
 }

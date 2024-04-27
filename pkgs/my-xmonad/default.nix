@@ -8,6 +8,18 @@ let
     "CHANGELOG.md"
     "LICENSE"
   ];
-  drv = (pkgs.haskellPackages.callCabal2nix "xmonad-config" src { });
+  xmonad = pkgs.haskellPackages.callCabal2nix "xmonad-config" src { };
+  shell = pkgs.haskellPackages.shellFor {
+    withHoogle = true;
+    packages = _: [ xmonad ];
+    buildInputs = with pkgs; [
+      haskell-language-server
+      cabal-install
+    ];
+  };
 in
-drv
+xmonad.overrideAttrs {
+  passthru = {
+    shell = shell;
+  };
+}

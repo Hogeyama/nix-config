@@ -15,12 +15,24 @@ let
       });
     };
   };
-  drv = (haskellPackages.callCabal2nix "my-xmobar" src { }).overrideAttrs (old: {
+  xmobar = (haskellPackages.callCabal2nix "my-xmobar" src { }).overrideAttrs (old: {
     buildInputs = old.buildInputs ++ [
       pkgs.alsa-lib
       pkgs.apulse
       pkgs.pulseaudio
     ];
   });
+  shell = pkgs.haskellPackages.shellFor {
+    withHoogle = true;
+    packages = _: [ xmobar ];
+    buildInputs = with pkgs; [
+      haskell-language-server
+      cabal-install
+    ];
+  };
 in
-drv
+xmobar.overrideAttrs {
+  passthru = {
+    shell = shell;
+  };
+}
