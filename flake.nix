@@ -54,6 +54,7 @@
           ./modules/nix
           ./modules/boot
           ./modules/networking
+          ./modules/sound
           ./modules/fonts
           ./modules/gui
           ./modules/configuration

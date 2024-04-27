@@ -20,22 +20,6 @@
   hardware.keyboard.qmk.enable = true;
   services.udev.packages = [ pkgs.via ];
 
-  # Enable sound.
-  sound.enable = true;
-  hardware.bluetooth.enable = true;
-  hardware.pulseaudio = {
-    # Sound config
-    enable = true;
-    package = pkgs.pulseaudioFull;
-    support32Bit = true;
-    extraConfig = ''
-      load-module module-switch-on-connect
-      load-module module-bluetooth-policy
-      load-module module-bluetooth-discover
-    '';
-  };
-  services.blueman.enable = true;
-
   services.atd.enable = true;
 
   time.timeZone = "Asia/Tokyo";
