@@ -1,8 +1,6 @@
 rec {
   hostName = "nixos";
 
-  interface = "enp0s31f6";
-
   user = {
     name = "hogeyama";
     homeDirectory = "/home/hogeyama";

@@ -1,8 +1,6 @@
-{ env, ... }:
+{ pkgs, ... }:
 {
   networking = {
-    # Define your hostname.
-    hostName = env.hostName;
     # Enables wireless support via wpa_supplicant.
     # TODO
     wireless = {
@@ -11,7 +9,6 @@
     networkmanager = {
       enable = true;
     };
-    useDHCP = false;
-    interfaces.${env.interface}.useDHCP = true;
+    useDHCP = pkgs.lib.mkForce true;
   };
 }
