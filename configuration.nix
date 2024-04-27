@@ -218,40 +218,6 @@
           "Noto Serif CJK JP"
         ];
       };
-      localConf = ''
-        <?xml version="1.0"?>
-        <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
-        <fontconfig>
-          <!-- Illusion := (Illusion から ASCII を除いたもの), Rounded Mgen+ 1mn とする -->
-          <match target="font">
-            <!-- ASCII を除く -->
-            <!-- https://stackoverflow.com/questions/47501411/ -->
-            <test name="family" compare="contains">
-              <string>Illusion</string>
-            </test>
-            <edit name="charset" mode="assign">
-              <minus>
-                <name>charset</name>
-                <charset>
-                  <range>
-                    <int>0x0021</int>
-                    <int>0x00FF</int>
-                  </range>
-                </charset>
-              </minus>
-            </edit>
-          </match>
-          <match>
-            <!-- Rounded Mgen+ 1mn にフォールバックする -->
-            <test qual="any" name="family" compare="contains">
-              <string>Illusion</string>
-            </test>
-            <edit name="family" mode="append" binding="strong">
-              <string>Rounded Mgen+ 1mn</string>
-            </edit>
-          </match>
-        </fontconfig>
-      '';
     };
   };
 
