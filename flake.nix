@@ -51,6 +51,7 @@
           sops-nix.nixosModules.sops
           (_: { _module.args = { inherit self inputs system env; }; })
           ./modules/overlays
+          ./modules/nix
           ./modules/fonts
           ./modules/configuration
           ./modules/hardware-configuration
