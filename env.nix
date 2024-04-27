@@ -11,7 +11,7 @@ rec {
     terminal = "konsole";
   };
 
-  extraConfig = { pkgs, config, ... }: {
+  nixosModule = { pkgs, config, ... }: {
     users = {
       users = {
         ${user.name} = {

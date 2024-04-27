@@ -60,7 +60,7 @@
           home-manager.nixosModules.home-manager
           ./modules/home
           sops-nix.nixosModules.sops
-          env.extraConfig
+          env.nixosModule
         ];
       };
 
