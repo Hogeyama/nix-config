@@ -31,14 +31,8 @@
   outputs =
     inputs@{ self
     , nixpkgs
-    , nixpkgs-unstable
-    , nixpkgs-for-haskell
     , sops-nix
     , home-manager
-    , neovim-nightly-overlay
-    , nix-index-database
-    , nix-alien
-    , my-fzf-wrapper
     , ...
     }:
     let
