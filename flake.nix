@@ -72,15 +72,10 @@
       nixosConfigurations.${hostName} = nixpkgs.lib.nixosSystem {
         inherit system;
         modules = [
-          # passing env
           (_: { _module.args = { inherit env; }; })
-          # overlay
           (_: { nixpkgs.overlays = overlays; })
-          # system configuration
-          ./configuration.nix
-          # hardware configuration
-          ./hardware-configuration.nix
-          # home-manager configuration
+          ./modules/configuration
+          ./modules/hardware-configuration
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
@@ -91,9 +86,7 @@
               nix-index-database.hmModules.nix-index
             ];
           }
-          # sops-nix
           sops-nix.nixosModules.sops
-          # env-unique config
           env.extraConfig
         ];
       };
