@@ -2128,7 +2128,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
                 },
               }),
               null_ls.builtins.formatting.shfmt.with({
-                extra_args = { "-i", "4", "-ci" },
+                extra_args = { "-i", "0", "-ci" },
               }),
               -- spotless,
               -- [code_action]
