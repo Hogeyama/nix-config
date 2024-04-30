@@ -959,6 +959,16 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
             },
           },
         },
+        routes = {
+          {
+            -- nlspsettings
+            filter = {
+              find = "Success to update the settings.",
+              event = "notify",
+            },
+            view = "mini",
+          },
+        },
       }
     end,
   },
@@ -2163,6 +2173,9 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       require 'nlspsettings'.setup({
         append_default_schemas = true,
         loader = 'json',
+        nvim_notify = {
+          enable = false,
+        }
       })
     end,
   },
