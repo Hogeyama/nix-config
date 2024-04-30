@@ -448,7 +448,7 @@ in
       '';
       shellAliases = {
         ls = "eza -s name";
-        cd = "cd-ls";
+        cd = "z";
         mv = "mv -i";
         l = "ls -l";
         ll = "ls -al";
@@ -545,14 +545,8 @@ in
         bindkey "^J" down-line-or-history
         bindkey "^I" expand-or-complete-prefix
         # functions
-        cd-ls(){
-          \cd $* && eza -s name
-        }
         mkcd(){
           mkdir -p "$1" && cd "$1"
-        }
-        ncd() {
-          nvr -c "cd $(realpath $1)"
         }
         # source machine local configuration
         source-if-exists $HOME/.zshrc.local
@@ -567,7 +561,7 @@ in
       '';
       shellAliases = {
         ls = "eza -s name";
-        cd = "cd-ls";
+        cd = "z";
         mv = "mv -i";
         cp = "cp -iL";
         l = "ls -F";
