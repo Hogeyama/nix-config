@@ -2295,6 +2295,9 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     build = "cd app && npm install",
     init = function()
       vim.g.mkdp_filetypes = { "markdown" }
+      vim.g.mkdp_preview_options = {
+        disable_sync_scroll = true,
+      }
     end,
   },
   {
