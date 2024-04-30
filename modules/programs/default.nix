@@ -97,8 +97,6 @@
 
   services.passSecretService.enable = true;
 
-  services.flatpak.enable = true;
-
   services.atd.enable = true;
 
   virtualisation.docker.enable = true;
