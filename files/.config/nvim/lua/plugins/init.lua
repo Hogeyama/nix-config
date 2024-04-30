@@ -935,7 +935,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           view_error = "mini",
           view_warn = "mini",
           view_history = "messages",
-          view_search = "virtualtext",
+          view_search = "mini",
         },
         notify = {
           enabled = true,
