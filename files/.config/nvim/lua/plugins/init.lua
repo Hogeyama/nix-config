@@ -2048,6 +2048,13 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
               vim.b.format_on_save_enabled = not vim.b.format_on_save_enabled
             end
           end, {})
+          -- Disable on java
+          vim.api.nvim_create_autocmd({ 'FileType' }, {
+            pattern = 'java',
+            callback = function()
+              vim.b.format_on_save_enabled = false
+            end
+          })
         end,
       },
       {
