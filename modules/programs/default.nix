@@ -59,11 +59,6 @@
       xsv
       yq
     ];
-    sessionVariables = {
-      PATH = [
-        ''''${HOME}/.local/bin''
-      ];
-    };
   };
 
   # gui application for
