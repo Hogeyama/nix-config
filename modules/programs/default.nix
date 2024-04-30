@@ -32,6 +32,7 @@
       google-cloud-sdk
       gthumb
       htop
+      imagemagick
       jq
       libreoffice
       lsof
@@ -44,6 +45,8 @@
       nixpkgs-fmt
       nix-alien
       podman-compose
+      postgresql
+      pstree
       python3
       ripgrep
       scrot
@@ -51,6 +54,7 @@
       ssh-to-age
       textql
       unar
+      unzip
       via
       vifm
       wezterm
