@@ -24,6 +24,10 @@
 
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
 
+    nixos-wsl.url = "github:nix-community/NixOS-WSL";
+    nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
+    nixos-wsl.inputs.flake-utils.follows = "flake-utils";
+
     my-fzf-wrapper.url = "github:Hogeyama/my-fzf-wrapper";
     my-fzf-wrapper.inputs.flake-utils.follows = "flake-utils";
   };
@@ -33,6 +37,7 @@
     , nixpkgs
     , sops-nix
     , home-manager
+    , nixos-wsl
     , ...
     }:
     let
@@ -47,22 +52,31 @@
       nixosConfigurations.${hostName} = nixpkgs.lib.nixosSystem {
         inherit system;
         modules = [
+          nixos-wsl.nixosModules.wsl
           home-manager.nixosModules.home-manager
           sops-nix.nixosModules.sops
+        ]
+        ++ [
           (_: { _module.args = { inherit self inputs system env; }; })
           ./modules/overlays
           ./modules/nix
-          ./modules/boot
-          ./modules/networking
-          ./modules/sound
           ./modules/locale
           ./modules/programs
           ./modules/fonts
           ./modules/keyboard
-          ./modules/gui
           ./modules/configuration
-          ./modules/hardware-configuration
           ./modules/home
+        ]
+        ++ (if env.isWsl then [
+          ./modules/wsl
+        ] else [
+          ./modules/boot
+          ./modules/gui
+          ./modules/networking
+          ./modules/sound
+          ./modules/hardware-configuration
+        ])
+        ++ [
           env.nixosModule
         ];
       };

@@ -1,2 +1,6 @@
 #!/usr/bin/env bash
-cat - | tee >(xsel -p) >(xsel -b)
+if command -v clip.exe >/dev/null; then
+  cat - | tee >(xsel -p) >(xsel -b) >(iconv -c -f utf-8 -t sjis | clip.exe)
+else
+  cat - | tee >(xsel -p) >(xsel -b)
+fi

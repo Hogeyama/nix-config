@@ -1,6 +1,8 @@
 rec {
   hostName = "nixos";
 
+  isWsl = false;
+
   user = {
     name = "hogeyama";
     homeDirectory = "/home/hogeyama";
