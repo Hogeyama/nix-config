@@ -2,7 +2,7 @@ use_aws_profile(){
   PROFILE=$1
   export AWS_ASSUME_ROLE_TTL=1h
   #shellcheck disable=SC2046
-  export $(aws-vault exec "$PROFILE" --prompt=pass -- env | grep AWS_ | grep -v AWS_VAULT)
+  export $(aws-vault exec "$PROFILE" -- env | grep AWS_ | grep -v AWS_VAULT)
 }
 
 use_secret() {
