@@ -846,7 +846,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       vim.g.memolist_template_dir_path = '~/.memo/template'
       vim.cmd [[
         command! MemoToday MemoNewWithMeta 'note', 'daily', 'daily'
-        nnoremap <C-t> :MemoToday<CR>
       ]]
     end
   },
@@ -2323,6 +2322,94 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   {
     'vim-voom/VOoM',
     enabled = not is_light_mode,
+  },
+  {
+    'epwalsh/obsidian.nvim',
+    version = "*",
+    ft = "markdown",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      "hrsh7th/nvim-cmp",
+      "ibhagwan/fzf-lua",
+    },
+    opts = {
+      workspaces = {
+        {
+          name = "notes",
+          path = "~/notes",
+        },
+      },
+      daily_notes = {
+        folder = "dailies",
+        date_format = "%Y-%m-%d",
+      },
+      completion = {
+        nvim_cmp = true,
+        min_chars = 2,
+      },
+      mappings = {
+        ["gf"] = {
+          action = function()
+            return require("obsidian").util.gf_passthrough()
+          end,
+          opts = { noremap = false, expr = true, buffer = true },
+        },
+        ["<leader>ch"] = {
+          action = function()
+            return require("obsidian").util.toggle_checkbox()
+          end,
+          opts = { buffer = true },
+        },
+        ["<cr>"] = {
+          action = function()
+            return require("obsidian").util.smart_action()
+          end,
+          opts = { buffer = true, expr = true },
+        }
+      },
+      picker = {
+        name = "fzf-lua",
+        mappings = {
+          new = "<C-x>",
+          insert_link = "<C-l>",
+        },
+      },
+      -- %Y%m%dT%H%M%S-XXXX
+      note_id_func = function()
+        local prefix = os.date("%Y%m%dT%H%M%S")
+        local suffix = ""
+        for _ = 1, 4 do
+          suffix = suffix .. string.char(math.random(65, 90))
+        end
+        return prefix .. "_" .. suffix
+      end,
+      ---@param spec { id: string, dir: {filename: string}, title: string|? }
+      ---@return string The full path to the new note.
+      note_path_func = function(spec)
+        local no_id_dirs = {
+          "nikki",
+          "shumi",
+          "books",
+        }
+        local path = (function()
+          for _, dir in ipairs(no_id_dirs) do
+            if string.match(spec.dir.filename, "/" .. dir .. "/") ~= nil then
+              return spec.dir / spec.title
+            end
+          end
+          if spec.title == nil then
+            return spec.dir / spec.id
+          end
+          return spec.dir / (spec.id .. "-" .. spec.title)
+        end)()
+        return path:with_suffix(".md")
+      end,
+    },
+    keys = {
+      { '<C-t>',      "<Cmd>ObsidianToday<CR>",     mode = { 'n' } },
+      { '<leader>ob', "<Cmd>ObsidianBacklinks<CR>", mode = { 'n' } },
+    },
   },
   -- [[terraform]]
   {
