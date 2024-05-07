@@ -479,6 +479,7 @@ in
         JAVA8_HOME = "${pkgs.openjdk8}/lib/openjdk";
         JAVA11_HOME = "${pkgs.openjdk11}/lib/openjdk";
         JAVA17_HOME = "${pkgs.openjdk17}/lib/openjdk";
+        JAVA21_HOME = "${pkgs.openjdk21}/lib/openjdk";
         JAVA_HOME = "$env.JAVA17_HOME";
       };
     };
