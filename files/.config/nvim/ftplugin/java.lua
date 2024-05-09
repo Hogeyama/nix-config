@@ -49,6 +49,9 @@ local workspace_dir = '/tmp/jdtls/' .. project_name
 local capabilities = vim.g.lsp_default_capabilities
 
 local on_attach = function(client, bufnr)
+  client.server_capabilities.codeLensProvider = nil
+  client.server_capabilities.documentHighlightProvider = nil
+  client.server_capabilities.semanticTokensProvider = nil
   vim.g.lsp_default_on_attach(client, bufnr)
   require 'jdtls'.setup_dap({
     hotcodereplace = 'auto',
