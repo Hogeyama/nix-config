@@ -2398,7 +2398,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         }
         local path = (function()
           for _, dir in ipairs(no_id_dirs) do
-            if string.match(spec.dir.filename, "/" .. dir .. "/") ~= nil then
+            if string.match(spec.dir.filename, dir) ~= nil then
               return spec.dir / spec.title
             end
           end
