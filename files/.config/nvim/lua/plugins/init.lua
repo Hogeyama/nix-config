@@ -2306,6 +2306,10 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     init = function()
       vim.g.vim_markdown_folding_disabled = 1
       vim.g.vim_markdown_new_list_item_indent = 2
+      vim.api.nvim_create_autocmd({ 'FileType' }, {
+        pattern = 'markdown',
+        command = "set nowrap",
+      })
     end
   },
   {
