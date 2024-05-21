@@ -2391,13 +2391,18 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         },
       },
       -- %Y%m%dT%H%M%S-XXXX
-      note_id_func = function()
+      note_id_func = function(title)
         local prefix = os.date("%Y%m%dT%H%M%S")
-        local suffix = ""
+        local random = ""
         for _ = 1, 4 do
-          suffix = suffix .. string.char(math.random(65, 90))
+          random = random .. string.char(math.random(65, 90))
         end
-        return prefix .. "_" .. suffix
+        if title == nil then
+          return prefix .. "_" .. random
+        else
+          local suffix = string.gsub(title, " ", "_")
+          return prefix .. "_" .. random .. "-" .. suffix
+        end
       end,
       ---@param spec { id: string, dir: {filename: string}, title: string|? }
       ---@return string The full path to the new note.
@@ -2413,10 +2418,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
               return spec.dir / spec.title
             end
           end
-          if spec.title == nil then
-            return spec.dir / spec.id
-          end
-          return spec.dir / (spec.id .. "-" .. spec.title)
+          return spec.dir / spec.id
         end)()
         return path:with_suffix(".md")
       end,
