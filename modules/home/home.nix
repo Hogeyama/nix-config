@@ -204,6 +204,7 @@ in
       vifm
       watson
       wget
+      xdg-utils
       yq
       zip
       # for firefox
