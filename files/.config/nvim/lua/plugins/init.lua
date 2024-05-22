@@ -2403,22 +2403,20 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       end,
     },
     keys = {
-      { '<C-t>',      "<Cmd>ObsidianToday<CR>",     mode = { 'n' } },
-      { '<leader>ob', "<Cmd>ObsidianBacklinks<CR>", mode = { 'n' } },
+      { '<C-t>',      "<Cmd>ObsidianToday<CR>",       mode = { 'n' } },
+      { '<leader>ob', "<Cmd>ObsidianBacklinks<CR>",   mode = { 'n' } },
+      { '<leader>oq', "<Cmd>ObsidianQuickSwitch<CR>", mode = { 'n' } },
     },
   },
   {
     "oflisback/obsidian-bridge.nvim",
     lazy = true,
+    ft = "markdown",
     config = function()
       if vim.env.OBSIDIAN_REST_API_KEY ~= nil then
         require("obsidian-bridge").setup()
       end
     end,
-    event = {
-      "BufReadPre *.md",
-      "BufNewFile *.md",
-    },
     dependencies = {
       "nvim-telescope/telescope.nvim",
       "nvim-lua/plenary.nvim",
