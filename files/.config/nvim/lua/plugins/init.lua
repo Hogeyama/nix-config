@@ -2398,6 +2398,9 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         end)()
         return path:with_suffix(".md")
       end,
+      follow_url_func = function(url)
+        vim.fn.jobstart({ "xdg-open", url })
+      end,
     },
     keys = {
       { '<C-t>',      "<Cmd>ObsidianToday<CR>",     mode = { 'n' } },
