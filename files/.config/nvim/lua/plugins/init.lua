@@ -2034,9 +2034,9 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
               vim.b.format_on_save_enabled = not vim.b.format_on_save_enabled
             end
           end, {})
-          -- Disable on java
+          -- Disable on some filetypes
           vim.api.nvim_create_autocmd({ 'FileType' }, {
-            pattern = 'java',
+            pattern = { 'java', 'markdown' },
             callback = function()
               vim.b.format_on_save_enabled = false
             end
@@ -2130,6 +2130,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
                   "vue",
                 },
               }),
+              null_ls.builtins.formatting.markdownlint,
               null_ls.builtins.formatting.shfmt.with({
                 extra_args = { "-i", "0", "-ci" },
               }),
