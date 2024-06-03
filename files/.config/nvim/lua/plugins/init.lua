@@ -1073,7 +1073,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       vim.o.foldenable = true
       vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
       vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
-      vim.keymap.set('n', 'zv', '<Cmd>lua require("ufo").closeAllFolds()<CR>zv', { noremap = true })
+      vim.keymap.set('n', 'zv', '<Cmd>lua require("ufo").closeAllFolds()<CR>zvzO', { noremap = true })
       require('ufo').setup({
         provider_selector = function()
           return { 'treesitter', 'indent' }
