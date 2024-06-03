@@ -71,7 +71,7 @@
   # Enable gnupg-agent
   programs.gnupg = {
     agent.enable = true;
-    agent.pinentryFlavor = "tty";
+    agent.pinentryPackage = pkgs.pinentry-tty;
   };
 
   programs.nix-ld = {

@@ -486,7 +486,7 @@ in
     };
     zsh = {
       enable = true;
-      enableAutosuggestions = true;
+      autosuggestion.enable = true;
       enableVteIntegration = true;
       syntaxHighlighting.enable = true;
       autocd = true;
@@ -594,16 +594,6 @@ in
     };
     git = {
       enable = true;
-      package = pkgs.git.overrideAttrs (oldAttrs: rec {
-        version = "2.44.0";
-        src = pkgs.fetchurl {
-          url = "https://www.kernel.org/pub/software/scm/git/git-${version}.tar.xz";
-          hash = "sha256-41hzjctbXqNAzpAKABXAOuhugE5/9k5HqkYx3e5oHeM=";
-        };
-        preInstallCheck = oldAttrs.preInstallCheck + ''
-          disable_test t9902-completion
-        '';
-      });
       extraConfig = {
         alias.stash-all = "stash save --include-untracked";
         alias.show-upstream = "git rev-parse --abbrev-ref --symbolic-full-name @{u}";
