@@ -2175,7 +2175,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'folke/trouble.nvim',
-    branch = "dev",
     enabled = not is_light_mode,
     init = function()
       require('trouble').setup {}
