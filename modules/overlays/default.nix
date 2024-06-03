@@ -1,7 +1,6 @@
 { inputs, system, ... }:
 let
   overlays = [
-    inputs.neovim-nightly-overlay.overlay
     inputs.nix-alien.overlays.default
     (pkgs: _: {
       unstable = inputs.nixpkgs-unstable.outputs.legacyPackages.${system};

@@ -1,6 +1,6 @@
 # https://nix-community.github.io/home-manager/options.xhtml
 # https://mipmip.github.io/home-manager-option-search/
-{ config, pkgs, self, env, ... }:
+{ config, pkgs, self, env, inputs, ... }:
 let
   dotfilesSymlinks =
     { rootDir ? "files"
@@ -282,7 +282,7 @@ in
     };
     neovim = {
       enable = true;
-      package = pkgs.neovim-nightly;
+      package = inputs.neovim-nightly-overlay.packages.${pkgs.system}.default;
       withNodeJs = true;
       withPython3 = true;
       extraPython3Packages = pyPkgs: with pyPkgs; [
