@@ -53,11 +53,12 @@ local on_attach = function(client, bufnr)
   client.server_capabilities.documentHighlightProvider = nil
   client.server_capabilities.semanticTokensProvider = nil
   vim.g.lsp_default_on_attach(client, bufnr)
+  vim.lsp.semantic_tokens.stop(bufnr, client.dynamic_capabilities.client_id)
   require 'jdtls'.setup_dap({
     hotcodereplace = 'auto',
     config_overrides = {
       javaExec = vim.env.JAVA17_HOME .. '/bin/java',
-      vmArgs = vim.env.JAVA_OPTS .. " --add-opens java.base/java.lang=ALL-UNNAMED",
+      vmArgs = (vim.env.JAVA_OPTS or "") .. " --add-opens java.base/java.lang=ALL-UNNAMED",
     },
   })
   require 'jdtls.setup'.add_commands()
@@ -70,6 +71,7 @@ local on_attach = function(client, bufnr)
       buffer = bufnr,
     })
   end
+  vim.notify('JDTLS: ' .. project_name .. ' started', 'info', { title = 'LSP' })
   bnmap('<C-l>q', '<Cmd>lua require("jdtls.dap").setup_dap_main_class_configs()<CR>')
   bnmap('<F5>', '<Cmd>lua require("dap").continue()<CR>')
   bnmap('<F10>', '<Cmd>lua require("dap").step_over()<CR>')
