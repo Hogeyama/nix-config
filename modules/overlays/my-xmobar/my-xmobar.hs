@@ -65,13 +65,14 @@ mkConfig position font =
               ]
               50
         , Run $ Volume "default" "Master" [] 10
+        , Run $ Com "my-xmobar-volume" [] "volume" 10
         , Run $ Date "<fc=#c7a273>%a %m/%d %H:%M</fc>" "date" 10
         , Run StdinReader
         ]
     , sepChar = "%"
     , alignSep = "}{"
     , template =
-        " %StdinReader% }{ %dynnetwork% | %cpu% | %memory% | %default:Master% | %battery% | %date% "
+        " %StdinReader% }{ %dynnetwork% | %cpu% | %memory% | %volume% | %date% "
     }
 
 run :: X.Display -> IO ()
