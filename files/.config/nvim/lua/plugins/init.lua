@@ -1791,12 +1791,11 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           buffer = bufnr,
           callback = function()
             local opts = {
-              focusable = false,
-              close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
-              border = 'rounded',
-              source = 'always',
-              prefix = ' ',
+              severity_sort = true,
+              source = true,
               scope = 'cursor',
+              border = 'rounded',
+              prefix = ' ',
             }
             vim.diagnostic.open_float(nil, opts)
           end
