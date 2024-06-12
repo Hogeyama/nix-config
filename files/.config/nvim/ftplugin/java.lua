@@ -94,6 +94,10 @@ local settings = {
     configuration = {
       runtimes = {
         {
+          name = "JavaSE-21",
+          path = vim.env.JAVA21_HOME,
+        },
+        {
           name = "JavaSE-17",
           path = vim.env.JAVA17_HOME,
         },
