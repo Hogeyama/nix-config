@@ -1645,7 +1645,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         end
       })
     end,
-    filetype = { "markdown" }
+    ft = { "markdown" }
   },
   {
     'nvim-pack/nvim-spectre',
