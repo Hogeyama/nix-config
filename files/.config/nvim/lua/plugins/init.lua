@@ -1829,6 +1829,17 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         bmap('n', '<C-l>h', vim.lsp.buf.signature_help)
         bmap('n', '<C-l>R', vim.lsp.buf.rename)
         bmap('n', '<C-l>l', vim.lsp.codelens.run)
+        bmap('n', '<C-l>k', function()
+          local opts = {
+            severity_sort = true,
+            source = true,
+            scope = 'cursor',
+            border = 'rounded',
+            prefix = ' ',
+            focusable = true,
+          }
+          vim.diagnostic.open_float(nil, opts)
+        end)
         vim.api.nvim_create_autocmd("CursorHold", {
           buffer = bufnr,
           callback = function()
@@ -1838,6 +1849,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
               scope = 'cursor',
               border = 'rounded',
               prefix = ' ',
+              focusable = false, -- important
             }
             vim.diagnostic.open_float(nil, opts)
           end
