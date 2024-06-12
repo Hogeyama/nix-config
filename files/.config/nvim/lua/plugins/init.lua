@@ -1,7 +1,7 @@
 local is_light_mode = vim.env.NVIM_LIGHT_MODE == "1"
-local completion_engin = "cmp"
--- local completion_engin = "ddc"
--- if is_light_mode then completion_engin = "cmp" end
+local completion_engine = "cmp"
+-- local completion_engine = "ddc"
+-- if is_light_mode then completion_engine = "cmp" end
 
 return {
   { 'nvim-lua/plenary.nvim' },
@@ -1117,7 +1117,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'Shougo/ddc.vim',
-    enabled = completion_engin == "ddc",
+    enabled = completion_engine == "ddc",
     dependencies = {
       { 'vim-denops/denops.vim', },
       { 'Shougo/ddc-ui-pum', },
@@ -1359,7 +1359,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'hrsh7th/nvim-cmp',
-    enabled = completion_engin == "cmp",
+    enabled = completion_engine == "cmp",
     config = function()
       local cmp = require("cmp")
       ---@diagnostic disable-next-line: redundant-parameter
