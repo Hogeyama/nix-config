@@ -1738,7 +1738,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   {
     'sindrets/diffview.nvim',
     init = function()
-      local actions = require("diffview.actions")
       require("diffview").setup {
         view = {
           merge_tool = {
@@ -1808,17 +1807,27 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
             lsp_fallback = true,
           })
         end
+        local trouble = function(mode, focus)
+          return function()
+            if focus then
+              require('trouble').focus(mode)
+            else
+              require('trouble').toggle(mode)
+            end
+          end
+        end
         bmap('n', '<C-h>', vim.lsp.buf.hover)
-        bmap('n', '<C-j>', '<cmd>FzfLua lsp_references<CR>')
+        bmap('n', '<C-j>', trouble('lsp_definitions', true))
         bmap('n', '<C-k>', '<cmd>Lspsaga peek_definition<CR>')
         bmap('n', '<C-l>a', require("actions-preview").code_actions)
         bmap('n', '<C-l>f', format)
         bmap('v', '<C-l>f', format)
+        bmap('n', '<C-l>q', trouble('diagnostics', false))
+        bmap('n', '<C-l>o', trouble('symbols', false))
+        bmap('n', '<C-l>i', trouble('lsp_implementations', true))
+        bmap('n', '<C-l>r', trouble('lsp_references', true))
         bmap('n', '<C-l>h', vim.lsp.buf.signature_help)
-        bmap('n', '<C-l>d', vim.lsp.buf.type_definition)
-        bmap('n', '<C-l>r', vim.lsp.buf.references)
         bmap('n', '<C-l>R', vim.lsp.buf.rename)
-        bmap('n', '<C-l>j', '<cmd>FzfLua lsp_definitions<CR>')
         bmap('n', '<C-l>l', vim.lsp.codelens.run)
         vim.api.nvim_create_autocmd("CursorHold", {
           buffer = bufnr,
@@ -2210,13 +2219,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     enabled = not is_light_mode,
     init = function()
       require('trouble').setup {}
-      local map = function(key, cmd)
-        vim.keymap.set('n', key, cmd, { noremap = true, silent = true })
-      end
-      map('<space>q', '<cmd>Trouble diagnostics toggle<CR>')
-      map('<space>o', '<cmd>Trouble symbols toggle<CR>')
-      map('<space>j', '<cmd>Trouble lsp_definitions toggle<CR>')
-      map('<space>k', '<cmd>Trouble lsp_references toggle<CR>')
     end,
   },
   {
