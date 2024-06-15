@@ -56,6 +56,40 @@ return {
     end,
   },
   {
+    'ibhagwan/fzf-lua',
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function()
+      local actions = require "fzf-lua.actions"
+      require("fzf-lua").setup({
+        actions = {
+          files = {
+            ["default"] = function(selected, opts)
+              opts.copen = false
+              if #selected > 1 then
+                local r = actions.file_sel_to_qf(selected, opts)
+                require("trouble").open("quickfix")
+                return r
+              else
+                return actions.file_edit(selected, opts)
+              end
+            end,
+            ["ctrl-s"]  = actions.file_split,
+            ["ctrl-v"]  = actions.file_vsplit,
+            ["ctrl-t"]  = actions.file_tabedit,
+            ["alt-q"]   = actions.file_sel_to_qf,
+            ["alt-l"]   = actions.file_sel_to_ll,
+          },
+          buffers = {
+            ["default"] = actions.buf_edit,
+            ["ctrl-s"]  = actions.buf_split,
+            ["ctrl-v"]  = actions.buf_vsplit,
+            ["ctrl-t"]  = actions.buf_tabedit,
+          }
+        },
+      })
+    end
+  },
+  {
     'nvim-telescope/telescope.nvim',
     enabled = not is_light_mode,
     init = function()
