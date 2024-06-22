@@ -273,7 +273,7 @@ in
       nix-direnv.enable = true;
     };
     atuin = {
-      enable = true;
+      enable = false;
       flags = [ "--disable-up-arrow" ];
     };
     fzf = {
