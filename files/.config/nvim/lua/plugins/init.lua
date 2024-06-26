@@ -1750,9 +1750,18 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           file_panel = {
             { 'n', 'q', function() vim.cmd("tabclose") end, { desc = "Close" } },
           },
+          file_history_panel = {
+            { 'n', 'q', function() vim.cmd("DiffviewClose") end, { desc = "Close" } },
+          },
         },
       }
     end,
+    keys = {
+      -- --no-mergesのようなオプションを追加したい場合があるので<CR>で閉じないでおく
+      { "<leader>dh", ":DiffviewFileHistory %",   mode = { "n" },      desc = "DiffviewFileHistory" },
+      { "<leader>dh", ":DiffviewFileHistory<CR>", mode = { "v" },      desc = "DiffviewFileHistory" },
+      { "<leader>do", ":DiffviewOpen",            mode = { "n", "v" }, desc = "DiffviewOpen" },
+    },
   },
   {
     'tpope/vim-fugitive',
