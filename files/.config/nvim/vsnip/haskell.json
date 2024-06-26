@@ -1,68 +1,34 @@
 {
   "undefined": {
-    "prefix": [
-      "und"
-    ],
-    "body": [
-      "undefined"
-    ]
+    "prefix": ["und"],
+    "body": ["undefined"]
   },
   "inline": {
-    "prefix": [
-      "inline"
-    ],
-    "body": [
-      "{-# INLINE ${1:${TM_SELECTED_TEXT}} #-}"
-    ]
+    "prefix": ["inline"],
+    "body": ["{-# INLINE ${1:${TM_SELECTED_TEXT}} #-}"]
   },
   "main": {
-    "prefix": [
-      "main"
-    ],
-    "body": [
-      "main :: IO",
-      "main = "
-    ]
+    "prefix": ["main"],
+    "body": ["main :: IO", "main = "]
   },
   "import": {
-    "prefix": [
-      "import"
-    ],
+    "prefix": ["import"],
     "body": [
       "import ${1:qualified} ${3:Module} ${4:as ${5:Abbr}} ${6:(${7:func})}"
     ]
   },
   "instance": {
-    "prefix": [
-      "instance"
-    ],
-    "body": [
-      "instance ${1:Class} ${2:Type} where",
-      "  ${3:func}"
-    ]
-  },
-  "deriving": {
-    "prefix": [
-      "deriving"
-    ],
-    "body": [
-      "deriving (${1:Show, Eq, Ord})"
-    ]
+    "prefix": ["instance"],
+    "body": ["instance ${1:Class} ${2:Type} where", "  ${3:func}"]
   },
   "hl": {
-    "prefix": [
-      "hl"
-    ],
+    "prefix": ["hl"],
     "body": [
       "-------------------------------------------------------------------------------"
     ]
   },
   "hl-half": {
-    "prefix": [
-      "hl_half"
-    ],
-    "body": [
-      "---------------------------------------"
-    ]
+    "prefix": ["hl_half"],
+    "body": ["---------------------------------------"]
   }
 }
