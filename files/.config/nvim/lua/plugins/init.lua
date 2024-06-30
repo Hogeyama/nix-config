@@ -57,7 +57,7 @@ return {
   },
   {
     'ibhagwan/fzf-lua',
-    enabled = not is_light_mode,
+    enabled = true,
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
       local actions = require "fzf-lua.actions"
@@ -1811,11 +1811,11 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'tpope/vim-fugitive',
-    enabled = not is_light_mode,
+    enabled = true,
   },
   {
     'lambdalisue/gina.vim',
-    enabled = not is_light_mode,
+    enabled = true,
     init = function()
       vim.cmd [[
         autocmd FileType gina-log   nmap F <Plug>(gina-show-commit-vsplit)zv
