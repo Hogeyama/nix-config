@@ -755,6 +755,14 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   {
     'Bekaboo/dropbar.nvim',
     enabled = not is_light_mode,
+    config = function()
+      vim.api.nvim_create_autocmd({ 'FileType' }, {
+        pattern = { 'fugitiveblame', 'gina-blame' },
+        callback = function(_)
+          vim.opt_local.winbar = '%f' -- 1行ずれるのを防ぐ
+        end
+      })
+    end
   },
   {
     "sontungexpt/sttusline",
