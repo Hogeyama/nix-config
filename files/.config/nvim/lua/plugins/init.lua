@@ -57,6 +57,7 @@ return {
   },
   {
     'ibhagwan/fzf-lua',
+    enabled = not is_light_mode,
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
       local actions = require "fzf-lua.actions"
@@ -129,6 +130,7 @@ return {
   },
   {
     "chrisgrieser/nvim-rip-substitute",
+    enabled = not is_light_mode,
     cmd = "RipSubstitute",
     keys = {
       {
@@ -173,10 +175,12 @@ return {
   },
   {
     'miversen33/netman.nvim',
+    enabled = not is_light_mode,
     config = true,
   },
   {
     'echasnovski/mini.nvim',
+    enabled = true,
     init = function()
       require('mini.ai').setup()
       require('mini.align').setup({
@@ -219,6 +223,7 @@ return {
   {
     -- See copilot-cmp
     'zbirenbaum/copilot.lua',
+    enabled = true,
     init = function()
       require('copilot').setup({
         panel = {
@@ -239,6 +244,7 @@ return {
   },
   {
     "olimorris/codecompanion.nvim",
+    enabled = not is_light_mode,
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
       "nvim-lua/plenary.nvim",
@@ -319,6 +325,7 @@ return {
   },
   {
     'nvim-treesitter/nvim-treesitter',
+    enabled = true,
     init = function()
       require 'nvim-treesitter.configs'.setup {
         ensure_installed = {},
@@ -488,6 +495,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'catppuccin/nvim',
+    enabled = true,
     name = "catppuccin",
     init = function()
       require("catppuccin").setup {
@@ -581,6 +589,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'editorconfig/editorconfig-vim',
+    enabled = true,
     init = function()
       vim.cmd [[
         let g:EditorConfig_max_line_indicator = 'exceeding'
@@ -666,6 +675,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'smoka7/hop.nvim',
+    enabled = true,
     init = function()
       require 'hop'.setup()
       vim.keymap.set('', 'r', function()
@@ -689,6 +699,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'chrisgrieser/nvim-spider',
+    enabled = true,
     init = function()
       require("spider").setup({
         skipInsignificantPunctuation = true
@@ -699,9 +710,13 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       vim.keymap.set({ "n", "o", "x" }, "E", "<cmd>lua require('spider').motion('ge')<CR>", { desc = "Spider-ge" })
     end
   },
-  { 'godlygeek/tabular' },
+  {
+    'godlygeek/tabular',
+    enabled = true,
+  },
   {
     'numToStr/Comment.nvim',
+    enabled = true,
     dependencies = { 'JoosepAlviste/nvim-ts-context-commentstring' },
     config = function()
       require('Comment').setup({
@@ -730,6 +745,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'machakann/vim-sandwich',
+    enabled = true,
     init = function()
       vim.cmd [[
         vmap s <Plug>(operator-sandwich-add)
@@ -846,8 +862,14 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       })
     end,
   },
-  { 'AndrewRadev/linediff.vim' },
-  { 'machakann/vim-highlightedyank' },
+  {
+    'AndrewRadev/linediff.vim',
+    enabled = true,
+  },
+  {
+    'machakann/vim-highlightedyank',
+    enabled = true,
+  },
   {
     'glidenote/memolist.vim',
     enabled = not is_light_mode,
@@ -865,13 +887,17 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'rhysd/clever-f.vim',
+    enabled = true,
     init = function()
       vim.cmd [[
       let g:clever_f_smart_case = 1
     ]]
     end
   },
-  { 'haya14busa/vim-asterisk' },
+  {
+    'haya14busa/vim-asterisk',
+    enabled = true,
+  },
   {
     'dbridges/vim-markdown-runner',
     enabled = not is_light_mode,
@@ -1058,6 +1084,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'klen/nvim-config-local',
+    enabled = not is_light_mode,
     init = function()
       require('config-local').setup {
         config_files = { ".nvim.lua" },
@@ -1069,9 +1096,13 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       }
     end
   },
-  { 'jrudess/vim-foldtext' },
+  {
+    'jrudess/vim-foldtext',
+    enabled = not is_light_mode,
+  },
   {
     'kevinhwang91/nvim-ufo',
+    enabled = not is_light_mode,
     dependencies = { 'kevinhwang91/promise-async' },
     event = "VeryLazy",
     config = function()
@@ -1508,6 +1539,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     "johmsalas/text-case.nvim",
+    enabled = not is_light_mode,
     dependencies = { "nvim-telescope/telescope.nvim" },
     config = function()
       require("textcase").setup({})
@@ -1559,6 +1591,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'michaelb/sniprun',
+    enabled = not is_light_mode,
     config = function()
       local sa = require('sniprun.api')
       local state = {}
@@ -1657,6 +1690,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'nvim-pack/nvim-spectre',
+    enabled = not is_light_mode,
     dependencies = {
       'nvim-lua/plenary.nvim',
     },
@@ -1711,6 +1745,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'sindrets/diffview.nvim',
+    enabled = not is_light_mode,
     init = function()
       require("diffview").setup {
         view = {
@@ -1739,9 +1774,11 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'tpope/vim-fugitive',
+    enabled = not is_light_mode,
   },
   {
     'lambdalisue/gina.vim',
+    enabled = not is_light_mode,
     init = function()
       vim.cmd [[
         autocmd FileType gina-log   nmap F <Plug>(gina-show-commit-vsplit)zv
@@ -2345,6 +2382,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'epwalsh/obsidian.nvim',
+    enabled = not is_light_mode,
     version = "*",
     ft = "markdown",
     dependencies = {
@@ -2439,6 +2477,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     "oflisback/obsidian-bridge.nvim",
+    enabled = not is_light_mode,
     lazy = true,
     ft = "markdown",
     config = function()
@@ -2478,6 +2517,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   -- [[just]]
   {
     "NoahTheDuke/vim-just",
+    enabled = not is_light_mode,
     ft = { "just" },
   }
 }
