@@ -487,9 +487,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     },
   },
   {
-    'cocopon/iceberg.vim',
-  },
-  {
     'catppuccin/nvim',
     name = "catppuccin",
     init = function()
@@ -653,39 +650,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         end
       end, { bang = true, nargs = "*" })
     end,
-  },
-  {
-    'voldikss/vim-floaterm',
-    enabled = false,
-    init = function()
-      vim.g.floaterm_width = 0.9
-      vim.g.floaterm_height = 0.9
-      vim.keymap.set("n", "<F6>", "<Cmd>FloatermToggle shell6<CR>")
-      vim.keymap.set("t", "<F6>", "<C-\\><C-n><Cmd>FloatermToggle shell6<CR>")
-      vim.keymap.set("n", "<F7>", "<Cmd>FloatermToggle shell7<CR>")
-      vim.keymap.set("t", "<F7>", "<C-\\><C-n><Cmd>FloatermToggle shell7<CR>")
-      vim.keymap.set("n", "<F8>", "<Cmd>ToggleFloatermFzf<CR>")
-      vim.keymap.set("t", "<F8>", "<C-\\><C-n><Cmd>ToggleFloatermFzf<CR>")
-      vim.keymap.set("n", "<F9>", "<Cmd>FloatermToggle shell9<CR>")
-      vim.keymap.set("t", "<F9>", "<C-\\><C-n><Cmd>FloatermToggle shell9<CR>")
-      vim.api.nvim_create_user_command('ToggleFloatermFzf', function()
-        if vim.g.floaterm_fzf_exists == 1 then
-          vim.cmd [[FloatermToggle fzf]]
-        else
-          local old_shell = vim.g.floaterm_shell
-          vim.g.floaterm_shell = 'fzfw'
-          vim.cmd [[FloatermNew  --name=fzf]]
-          vim.g.floaterm_shell = old_shell
-          vim.g.floaterm_fzf_exists = 1
-        end
-      end, {})
-      -- nvim_treesitter#foldexpr()が有効になっているとめちゃくちゃ重くなる
-      -- なぜかnofoldenableでも重いので、foldmethod=manualにする
-      vim.api.nvim_create_autocmd({ 'FileType' }, {
-        pattern = 'floaterm',
-        command = "setlocal foldmethod=manual nonumber norelativenumber",
-      })
-    end
   },
   {
     'lukas-reineke/indent-blankline.nvim',
@@ -895,9 +859,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       ]]
     end
   },
-  { 'kana/vim-metarw' },
   {
-    'mattn/webapi-vim',
+    'kana/vim-metarw',
     enabled = not is_light_mode,
   },
   {
@@ -909,7 +872,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     end
   },
   { 'haya14busa/vim-asterisk' },
-  { 'Shougo/deol.nvim' },
   {
     'dbridges/vim-markdown-runner',
     enabled = not is_light_mode,
