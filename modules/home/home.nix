@@ -202,6 +202,7 @@ in
       textql
       time
       tldr
+      tree-sitter
       ulauncher
       unar
       vifm
