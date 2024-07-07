@@ -208,6 +208,7 @@ in
       watson
       wget
       xdg-utils
+      xdragon
       yq
       zip
       # for firefox
