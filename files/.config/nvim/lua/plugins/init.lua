@@ -757,9 +757,12 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     enabled = not is_light_mode,
     config = function()
       vim.api.nvim_create_autocmd({ 'FileType' }, {
-        pattern = { 'fugitiveblame', 'gina-blame' },
+        -- dropbarとgina-blameはdropbarでサポートされてないので、
+        -- 1行ずれるのを防ぐために適当に'%f'を設定しておく。
+        -- javaはLSPが重いのでdropbarを無効にするために設定しておく。
+        pattern = { 'fugitiveblame', 'gina-blame', 'java' },
         callback = function(_)
-          vim.opt_local.winbar = '%f' -- 1行ずれるのを防ぐ
+          vim.opt_local.winbar = '%f'
         end
       })
     end
