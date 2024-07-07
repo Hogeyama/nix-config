@@ -171,6 +171,9 @@ in
       just
       libreoffice
       lsof
+      # neovim requires 5.1 for now
+      lua51Packages.lua
+      lua51Packages.luarocks
       manix
       maestral
       mercurial
