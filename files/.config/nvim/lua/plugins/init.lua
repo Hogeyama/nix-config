@@ -790,9 +790,16 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           "%=",
           "diagnostics",
           "lsps-formatters",
-          "copilot",
+          "copilot-loading",
           "indent",
-          "encoding",
+          {
+            "encoding",
+            {
+              update = function()
+                return vim.opt.fileformat._value .. "/" .. vim.opt.fileencoding._value
+              end,
+            }
+          },
           {
             "pos-cursor",
             {
