@@ -39,3 +39,4 @@ vim.opt.wildoptions = "pum"
 vim.opt.showtabline = 0
 vim.opt.switchbuf = "split"
 vim.opt.updatetime = 300
+vim.opt.cursorline = true
