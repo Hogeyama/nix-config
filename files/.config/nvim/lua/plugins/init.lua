@@ -2225,6 +2225,9 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
               null_ls.builtins.formatting.black,
               null_ls.builtins.formatting.just,
               null_ls.builtins.formatting.prettier.with({
+                condition = function(utils)
+                  return not utils.root_has_file({ "biome.json", "biome.jsonc" })
+                end,
                 filetypes = {
                   "javascript",
                   "javascriptreact",
