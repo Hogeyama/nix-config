@@ -2069,7 +2069,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
             ensure_installed = {
               -- [LSP]
               "bash-language-server",
-              "biome",
               "dhall-lsp",
               "diagnostic-languageserver",
               "dockerfile-language-server",
