@@ -2524,6 +2524,12 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       follow_url_func = function(url)
         vim.fn.jobstart({ "xdg-open", url })
       end,
+      ui = {
+        checkboxes = {
+          [" "] = { char = "󰄱", hl_group = "ObsidianTodo" },
+          ["x"] = { char = "", hl_group = "ObsidianDone" },
+        },
+      },
     },
     keys = {
       { '<C-t>',      "<Cmd>ObsidianToday<CR>",       mode = { 'n' } },
