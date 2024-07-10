@@ -2391,7 +2391,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   -- [[Markdown]]
   {
-    'MeanderingProgrammer/markdown.nvim',
+    'Hogeyama/markdown.nvim', -- my fork
     name = 'render-markdown',
     dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
     config = function()

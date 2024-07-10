@@ -81,7 +81,7 @@
   "plenary.nvim": { "branch": "master", "commit": "a3e3bc82a3f95c5ed0d7201546d5d2c19b20d683" },
   "popup.nvim": { "branch": "master", "commit": "b7404d35d5d3548a82149238289fa71f7f6de4ac" },
   "promise-async": { "branch": "main", "commit": "28c1d5a295eb5310afa2523d4ae9aa41ec5a9de2" },
-  "render-markdown": { "branch": "main", "commit": "7acc1bf0ecc207411ad6dcf8ecf02f76fe8cbe13" },
+  "render-markdown": { "branch": "main", "commit": "ac9772cab30d2df37674063f499f5f657504ad7e" },
   "rust.vim": { "branch": "master", "commit": "889b9a7515db477f4cb6808bef1769e53493c578" },
   "sniprun": { "branch": "master", "commit": "30991d81ecfb947a2c54f879b194d4ed23225d91" },
   "ssr.nvim": { "branch": "main", "commit": "bb323ba621ac647b4ac5638b47666e3ef3c279e1" },
