@@ -1660,7 +1660,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         end
         local a, b, c, d = lang:range()
         local val = vim.api.nvim_buf_get_text(bufnr, a, b, c, d, {})[1]
-        if val ~= 'result' then
+        if val ~= '[result]' then
           return
         end
         local d0, _, d1, _ = mresult:range()
@@ -1677,7 +1677,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
 
         local _, c0, l1, _ = node:range()
         local indent = string.rep(' ', c0)
-        local lines = { indent .. "```result" }
+        local lines = { indent .. "```[result]" }
         for s in d.message:gmatch("[^\r\n]+") do
           -- indent to the same level as the code fence
           table.insert(lines, indent .. s)
