@@ -2533,6 +2533,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         vim.fn.jobstart({ "xdg-open", url })
       end,
       ui = {
+        enable = false, -- preffer render-markdown
         checkboxes = {
           [" "] = { char = "󰄱", hl_group = "ObsidianTodo" },
           ["x"] = { char = "", hl_group = "ObsidianDone" },
