@@ -2038,7 +2038,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       }
       require 'lspconfig'.dhall_lsp_server.setup {}
       require 'lspconfig'.gopls.setup {}
-      require 'lspconfig'.jsonls.setup {}
+      -- require 'lspconfig'.jsonls.setup {}
       require 'lspconfig'.rust_analyzer.setup {
         settings = {
           ['rust-analyzer'] = {
@@ -2050,7 +2050,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       }
       require 'lspconfig'.graphql.setup {}
       require 'lspconfig'.pyright.setup {}
-      require 'lspconfig'.yamlls.setup {}
+      -- require 'lspconfig'.yamlls.setup {}
       require 'lspconfig'.terraformls.setup {}
       require 'lspconfig'.tflint.setup {}
       require 'lspconfig'.dockerls.setup {}
@@ -2216,7 +2216,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
               -- [diagnostics]
               null_ls.builtins.diagnostics.actionlint,
               null_ls.builtins.diagnostics.hadolint,
-              null_ls.builtins.diagnostics.yamllint,
+              -- null_ls.builtins.diagnostics.yamllint,
               -- null_ls.builtins.diagnostics.checkstyle.with({
               --   extra_args = { "--", "-f", "sarif", "$FILENAME" },
               -- }),
