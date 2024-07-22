@@ -7,87 +7,87 @@ trap 'rm -rf "$NVIMW_TMPDIR"' EXIT
 declare -g TMUX_POPUP=0
 declare -g -a NVIM_ARGS
 parse_args() {
-    while [[ $# -gt 0 ]]; do
-        case $1 in
-            --tmux-popup)
-                TMUX_POPUP=1
-                ;;
-            --light-mode)
-                export NVIM_LIGHT_MODE=1
-                ;;
-            --)
-                shift
-                NVIM_ARGS+=("$@")
-                break
-                ;;
-            *)
-                NVIM_ARGS+=("$1")
-                ;;
-        esac
-        shift
-    done
+	while [[ $# -gt 0 ]]; do
+		case $1 in
+			--tmux-popup)
+				TMUX_POPUP=1
+				;;
+			--light-mode)
+				export NVIM_LIGHT_MODE=1
+				;;
+			--)
+				shift
+				NVIM_ARGS+=("$@")
+				break
+				;;
+			*)
+				NVIM_ARGS+=("$1")
+				;;
+		esac
+		shift
+	done
 }
 
 pipe_to_tmp() {
-    declare -g tmp
-    tmp=$(mktemp -p "$NVIMW_TMPDIR")
-    ansifilter_if_available | sponge "$tmp"
-    echo "$tmp"
+	declare -g tmp
+	tmp=$(mktemp -p "$NVIMW_TMPDIR")
+	ansifilter_if_available | sponge "$tmp"
+	echo "$tmp"
 }
 
 ansifilter_if_available() {
-    if command -v ansifilter >/dev/null; then
-        ansifilter
-    else
-        cat
-    fi
+	if command -v ansifilter >/dev/null; then
+		ansifilter
+	else
+		cat
+	fi
 }
 
 open_in_new_instance_on_tmux_popup() {
-    tmux popup -w80% -h80% -d "$PWD" -E \
-        env NVIM_LIGHT_MODE="${NVIM_LIGHT_MODE:-}" \
-        nvim \
-        -c 'set showtabline=0' \
-        -c 'set winbar=""' \
-        -c 'set statusline=""' \
-        -c 'set laststatus=0' \
-        -c 'set noshowcmd' \
-        -c 'set winbar=""' \
-        -c 'startinsert' \
-        -c 'noremap q :wq<CR>' \
-        -c 'inoremap <C-q> <Esc>:wq<CR>' \
-        "$@"
+	tmux popup -w90% -h90% -d "$PWD" -E \
+		env NVIM_LIGHT_MODE="${NVIM_LIGHT_MODE:-}" \
+		nvim \
+		-c 'set showtabline=0' \
+		-c 'set winbar=""' \
+		-c 'set statusline=""' \
+		-c 'set laststatus=0' \
+		-c 'set noshowcmd' \
+		-c 'set winbar=""' \
+		-c 'startinsert' \
+		-c 'noremap q :wq<CR>' \
+		-c 'inoremap <C-q> <Esc>:wq<CR>' \
+		"$@"
 }
 
 open_in_new_instance() {
-    NVIM=$(mktemp -p "${TMPDIR:-/tmp}" -u nvim.XXXXX)
-    export NVIM
-    nvim --listen "$NVIM" "$@"
+	NVIM=$(mktemp -p "${TMPDIR:-/tmp}" -u nvim.XXXXX)
+	export NVIM
+	nvim --listen "$NVIM" "$@"
 }
 
 open_in_existent_instance() {
-    local -a args=()
-    for arg in "$@"; do
-        args+=("$(realpath -m "$arg")")
-    done
-    nvim --server "$NVIM" --remote-tab-silent "${args[@]}"
-    read -rp "Press any key to continue..." # for hg commit, sops, etc.
+	local -a args=()
+	for arg in "$@"; do
+		args+=("$(realpath -m "$arg")")
+	done
+	nvim --server "$NVIM" --remote-tab-silent "${args[@]}"
+	read -rp "Press any key to continue..." # for hg commit, sops, etc.
 }
 
 main() {
-    parse_args "$@"
+	parse_args "$@"
 
-    if [[ $TMUX_POPUP -eq 1 ]]; then
-        open_in_new_instance_on_tmux_popup "${NVIM_ARGS[@]}"
-    elif [[ -z "$NVIM" ]]; then
-        open_in_new_instance "${NVIM_ARGS[@]}"
-    elif [[ -t 0 ]]; then
-        open_in_existent_instance "${NVIM_ARGS[@]}"
-    else
-        local tmp
-        tmp=$(pipe_to_tmp)
-        open_in_existent_instance "$tmp" "${NVIM_ARGS[@]}"
-    fi
+	if [[ $TMUX_POPUP -eq 1 ]]; then
+		open_in_new_instance_on_tmux_popup "${NVIM_ARGS[@]}"
+	elif [[ -z "$NVIM" ]]; then
+		open_in_new_instance "${NVIM_ARGS[@]}"
+	elif [[ -t 0 ]]; then
+		open_in_existent_instance "${NVIM_ARGS[@]}"
+	else
+		local tmp
+		tmp=$(pipe_to_tmp)
+		open_in_existent_instance "$tmp" "${NVIM_ARGS[@]}"
+	fi
 
 }
 
