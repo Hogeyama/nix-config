@@ -4,3 +4,4 @@
 .nvim.lua
 .local/
 .vim-bookmarks
+Session.vim
