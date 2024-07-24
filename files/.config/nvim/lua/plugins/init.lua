@@ -2228,6 +2228,9 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
             log_level = "trace",
             on_attach = vim.g.lsp_default_on_attach,
             default_timeout = 50000,
+            root_dir = function()
+              return nil
+            end,
             sources = {
               -- [diagnostics]
               null_ls.builtins.diagnostics.actionlint,
