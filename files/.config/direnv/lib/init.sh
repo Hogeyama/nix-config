@@ -58,6 +58,6 @@ sepby() {
     printf "%s" "$*"
 }
 
-source_env_if_exists .envrc.local
+source_up_if_exists .envrc.local
 
 # vim:ft=bash:
