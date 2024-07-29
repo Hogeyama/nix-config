@@ -112,6 +112,7 @@
   "vim-terraform": { "branch": "master", "commit": "24de93afb05078bac6a2e966402cc1f672277708" },
   "vim-vsnip": { "branch": "master", "commit": "02a8e79295c9733434aab4e0e2b8c4b7cea9f3a9" },
   "vim-vsnip-integ": { "branch": "master", "commit": "1914e72cf3de70df7f5dde476cd299aba2440aef" },
+  "vue-goto-definition.nvim": { "branch": "main", "commit": "cefd5147d5892b75e3c017bcfb46d2a776275088" },
   "workspace-diagnostics.nvim": { "branch": "main", "commit": "2c911e785f953241704918dcd0dbada8c852d716" },
   "yanky.nvim": { "branch": "main", "commit": "73215b77d22ebb179cef98e7e1235825431d10e4" },
   "zen-mode.nvim": { "branch": "main", "commit": "21976479c7a0146b05a42707cf91c86b1e510945" }

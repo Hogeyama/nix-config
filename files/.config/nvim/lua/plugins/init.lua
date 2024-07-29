@@ -1887,7 +1887,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           end
         end
         bmap('n', '<C-h>', vim.lsp.buf.hover)
-        bmap('n', '<C-j>', trouble('lsp_definitions', true))
+        -- bmap('n', '<C-j>', trouble('lsp_definitions', true))
+        bmap('n', '<C-j>', vim.lsp.buf.definition)
         bmap('n', '<C-k>', '<cmd>Lspsaga peek_definition<CR>')
         bmap('n', '<C-l>a', require("actions-preview").code_actions)
         bmap('n', '<C-l>f', format)
@@ -2625,5 +2626,33 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     "NoahTheDuke/vim-just",
     enabled = not is_light_mode,
     ft = { "just" },
-  }
+  },
+  -- [[vue]]
+  {
+    "catgoose/vue-goto-definition.nvim",
+    event = "BufReadPre",
+    opts = {
+      filters = {
+        auto_imports = true,
+        auto_components = true,
+        import_same_file = true,
+        declaration = true,
+        duplicate_filename = true,
+      },
+      filetypes = { "vue", "typescript" },
+      detection = {
+        nuxt = function()
+          return vim.fn.glob(".nuxt/") ~= ""
+        end,
+        vue3 = function()
+          return vim.fn.filereadable("vite.config.ts") == 1 or vim.fn.filereadable("src/App.vue") == 1
+        end,
+        priority = { "nuxt", "vue3" },
+      },
+      lsp = {
+        override_definition = true, -- override vim.lsp.buf.definition
+      },
+      debounce = 200
+    },
+  },
 }
