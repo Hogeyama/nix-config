@@ -2013,12 +2013,35 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       }
 
       -- [[tsserver]]
+      -- thx! https://tech-blog.cloud-config.jp/2024-05-22-write-vue-with-neovim
+      local vue_typescript_plugin =
+          require("mason-registry").get_package("vue-language-server"):get_install_path() ..
+          "/node_modules/@vue/language-server/node_modules/@vue/typescript-plugin"
       require 'lspconfig'.tsserver.setup {
         root_dir = require 'lspconfig'.util.root_pattern("package.json"),
         init_options = {
           lint = true,
+          plugins = {
+            {
+              name = "@vue/typescript-plugin",
+              location = vue_typescript_plugin,
+              languages = {
+                "vue",
+                "javascript",
+                "javascriptreact",
+                "javascript.jsx",
+                "typescript",
+                "typescriptreact",
+                "typescript.tsx"
+              },
+            },
+          },
         },
         single_file_support = false,
+        filetypes = { "javascript", "typescript", "vue" },
+      }
+      require 'lspconfig'.volar.setup {
+        root_dir = require 'lspconfig'.util.root_pattern("vue.config.js", "nuxt.config.ts"),
       }
 
       -- [[lua_ls]]
@@ -2072,9 +2095,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       require 'lspconfig'.dockerls.setup {}
       require 'lspconfig'.sqlls.setup {}
       require 'lspconfig'.gradle_ls.setup {}
-      require 'lspconfig'.volar.setup {
-        root_dir = require 'lspconfig'.util.root_pattern("vue.config.js", "nuxt.config.ts"),
-      }
       require 'lspconfig'.unison.setup {}
     end,
     dependencies = {
