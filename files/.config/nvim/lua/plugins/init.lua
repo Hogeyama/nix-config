@@ -92,7 +92,7 @@ return {
   },
   {
     'nvim-telescope/telescope.nvim',
-    enabled = not is_light_mode,
+    enabled = true,
     init = function()
       require('telescope').setup {
         defaults = {
