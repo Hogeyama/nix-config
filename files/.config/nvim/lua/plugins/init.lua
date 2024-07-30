@@ -2482,7 +2482,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'epwalsh/obsidian.nvim',
-    enabled = not is_light_mode,
+    enabled = true,
     version = "*",
     ft = "markdown",
     dependencies = {
