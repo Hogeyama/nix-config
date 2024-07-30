@@ -2156,6 +2156,9 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         config = function()
           vim.g.format_on_save_enabled = true
           require("conform").setup({
+            formatters_by_ft = {
+              vue = { { "prettier" } },
+            },
             format_on_save = function()
               if vim.b.format_on_save_enabled ~= nil then
                 return vim.b.format_on_save_enabled and {
