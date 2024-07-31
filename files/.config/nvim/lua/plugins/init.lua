@@ -2042,7 +2042,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         filetypes = { "javascript", "typescript", "vue" },
       }
       require 'lspconfig'.volar.setup {
-        root_dir = require 'lspconfig'.util.root_pattern("vue.config.js", "nuxt.config.ts"),
+        root_dir = require 'lspconfig'.util.root_pattern("vue.config.js", "nuxt.config.ts", "src/App.vue"),
+        filetypes = { "javascript", "typescript", "vue" },
       }
 
       -- [[lua_ls]]
