@@ -179,9 +179,56 @@ return {
     config = true,
   },
   {
+    'stevearc/resession.nvim',
+    enabled = not is_light_mode,
+    config = function()
+      local resession = require("resession")
+      resession.setup()
+
+      local session_name = function()
+        local pwd = vim.fn.getcwd()
+        local branch = vim.trim(vim.fn.system("git branch --show-current"))
+        return vim.v.shell_error == 0 and pwd .. "@" .. branch or pwd
+      end
+      vim.api.nvim_create_autocmd("VimEnter", {
+        callback = function()
+          if vim.env.NVIM_NO_AUTO_SESSOIN ~= '1' and vim.fn.argc(-1) == 0 then
+            vim.g.session_loaded = 1
+            resession.load(session_name(), { silence_errors = true })
+          end
+        end,
+        nested = true,
+      })
+      vim.api.nvim_create_autocmd("VimLeavePre", {
+        callback = function()
+          local has_buf = false
+          local bufs = vim.fn.getbufinfo()
+          for _, buf in ipairs(bufs) do
+            if buf.listed == 1 and buf.name ~= '' then
+              has_buf = true
+            end
+          end
+          if vim.g.session_loaded == 1 and has_buf then
+            resession.save(session_name(), { notify = false })
+          end
+        end,
+      })
+      vim.keymap.set({ "n" }, "<leader>ssr", function()
+        resession.save(resession.get_current())
+        resession.load(resession.get_current())
+      end)
+      vim.keymap.set({ "n" }, "<leader>ssl", function()
+        resession.load(nil)
+      end)
+      vim.keymap.set({ "n" }, "<leader>ssd", function()
+        resession.delete(nil)
+      end)
+    end,
+  },
+  {
     'echasnovski/mini.nvim',
     enabled = true,
-    init = function()
+    config = function()
       require('mini.ai').setup()
       require('mini.align').setup({
         mappings = {
@@ -191,14 +238,23 @@ return {
       })
       require('mini.pairs').setup()
       require('mini.trailspace').setup()
-      require('mini.sessions').setup()
+      require('mini.bracketed').setup()
       require('mini.starter').setup({
         items = {
-          require('mini.starter').sections.sessions(5, true)
+          function()
+            local items = {}
+            for _, session in ipairs(require('resession').list()) do
+              table.insert(items, {
+                name = session:gsub("_", "/"),
+                action = [[lua require("resession").load("]] .. session .. [[")]],
+                section = 'Sessions'
+              })
+            end
+            return items
+          end,
         },
         footer = '',
       })
-      require('mini.bracketed').setup()
       require('mini.visits').setup({
         list = {
           filter = function(path_data)
@@ -219,6 +275,9 @@ return {
         { nargs = 1 }
       )
     end,
+    dependencies = {
+      'stevearc/resession.nvim',
+    }
   },
   {
     -- See copilot-cmp

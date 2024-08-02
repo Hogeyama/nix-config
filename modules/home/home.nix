@@ -534,6 +534,7 @@ in
         DU = "du -hd1 | sort -h";
         open = "xdg-open";
         v = "nvimw";
+        vv = "NVIM_NO_AUTO_SESSOIN=1 nvimw";
         gd = "git diff";
         gdn = "git diff --no-ext-diff";
         glog = ''git log --pretty=format:"%C(yellow)%h%Creset %C(green)%ad%Creset %s %Cred%d%Creset %Cblue[%an]" --date=short --graph'';
