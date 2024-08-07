@@ -1582,7 +1582,9 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       {
         "zbirenbaum/copilot-cmp",
         config = function()
-          require("copilot_cmp").setup()
+          require("copilot_cmp").setup({
+            fix_pairs = false,
+          })
         end
       },
       { 'jmbuhr/otter.nvim' },
