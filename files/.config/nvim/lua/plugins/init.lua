@@ -1488,6 +1488,9 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         },
         sources = cmp.config.sources({
           {
+            name = 'copilot'
+          },
+          {
             name = 'nvim_lsp'
           },
           {
@@ -1495,9 +1498,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           },
           {
             name = 'vsnip'
-          },
-          {
-            name = 'copilot'
           },
           {
             name = 'buffer'
