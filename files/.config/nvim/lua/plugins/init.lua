@@ -99,6 +99,9 @@ return {
           mappings = {
             i = {
               ["<Esc>"] = require('telescope.actions').close,
+              ["<Tab>"] = require('telescope.actions').move_selection_next,
+              ["<S-Tab>"] = require('telescope.actions').move_selection_previous,
+              ["<C-Space>"] = require('telescope.actions').toggle_selection
             },
           },
         },
@@ -274,10 +277,28 @@ return {
         end,
         { nargs = 1 }
       )
+      vim.keymap.set({ "n" }, "1", function()
+        local paths = { table.unpack(require 'mini.visits'.list_paths(nil), 1, 50) }
+        vim.ui.select(
+          paths,
+          {
+            format_item = function(item)
+              local replace_prefix = function(s, p, r)
+                return s:sub(1, #p) == p and r .. s:sub(#p + 1) or s
+              end
+              local home = vim.env.HOME
+              local pwd = vim.fn.getcwd()
+              return replace_prefix(replace_prefix(item, pwd .. "/", ""), home, '~')
+            end,
+          },
+          function(choice)
+            return choice ~= nil and vim.cmd('edit ' .. choice)
+          end)
+      end)
     end,
     dependencies = {
       'stevearc/resession.nvim',
-    }
+    },
   },
   {
     -- See copilot-cmp
@@ -1206,7 +1227,10 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       vim.o.foldlevel = 99
       vim.o.foldlevelstart = 99
       vim.o.foldenable = true
-      vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
+      vim.keymap.set('n', 'zR', function()
+        vim.cmd [[Lazy reload nvim-ufo]]
+        return require('ufo').openAllFolds
+      end)
       vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
       vim.keymap.set('n', 'zv', '<Cmd>lua require("ufo").closeAllFolds()<CR>zvzO', { noremap = true })
       require('ufo').setup({
