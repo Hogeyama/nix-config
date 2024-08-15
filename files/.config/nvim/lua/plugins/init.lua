@@ -1109,16 +1109,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
             },
           },
         },
-        routes = {
-          {
-            -- nlspsettings
-            filter = {
-              find = "Success to update the settings.",
-              event = "notify",
-            },
-            view = "mini",
-          },
-        },
       }
     end,
   },
@@ -2051,8 +2041,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         if client.name == "tsserver" or client.name == "jsonls" then
           client.server_capabilities.documentFormattingProvider = false
         end
-        -- Force load
-        vim.cmd("LspSettings update " .. client.name)
       end
 
       -- [[capabilities]]
@@ -2398,22 +2386,14 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           require("lazy.core.loader").ftdetect(plugin.dir .. "/editor-support/vim")
         end,
       },
-      { "artemave/workspace-diagnostics.nvim" }
+      { "artemave/workspace-diagnostics.nvim" },
+      {
+        "folke/neoconf.nvim",
+        config = function()
+          require("neoconf").setup({})
+        end,
+      },
     },
-  },
-  {
-    'tamago324/nlsp-settings.nvim',
-    enabled = not is_light_mode,
-    dependencies = { 'nvim-lspconfig' },
-    init = function()
-      require 'nlspsettings'.setup({
-        append_default_schemas = true,
-        loader = 'json',
-        nvim_notify = {
-          enable = false,
-        }
-      })
-    end,
   },
   {
     'folke/trouble.nvim',
