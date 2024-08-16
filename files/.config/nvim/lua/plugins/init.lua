@@ -21,7 +21,7 @@ return {
   {
     'gbprod/yanky.nvim',
     enabled = true,
-    init = function()
+    config = function()
       require("yanky").setup {
         ring = {
           history_length = 100,
@@ -54,6 +54,7 @@ return {
   },
   {
     'ibhagwan/fzf-lua',
+    event = "VeryLazy",
     enabled = true,
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
@@ -89,8 +90,9 @@ return {
   },
   {
     'nvim-telescope/telescope.nvim',
+    event = "VeryLazy",
     enabled = true,
-    init = function()
+    config = function()
       require('telescope').setup {
         defaults = {
           mappings = {
@@ -144,7 +146,7 @@ return {
   {
     'glacambre/firenvim',
     enabled = not is_light_mode,
-    init = function()
+    config = function()
       if vim.g.started_by_firenvim == true then
         vim.o.number = false
         vim.o.laststatus = 0
@@ -175,6 +177,7 @@ return {
   },
   {
     'miversen33/netman.nvim',
+    event = "VeryLazy",
     enabled = not is_light_mode,
     config = true,
   },
@@ -227,6 +230,7 @@ return {
   },
   {
     'echasnovski/mini.nvim',
+    event = "VeryLazy",
     enabled = true,
     config = function()
       require('mini.ai').setup()
@@ -300,8 +304,9 @@ return {
   {
     -- See copilot-cmp
     'zbirenbaum/copilot.lua',
+    event = "VeryLazy",
     enabled = true,
-    init = function()
+    config = function()
       require('copilot').setup({
         panel = {
           enabled = false,
@@ -390,7 +395,7 @@ return {
     "folke/edgy.nvim",
     enabled = false,
     event = "VeryLazy",
-    init = function()
+    config = function()
       vim.opt.laststatus = 3
       vim.opt.splitkeep = "screen"
     end,
@@ -402,8 +407,9 @@ return {
   },
   {
     'nvim-treesitter/nvim-treesitter',
+    event = "VeryLazy",
     enabled = true,
-    init = function()
+    config = function()
       require 'nvim-treesitter.configs'.setup {
         ensure_installed = {},
         sync_install = false,
@@ -485,8 +491,9 @@ return {
   },
   {
     'nvimtools/hydra.nvim',
+    event = "VeryLazy",
     enabled = not is_light_mode,
-    init = function()
+    config = function()
       local hydra = require('hydra')
       hydra({
         name = 'resize',
@@ -575,7 +582,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     'catppuccin/nvim',
     enabled = true,
     name = "catppuccin",
-    init = function()
+    config = function()
       require("catppuccin").setup {
         flavour = "macchiato",
         background = {
@@ -668,7 +675,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   {
     'editorconfig/editorconfig-vim',
     enabled = true,
-    init = function()
+    config = function()
       vim.cmd [[
         let g:EditorConfig_max_line_indicator = 'exceeding'
       ]]
@@ -754,7 +761,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   {
     'smoka7/hop.nvim',
     enabled = true,
-    init = function()
+    config = function()
       require 'hop'.setup()
       vim.keymap.set('', 'r', function()
         require 'hop'.hint_words({
@@ -778,7 +785,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   {
     'chrisgrieser/nvim-spider',
     enabled = true,
-    init = function()
+    config = function()
       require("spider").setup({
         skipInsignificantPunctuation = true
       })
@@ -794,6 +801,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'numToStr/Comment.nvim',
+    event = "VeryLazy",
     enabled = true,
     dependencies = { 'JoosepAlviste/nvim-ts-context-commentstring' },
     config = function()
@@ -831,7 +839,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   {
     'machakann/vim-sandwich',
     enabled = true,
-    init = function()
+    config = function()
       vim.cmd [[
         vmap s <Plug>(operator-sandwich-add)
       ]]
@@ -910,7 +918,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   {
     'nanozuki/tabby.nvim',
     enabled = not is_light_mode,
-    init = function()
+    config = function()
       vim.opt.sessionoptions = 'curdir,folds,globals,help,tabpages,terminal,winsize'
       local api = require('tabby.module.api')
       local buf_name = require('tabby.feature.buf_name')
@@ -982,7 +990,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   {
     'glidenote/memolist.vim',
     enabled = not is_light_mode,
-    init = function()
+    config = function()
       vim.g.memolist_path = '~/.memo'
       vim.g.memolist_template_dir_path = '~/.memo/template'
       vim.cmd [[
@@ -997,7 +1005,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   {
     'rhysd/clever-f.vim',
     enabled = true,
-    init = function()
+    config = function()
       vim.cmd [[
       let g:clever_f_smart_case = 1
     ]]
@@ -1010,7 +1018,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   {
     'dbridges/vim-markdown-runner',
     enabled = not is_light_mode,
-    init = function()
+    config = function()
       -- vim.cmd [[
       --   autocmd FileType markdown nnoremap <buffer> <Leader>q :MarkdownRunnerInsert<CR>
       --   autocmd FileType markdown nnoremap <buffer> <Leader>w :MarkdownRunner<CR>
@@ -1038,6 +1046,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'folke/noice.nvim',
+    event = "VeryLazy",
     enabled = not is_light_mode and not vim.g.vscode,
     dependencies = { "nui.nvim", "nvim-notify", "nvim-cmp" },
     config = function()
@@ -1111,6 +1120,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'nvim-neo-tree/neo-tree.nvim',
+    event = "VeryLazy",
     enabled = not is_light_mode,
     dependencies = {
       "plenary.nvim",
@@ -1118,7 +1128,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       "nui.nvim",
       "netman.nvim",
     },
-    init = function()
+    config = function()
       require("neo-tree").setup({
         sources = {
           "filesystem",
@@ -1189,7 +1199,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   {
     'klen/nvim-config-local',
     enabled = not is_light_mode,
-    init = function()
+    config = function()
       require('config-local').setup {
         config_files = { ".nvim.lua" },
         hashfile = vim.fn.stdpath("data") .. "/config-local",
@@ -1229,6 +1239,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'hrsh7th/nvim-cmp',
+    event = "InsertEnter",
     enabled = true,
     config = function()
       local cmp = require("cmp")
@@ -1321,7 +1332,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       { 'lukas-reineke/cmp-rg' },
       {
         'hrsh7th/vim-vsnip',
-        init = function()
+        config = function()
           vim.cmd [[
             let g:vsnip_snippet_dir = expand('~/.config/nvim/vsnip')
             imap <expr> <C-f> vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-f>'
@@ -1332,7 +1343,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       },
       {
         'hrsh7th/vim-vsnip-integ',
-        init = function()
+        config = function()
           vim.cmd [[
             autocmd User PumCompleteDone call vsnip_integ#on_complete_done(g:pum#completed_item)
           ]]
@@ -1388,7 +1399,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     cmd = {
       'BookmarkShowAll'
     },
-    init = function()
+    config = function()
       vim.g.bookmark_save_per_working_dir = 1
       vim.g.bookmark_no_default_key_mappings = 1
       vim.g.bookmark_sign = ''
@@ -1409,6 +1420,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'soulis-1256/eagle.nvim',
+    event = "VeryLazy",
     enabled = not is_light_mode,
     config = function()
       require("eagle").setup {}
@@ -1570,7 +1582,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   {
     'NeogitOrg/neogit',
     enabled = false,
-    init = function()
+    config = function()
       require("neogit").setup {
         disable_signs = false,
         disable_hint = false,
@@ -1616,8 +1628,9 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'sindrets/diffview.nvim',
+    event = "VeryLazy",
     enabled = not is_light_mode,
-    init = function()
+    config = function()
       require("diffview").setup {
         view = {
           merge_tool = {
@@ -1650,7 +1663,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   {
     'lambdalisue/gina.vim',
     enabled = true,
-    init = function()
+    config = function()
       vim.cmd [[
         autocmd FileType gina-log   nmap F <Plug>(gina-show-commit-vsplit)zv
         autocmd FileType gina-blame nmap F <Plug>(gina-show-commit-tab)zv
@@ -1661,7 +1674,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   {
     'lewis6991/gitsigns.nvim',
     enabled = not is_light_mode,
-    init = function()
+    config = function()
       require('gitsigns').setup({
         signcolumn = false,
         numhl      = true,
@@ -1671,6 +1684,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   -- [LSP]
   {
     'neovim/nvim-lspconfig',
+    event = "VeryLazy",
     enabled = not is_light_mode,
     config = function()
       -- [Common]
@@ -2127,7 +2141,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           vim.opt.rtp:append(plugin.dir .. "/editor-support/vim")
           require("lazy.core.loader").packadd(plugin.dir .. "/editor-support/vim")
         end,
-        init = function(plugin)
+        config = function(plugin)
           require("lazy.core.loader").ftdetect(plugin.dir .. "/editor-support/vim")
         end,
       },
@@ -2143,7 +2157,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   {
     'folke/trouble.nvim',
     enabled = not is_light_mode,
-    init = function()
+    config = function()
       require('trouble').setup {
         auto_refresh = false,
       }
@@ -2151,8 +2165,9 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   },
   {
     'nvimdev/lspsaga.nvim',
+    event = "VeryLazy",
     enabled = not is_light_mode,
-    init = function()
+    config = function()
       require('lspsaga').setup({
         request_timeout = 1000,
         ui = {
@@ -2185,7 +2200,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     'j-hui/fidget.nvim',
     enabled = not is_light_mode,
     tag = 'legacy',
-    init = function()
+    config = function()
       require 'fidget'.setup {}
     end
   },
@@ -2197,7 +2212,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   {
     'mfussenegger/nvim-dap',
     enabled = not is_light_mode,
-    init = function()
+    config = function()
       vim.cmd [[
       autocmd FileType dap-repl lua require('dap.ext.autocompl').attach()
     ]]
@@ -2207,7 +2222,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     'theHamsta/nvim-dap-virtual-text',
     enabled = not is_light_mode,
     dependencies = { 'nvim-dap' },
-    init = function()
+    config = function()
       require("nvim-dap-virtual-text").setup({})
     end
   },
@@ -2218,7 +2233,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       'nvim-dap',
       'nvim-neotest/nvim-nio'
     },
-    init = function()
+    config = function()
       require("dapui").setup()
     end
   },
@@ -2271,7 +2286,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   {
     'preservim/vim-markdown',
     enabled = false,
-    init = function()
+    config = function()
       vim.g.vim_markdown_folding_disabled = 1
       vim.g.vim_markdown_new_list_item_indent = 2
       vim.api.nvim_create_autocmd({ 'FileType' }, {
@@ -2284,7 +2299,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     "iamcco/markdown-preview.nvim",
     enabled = not is_light_mode,
     build = "cd app && npm install",
-    init = function()
+    config = function()
       vim.g.mkdp_filetypes = { "markdown" }
       vim.g.mkdp_preview_options = {
         disable_sync_scroll = true,
@@ -2421,7 +2436,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   {
     's3rvac/vim-syntax-redminewiki',
     enabled = not is_light_mode,
-    init = function()
+    config = function()
       vim.cmd [[
         autocmd BufEnter *.redmine set ft=redminewiki
       ]]
