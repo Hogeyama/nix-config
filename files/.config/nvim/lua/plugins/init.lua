@@ -1840,15 +1840,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
             {
               name = "@vue/typescript-plugin",
               location = vue_typescript_plugin,
-              languages = {
-                "vue",
-                "javascript",
-                "javascriptreact",
-                "javascript.jsx",
-                "typescript",
-                "typescriptreact",
-                "typescript.tsx"
-              },
+              languages = { "vue", },
             },
           },
         },
@@ -1857,7 +1849,12 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       }
       require 'lspconfig'.volar.setup {
         root_dir = require 'lspconfig'.util.root_pattern("vue.config.js", "nuxt.config.ts", "src/App.vue"),
-        filetypes = { "javascript", "typescript", "vue" },
+        init_options = {
+          vue = {
+            hybridMode = false,
+          },
+        },
+        filetypes = { "javascript", "typescript", "typescriptreact", "javascriptreact", "vue" },
       }
 
       -- [[lua_ls]]
