@@ -25,6 +25,9 @@ import XMonad.Hooks.ManageDocks (
   ToggleStruts (..),
   manageDocks,
  )
+import XMonad.Layout.BinaryColumn (
+  BinaryColumn (..),
+ )
 import XMonad.Layout.Column (
   Column (..),
  )
@@ -99,8 +102,8 @@ main = do
         , ("M-S-C-q", io exitSuccess)
         , ("M-x", spawn "sudo pm-suspend")
         , ("M-S-x", spawn "systemctl suspend")
-        , ("M-<Space>", toggleTwoPane)
-        , ("M-S-<Space>", toggleColumn)
+        , ("M-<Space>", toggleTwoRow)
+        , ("M-S-<Space>", toggleTwoCol)
         , ("M-<Return>", focusNextScreen)
         , ("M-C-<Return>", shiftNextScreen)
         , ("M-s", swapScreen)
@@ -159,8 +162,8 @@ xmobar' = statusBar "my-xmobar" xmobarPP {ppLayout = ppLayout'} defToggleStrutsK
     ppLayout' s = case parseLayoutType s of
       LayoutFull -> "Full"
       LayoutTabbed -> "Tabbed"
-      LayoutColumn -> "Column"
-      LayoutTwoPaneTabbed -> "TwoPane"
+      LayoutTwoCol -> "TwoCol"
+      LayoutTwoRow -> "TwoRow"
 
 -- | Default @mod-b@ key binding for 'withEasySB'
 defToggleStrutsKey :: XConfig t -> (KeyMask, KeySym)
@@ -179,21 +182,21 @@ type SimpleTab = Decoration TabbedDecoration DefaultShrinker :$ Simplest
 type MyLayoutHook =
   SimpleTab
     :| CombineTwoP (TwoPane ()) SimpleTab SimpleTab
-    :| Column
+    :| CombineTwoP (BinaryColumn ()) SimpleTab SimpleTab
     :| Full
 
 data LayoutType
   = LayoutFull
   | LayoutTabbed
-  | LayoutColumn
-  | LayoutTwoPaneTabbed
+  | LayoutTwoCol
+  | LayoutTwoRow
   deriving (Eq, Ord, Show)
 
 myLayoutHook :: MyLayoutHook Window
 myLayoutHook =
   myTabbed
     ||| combineTwoP (TwoPane (1 / 50) (1 / 2)) myTabbed myTabbed (Const True)
-    ||| Column 1.0
+    ||| combineTwoP (BinaryColumn 1.4 32) myTabbed myTabbed (Const True)
     ||| Full
   where
     myTabbed =
@@ -275,44 +278,40 @@ toggleTouchPad = setTouchPad . not =<< isTouchPadEnabled
       where
         error' s = log' s >> error s
 
--- touchpad=$(gsettings list-schemas | grep touchpad)
--- gsettings list-keys $touchpad
--- gsettings range $touchpad some-key
-
-toggleTwoPane :: X ()
-toggleTwoPane =
+toggleTwoRow :: X ()
+toggleTwoRow =
   getCurrentLayoutType >>= \case
-    LayoutTwoPaneTabbed -> setLayoutType LayoutTabbed
-    _ -> setLayoutType LayoutTwoPaneTabbed
+    LayoutTwoRow -> setLayoutType LayoutTabbed
+    _ -> setLayoutType LayoutTwoRow
 
-toggleColumn :: X ()
-toggleColumn =
+toggleTwoCol :: X ()
+toggleTwoCol =
   getCurrentLayoutType >>= \case
-    LayoutColumn -> setLayoutType LayoutTabbed
-    _ -> setLayoutType LayoutColumn
+    LayoutTwoCol -> setLayoutType LayoutTabbed
+    _ -> setLayoutType LayoutTwoCol
 
 focusUp :: X ()
 focusUp =
   getCurrentLayoutType >>= \case
-    LayoutTwoPaneTabbed -> focusUpInPane
+    LayoutTwoRow -> focusUpInPane
     _ -> windows W.focusUp
 
 focusDown :: X ()
 focusDown =
   getCurrentLayoutType >>= \case
-    LayoutTwoPaneTabbed -> focusDownInPane
+    LayoutTwoRow -> focusDownInPane
     _ -> windows W.focusDown
 
 focusUpOrAnotherPane :: X ()
 focusUpOrAnotherPane =
   getCurrentLayoutType >>= \case
-    LayoutTwoPaneTabbed -> focusAnotherPane
+    LayoutTwoRow -> focusAnotherPane
     _ -> windows W.focusUp
 
 focusDownOrAnotherPane :: X ()
 focusDownOrAnotherPane =
   getCurrentLayoutType >>= \case
-    LayoutTwoPaneTabbed -> focusAnotherPane
+    LayoutTwoRow -> focusAnotherPane
     _ -> windows W.focusDown
 
 -------------------------------------------------------------------------------
@@ -323,13 +322,20 @@ getCurrentLayoutType :: X LayoutType
 getCurrentLayoutType = parseLayoutType <$> getCurrentLayoutName
 
 getCurrentLayoutName :: X String
-getCurrentLayoutName = dynamicLogString def {ppOrder = \ ~[_, l, _] -> [l]}
+getCurrentLayoutName = do
+  x <- dynamicLogString def {ppOrder = \ ~[_, l, _] -> [l]}
+  log' x
+  pure x
 
 parseLayoutType :: String -> LayoutType
 parseLayoutType s
-  | "combining" `List.isPrefixOf` s = LayoutTwoPaneTabbed
+  | "combining Tabbed Simplest and Tabbed Simplest with TwoPane"
+      `List.isPrefixOf` s =
+      LayoutTwoRow
+  | "combining Tabbed Simplest and Tabbed Simplest with BinaryColumn"
+      `List.isPrefixOf` s =
+      LayoutTwoCol
   | "Tabbed" `List.isPrefixOf` s = LayoutTabbed
-  | "Column" `List.isPrefixOf` s = LayoutColumn
   | otherwise = LayoutFull
 
 setLayoutType :: LayoutType -> X ()
