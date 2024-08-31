@@ -78,9 +78,10 @@ mkConfig position font =
 run :: X.Display -> IO ()
 run display = do
   rs <- X.getScreenInfo display
-  let xpos = 0
-      ypos = 0
-      width = fromIntegral $ foldl max 0 $ map rect_width rs
+  let width = fromIntegral $ foldl max 0 $ map rect_width rs :: Int
+      mr = listToMaybe [ r | r <- rs, rect_width r == fromIntegral width ]
+      xpos = fromIntegral $ maybe 0 rect_x mr
+      ypos = fromIntegral $ maybe 0 rect_y mr
       height = case width of
         3840 -> 40
         2560 -> 30
