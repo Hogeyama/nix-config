@@ -25,6 +25,9 @@ import XMonad.Hooks.ManageDocks (
   ToggleStruts (..),
   manageDocks,
  )
+import XMonad.Layout.Column (
+  Column (..),
+ )
 import XMonad.Layout.ComboP (
   CombineTwoP,
   Property (..),
@@ -97,7 +100,7 @@ main = do
         , ("M-x", spawn "sudo pm-suspend")
         , ("M-S-x", spawn "systemctl suspend")
         , ("M-<Space>", toggleTwoPane)
-        , ("M-S-<Space>", setLayoutType LayoutFull)
+        , ("M-S-<Space>", toggleColumn)
         , ("M-<Return>", focusNextScreen)
         , ("M-C-<Return>", shiftNextScreen)
         , ("M-s", swapScreen)
@@ -148,7 +151,7 @@ main = do
 -------------------------------------------------------------------------------
 
 xmobar' ::
-  LayoutClass l Window =>
+  (LayoutClass l Window) =>
   XConfig l ->
   IO (XConfig (ModifiedLayout AvoidStruts l))
 xmobar' = statusBar "my-xmobar" xmobarPP {ppLayout = ppLayout'} defToggleStrutsKey
@@ -156,6 +159,7 @@ xmobar' = statusBar "my-xmobar" xmobarPP {ppLayout = ppLayout'} defToggleStrutsK
     ppLayout' s = case parseLayoutType s of
       LayoutFull -> "Full"
       LayoutTabbed -> "Tabbed"
+      LayoutColumn -> "Column"
       LayoutTwoPaneTabbed -> "TwoPane"
 
 -- | Default @mod-b@ key binding for 'withEasySB'
@@ -175,11 +179,13 @@ type SimpleTab = Decoration TabbedDecoration DefaultShrinker :$ Simplest
 type MyLayoutHook =
   SimpleTab
     :| CombineTwoP (TwoPane ()) SimpleTab SimpleTab
+    :| Column
     :| Full
 
 data LayoutType
   = LayoutFull
   | LayoutTabbed
+  | LayoutColumn
   | LayoutTwoPaneTabbed
   deriving (Eq, Ord, Show)
 
@@ -187,6 +193,7 @@ myLayoutHook :: MyLayoutHook Window
 myLayoutHook =
   myTabbed
     ||| combineTwoP (TwoPane (1 / 50) (1 / 2)) myTabbed myTabbed (Const True)
+    ||| Column 1.0
     ||| Full
   where
     myTabbed =
@@ -210,7 +217,7 @@ hoge = do
   log' "==="
   log' . show =<< io Env.getEnvironment
 
-log' :: MonadIO m => String -> m ()
+log' :: (MonadIO m) => String -> m ()
 log' s = liftIO $ do
   home <- Env.lookupEnv "HOME" <&> fromMaybe "/tmp"
   appendFile (home <> "/xmonad.mylog") (s <> "\n")
@@ -275,9 +282,14 @@ toggleTouchPad = setTouchPad . not =<< isTouchPadEnabled
 toggleTwoPane :: X ()
 toggleTwoPane =
   getCurrentLayoutType >>= \case
-    LayoutFull -> setLayoutType LayoutTabbed
-    LayoutTabbed -> setLayoutType LayoutTwoPaneTabbed
     LayoutTwoPaneTabbed -> setLayoutType LayoutTabbed
+    _ -> setLayoutType LayoutTwoPaneTabbed
+
+toggleColumn :: X ()
+toggleColumn =
+  getCurrentLayoutType >>= \case
+    LayoutColumn -> setLayoutType LayoutTabbed
+    _ -> setLayoutType LayoutColumn
 
 focusUp :: X ()
 focusUp =
@@ -317,6 +329,7 @@ parseLayoutType :: String -> LayoutType
 parseLayoutType s
   | "combining" `List.isPrefixOf` s = LayoutTwoPaneTabbed
   | "Tabbed" `List.isPrefixOf` s = LayoutTabbed
+  | "Column" `List.isPrefixOf` s = LayoutColumn
   | otherwise = LayoutFull
 
 setLayoutType :: LayoutType -> X ()
