@@ -1965,7 +1965,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
               "black",
               "hadolint",
               "prettier",
-              "shfmt",
               "yamllint",
             },
             auto_update = false,
@@ -2064,9 +2063,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
                 },
               }),
               null_ls.builtins.formatting.markdownlint,
-              null_ls.builtins.formatting.shfmt.with({
-                extra_args = { "-i", "0", "-ci" },
-              }),
               -- [code_action]
               null_ls.builtins.code_actions.gitrebase,
             }
