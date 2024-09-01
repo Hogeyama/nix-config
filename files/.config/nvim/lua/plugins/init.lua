@@ -2072,17 +2072,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       },
       { 'aznhe21/actions-preview.nvim' },
       { 'Shougo/ddc-source-lsp', },
-      {
-        "unisonweb/unison",
-        branch = "trunk",
-        config = function(plugin)
-          vim.opt.rtp:append(plugin.dir .. "/editor-support/vim")
-          require("lazy.core.loader").packadd(plugin.dir .. "/editor-support/vim")
-        end,
-        config = function(plugin)
-          require("lazy.core.loader").ftdetect(plugin.dir .. "/editor-support/vim")
-        end,
-      },
       { "artemave/workspace-diagnostics.nvim" },
       {
         "folke/neoconf.nvim",
