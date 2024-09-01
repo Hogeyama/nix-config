@@ -1872,7 +1872,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           },
         },
         single_file_support = false,
-        filetypes = { "javascript", "typescript", "vue" },
+        filetypes = { "javascript", "typescript", "javascriptreact", "typescriptreact", "vue" },
       }
       require 'lspconfig'.volar.setup {
         root_dir = require 'lspconfig'.util.root_pattern("vue.config.js", "nuxt.config.ts", "src/App.vue"),
@@ -2484,5 +2484,8 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       },
       debounce = 200
     },
+  },
+  {
+    'posva/vim-vue'
   },
 }
