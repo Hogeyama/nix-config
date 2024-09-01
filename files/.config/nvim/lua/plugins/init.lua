@@ -2030,58 +2030,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         'nvimtools/none-ls.nvim',
         config = function()
           local null_ls = require("null-ls")
-          local h = require("null-ls.helpers")
-          local methods = require("null-ls.methods")
-
-          ---@diagnostic disable-next-line: unused-local
-          local spotbugs = h.make_builtin({
-            name = "spotbugs",
-            meta = {
-              url = "https://spotbugs.github.io/",
-              description = "SpotBugs is a program which uses static analysis to look for bugs in Java code",
-            },
-            method = methods.internal.DIAGNOSTICS_ON_SAVE,
-            filetypes = { "java" },
-            generator_opts = {
-              command = "spotbugs",
-              args = { "$ROOT" },
-              format = "json",
-              on_output = function(params)
-                local parser = h.diagnostics.from_json({})
-                return parser({ output = params.output.comments })
-              end,
-              multiple_files = true,
-              check_exit_code = function(code)
-                return code >= 1
-              end,
-              from_stderr = true, -- なぜかstderrに出力される？
-            },
-            factory = h.generator_factory,
-          })
-
-          ---@diagnostic disable-next-line: unused-local
-          local spotless = h.make_builtin({
-            name = "spotless",
-            timeout = 50000,
-            meta = {
-              url = "https://github.com/diffplug/spotless",
-              description = "Spotless is a general-purpose formatter",
-            },
-            method = methods.internal.FORMATTING,
-            filetypes = { "java", "groovy" },
-            generator_opts = {
-              command = "bash",
-              args = {
-                '-c',
-                'cd "$ROOT" && ./gradlew spotlessApply -PspotlessIdeHook="$FILENAME" --quiet',
-              },
-              to_stdin = false,
-              to_temp_file = true,
-              from_temp_file = true,
-            },
-            factory = h.formatter_factory,
-          })
-
           null_ls.setup {
             log_level = "trace",
             on_attach = vim.g.lsp_default_on_attach,
@@ -2094,10 +2042,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
               null_ls.builtins.diagnostics.actionlint,
               null_ls.builtins.diagnostics.hadolint,
               -- null_ls.builtins.diagnostics.yamllint,
-              -- null_ls.builtins.diagnostics.checkstyle.with({
-              --   extra_args = { "--", "-f", "sarif", "$FILENAME" },
-              -- }),
-              -- spotbugs,
               -- [formatter]
               null_ls.builtins.formatting.black,
               null_ls.builtins.formatting.just,
@@ -2123,12 +2067,10 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
               null_ls.builtins.formatting.shfmt.with({
                 extra_args = { "-i", "0", "-ci" },
               }),
-              -- spotless,
               -- [code_action]
               null_ls.builtins.code_actions.gitrebase,
             }
           }
-          -- require("null-ls").disable({ name = "spotbugs" })
         end,
         dependencies = { "plenary.nvim" },
       },
