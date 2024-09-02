@@ -2369,15 +2369,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
       ]]
     end
   },
-  -- [[JavaScript/TypeScript]]
-  {
-    'jelera/vim-javascript-syntax',
-    enabled = not is_light_mode,
-  },
-  {
-    'leafgarland/typescript-vim',
-    enabled = not is_light_mode,
-  },
   -- [[just]]
   {
     "NoahTheDuke/vim-just",
