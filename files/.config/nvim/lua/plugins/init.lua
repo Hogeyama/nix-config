@@ -193,7 +193,7 @@ return {
         local branch = vim.trim(vim.fn.system("git branch --show-current"))
         return vim.v.shell_error == 0 and pwd .. "@" .. branch or pwd
       end
-      vim.api.nvim_create_autocmd("VimEnter", {
+      vim.api.nvim_create_autocmd("UIEnter", {
         callback = function()
           if vim.env.NVIM_NO_AUTO_SESSOIN ~= '1' and vim.fn.argc(-1) == 0 then
             vim.g.session_loaded = 1
@@ -323,6 +323,56 @@ return {
         },
       })
     end,
+  },
+  {
+    "CopilotC-Nvim/CopilotChat.nvim",
+    event = "UIEnter",
+    branch = "canary",
+    dependencies = {
+      { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
+      { "nvim-lua/plenary.nvim" },  -- for curl, log wrapper
+    },
+    build = "make tiktoken",        -- Only on MacOS or Linux
+    opts = {
+      show_help = false,
+      show_folds = false,
+      prompts = {
+        Explain = {
+          prompt = '/COPILOT_EXPLAIN 選択したコードを解説してください。',
+        },
+        Review = {
+          prompt = '/COPILOT_REVIEW 選択したコードをレビューしてください。',
+        },
+        Fix = {
+          prompt = '/COPILOT_GENERATE There is a problem in this code. Rewrite the code to show it with the bug fixed.',
+        },
+        Optimize = {
+          prompt = '/COPILOT_GENERATE Optimize the selected code to improve performance and readablilty.',
+        },
+        Docs = {
+          prompt = '/COPILOT_GENERATE 選択したコードにドキュメントを追加してください。',
+        },
+        Tests = {
+          prompt = '/COPILOT_GENERATE 選択したコードに対するテストを書いてください。',
+        },
+        FixDiagnostic = {
+          prompt = '次の問題を修正してください:',
+        },
+        Commit = {
+          prompt =
+          'Write commit message for the change with commitizen convention. Make sure the title has maximum 50 characters and message is wrapped at 72 characters. Wrap the whole message in code block with language gitcommit.',
+        },
+        CommitStaged = {
+          prompt =
+          'Write commit message for the change with commitizen convention. Make sure the title has maximum 50 characters and message is wrapped at 72 characters. Wrap the whole message in code block with language gitcommit.',
+        },
+      },
+    },
+    keys = {
+      { '<leader>co', "<Cmd>CopilotChatOpen<CR>",  mode = { 'n' } },
+      { '<leader>cc', "<Cmd>CopilotChatClose<CR>", mode = { 'n' } },
+      { '<leader>cr', "<Cmd>CopilotChatReset<CR>", mode = { 'n' } },
+    },
   },
   {
     "olimorris/codecompanion.nvim",
