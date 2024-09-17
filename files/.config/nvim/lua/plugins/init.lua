@@ -184,6 +184,9 @@ return {
   {
     'stevearc/resession.nvim',
     enabled = not is_light_mode,
+    dependencies = {
+      'neovim/nvim-lspconfig'
+    },
     config = function()
       local resession = require("resession")
       resession.setup()
