@@ -1952,7 +1952,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         },
       }
       require 'lspconfig'.dhall_lsp_server.setup {}
-      require 'lspconfig'.gopls.setup {}
       -- require 'lspconfig'.jsonls.setup {}
       require 'lspconfig'.rust_analyzer.setup {
         settings = {
@@ -1988,7 +1987,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
               "diagnostic-languageserver",
               "dockerfile-language-server",
               "eslint-lsp",
-              "gopls",
               "gradle-language-server",
               "graphql-language-service-cli",
               "jdtls",
@@ -2000,7 +1998,6 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
               "typescript-language-server",
               "tailwindcss-language-server",
               "yaml-language-server",
-              "sqls",
               -- [DAP]
               "java-debug-adapter",
               "java-test",
