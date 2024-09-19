@@ -17,7 +17,6 @@ import XMonad.Hooks.DynamicLog (
   PP (..),
   dynamicLogString,
   statusBar,
-  xmobarPP,
  )
 import XMonad.Hooks.EwmhDesktops (ewmh)
 import XMonad.Hooks.ManageDocks (
@@ -41,6 +40,7 @@ import XMonad.Layout.Decoration (
   Decoration,
   DefaultShrinker,
  )
+import XMonad.Layout.Gaps (Direction2D (..), Gaps, gaps)
 import XMonad.Layout.LayoutModifier (ModifiedLayout)
 import XMonad.Layout.Simplest (Simplest)
 import XMonad.Layout.Tabbed (
@@ -65,7 +65,7 @@ main :: IO ()
 main = do
   terminal <- Env.lookupEnv "TERMINAL" <&> fromMaybe "konsole"
   browser <- Env.lookupEnv "BROWSER" <&> fromMaybe "firefox"
-  xmonad =<< xmobar' (ewmh (myConfig terminal browser))
+  xmonad (myConfig terminal browser)
   where
     myConfig terminal browser =
       def
@@ -74,15 +74,13 @@ main = do
         , workspaces = myWorkspaces
         , focusedBorderColor = "#223377"
         , normalBorderColor = "#000000"
-        , manageHook = manageDocks <+> manageHook def
+        , manageHook =
+            manageDocks
+              <+> manageHook def
+              <+> composeAll
+                [className =? "plasmashell" --> doFloat]
         , layoutHook = myLayoutHook
-        , startupHook =
-            mapM_
-              spawn
-              [ "autorandr -l default"
-              , "feh --bg-scale $HOME/Pictures/reflexion.jpg"
-              , "fcitx5"
-              ]
+        , startupHook = mapM_ spawn []
         , handleExtraArgs = \xs conf -> do
             mborder <- tryAnyDeep $ read <$> readFile "/tmp/xmonad_borderwidth"
             handleExtraArgs
@@ -97,7 +95,7 @@ main = do
         `additionalKeysP`
         --
         [ ("M-g", spawn browser)
-        , ("M-p", spawn "rofi -show combi -modes combi -combi-modes window,drun,run")
+        , ("M-p", spawn "krunner")
         , ("M-S-q", kill)
         , ("M-S-C-q", io exitSuccess)
         , ("M-x", spawn "sudo pm-suspend")
@@ -123,7 +121,6 @@ main = do
         , ("M-C-s", spawn $ unwords ["scrot", "-s", screenShotName])
         , ("M-S-b", spawn "$HOME/.local/bin/bttoggle")
         , ("M-m", toggleTouchPad)
-        , ("M-b", sendMessage ToggleStruts) -- xmobar
         ]
         `additionalKeysP`
         --
@@ -150,26 +147,6 @@ main = do
     myWorkspaces = map show [1 .. 9 :: Int]
 
 -------------------------------------------------------------------------------
--- xmobar
--------------------------------------------------------------------------------
-
-xmobar' ::
-  (LayoutClass l Window) =>
-  XConfig l ->
-  IO (XConfig (ModifiedLayout AvoidStruts l))
-xmobar' = statusBar "my-xmobar" xmobarPP {ppLayout = ppLayout'} defToggleStrutsKey
-  where
-    ppLayout' s = case parseLayoutType s of
-      LayoutFull -> "Full"
-      LayoutTabbed -> "Tabbed"
-      LayoutTwoCol -> "TwoCol"
-      LayoutTwoRow -> "TwoRow"
-
--- | Default @mod-b@ key binding for 'withEasySB'
-defToggleStrutsKey :: XConfig t -> (KeyMask, KeySym)
-defToggleStrutsKey XConfig {modMask = modm} = (modm, xK_b)
-
--------------------------------------------------------------------------------
 -- Layout
 -------------------------------------------------------------------------------
 
@@ -182,7 +159,7 @@ type SimpleTab = Decoration TabbedDecoration DefaultShrinker :$ Simplest
 type MyLayoutHook =
   SimpleTab
     :| CombineTwoP (TwoPane ()) SimpleTab SimpleTab
-    :| CombineTwoP (BinaryColumn ()) SimpleTab SimpleTab
+    :| ModifiedLayout Gaps (CombineTwoP (BinaryColumn ()) SimpleTab SimpleTab)
     :| Full
 
 data LayoutType
@@ -196,7 +173,7 @@ myLayoutHook :: MyLayoutHook Window
 myLayoutHook =
   myTabbed
     ||| combineTwoP (TwoPane (1 / 50) (1 / 2)) myTabbed myTabbed (Const True)
-    ||| combineTwoP (BinaryColumn 1.4 32) myTabbed myTabbed (Const True)
+    ||| gaps [(D, 60)] (combineTwoP (BinaryColumn 1.4 32) myTabbed myTabbed (Const True))
     ||| Full
   where
     myTabbed =
