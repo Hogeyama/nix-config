@@ -100,8 +100,7 @@ main = do
         , ("M-S-C-q", io exitSuccess)
         , ("M-x", spawn "sudo pm-suspend")
         , ("M-S-x", spawn "systemctl suspend")
-        , ("M-<Space>", toggleTwoRow)
-        , ("M-S-<Space>", toggleTwoCol)
+        , ("M-<Space>", sendMessage NextLayout)
         , ("M-<Return>", focusNextScreen)
         , ("M-C-<Return>", shiftNextScreen)
         , ("M-s", swapScreen)
@@ -255,18 +254,6 @@ toggleTouchPad = setTouchPad . not =<< isTouchPadEnabled
       where
         error' s = log' s >> error s
 
-toggleTwoRow :: X ()
-toggleTwoRow =
-  getCurrentLayoutType >>= \case
-    LayoutTwoRow -> setLayoutType LayoutTabbed
-    _ -> setLayoutType LayoutTwoRow
-
-toggleTwoCol :: X ()
-toggleTwoCol =
-  getCurrentLayoutType >>= \case
-    LayoutTwoCol -> setLayoutType LayoutTabbed
-    _ -> setLayoutType LayoutTwoCol
-
 focusUp :: X ()
 focusUp =
   getCurrentLayoutType >>= \case
@@ -314,13 +301,6 @@ parseLayoutType s
       LayoutTwoCol
   | "Tabbed" `List.isPrefixOf` s = LayoutTabbed
   | otherwise = LayoutFull
-
-setLayoutType :: LayoutType -> X ()
-setLayoutType t = do
-  t' <- getCurrentLayoutType
-  unless (t == t') $ do
-    sendMessage NextLayout
-    setLayoutType t
 
 withNextScreen :: (WorkspaceId -> WindowSet -> WindowSet) -> X ()
 withNextScreen func =
