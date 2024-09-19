@@ -85,7 +85,7 @@
       homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
         pkgs = self.nixosConfigurations.${hostName}.pkgs;
         modules = [
-          ({ config, pkgs, ... }: import ./modules/home/home.nix { inherit config pkgs self; })
+          ({ config, pkgs, ... }: import ./modules/home/home.nix { inherit inputs env config pkgs self; })
           {
             home = {
               inherit username;
