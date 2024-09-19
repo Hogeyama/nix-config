@@ -214,8 +214,9 @@ in
       # for firefox
       tridactyl-native
       ### font
+      udev-gothic.nerdfont
+      noto-fonts-emoji
       rounded-mgenplus
-      illusion
       ### my packages
       my-xmobar
       my-fzf-wrapper
@@ -266,6 +267,20 @@ in
         gmp5
         icu
       ];
+    };
+  };
+  fonts = {
+    fontconfig = {
+      enable = true;
+      defaultFonts = {
+        monospace = [
+          "UDEV Gothic NF"
+          "Noto Color Emoji"
+        ];
+        emoji = [
+          "Noto Color Emoji"
+        ];
+      };
     };
   };
   programs = {
