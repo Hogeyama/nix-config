@@ -1,4 +1,6 @@
 .direnv
 result
+dist-newstyle/
+/home.nix
 #/hardware-configuration.nix
 #/env.nix
