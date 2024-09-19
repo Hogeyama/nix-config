@@ -675,8 +675,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
             indentscope_color = "",
           },
           dropbar = {
-            enabled = true,
-            color_mode = false,
+            enabled = false,
           },
           fidget = true,
           hop = true,
@@ -899,25 +898,17 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     end
   },
   {
-    'Bekaboo/dropbar.nvim',
+    "utilyre/barbecue.nvim",
     enabled = not is_light_mode,
-    config = function()
-      vim.api.nvim_create_autocmd({ 'FileType' }, {
-        pattern = {
-          -- dropbarとgina-blameはdropbarでサポートされてないので
-          -- 1行ずれるのを防ぐために適当に'%f'を設定しておく。
-          'fugitiveblame',
-          'gina-blame',
-          -- javaはLSPが重いのでdropbarを無効にする
-          'java',
-          -- typescriptreactはなんかdropbarが動かん
-          'typescriptreact',
-        },
-        callback = function(_)
-          vim.opt_local.winbar = '%f'
-        end
-      })
-    end
+    name = "barbecue",
+    version = "*",
+    dependencies = {
+      "SmiteshP/nvim-navic",
+      "nvim-tree/nvim-web-devicons", -- optional dependency
+    },
+    opts = {
+      -- TODO
+    },
   },
   {
     "sontungexpt/sttusline",
