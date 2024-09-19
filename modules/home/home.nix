@@ -48,7 +48,8 @@ let
     postBuild = ''
       wrapProgram $out/bin/xmonad-x86_64-linux \
         --set BROWSER  ${env.user.browser} \
-        --set TERMINAL ${env.user.terminal}
+        --set TERMINAL ${env.user.terminal} \
+        --set XMONAD_LAYOUT ${env.user.xmonad-layout}
     '';
   };
 

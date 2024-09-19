@@ -65,7 +65,13 @@ main :: IO ()
 main = do
   terminal <- Env.lookupEnv "TERMINAL" <&> fromMaybe "konsole"
   browser <- Env.lookupEnv "BROWSER" <&> fromMaybe "firefox"
-  xmonad (myConfig terminal browser)
+  Env.lookupEnv "XMONAD_LAYOUT" >>= \case
+    Just "1" ->
+      xmonad (myConfig terminal browser) {layoutHook = myLayoutHook1}
+    Just "2" ->
+      xmonad (myConfig terminal browser) {layoutHook = myLayoutHook2}
+    _ ->
+      xmonad (myConfig terminal browser) {layoutHook = myLayoutHook1}
   where
     myConfig terminal browser =
       def
@@ -79,7 +85,6 @@ main = do
               <+> manageHook def
               <+> composeAll
                 [className =? "plasmashell" --> doFloat]
-        , layoutHook = myLayoutHook
         , startupHook = mapM_ spawn []
         , handleExtraArgs = \xs conf -> do
             mborder <- tryAnyDeep $ read <$> readFile "/tmp/xmonad_borderwidth"
@@ -106,7 +111,6 @@ main = do
         , ("M-s", swapScreen)
         , ("M-a", swapWindow)
         , ("M-d", swapPanes)
-        , ("M-S-a", hoge) -- なんか動作の確認に
         , ("M-S-r", restart "xmonad" True)
         , ("M-k", focusUpOrAnotherPane)
         , ("M-j", focusDownOrAnotherPane)
@@ -155,11 +159,17 @@ infixr 6 :$
 infixr 5 :|
 type SimpleTab = Decoration TabbedDecoration DefaultShrinker :$ Simplest
 
-type MyLayoutHook =
+type MyLayoutHook1 =
   SimpleTab
     :| CombineTwoP (TwoPane ()) SimpleTab SimpleTab
     :| ModifiedLayout Gaps (CombineTwoP (BinaryColumn ()) SimpleTab SimpleTab)
     :| Full
+
+type MyLayoutHook2 =
+  SimpleTab
+    :| CombineTwoP (TwoPane ()) SimpleTab SimpleTab
+    :| ModifiedLayout Gaps SimpleTab
+    :| ModifiedLayout Gaps (CombineTwoP (TwoPane ()) SimpleTab SimpleTab)
 
 data LayoutType
   = LayoutFull
@@ -168,12 +178,12 @@ data LayoutType
   | LayoutTwoRow
   deriving (Eq, Ord, Show)
 
-myLayoutHook :: MyLayoutHook Window
-myLayoutHook =
-  myTabbed
-    ||| combineTwoP (TwoPane (1 / 50) (1 / 2)) myTabbed myTabbed (Const True)
-    ||| gaps [(D, 60)] (combineTwoP (BinaryColumn 1.4 32) myTabbed myTabbed (Const True))
-    ||| Full
+myLayoutHook1 :: MyLayoutHook1 Window
+myLayoutHook2 :: MyLayoutHook2 Window
+(myLayoutHook1, myLayoutHook2) =
+  ( myTabbed ||| myTwoPane ||| gaps [(D, 60)] myTwoCol ||| Full
+  , myTabbed ||| myTwoPane ||| gaps [(D, 45)] myTabbed ||| gaps [(D, 45)] myTwoPane
+  )
   where
     myTabbed =
       tabbed
@@ -190,11 +200,8 @@ myLayoutHook =
           , fontName = "xft:Rounded Mgen+ 1mn:size=8"
           , decoHeight = 30
           }
-
-hoge :: X ()
-hoge = do
-  log' "==="
-  log' . show =<< io Env.getEnvironment
+    myTwoPane = combineTwoP (TwoPane (1 / 50) (1 / 2)) myTabbed myTabbed (Const True)
+    myTwoCol = combineTwoP (BinaryColumn 1.4 32) myTabbed myTabbed (Const True)
 
 log' :: (MonadIO m) => String -> m ()
 log' s = liftIO $ do

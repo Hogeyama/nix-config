@@ -9,6 +9,7 @@ rec {
     email = "gan13027830@gmail.com";
     browser = "firefox";
     terminal = "konsole";
+    xmonad-layout = "1";
   };
 
   nixosModule = { pkgs, config, ... }: {
