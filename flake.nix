@@ -61,6 +61,7 @@
           ./modules/overlays
           ./modules/nix
           ./modules/locale
+          ./modules/syslog
           ./modules/programs
           ./modules/fonts
           ./modules/keyboard
