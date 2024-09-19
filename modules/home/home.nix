@@ -198,7 +198,6 @@ in
       shfmt
       simplescreenrecorder
       sqlite
-      terraform
       textql
       time
       tldr
