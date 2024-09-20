@@ -230,6 +230,14 @@ in
         executable = true;
         text = ''echo "Nothing to do"'';
       };
+      ".gnupg/gpg-agent.conf" = {
+          text = ''
+            # 100h
+            default-cache-ttl 360000
+            max-cache-ttl     360000
+            pinentry-program ${pkgs.pinentry-tty}/bin/pinentry-tty
+          '';
+      };
     };
     sessionVariables = {
       EDITOR = "nvimw";
