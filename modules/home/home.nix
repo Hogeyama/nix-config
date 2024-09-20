@@ -212,8 +212,6 @@ in
       xdragon
       yq
       zip
-      # for firefox
-      tridactyl-native
       ### font
       udev-gothic.nerdfont
       noto-fonts-emoji
@@ -226,6 +224,7 @@ in
       nixDaemonS3CredentialsBin
     ];
     file = dotfilesSymlinks { } // {
+      ".local/share/tridactyl/native_main".source = "${pkgs.tridactyl-native}/bin/native_main";
       ".xmonad/xmonad-x86_64-linux".source = "${xmonad}/bin/xmonad-x86_64-linux";
       ".xmonad/build" = {
         executable = true;
