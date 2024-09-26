@@ -214,7 +214,7 @@ return {
               has_buf = true
             end
           end
-          if vim.g.session_loaded == 1 and has_buf then
+          if has_buf then
             resession.save(session_name(), { notify = false })
           end
         end,
