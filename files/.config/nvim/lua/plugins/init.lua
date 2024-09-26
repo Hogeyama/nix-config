@@ -1774,7 +1774,7 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
           client.server_capabilities.documentFormattingProvider = true
         end
         -- preffer prettier
-        if client.name == "tsserver" or client.name == "jsonls" then
+        if client.name == "ts_ls" or client.name == "jsonls" then
           client.server_capabilities.documentFormattingProvider = false
         end
       end
@@ -1823,12 +1823,12 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
         single_file_support = false,
       }
 
-      -- [[tsserver]]
+      -- [[ts_ls]]
       -- thx! https://tech-blog.cloud-config.jp/2024-05-22-write-vue-with-neovim
       local vue_typescript_plugin =
           require("mason-registry").get_package("vue-language-server"):get_install_path() ..
           "/node_modules/@vue/language-server/node_modules/@vue/typescript-plugin"
-      require 'lspconfig'.tsserver.setup {
+      require 'lspconfig'.ts_ls.setup {
         root_dir = require 'lspconfig'.util.root_pattern("package.json"),
         init_options = {
           lint = true,
