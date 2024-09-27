@@ -83,10 +83,12 @@
       };
 
       # For Nix package manager only
+      # FIXME: modules/homeに移動
       homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
         pkgs = self.nixosConfigurations.${hostName}.pkgs;
         modules = [
           ({ config, pkgs, ... }: import ./modules/home/home.nix { inherit inputs env config pkgs self; })
+          inputs.nix-index-database.hmModules.nix-index
           {
             home = {
               inherit username;
