@@ -2379,4 +2379,97 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
   {
     'posva/vim-vue'
   },
+  {
+    'VidocqH/lsp-lens.nvim',
+    enabled = not is_light_mode,
+  },
+  {
+    'ray-x/navigator.lua',
+    enabled = not is_light_mode,
+    event = "VeryLazy",
+    dependencies = {
+      {
+        'ray-x/guihua.lua',
+        build = 'cd lua/fzy && make'
+      },
+      { 'neovim/nvim-lspconfig' },
+    },
+    config = function()
+      local format = function()
+        require 'conform'.format({
+          timeout_ms = 500,
+          lsp_fallback = true,
+        })
+      end
+      local trouble = function(mode, focus)
+        return function()
+          if focus then
+            require('trouble').focus(mode)
+          else
+            require('trouble').toggle(mode)
+          end
+        end
+      end
+      local diagnostic_detail = function()
+        local opts = {
+          severity_sort = true,
+          source = true,
+          scope = 'cursor',
+          border = 'rounded',
+          prefix = ' ',
+          focusable = true,
+        }
+        vim.diagnostic.open_float(nil, opts)
+      end
+      require("navigator").setup({
+        default_mapping = false, -- set to false if you will remap every key
+        keymaps = {
+          { key = '<C-l>l', func = require('navigator.codelens').run_action,    desc = 'run code lens action', mode = 'n' },
+          { key = '<C-l>a', func = require('navigator.codeAction').code_action, desc = 'code_action',          mode = { 'n', 'v' } },
+          { key = '<C-h>',  func = vim.lsp.buf.hover,                           desc = "hover",                mode = 'n' },
+          { key = '<C-j>',  func = vim.lsp.buf.definition,                      desc = "definition",           mode = 'n' },
+          { key = '<C-k>',  func = '<cmd>Lspsaga peek_definition<CR>',          desc = "definition",           mode = 'n' },
+          { key = '<C-l>f', func = format,                                      desc = "format",               mode = { 'n', 'v' } },
+          { key = '<C-l>q', func = trouble('diagnostics', true),                desc = "show diagnostic",      mode = 'n' },
+          { key = '<C-l>o', func = trouble('symbols', false),                   desc = "show symbols",         mode = 'n' },
+          { key = '<C-l>i', func = trouble('lsp_implementations', true),        desc = "implementation",       mode = 'n' },
+          { key = '<C-l>r', func = trouble('lsp_references', true),             desc = "find references",      mode = 'n' },
+          { key = '<C-l>h', func = vim.lsp.buf.signature_help,                  desc = "signature help",       mode = 'n' },
+          { key = '<C-l>R', func = vim.lsp.buf.rename,                          desc = "rename",               mode = 'n' },
+          { key = '<C-l>k', func = diagnostic_detail,                           desc = "show diagnostic",      mode = 'n' },
+        },
+        ts_fold = { enable = false, },
+        treesitter_analysis = true,
+        treesitter_navigation = true,
+        treesitter_analysis_max_num = 100,
+        treesitter_analysis_condense = true,
+        transparency = 50,
+
+        lsp_signature_help = false,
+        signature_help_cfg = nil,
+        mason = true,
+        icons = {
+          icons = false,
+          code_action_icon = '',
+        },
+        lsp = {
+          enable = true,
+          code_action = { enable = false, sign = false, sign_priority = 40, virtual_text = true },
+          code_lens_action = { enable = true, sign = false, sign_priority = 40, virtual_text = true },
+          document_highlight = false,
+          format_on_save = false,
+          diagnostic = {
+            underline = true,
+            virtual_text = true,
+            update_in_insert = false, -- update diagnostic message in insert mode
+            float = { focusable = true, },
+          },
+          hover = { enable = false, },
+          diagnostic_virtual_text = true,
+          diagnostic_update_in_insert = false,
+          display_diagnostic_qf = nil,
+        }
+      })
+    end,
+  }
 }
