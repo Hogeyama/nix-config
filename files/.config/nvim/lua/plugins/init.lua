@@ -478,7 +478,7 @@ return {
   {
     'nvimtools/hydra.nvim',
     event = "VeryLazy",
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and false,
     config = function()
       local hydra = require('hydra')
       hydra({
