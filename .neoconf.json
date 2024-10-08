@@ -1,0 +1,9 @@
+{
+  "lspconfig": {
+    "hls": {
+      "haskell": {
+        "formattingProvider": "fourmolu"
+      }
+    }
+  }
+}
