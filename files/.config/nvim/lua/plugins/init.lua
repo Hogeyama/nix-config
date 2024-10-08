@@ -1215,8 +1215,9 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     end
   },
   {
-    'hrsh7th/nvim-cmp',
+    'yioneko/nvim-cmp',
     event = "InsertEnter",
+    branch = "perf",
     enabled = true,
     config = function()
       local cmp = require("cmp")
@@ -1263,7 +1264,11 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
             },
             trigger_characters = { '/', '.', '~' },
           },
-        })
+        }),
+        performance = {
+          debounce = 0,
+          throttle = 0,
+        },
       })
       cmp.setup.cmdline({ '/', '?' }, {
         mapping = cmp.mapping.preset.cmdline({
@@ -2216,10 +2221,10 @@ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
     version = "*",
     ft = "markdown",
     dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-treesitter/nvim-treesitter",
-      "hrsh7th/nvim-cmp",
-      "ibhagwan/fzf-lua",
+      "plenary.nvim",
+      "nvim-treesitter",
+      'nvim-cmp',
+      "fzf-lua",
     },
     opts = {
       workspaces = {
