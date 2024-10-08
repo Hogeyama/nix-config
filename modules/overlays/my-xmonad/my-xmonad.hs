@@ -84,7 +84,9 @@ main = do
             manageDocks
               <+> manageHook def
               <+> composeAll
-                [className =? "plasmashell" --> doFloat]
+                [ className =? "plasmashell" --> doFloat
+                , resource =? "Alert" --> doFloat -- firefox notification
+                ]
         , startupHook = mapM_ spawn []
         , handleExtraArgs = \xs conf -> do
             mborder <- tryAnyDeep $ read <$> readFile "/tmp/xmonad_borderwidth"
@@ -154,9 +156,13 @@ main = do
 -------------------------------------------------------------------------------
 
 type (:$) = ModifiedLayout
+
 type (:|) = Choose
+
 infixr 6 :$
+
 infixr 5 :|
+
 type SimpleTab = Decoration TabbedDecoration DefaultShrinker :$ Simplest
 
 type MyLayoutHook1 =
