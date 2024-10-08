@@ -85,6 +85,7 @@ main = do
               <+> manageHook def
               <+> composeAll
                 [ className =? "plasmashell" --> doFloat
+                , className =? "firefox-esr" --> doFloat
                 , resource =? "Alert" --> doFloat -- firefox notification
                 ]
         , startupHook = mapM_ spawn []
