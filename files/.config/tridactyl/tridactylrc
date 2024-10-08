@@ -1,4 +1,5 @@
 unbind <C-f>
+unbind <C-x>
 unbind s
 bind j scrollline  5
 bind k scrollline -5
