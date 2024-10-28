@@ -296,7 +296,9 @@ return {
             end,
           },
           function(choice)
-            return choice ~= nil and vim.cmd('edit ' .. choice)
+            if choice ~= nil then
+              vim.cmd('edit ' .. choice)
+            end
           end)
       end)
     end,
