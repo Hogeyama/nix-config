@@ -134,12 +134,14 @@ in
     stateVersion = "22.11";
     packages = with pkgs; [
       albert
+      autorandr
       awscli2
       aws-sam-cli
       aws-vault
       bat
       bind
       cachix
+      cargo
       checkstyle
       comma
       commitizen
@@ -150,6 +152,7 @@ in
       docker-compose
       docker-credential-helpers
       eslint_d
+      expect
       eza
       fd
       feh
@@ -159,6 +162,7 @@ in
       gitflow
       git-remote-codecommit
       glow
+      gnumake
       go
       golangci-lint
       google-cloud-sdk
@@ -169,6 +173,7 @@ in
       htop
       jnv
       jq
+      krdc
       just
       libreoffice
       lsof
@@ -199,17 +204,21 @@ in
       shfmt
       simplescreenrecorder
       sqlite
+      ssh-to-age
       textql
       time
       tldr
       tree-sitter
       ulauncher
       unar
+      unzip
       vifm
       watson
       wget
+      xclip
       xdg-utils
       xdragon
+      xsel
       yq
       zip
       ### font
