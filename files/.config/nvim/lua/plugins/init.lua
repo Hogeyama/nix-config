@@ -737,9 +737,6 @@ return {
     enabled = not is_light_mode and not vim.g.vscode,
     main = "ibl",
     opts = {
-      indent = {
-        char = "▏",
-      },
       scope = {
         enabled = false,
       },
