@@ -2469,7 +2469,7 @@ return {
           diagnostic_virtual_text = true,
           diagnostic_update_in_insert = false,
           display_diagnostic_qf = nil,
-          disable_lsp = 'all'
+          disable_lsp = { 'denols' }
         }
       })
     end,
