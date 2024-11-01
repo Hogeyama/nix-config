@@ -631,7 +631,7 @@ in
       enable = true;
     };
     vscode = {
-      enable = true;
+      enable = false;
       package = (pkgs.vscode.override { isInsiders = false; }).overrideAttrs (oldAttrs: {
         src = (builtins.fetchTarball {
           url = "https://vscode.download.prss.microsoft.com/dbazure/download/stable/05047486b6df5eb8d44b2ecd70ea3bdf775fd937/code-stable-x64-1706696875.tar.gz";
