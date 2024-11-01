@@ -91,7 +91,7 @@ return {
   {
     'nvim-telescope/telescope.nvim',
     event = "VeryLazy",
-    enabled = true,
+    enabled = true and not vim.g.vscode,
     config = function()
       require('telescope').setup {
         defaults = {
@@ -132,7 +132,7 @@ return {
   },
   {
     "chrisgrieser/nvim-rip-substitute",
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     cmd = "RipSubstitute",
     keys = {
       {
@@ -145,7 +145,7 @@ return {
   },
   {
     'glacambre/firenvim',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     config = function()
       if vim.g.started_by_firenvim == true then
         vim.o.number = false
@@ -178,12 +178,12 @@ return {
   {
     'miversen33/netman.nvim',
     event = "VeryLazy",
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     config = true,
   },
   {
     'stevearc/resession.nvim',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     dependencies = {
       'neovim/nvim-lspconfig'
     },
@@ -234,7 +234,7 @@ return {
   {
     'echasnovski/mini.nvim',
     event = "VeryLazy",
-    enabled = true,
+    enabled = true and not vim.g.vscode,
     config = function()
       require('mini.ai').setup()
       require('mini.align').setup({
@@ -310,7 +310,7 @@ return {
     -- See copilot-cmp
     'zbirenbaum/copilot.lua',
     event = "VeryLazy",
-    enabled = true,
+    enabled = true and not vim.g.vscode,
     config = function()
       require('copilot').setup({
         panel = {
@@ -331,6 +331,7 @@ return {
   },
   {
     "CopilotC-Nvim/CopilotChat.nvim",
+    enabled = true and not vim.g.vscode,
     event = "UIEnter",
     branch = "canary",
     dependencies = {
@@ -396,7 +397,7 @@ return {
   {
     'nvim-treesitter/nvim-treesitter',
     event = "VeryLazy",
-    enabled = true,
+    enabled = true and not vim.g.vscode,
     config = function()
       require 'nvim-treesitter.configs'.setup {
         ensure_installed = {},
@@ -480,7 +481,7 @@ return {
   {
     'nvimtools/hydra.nvim',
     event = "VeryLazy",
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     config = function()
       local hydra = require('hydra')
       hydra({
@@ -568,7 +569,7 @@ return {
   },
   {
     'catppuccin/nvim',
-    enabled = true,
+    enabled = true and not vim.g.vscode,
     name = "catppuccin",
     config = function()
       require("catppuccin").setup {
@@ -661,7 +662,7 @@ return {
   },
   {
     'editorconfig/editorconfig-vim',
-    enabled = true,
+    enabled = true and not vim.g.vscode,
     config = function()
       vim.cmd [[
         let g:EditorConfig_max_line_indicator = 'exceeding'
@@ -670,7 +671,7 @@ return {
   },
   {
     'numToStr/FTerm.nvim',
-    enabled = true,
+    enabled = true and not vim.g.vscode,
     event = "VeryLazy",
     config = function()
       local fterm = require 'FTerm'
@@ -831,7 +832,7 @@ return {
   },
   {
     "utilyre/barbecue.nvim",
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     name = "barbecue",
     version = "*",
     dependencies = {
@@ -893,7 +894,7 @@ return {
   },
   {
     'nanozuki/tabby.nvim',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     config = function()
       vim.opt.sessionoptions = 'curdir,folds,globals,help,tabpages,terminal,winsize'
       local api = require('tabby.module.api')
@@ -957,11 +958,11 @@ return {
   },
   {
     'AndrewRadev/linediff.vim',
-    enabled = true,
+    enabled = true and not vim.g.vscode,
   },
   {
     'machakann/vim-highlightedyank',
-    enabled = true,
+    enabled = true and not vim.g.vscode,
   },
   {
     'glidenote/memolist.vim',
@@ -976,7 +977,7 @@ return {
   },
   {
     'kana/vim-metarw',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
   },
   {
     'rhysd/clever-f.vim',
@@ -1097,7 +1098,7 @@ return {
   {
     'nvim-neo-tree/neo-tree.nvim',
     event = "VeryLazy",
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     dependencies = {
       "plenary.nvim",
       "nvim-web-devicons",
@@ -1188,11 +1189,11 @@ return {
   },
   {
     'jrudess/vim-foldtext',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
   },
   {
     'kevinhwang91/nvim-ufo',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     dependencies = { 'kevinhwang91/promise-async' },
     event = "VeryLazy",
     config = function()
@@ -1217,7 +1218,7 @@ return {
     'yioneko/nvim-cmp',
     event = "InsertEnter",
     branch = "perf",
-    enabled = true,
+    enabled = true and not vim.g.vscode,
     config = function()
       local cmp = require("cmp")
       ---@diagnostic disable-next-line: redundant-parameter
@@ -1343,15 +1344,15 @@ return {
   },
   {
     'direnv/direnv.vim',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
   },
   {
     'cshuaimin/ssr.nvim',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
   },
   {
     'folke/zen-mode.nvim',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     opts = {
       plugins = {
         tmux = {
@@ -1362,16 +1363,16 @@ return {
   },
   {
     "GCBallesteros/jupytext.nvim",
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     config = true,
   },
   {
     'mateuszwieloch/automkdir.nvim',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
   },
   {
     'MattesGroeger/vim-bookmarks',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     event = "VeryLazy",
     keys = {
       { 'mm', "<Plug>BookmarkToggle", mode = { 'n' } },
@@ -1388,7 +1389,7 @@ return {
   },
   {
     "johmsalas/text-case.nvim",
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     dependencies = { "nvim-telescope/telescope.nvim" },
     config = function()
       require("textcase").setup({})
@@ -1402,14 +1403,14 @@ return {
   {
     'soulis-1256/eagle.nvim',
     event = "VeryLazy",
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     config = function()
       require("eagle").setup {}
     end,
   },
   {
     'dlvhdr/gh-addressed.nvim',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     dependencies = {
       'nvim-lua/plenary.nvim',
       'MunifTanjim/nui.nvim',
@@ -1422,7 +1423,7 @@ return {
   },
   {
     'pwntester/octo.nvim',
-    enabled = true,
+    enabled = true and not vim.g.vscode,
     event = "VeryLazy",
     dependencies = {
       'nvim-lua/plenary.nvim',
@@ -1540,7 +1541,7 @@ return {
   },
   {
     'nvim-pack/nvim-spectre',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     config = function()
       vim.keymap.set('n', '<leader>S', '<cmd>lua require("spectre").toggle()<CR>', {
         desc = "Toggle Spectre"
@@ -1610,7 +1611,7 @@ return {
   {
     'sindrets/diffview.nvim',
     event = "VeryLazy",
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     config = function()
       require("diffview").setup {
         view = {
@@ -1639,11 +1640,11 @@ return {
   },
   {
     'tpope/vim-fugitive',
-    enabled = true,
+    enabled = true and not vim.g.vscode,
   },
   {
     'lambdalisue/gina.vim',
-    enabled = true,
+    enabled = true and not vim.g.vscode,
     config = function()
       vim.cmd [[
         autocmd FileType gina-log   nmap F <Plug>(gina-show-commit-vsplit)zv
@@ -1654,7 +1655,7 @@ return {
   },
   {
     'lewis6991/gitsigns.nvim',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     config = function()
       require('gitsigns').setup({
         signcolumn = false,
@@ -1666,7 +1667,7 @@ return {
   {
     'neovim/nvim-lspconfig',
     event = "VeryLazy",
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     config = function()
       -- [Common]
       -- [[diagnostic]]
@@ -2057,7 +2058,7 @@ return {
   },
   {
     'folke/trouble.nvim',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     config = function()
       require('trouble').setup {
         auto_refresh = false,
@@ -2067,7 +2068,7 @@ return {
   {
     'nvimdev/lspsaga.nvim',
     event = "VeryLazy",
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     config = function()
       require('lspsaga').setup({
         request_timeout = 1000,
@@ -2099,7 +2100,7 @@ return {
   },
   {
     'j-hui/fidget.nvim',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     tag = 'legacy',
     config = function()
       require 'fidget'.setup {}
@@ -2107,12 +2108,12 @@ return {
   },
   {
     'mfussenegger/nvim-jdtls',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
   },
   -- [DAP]
   {
     'mfussenegger/nvim-dap',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     config = function()
       vim.cmd [[
       autocmd FileType dap-repl lua require('dap.ext.autocompl').attach()
@@ -2121,7 +2122,7 @@ return {
   },
   {
     'theHamsta/nvim-dap-virtual-text',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     dependencies = { 'nvim-dap' },
     config = function()
       require("nvim-dap-virtual-text").setup({})
@@ -2129,7 +2130,7 @@ return {
   },
   {
     "rcarriga/nvim-dap-ui",
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     dependencies = {
       'nvim-dap',
       'nvim-neotest/nvim-nio'
@@ -2142,31 +2143,32 @@ return {
   -- [[Haskell]]
   {
     'neovimhaskell/haskell-vim',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
   },
   -- [[dhall]]
   {
     'vmchale/dhall-vim',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
   },
   -- [[Rust]]
   {
     'rust-lang/rust.vim',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
   },
   -- [[GraphQL]]
   {
     'jparise/vim-graphql',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
   },
   -- [[nix]]
   {
     'LnL7/vim-nix',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
   },
   -- [[Markdown]]
   {
     'Hogeyama/markdown.nvim', -- my fork
+    enabled = not is_light_mode and not vim.g.vscode,
     name = 'render-markdown',
     dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
     config = function()
@@ -2198,7 +2200,7 @@ return {
   },
   {
     "iamcco/markdown-preview.nvim",
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     build = "cd app && npm install",
     config = function()
       vim.g.mkdp_filetypes = { "markdown" }
@@ -2209,11 +2211,11 @@ return {
   },
   {
     'vim-voom/VOoM',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
   },
   {
     'epwalsh/obsidian.nvim',
-    enabled = true,
+    enabled = not is_light_mode and not vim.g.vscode,
     version = "*",
     ft = "markdown",
     dependencies = {
@@ -2315,7 +2317,7 @@ return {
   },
   {
     "oflisback/obsidian-bridge.nvim",
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     lazy = true,
     ft = "markdown",
     config = function()
@@ -2331,12 +2333,12 @@ return {
   -- [[terraform]]
   {
     'hashivim/vim-terraform',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
   },
   -- [[Textile]]
   {
     's3rvac/vim-syntax-redminewiki',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     config = function()
       vim.cmd [[
         autocmd BufEnter *.redmine set ft=redminewiki
@@ -2346,13 +2348,14 @@ return {
   -- [[just]]
   {
     "NoahTheDuke/vim-just",
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     ft = { "just" },
   },
   -- [[vue]]
   {
     "catgoose/vue-goto-definition.nvim",
     event = "BufReadPre",
+    enabled = not is_light_mode and not vim.g.vscode,
     opts = {
       filters = {
         auto_imports = true,
@@ -2378,15 +2381,16 @@ return {
     },
   },
   {
-    'posva/vim-vue'
+    'posva/vim-vue',
+    enabled = not is_light_mode and not vim.g.vscode,
   },
   {
     'VidocqH/lsp-lens.nvim',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
   },
   {
     'ray-x/navigator.lua',
-    enabled = not is_light_mode,
+    enabled = not is_light_mode and not vim.g.vscode,
     event = "VeryLazy",
     dependencies = {
       {
