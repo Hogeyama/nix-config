@@ -569,7 +569,7 @@ return {
   },
   {
     'catppuccin/nvim',
-    enabled = true and not vim.g.vscode,
+    enabled = false and not vim.g.vscode,
     name = "catppuccin",
     config = function()
       require("catppuccin").setup {
@@ -659,6 +659,24 @@ return {
         sign define DiagnosticSignHint  text= texthl=DiagnosticSignHint  linehl= numhl=DiagnosticLineNrHint
       ]]
     end
+  },
+  {
+    'Mofiqul/vscode.nvim',
+    config = function()
+      require('vscode').setup({})
+      vim.cmd.colorscheme "vscode"
+    end,
+  },
+  {
+    'projekt0n/github-nvim-theme',
+    enabled = false,
+    name = 'github-theme',
+    lazy = false,
+    priority = 1000,
+    config = function()
+      require('github-theme').setup({})
+      vim.cmd('colorscheme github_dark_default')
+    end,
   },
   {
     'editorconfig/editorconfig-vim',
