@@ -41,3 +41,4 @@ vim.opt.switchbuf = "split"
 vim.opt.updatetime = 300
 vim.opt.cursorline = false
 vim.opt.signcolumn = "yes"
+vim.opt.fillchars = 'eob: '
