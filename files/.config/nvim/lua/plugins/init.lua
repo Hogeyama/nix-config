@@ -509,58 +509,6 @@ return {
           { 'j', 'zj' },
         }
       })
-
-      --       local gitsigns = require('gitsigns')
-      --       hydra({
-      --         name = 'Git',
-      --         hint = [[
-      -- _J_: next hunk   _s_: stage hunk        _d_: show deleted   _b_: blame line
-      -- _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full
-      -- ^ ^              _S_: stage buffer      ^ ^
-      -- ^
-      -- ^ ^                          _<Esc>_: exit
-      --         ]],
-      --         config = {
-      --           color = 'pink',
-      --           invoke_on_body = true,
-      --           hint = {
-      --             position = 'bottom',
-      --           },
-      --           on_enter = function()
-      --             gitsigns.toggle_linehl(true)
-      --             gitsigns.toggle_linehl(true)
-      --             gitsigns.toggle_signs(true)
-      --           end,
-      --           on_exit = function()
-      --             gitsigns.toggle_linehl(false)
-      --             gitsigns.toggle_signs(false)
-      --             gitsigns.toggle_deleted(false)
-      --             vim.cmd 'echo' -- clear the echo area
-      --           end
-      --         },
-      --         mode = { 'n', 'x' },
-      --         body = '<C-g>',
-      --         heads = {
-      --           { 'J', function()
-      --             if vim.wo.diff then return ']c' end
-      --             vim.schedule(function() gitsigns.next_hunk() end)
-      --             return '<Ignore>'
-      --           end, { expr = true } },
-      --           { 'K', function()
-      --             if vim.wo.diff then return '[c' end
-      --             vim.schedule(function() gitsigns.prev_hunk() end)
-      --             return '<Ignore>'
-      --           end, { expr = true } },
-      --           { 's',     ':Gitsigns stage_hunk<CR>',                        { silent = true } },
-      --           { 'u',     gitsigns.undo_stage_hunk },
-      --           { 'S',     gitsigns.stage_buffer },
-      --           { 'p',     gitsigns.preview_hunk },
-      --           { 'd',     gitsigns.toggle_deleted,                           { nowait = true } },
-      --           { 'b',     gitsigns.blame_line },
-      --           { 'B',     function() gitsigns.blame_line { full = true } end },
-      --           { '<Esc>', nil,                                               { exit = true, nowait = true } },
-      --         }
-      --       })
     end,
     dependencies = {
       { 'gitsigns.nvim' },
@@ -1676,7 +1624,7 @@ return {
     enabled = not is_light_mode and not vim.g.vscode,
     config = function()
       require('gitsigns').setup({
-        signcolumn = false,
+        signcolumn = true,
         numhl      = true,
       })
     end,
