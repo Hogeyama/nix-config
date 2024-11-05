@@ -40,3 +40,4 @@ vim.opt.showtabline = 0
 vim.opt.switchbuf = "split"
 vim.opt.updatetime = 300
 vim.opt.cursorline = false
+vim.opt.signcolumn = "yes"
