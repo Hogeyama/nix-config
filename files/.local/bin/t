@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ $(tmux ls 2>/dev/null | head -c1 | wc -c) -eq 0 ]]; then
+  exec tmux
+else
+  exec tmux a
+fi
