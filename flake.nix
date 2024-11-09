@@ -67,6 +67,7 @@
           ./modules/keyboard
           ./modules/configuration
           ./modules/home
+          ./modules/qemu
         ]
         ++ (if env.isWsl then [
           ./modules/wsl
