@@ -1,19 +1,19 @@
-use_aws_profile(){
-  PROFILE=$1
-  export AWS_ASSUME_ROLE_TTL=1h
-  #shellcheck disable=SC2046
-  export $(aws-vault exec "$PROFILE" -- env | grep AWS_ | grep -v AWS_VAULT)
+use_aws_profile() {
+    PROFILE=$1
+    export AWS_ASSUME_ROLE_TTL=1h
+    #shellcheck disable=SC2046
+    export $(aws-vault exec "$PROFILE" -- env | grep AWS_ | grep -v AWS_VAULT)
 }
 
 use_secret() {
-  VAR=$1
-  SECRET_NAME=$2
-  SECRET=$(pass show "$SECRET_NAME")
-  if [[ -z "$SECRET" ]]; then
-    echo "failed to load $SECRET_NAME"
-  else
-    eval "export $VAR='$SECRET'"
-  fi
+    VAR=$1
+    SECRET_NAME=$2
+    SECRET=$(pass show "$SECRET_NAME")
+    if [[ -z "$SECRET" ]]; then
+        echo "failed to load $SECRET_NAME"
+    else
+        eval "export $VAR='$SECRET'"
+    fi
 }
 
 # Usage:
@@ -38,7 +38,7 @@ add_command() {
     fi
     ANY_COMMAND_ADDED=1
     mkdir -p "$bindir"
-    if ! grep -qE "(^|:)${bindir}(:|$)" <<< "$PATH"; then
+    if ! grep -qE "(^|:)${bindir}(:|$)" <<<"$PATH"; then
         PATH_add "$bindir"
     fi
 
