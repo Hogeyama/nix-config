@@ -81,6 +81,7 @@
   "obsidian-bridge.nvim": { "branch": "main", "commit": "b5bc14ae57f5df3f0a6a67a43850ee16a90e956f" },
   "obsidian.nvim": { "branch": "main", "commit": "ae1f76a75c7ce36866e1d9342a8f6f5b9c2caf9b" },
   "octo.nvim": { "branch": "master", "commit": "1e687e3a84459a7e42b98912a0ab1b22e843ec8c" },
+  "oil.nvim": { "branch": "master", "commit": "50c4bd4ee216f08907f64d0295c0663a69e58ffb" },
   "playground": { "branch": "master", "commit": "ba48c6a62a280eefb7c85725b0915e021a1a0749" },
   "plenary.nvim": { "branch": "master", "commit": "2d9b06177a975543726ce5c73fca176cedbffe9d" },
   "popup.nvim": { "branch": "master", "commit": "b7404d35d5d3548a82149238289fa71f7f6de4ac" },

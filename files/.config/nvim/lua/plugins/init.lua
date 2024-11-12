@@ -1141,6 +1141,12 @@ return {
     end
   },
   {
+    'stevearc/oil.nvim',
+    enabled = not is_light_mode,
+    opts = {},
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+  },
+  {
     'klen/nvim-config-local',
     enabled = not is_light_mode,
     config = function()
