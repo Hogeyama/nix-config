@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# vscode-nvimで起動すると/tmp/vscode-nvimにソケットを貼るように設定してある
+# 同ディレクトリのnvim-vscodeを参照
+NVIM=/tmp/vscode-nvim fzfw
