@@ -234,7 +234,7 @@ return {
   {
     'echasnovski/mini.nvim',
     event = "VeryLazy",
-    enabled = true and not vim.g.vscode,
+    enabled = true,
     config = function()
       require('mini.ai').setup()
       require('mini.align').setup({
