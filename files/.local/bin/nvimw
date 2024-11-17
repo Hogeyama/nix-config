@@ -77,9 +77,9 @@ open_in_existent_instance() {
 main() {
 	parse_args "$@"
 
-	if [[ $TMUX_POPUP -eq 1 ]]; then
+	if [[ -n ${TMUX:-} ]] && [[ ${TMUX_POPUP:-} -eq 1 ]]; then
 		open_in_new_instance_on_tmux_popup "${NVIM_ARGS[@]}"
-	elif [[ -z "$NVIM" ]]; then
+	elif [[ -n "${VSCODE_INJECTION:-}" ]] || [[ -z "${NVIM:-}" ]]; then
 		open_in_new_instance "${NVIM_ARGS[@]}"
 	elif [[ -t 0 ]]; then
 		open_in_existent_instance "${NVIM_ARGS[@]}"
