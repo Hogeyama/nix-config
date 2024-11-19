@@ -1,4 +1,5 @@
 local is_light_mode = vim.env.NVIM_LIGHT_MODE == "1"
+local is_inside_vscode = vim.env.VSCODE_INJECTION == '1'
 
 return {
   { 'nvim-lua/plenary.nvim' },
@@ -643,6 +644,19 @@ return {
     config = function()
       local fterm = require 'FTerm'
       local shells = {}
+      local opts = (function()
+        if is_inside_vscode then
+          return {
+            border = 'none',
+            dimensions = { height = 1, width = 1 }
+          }
+        else
+          return {
+            border = 'rounded',
+            dimensions = { height = 0.9, width = 0.9 }
+          }
+        end
+      end)()
       local toggle_shell = function(shell)
         for _, s in pairs(shells) do
           if s ~= shell then
@@ -654,21 +668,15 @@ return {
       local zsh = function()
         return {
           cmd = "zsh",
-          border = "rounded",
-          dimensions = {
-            height = 0.9,
-            width = 0.9
-          },
+          border = opts.border,
+          dimensions = opts.dimensions
         }
       end
       local fzfw = function()
         return {
           cmd = "fzfw",
-          border = "rounded",
-          dimensions = {
-            height = 0.9,
-            width = 0.9
-          },
+          border = opts.border,
+          dimensions = opts.dimensions,
         }
       end
       local shellDefs = {
@@ -799,7 +807,7 @@ return {
   },
   {
     "utilyre/barbecue.nvim",
-    enabled = not is_light_mode and not vim.g.vscode,
+    enabled = not is_light_mode and not vim.g.vscode and not is_inside_vscode,
     name = "barbecue",
     version = "*",
     dependencies = {
@@ -861,7 +869,8 @@ return {
   },
   {
     'nanozuki/tabby.nvim',
-    enabled = not is_light_mode and not vim.g.vscode,
+    enabled = false,
+    -- enabled = not is_light_mode and not vim.g.vscode and not is_inside_vscode,
     config = function()
       vim.opt.sessionoptions = 'curdir,folds,globals,help,tabpages,terminal,winsize'
       local api = require('tabby.module.api')

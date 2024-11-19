@@ -82,7 +82,7 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 vim.api.nvim_create_autocmd({ "FileType" }, {
   pattern = { "just" },
   callback = function()
-    vim.cmd [[TSBufEnable highlight]]
+    -- vim.cmd [[TSBufEnable highlight]]
   end,
 })
 
