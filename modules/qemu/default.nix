@@ -1,6 +1,7 @@
 { pkgs, env, ... }:
 
 {
+  # https://www.reddit.com/r/NixOS/comments/177wcyi/comment/k4vok4n/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1
   programs.dconf.enable = true;
   programs.virt-manager.enable = true;
 
@@ -10,11 +11,11 @@
     libvirt
     virt-manager
     virt-viewer
-    spice
-    spice-gtk
-    spice-protocol
+    # spice
+    # spice-gtk
+    # spice-protocol
     win-virtio
-    win-spice
+    # win-spice
     quickemu
   ];
 
@@ -27,7 +28,7 @@
         ovmf.packages = [ pkgs.OVMFFull.fd ];
       };
     };
-    spiceUSBRedirection.enable = true;
+    # spiceUSBRedirection.enable = true;
   };
-  services.spice-vdagentd.enable = true;
+  # services.spice-vdagentd.enable = true;
 }

@@ -8,7 +8,9 @@
     };
     kernelModules = [
       "uhid"
+      "vfio-pci"
     ];
+    kernelParams = [ "intel_iommu=on" ];
     kernelPackages = pkgs.linuxPackages_latest;
   };
 }
