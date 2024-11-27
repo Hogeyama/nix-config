@@ -644,19 +644,10 @@ return {
     config = function()
       local fterm = require 'FTerm'
       local shells = {}
-      local opts = (function()
-        if is_inside_vscode then
-          return {
-            border = 'none',
-            dimensions = { height = 1, width = 1 }
-          }
-        else
-          return {
-            border = 'rounded',
-            dimensions = { height = 0.9, width = 0.9 }
-          }
-        end
-      end)()
+      local opts = {
+        border = 'rounded',
+        dimensions = { height = 0.9, width = 0.9 }
+      }
       local toggle_shell = function(shell)
         for _, s in pairs(shells) do
           if s ~= shell then
