@@ -2,10 +2,12 @@
 
 {
   programs.dconf.enable = true;
+  programs.virt-manager.enable = true;
 
   users.users.${env.user.name}.extraGroups = [ "libvirtd" ];
 
   environment.systemPackages = with pkgs; [
+    libvirt
     virt-manager
     virt-viewer
     spice

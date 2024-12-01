@@ -679,5 +679,13 @@ in
     };
   };
   manual.manpages.enable = false;
+
+  # https://nixos.wiki/wiki/Virt-manager
+  dconf.settings = {
+    "org/virt-manager/virt-manager/connections" = {
+      autoconnect = [ "qemu:///system" ];
+      uris = [ "qemu:///system" ];
+    };
+  };
 }
 # vim:foldmethod=indent:
