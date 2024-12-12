@@ -14,15 +14,11 @@ end
 -- LSP/DAPサーバーのパス解決
 --------------------------------------------------------------------------------
 
-local jdtls_bin = vim.env.HOME .. "/.local/share/nvim/mason/bin/jdtls"
-
-local mason_root = vim.env.HOME .. "/.local/share/nvim/mason/packages"
-local jdtls_root = mason_root .. '/jdtls'
-local java_debug_adapter_root = mason_root .. '/java-debug-adapter'
-local java_test_root = mason_root .. '/java-test'
-
-local jdtls_jar = vim.fn.glob(jdtls_root .. '/plugins/org.eclipse.equinox.launcher_*.jar')
-local lombok_jar = jdtls_root .. '/lombok.jar'
+local mason_root = vim.fn.stdpath('data') .. "/mason"
+local jdtls_bin = mason_root .. "/bin/jdtls"
+local java_debug_adapter_root = mason_root .. '/packages/java-debug-adapter'
+local java_test_root = mason_root .. '/packages/java-test'
+local lombok_jar = mason_root .. '/packages/jdtls/lombok.jar'
 
 local bundles = {}
 vim.list_extend(bundles,
