@@ -557,6 +557,8 @@ in
         vv = "NVIM_NO_AUTO_SESSOIN=1 nvimw";
         gd = "git diff";
         gdn = "git diff --no-ext-diff";
+        gp = "git push";
+        gpf = "git push --force-with-lease --force-if-includes";
         glog = ''git log --pretty=format:"%C(yellow)%h%Creset %C(green)%ad%Creset %s %Cred%d%Creset %Cblue[%an]" --date=short --graph'';
         rlog = ''git reflog --format="%C(yellow)%h%Creset %C(green)%gd%Creset %gs %Cred%d%Creset %Cblue[%an]" --date=iso-strict'';
         gmt = "git mergetool";
