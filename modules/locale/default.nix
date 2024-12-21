@@ -10,4 +10,10 @@
       fcitx5.addons = with pkgs; [ fcitx5-mozc fcitx5-gtk ];
     };
   };
+
+  environment = {
+    sessionVariables = {
+      GTK_IM_MODULE_FILE = "/run/current-system/sw/etc/gtk-3.0/immodules.cache";
+    };
+  };
 }
