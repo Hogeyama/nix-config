@@ -15,12 +15,5 @@ nix profile install <nix-index-package>
 # update google-chrome
 NIXPKGS_ALLOW_UNFREE=1 nix profile install nixpkgs\#google-chrome --impure
 
-$ installed: bash -c "nix profile list --json | jq -r '\
-    foreach .elements[] as \$item( \
-      { ix:-1 }; \
-      { ix:(.ix+1), item:\$item }; \
-      [ (.ix|tostring|(((3 - length)*\" \")+.)) \
-      , (.item.storePaths[0]|.[44:]) \
-      ] | join(\" #\") \
-    )'"
+$ installed: bash -c "nix profile list --json | jq -r '.elements|to_entries[]|.key+\" #\"+.value.attrPath'"
 $ nix-index-package: nix-locate -r <pattern> --- --map "awk '{print $4}'"
