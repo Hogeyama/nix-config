@@ -334,7 +334,6 @@ return {
     "CopilotC-Nvim/CopilotChat.nvim",
     enabled = true and not vim.g.vscode,
     event = "UIEnter",
-    branch = "canary",
     dependencies = {
       { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
       { "nvim-lua/plenary.nvim" },  -- for curl, log wrapper
@@ -2174,7 +2173,7 @@ return {
   {
     "iamcco/markdown-preview.nvim",
     enabled = not is_light_mode and not vim.g.vscode,
-    build = "cd app && npm install",
+    build = function() vim.fn["mkdp#util#install"]() end,
     config = function()
       vim.g.mkdp_filetypes = { "markdown" }
       vim.g.mkdp_preview_options = {
