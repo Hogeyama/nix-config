@@ -1938,6 +1938,8 @@ return {
           require("conform").setup({
             formatters_by_ft = {
               vue = { "prettier" },
+              typescript = { "prettier" },
+              typescriptreact = { "prettier" },
             },
             format_on_save = function()
               if vim.b.format_on_save_enabled ~= nil then
