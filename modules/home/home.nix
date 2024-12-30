@@ -494,12 +494,10 @@ in
         plugins = [
           # [tool]
           "docker"
-          "fd"
           "git"
           "git-auto-fetch"
           "gh"
           "gradle"
-          "ripgrep"
           "rsync"
           "ssh-agent"
           "zoxide"
