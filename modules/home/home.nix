@@ -147,6 +147,7 @@ in
       commitizen
       curl
       deno
+      dmenu
       difftastic
       docker
       docker-compose

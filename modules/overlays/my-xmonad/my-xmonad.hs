@@ -103,8 +103,8 @@ main = do
         `additionalKeysP`
         --
         [ ("M-g", spawn browser)
-        , ("M-p", spawn "krunner")
-        , ("M-c", spawn "code")
+        , ("M-p", spawn "dmenu_run")
+        , ("M-c", spawn "dmenu_run")
         , ("M-S-q", kill)
         , ("M-S-C-q", io exitSuccess)
         , ("M-x", spawn "sudo pm-suspend")
