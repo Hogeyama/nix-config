@@ -1,6 +1,6 @@
 {
   "Comment.nvim": { "branch": "master", "commit": "e30b7f2008e52442154b66f7c519bfd2f1e32acb" },
-  "CopilotChat.nvim": { "branch": "canary", "commit": "451d365928a994cda3505a84905303f790e28df8" },
+  "CopilotChat.nvim": { "branch": "main", "commit": "2ebe591cff06018e265263e71e1dbc4c5aa8281e" },
   "FTerm.nvim": { "branch": "master", "commit": "d1320892cc2ebab472935242d9d992a2c9570180" },
   "VOoM": { "branch": "master", "commit": "423600d0ab98254bae6fa2ca60d06057ecfb748a" },
   "actions-preview.nvim": { "branch": "master", "commit": "9f52a01c374318e91337697ebed51c6fae57f8a4" },
@@ -82,6 +82,7 @@
   "obsidian.nvim": { "branch": "main", "commit": "ae1f76a75c7ce36866e1d9342a8f6f5b9c2caf9b" },
   "octo.nvim": { "branch": "master", "commit": "b099b0ade680d6bba14828319627276a8334d8de" },
   "oil.nvim": { "branch": "master", "commit": "ba858b662599eab8ef1cba9ab745afded99cb180" },
+  "output-panel.nvim": { "branch": "main", "commit": "9979f9988acb35fd8e699d8b1fbc7aa17c9d8148" },
   "playground": { "branch": "master", "commit": "ba48c6a62a280eefb7c85725b0915e021a1a0749" },
   "plenary.nvim": { "branch": "master", "commit": "2d9b06177a975543726ce5c73fca176cedbffe9d" },
   "popup.nvim": { "branch": "master", "commit": "b7404d35d5d3548a82149238289fa71f7f6de4ac" },
