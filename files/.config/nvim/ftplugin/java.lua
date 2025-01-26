@@ -2,6 +2,11 @@
 -- opt
 --------------------------------------------------------------------------------
 
+local is_inside_vscode = vim.env.VSCODE_INJECTION == '1'
+if is_inside_vscode then
+  return
+end
+
 vim.opt_local.tabstop = 4
 vim.opt_local.shiftwidth = 4
 vim.opt_local.softtabstop = 4
@@ -93,6 +98,10 @@ local settings = {
     home = vim.env.JAVA_HOME,
     configuration = {
       runtimes = {
+        {
+          name = "JavaSE-23",
+          path = "/nix/store/f5fg9psg9kaaqqj91c2cxiqsg9hqvdbk-zulu-ca-jdk-23.0.0",
+        },
         {
           name = "JavaSE-21",
           path = vim.env.JAVA21_HOME,
