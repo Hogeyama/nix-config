@@ -1676,8 +1676,7 @@ return {
           end
         end
         bmap('n', '<C-h>', vim.lsp.buf.hover)
-        -- bmap('n', '<C-j>', trouble('lsp_definitions', true))
-        bmap('n', '<C-j>', vim.lsp.buf.definition)
+        bmap('n', '<C-j>', function() require('trouble').first("lsp_definitions") end)
         bmap('n', '<C-k>', '<cmd>Lspsaga peek_definition<CR>')
         bmap('n', '<C-l>a', require("actions-preview").code_actions)
         bmap('n', '<C-l>f', format)
@@ -2397,6 +2396,11 @@ return {
           end
         end
       end
+      local trouble_first = function(mode)
+        return function()
+          require('trouble').first(mode)
+        end
+      end
       local diagnostic_detail = function()
         local opts = {
           severity_sort = true,
@@ -2414,7 +2418,7 @@ return {
           { key = '<C-l>l', func = require('navigator.codelens').run_action,    desc = 'run code lens action', mode = 'n' },
           { key = '<C-l>a', func = require('navigator.codeAction').code_action, desc = 'code_action',          mode = { 'n', 'v' } },
           { key = '<C-h>',  func = vim.lsp.buf.hover,                           desc = "hover",                mode = 'n' },
-          { key = '<C-j>',  func = vim.lsp.buf.definition,                      desc = "definition",           mode = 'n' },
+          { key = '<C-j>',  func = trouble_first("lsp_definitions"),            desc = "definition",           mode = 'n' },
           { key = '<C-k>',  func = '<cmd>Lspsaga peek_definition<CR>',          desc = "definition",           mode = 'n' },
           { key = '<C-l>f', func = format,                                      desc = "format",               mode = { 'n', 'v' } },
           { key = '<C-l>q', func = trouble('diagnostics', true),                desc = "show diagnostic",      mode = 'n' },
