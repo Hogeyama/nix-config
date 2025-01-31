@@ -1926,7 +1926,12 @@ return {
           },
           {
             'williamboman/mason.nvim',
-            config = true,
+            opts = {
+              registries = {
+                'github:Hogeyama/jdtls-mason-registry',
+                'github:mason-org/mason-registry',
+              },
+            }
           },
         },
       },
