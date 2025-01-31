@@ -1895,7 +1895,6 @@ return {
               "eslint-lsp",
               "gradle-language-server",
               "graphql-language-service-cli",
-              "jdtls",
               "json-lsp",
               "lua-language-server",
               "pyright",
@@ -1904,9 +1903,6 @@ return {
               "typescript-language-server",
               "tailwindcss-language-server",
               "yaml-language-server",
-              -- [DAP]
-              "java-debug-adapter",
-              "java-test",
               -- [null-ls]
               "actionlint",
               "black",
@@ -2084,10 +2080,6 @@ return {
     config = function()
       require 'fidget'.setup {}
     end
-  },
-  {
-    'mfussenegger/nvim-jdtls',
-    enabled = not is_light_mode and not vim.g.vscode and not is_inside_vscode,
   },
   -- [DAP]
   {
