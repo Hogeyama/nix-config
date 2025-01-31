@@ -1829,6 +1829,11 @@ return {
         filetypes = { "javascript", "typescript", "typescriptreact", "javascriptreact", "vue" },
       }
 
+      -- [[jdtls]]
+      vim.env.JDTLS_JVM_ARGS = ("-javaagent:" ..
+        require("mason-registry").get_package("lombok-nightly"):get_install_path() .. "/lombok.jar")
+      require 'lspconfig'.jdtls.setup {}
+
       -- [[lua_ls]]
       require 'lspconfig'.lua_ls.setup {}
       -- [[nil_ls]]
@@ -1925,6 +1930,7 @@ return {
             opts = {
               registries = {
                 'github:Hogeyama/jdtls-mason-registry',
+                'github:nvim-java/mason-registry',
                 'github:mason-org/mason-registry',
               },
             }
@@ -2028,6 +2034,20 @@ return {
         config = function()
           require("neoconf").setup({})
         end,
+      },
+      {
+        'nvim-java/nvim-java',
+        opts = {
+          jdtls = {
+            version = 'v1.36.0',
+          },
+          jdk = {
+            auto_install = false,
+          },
+          spring_boot_tools = {
+            enable = false,
+          },
+        }
       },
     },
   },
