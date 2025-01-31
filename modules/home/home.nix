@@ -535,6 +535,22 @@ in
         # source machine local configuration
         source-if-exists $HOME/.zshrc.local
 
+        # DIRENV_DIFFに変更があればcompinit -uを実行する
+        # thx! https://hiroqn.hatenablog.com/entry/2022/04/03/191131
+        export COMPINIT_DIFF=""
+        _chpwd_compinit() {
+          if [ -n "$IN_NIX_SHELL" -a "$COMPINIT_DIFF" != "$DIRENV_DIFF" ]; then
+            compinit -u
+            COMPINIT_DIFF="$DIRENV_DIFF"
+          fi
+        }
+        if [[ -z ''${precmd_functions[(r)_chpwd_compinit]} ]]; then
+          precmd_functions=( ''${precmd_functions[@]} _chpwd_compinit )
+        fi
+        if [[ -z ''${chpwd_functions[(r)_chpwd_compinit]} ]]; then
+          chpwd_functions=( ''${chpwd_functions[@]} _chpwd_compinit )
+        fi
+
         # tmux起動中はCtrl-Oでpopupを開いてコマンドラインを編集する
         if [[ -n "''$TMUX" ]]; then
             export VISUAL="nvimw --tmux-popup --light-mode --"
