@@ -1998,6 +1998,7 @@ return {
               vue = { "prettier" },
               typescript = { "prettier" },
               typescriptreact = { "prettier" },
+              java = { "spotless" },
             },
             format_on_save = function()
               if vim.b.format_on_save_enabled ~= nil then
@@ -2036,6 +2037,25 @@ return {
         'nvimtools/none-ls.nvim',
         config = function()
           local null_ls = require("null-ls")
+          local helpers = require("null-ls.helpers")
+          local gradlew_spotless = helpers.make_builtin({
+            name = "spotless",
+            method = null_ls.methods.FORMATTING,
+            filetypes = { "java" },
+            generator_opts = {
+              command = "./gradlew",
+              args = {
+                "--console=plain",
+                "--quiet",
+                '--no-configuration-cache',
+                "spotlessApply",
+                "-PspotlessIdeHook=$FILENAME",
+                '-PspotlessIdeHookUseStdOut',
+              },
+              timeout = 3000,
+            },
+            factory = helpers.formatter_factory,
+          })
           null_ls.setup {
             log_level = "trace",
             on_attach = vim.g.lsp_default_on_attach,
@@ -2070,6 +2090,7 @@ return {
                 },
               }),
               null_ls.builtins.formatting.markdownlint,
+              gradlew_spotless,
               -- [code_action]
               null_ls.builtins.code_actions.gitrebase,
             }
@@ -2435,7 +2456,7 @@ return {
     config = function()
       local format = function()
         require 'conform'.format({
-          timeout_ms = 500,
+          timeout_ms = 3000,
           lsp_fallback = true,
         })
       end
