@@ -1728,7 +1728,7 @@ return {
           end
         end
         bmap('n', '<C-h>', vim.lsp.buf.hover)
-        bmap('n', '<C-j>', function() require('trouble').first("lsp_definitions") end)
+        bmap('n', '<C-j>', function() require('trouble').first("definitions") end)
         bmap('n', '<C-k>', '<cmd>Lspsaga peek_definition<CR>')
         bmap('n', '<C-l>a', require("actions-preview").code_actions)
         bmap('n', '<C-l>f', format)
@@ -2129,6 +2129,18 @@ return {
     config = function()
       require('trouble').setup {
         auto_refresh = false,
+        modes = {
+          definitions = {
+            mode = 'lsp_definitions',
+            filter = function(items)
+              return vim.tbl_filter(function(item)
+                -- volarとts_ls with vue/typescript-pluginの出すitemが重複するので
+                -- volarの方を削除する
+                return item.item.client ~= 'volar'
+              end, items)
+            end,
+          },
+        }
       }
     end,
   },
@@ -2491,7 +2503,7 @@ return {
           { key = '<C-l>l', func = require('navigator.codelens').run_action,    desc = 'run code lens action', mode = 'n' },
           { key = '<C-l>a', func = require('navigator.codeAction').code_action, desc = 'code_action',          mode = { 'n', 'v' } },
           { key = '<C-h>',  func = vim.lsp.buf.hover,                           desc = "hover",                mode = 'n' },
-          { key = '<C-j>',  func = trouble_first("lsp_definitions"),            desc = "definition",           mode = 'n' },
+          { key = '<C-j>',  func = trouble_first("definitions"),                desc = "definition",           mode = 'n' },
           { key = '<C-k>',  func = '<cmd>Lspsaga peek_definition<CR>',          desc = "definition",           mode = 'n' },
           { key = '<C-l>f', func = format,                                      desc = "format",               mode = { 'n', 'v' } },
           { key = '<C-l>q', func = trouble('diagnostics', true),                desc = "show diagnostic",      mode = 'n' },
