@@ -2431,7 +2431,8 @@ return {
   },
   {
     'VidocqH/lsp-lens.nvim',
-    enabled = not is_light_mode and not vim.g.vscode,
+    enabled = false,
+    -- enabled = not is_light_mode and not vim.g.vscode,
   },
   {
     "mhanberg/output-panel.nvim",
@@ -2454,7 +2455,8 @@ return {
   },
   {
     'ray-x/navigator.lua',
-    enabled = not is_light_mode and not vim.g.vscode,
+    enabled = false,
+    -- enabled = not is_light_mode and not vim.g.vscode,
     event = "VeryLazy",
     dependencies = {
       {
