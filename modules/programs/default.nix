@@ -94,7 +94,7 @@
 
   services.keybase.enable = true;
 
-  # services.passSecretService.enable = true;
+  services.passSecretService.enable = true;
 
   services.atd.enable = true;
 
