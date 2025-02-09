@@ -44,7 +44,6 @@
       nil
       nixpkgs-fmt
       nix-alien
-      podman-compose
       postgresql
       pstree
       python3
@@ -102,9 +101,9 @@
   virtualisation.docker.enable = true;
 
   # https://nixos.wiki/wiki/Podman
-  virtualisation.podman = {
-    enable = true;
-    dockerCompat = false; # Do not create alias docker=podman
-    defaultNetwork.settings.dns_enabled = true;
-  };
+  # virtualisation.podman = {
+  #   enable = true;
+  #   dockerCompat = false; # Do not create alias docker=podman
+  #   defaultNetwork.settings.dns_enabled = true;
+  # };
 }
