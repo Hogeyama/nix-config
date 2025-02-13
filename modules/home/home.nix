@@ -595,6 +595,8 @@ in
     };
     git = {
       enable = true;
+      userName = env.user.name;
+      userEmail = env.user.email;
       extraConfig = {
         alias.stash-all = "stash save --include-untracked";
         alias.show-upstream = "git rev-parse --abbrev-ref --symbolic-full-name @{u}";
