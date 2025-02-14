@@ -1246,9 +1246,8 @@ return {
     end
   },
   {
-    'yioneko/nvim-cmp',
+    'hrsh7th/nvim-cmp',
     event = "InsertEnter",
-    branch = "perf",
     enabled = true and not vim.g.vscode,
     config = function()
       local cmp = require("cmp")
