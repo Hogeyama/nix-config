@@ -367,7 +367,6 @@ return {
       "nvim-lua/plenary.nvim",
       "MunifTanjim/nui.nvim",
       --- The below dependencies are optional,
-      "hrsh7th/nvim-cmp",            -- autocompletion for avante commands and mentions
       "ibhagwan/fzf-lua",            -- for file_selector provider fzf
       "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
       "zbirenbaum/copilot.lua",      -- for providers='copilot'
@@ -1051,7 +1050,7 @@ return {
     'folke/noice.nvim',
     event = "VeryLazy",
     enabled = not is_light_mode and not vim.g.vscode,
-    dependencies = { "nui.nvim", "nvim-notify", "nvim-cmp" },
+    dependencies = { "nui.nvim", "nvim-notify" },
     config = function()
       require("noice").setup {
         presets = {
@@ -1081,7 +1080,7 @@ return {
         },
         popupmenu = {
           enabled = true,
-          backend = "cmp",
+          backend = "nui",
         },
         messages = {
           enabled = true,
@@ -1100,7 +1099,7 @@ return {
           override = {
             ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
             ["vim.lsp.util.stylize_markdown"] = true,
-            ["cmp.entry.get_documentation"] = true,
+            ["cmp.entry.get_documentation"] = false,
           },
           message = {
             view = "mini",
