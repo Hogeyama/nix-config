@@ -26,7 +26,7 @@ end
 -- mapping
 --------------------------------------------------------------------------------
 
-nmap('<C-n>', '<Cmd>:update<CR>')
+nmap('<C-n>', '<Cmd>:update!<CR>')
 imap('<C-n>', '<Esc><Cmd>:update<CR>')
 
 nmap('tt', '<Cmd>tabedit<CR>')
