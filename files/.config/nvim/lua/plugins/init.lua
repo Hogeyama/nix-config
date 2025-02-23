@@ -1808,8 +1808,7 @@ return {
 
       -- [[capabilities]]
       -- enable completion
-      vim.g.lsp_default_capabilities = require("ddc_source_lsp").make_client_capabilities()
-      -- vim.g.lsp_default_capabilities = require('cmp_nvim_lsp').default_capabilities()
+      vim.g.lsp_default_capabilities = require('cmp_nvim_lsp').default_capabilities()
       -- enable snippet support
       vim.g.lsp_default_capabilities.textDocument.completion.completionItem.snippetSupport = true
       -- [[set default]]
@@ -2099,7 +2098,6 @@ return {
         dependencies = { "plenary.nvim" },
       },
       { 'aznhe21/actions-preview.nvim' },
-      { 'Shougo/ddc-source-lsp', },
       { "artemave/workspace-diagnostics.nvim" },
       {
         "folke/neoconf.nvim",
