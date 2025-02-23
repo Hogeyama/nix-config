@@ -22,7 +22,7 @@
     nix-alien.inputs.nix-index-database.follows = "nix-index-database";
     nix-alien.inputs.flake-utils.follows = "flake-utils";
 
-    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay/9e2c41b7c12adc3ca17b1b50589f5234bcc0bbac";
+    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
 
     nixos-wsl.url = "github:nix-community/NixOS-WSL";
     nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
