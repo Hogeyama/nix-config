@@ -388,14 +388,6 @@ return {
           },
         },
       },
-      {
-        -- Make sure to set this up properly if you have lazy=true
-        'MeanderingProgrammer/render-markdown.nvim',
-        opts = {
-          file_types = { "markdown", "Avante" },
-        },
-        ft = { "markdown", "Avante" },
-      },
     },
   },
   {
@@ -2256,26 +2248,6 @@ return {
   },
   -- [[Markdown]]
   {
-    'Hogeyama/markdown.nvim', -- my fork
-    enabled = not is_light_mode and not vim.g.vscode,
-    name = 'render-markdown',
-    dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
-    config = function()
-      require('render-markdown').setup({
-        win_options = {
-          conceallevel = {
-            default = 0,
-            rendered = 3,
-          },
-        },
-      })
-    end,
-    ft = { 'markdown' },
-    keys = {
-      { '<leader>t', "<Cmd>RenderMarkdownToggle<CR>", mode = { 'n' } },
-    },
-  },
-  {
     'preservim/vim-markdown',
     enabled = false,
     config = function()
@@ -2391,7 +2363,7 @@ return {
         vim.fn.jobstart({ "xdg-open", url })
       end,
       ui = {
-        enable = false, -- preffer render-markdown
+        enable = false,
         checkboxes = {
           [" "] = { char = "󰄱", hl_group = "ObsidianTodo" },
           ["x"] = { char = "", hl_group = "ObsidianDone" },
