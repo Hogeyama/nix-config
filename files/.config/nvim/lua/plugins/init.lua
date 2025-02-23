@@ -1882,7 +1882,13 @@ return {
       -- [[jdtls]]
       vim.env.JDTLS_JVM_ARGS = ("-javaagent:" ..
         require("mason-registry").get_package("lombok-nightly"):get_install_path() .. "/lombok.jar")
-      require 'lspconfig'.jdtls.setup {}
+      if vim.env.JDTLS_JAVA_HOME then
+        require 'lspconfig'.jdtls.setup {
+          cmd = { "jdtls", "--java-executable", vim.env.JDTLS_JAVA_HOME .. "/bin/java", }
+        }
+      else
+        require 'lspconfig'.jdtls.setup {}
+      end
 
       -- [[lua_ls]]
       require 'lspconfig'.lua_ls.setup {}
