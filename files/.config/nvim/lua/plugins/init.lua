@@ -1,6 +1,22 @@
 local is_light_mode = vim.env.NVIM_LIGHT_MODE == "1"
 local is_inside_vscode = vim.env.VSCODE_INJECTION == '1'
 
+local jdtls_cmd = function()
+  local cache_dir = vim.env.HOME .. "/.cache/jdtls"
+  local lombok_jar = require("mason-registry").get_package("lombok-nightly"):get_install_path() ..
+      "/lombok.jar"
+  local java_executable = vim.env.JDTLS_JAVA_HOME
+      and " --java-executable " .. vim.env.JDTLS_JAVA_HOME .. "/bin/java"
+      or ''
+  return { "bash", "-c",
+    "sleep 1 && jdtls  "
+    .. " -configuration " .. cache_dir .. "/config"
+    .. " -data " .. cache_dir .. "/workspace"
+    .. " --jvm-arg=-javaagent:" .. lombok_jar
+    .. java_executable
+  }
+end
+
 return {
   { 'nvim-lua/plenary.nvim' },
   { 'nvim-lua/popup.nvim' },
@@ -1880,15 +1896,9 @@ return {
       }
 
       -- [[jdtls]]
-      vim.env.JDTLS_JVM_ARGS = ("-javaagent:" ..
-        require("mason-registry").get_package("lombok-nightly"):get_install_path() .. "/lombok.jar")
-      if vim.env.JDTLS_JAVA_HOME then
-        require 'lspconfig'.jdtls.setup {
-          cmd = { "jdtls", "--java-executable", vim.env.JDTLS_JAVA_HOME .. "/bin/java", }
-        }
-      else
-        require 'lspconfig'.jdtls.setup {}
-      end
+      require 'lspconfig'.jdtls.setup {
+        cmd = jdtls_cmd(),
+      }
 
       -- [[lua_ls]]
       require 'lspconfig'.lua_ls.setup {}
@@ -2461,8 +2471,7 @@ return {
   },
   {
     'ray-x/navigator.lua',
-    enabled = false,
-    -- enabled = not is_light_mode and not vim.g.vscode,
+    enabled = not is_light_mode and not vim.g.vscode,
     event = "VeryLazy",
     dependencies = {
       {
@@ -2550,7 +2559,10 @@ return {
           diagnostic_virtual_text = true,
           diagnostic_update_in_insert = false,
           display_diagnostic_qf = nil,
-          disable_lsp = { 'denols' }
+          disable_lsp = { 'denols' },
+          jdtls = function()
+            return { cmd = jdtls_cmd(), }
+          end,
         }
       })
     end,
