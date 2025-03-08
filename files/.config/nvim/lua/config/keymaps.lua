@@ -90,3 +90,30 @@ nmap('<Space>cd', '<Cmd>cd %:h<CR>')
 nmap('^', '<Cmd>noh<CR>')
 vmap('*', '"zy:let @/ = @z<CR>n')
 nmap(':w<CR>', '<Cmd>echom "yo"<CR>')
+
+vim.keymap.set("v", "y",
+  function()
+    vim.cmd('normal! y')
+    -- 現在のバッファがターミナルならhard-wrapで追加された改行を削除する
+    -- ちょうどwidthと一致するところに改行がある場合は誤判定されるが、諦めている
+    local buftype = vim.api.nvim_get_option_value("buftype", {})
+    if buftype == "terminal" then
+      local width = vim.api.nvim_win_get_width(0)
+      local yanked_text = vim.fn.getreg('"')
+
+      local lines = {}
+      local real_line = {}
+      for line in yanked_text:gmatch("[^\r\n]+") do
+        table.insert(real_line, line)
+        if #line < width then
+          table.insert(lines, table.concat(real_line, ""))
+          real_line = {}
+        end
+      end
+      if #real_line > 0 then
+        table.insert(lines, table.concat(real_line, ""))
+      end
+
+      vim.fn.setreg('+', lines, 'l')
+    end
+  end, { noremap = true, silent = true })
