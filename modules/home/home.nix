@@ -535,6 +535,36 @@ in
         # source machine local configuration
         source-if-exists $HOME/.zshrc.local
 
+        function audio-switch() {
+          local cards=("''${(f)$(pactl list cards short | awk '{print $2}')}")
+          local card
+          if [[ ''${#cards} -eq 0 ]]; then
+            echo "No audio cards found"
+            return
+          elif [[ ''${#cards} -eq 1 ]]; then
+            card=''$cards[1]
+          else
+            card=$(printf "%s\n" ''${cards[@]} | fzf --prompt="Select audio card: ")
+          fi
+          if [[ -z "$card" ]]; then
+            return
+          fi
+
+          local profile=$1
+          if [[ -z $profile ]]; then
+            profile=$(
+              pactl list cards \
+              | awk '/Profiles:/{p=1;next} /Active Profile:/{p=0} p==1{sub(/:$/,"",$1);print $1}' \
+              | fzf --prompt="Select audio profile: "
+            )
+          fi
+          if [[ -z "$profile" ]]; then
+            return
+          fi
+
+          pactl set-card-profile "$card" "$profile"
+        }
+
         # DIRENV_DIFFに変更があればcompinit -uを実行する
         # thx! https://hiroqn.hatenablog.com/entry/2022/04/03/191131
         export COMPINIT_DIFF=""
