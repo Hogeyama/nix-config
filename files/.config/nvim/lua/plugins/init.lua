@@ -1987,7 +1987,7 @@ return {
             'williamboman/mason.nvim',
             opts = {
               registries = {
-                'github:Hogeyama/jdtls-mason-registry',
+                -- 'github:Hogeyama/jdtls-mason-registry',
                 'github:nvim-java/mason-registry',
                 'github:mason-org/mason-registry',
               },
@@ -2117,7 +2117,7 @@ return {
         'nvim-java/nvim-java',
         opts = {
           jdtls = {
-            version = 'v1.36.0',
+            -- version = 'v1.36.0',
           },
           jdk = {
             auto_install = false,
