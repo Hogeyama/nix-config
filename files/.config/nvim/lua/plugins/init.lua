@@ -1720,7 +1720,7 @@ return {
         end
         local format = function()
           require 'conform'.format({
-            timeout_ms = 5000,
+            timeout_ms = 10000,
             lsp_fallback = true,
           })
         end
@@ -2455,7 +2455,7 @@ return {
     config = function()
       local format = function()
         require 'conform'.format({
-          timeout_ms = 3000,
+          timeout_ms = 10000,
           lsp_fallback = true,
         })
       end
