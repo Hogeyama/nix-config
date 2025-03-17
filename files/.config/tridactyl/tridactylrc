@@ -7,6 +7,15 @@ bind J scrollpage  0.5
 bind K scrollpage -0.5
 bind <C-j> tabnext
 bind <C-k> tabprev
+bind <C-1> tab 1
+bind <C-2> tab 2
+bind <C-3> tab 3
+bind <C-4> tab 4
+bind <C-5> tab 5
+bind <C-6> tab 6
+bind <C-7> tab 7
+bind <C-8> tab 8
+bind <C-9> tab 9
 
 bind <C-l> fillcmdline open
 bind O fillcmdline tabopen
