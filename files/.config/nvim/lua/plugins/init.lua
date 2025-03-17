@@ -1737,6 +1737,7 @@ return {
         bmap('n', '<C-j>', function() require('trouble').first("definitions") end)
         bmap('n', '<C-k>', '<cmd>Lspsaga peek_definition<CR>')
         bmap('n', '<C-l>a', require("actions-preview").code_actions)
+        bmap('n', '<C-.>', require("actions-preview").code_actions)
         bmap('n', '<C-l>f', format)
         bmap('v', '<C-l>f', format)
         bmap('n', '<C-l>q', trouble('diagnostics', false))
@@ -2489,6 +2490,7 @@ return {
         keymaps = {
           { key = '<C-l>l', func = require('navigator.codelens').run_action,    desc = 'run code lens action', mode = 'n' },
           { key = '<C-l>a', func = require('navigator.codeAction').code_action, desc = 'code_action',          mode = { 'n', 'v' } },
+          { key = '<C-.>',  func = require('navigator.codeAction').code_action, desc = 'code_action',          mode = { 'n', 'v' } },
           { key = '<C-h>',  func = require("noice.lsp").hover,                  desc = "hover",                mode = 'n' },
           { key = '<C-j>',  func = trouble_first("definitions"),                desc = "definition",           mode = 'n' },
           { key = '<C-k>',  func = '<cmd>Lspsaga peek_definition<CR>',          desc = "definition",           mode = 'n' },
