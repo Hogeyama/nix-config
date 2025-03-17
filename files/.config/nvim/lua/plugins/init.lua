@@ -1,5 +1,6 @@
 local is_light_mode = vim.env.NVIM_LIGHT_MODE == "1"
 local is_inside_vscode = vim.env.VSCODE_INJECTION == '1'
+local is_jdtls_disabled = vim.env.JDTLS_DISABLED == '1'
 
 local jdtls_cmd = function()
   local cache_dir = vim.env.HOME .. "/.cache/jdtls"
@@ -1885,9 +1886,11 @@ return {
       }
 
       -- [[jdtls]]
-      require 'lspconfig'.jdtls.setup {
-        cmd = jdtls_cmd(),
-      }
+      if not is_jdtls_disabled then
+        require 'lspconfig'.jdtls.setup {
+          cmd = jdtls_cmd(),
+        }
+      end
 
       -- [[lua_ls]]
       require 'lspconfig'.lua_ls.setup {}
@@ -2528,7 +2531,7 @@ return {
           diagnostic_virtual_text = true,
           diagnostic_update_in_insert = false,
           display_diagnostic_qf = nil,
-          disable_lsp = { 'denols' },
+          disable_lsp = is_jdtls_disabled and { 'denols', 'jdtls' } or { 'denols' },
           jdtls = function()
             return { cmd = jdtls_cmd(), }
           end,
