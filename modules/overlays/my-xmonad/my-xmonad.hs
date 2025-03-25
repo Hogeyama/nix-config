@@ -85,7 +85,7 @@ main = do
               <+> manageHook def
               <+> composeAll
                 [ className =? "plasmashell" --> doFloat
-                , className =? "firefox-esr" --> doFloat
+                -- , className =? "firefox-esr" --> doFloat
                 , resource =? "Alert" --> doFloat -- firefox notification
                 ]
         , startupHook = mapM_ spawn []
@@ -178,6 +178,7 @@ type MyLayoutHook2 =
     :| CombineTwoP (TwoPane ()) SimpleTab SimpleTab
     :| ModifiedLayout Gaps SimpleTab
     :| ModifiedLayout Gaps (CombineTwoP (TwoPane ()) SimpleTab SimpleTab)
+    :| Full
 
 data LayoutType
   = LayoutFull
@@ -190,7 +191,7 @@ myLayoutHook1 :: MyLayoutHook1 Window
 myLayoutHook2 :: MyLayoutHook2 Window
 (myLayoutHook1, myLayoutHook2) =
   ( myTabbed ||| myTwoPane ||| gaps [(D, 60)] myTwoCol ||| Full
-  , myTabbed ||| myTwoPane ||| gaps [(D, 45)] myTabbed ||| gaps [(D, 45)] myTwoPane
+  , myTabbed ||| myTwoPane ||| gaps [(D, 45)] myTabbed ||| gaps [(D, 45)] myTwoPane ||| Full
   )
   where
     myTabbed =
