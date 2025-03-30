@@ -214,15 +214,15 @@ return {
         local branch = vim.trim(vim.fn.system("git branch --show-current"))
         return vim.v.shell_error == 0 and pwd .. "@" .. branch or pwd
       end
-      vim.api.nvim_create_autocmd("UIEnter", {
-        callback = function()
-          if vim.env.NVIM_NO_AUTO_SESSOIN ~= '1' and vim.fn.argc(-1) == 0 then
-            vim.g.session_loaded = 1
-            resession.load(session_name(), { silence_errors = true })
-          end
+
+      vim.api.nvim_create_user_command('LoadSession',
+        function()
+          vim.g.session_loaded = 1
+          resession.load(session_name(), { silence_errors = true })
         end,
-        nested = true,
-      })
+        {}
+      )
+
       vim.api.nvim_create_autocmd("VimLeavePre", {
         callback = function()
           local has_buf = false
@@ -237,17 +237,20 @@ return {
           end
         end,
       })
-      vim.keymap.set({ "n" }, "<leader>ssr", function()
-        resession.save(resession.get_current())
-        resession.load(resession.get_current())
-      end)
-      vim.keymap.set({ "n" }, "<leader>ssl", function()
-        resession.load(nil)
-      end)
-      vim.keymap.set({ "n" }, "<leader>ssd", function()
-        resession.delete(nil)
-      end)
     end,
+    keys = {
+      { "<leader>sl",  "<Cmd>LoadSession<CR>",                          mode = { 'n' } },
+      { "<leader>ssl", function() require("resession").load(nil) end,   mode = { 'n' } },
+      { "<leader>ssd", function() require("resession").delete(nil) end, mode = { 'n' } },
+      {
+        "<leader>ssr",
+        function()
+          require("resession").save(require("resession").get_current())
+          require("resession").load(require("resession").get_current())
+        end,
+        mode = { 'n' }
+      },
+    }
   },
   {
     'echasnovski/mini.nvim',
