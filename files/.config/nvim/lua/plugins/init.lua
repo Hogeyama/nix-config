@@ -325,6 +325,18 @@ return {
     },
   },
   {
+    "folke/snacks.nvim",
+    priority = 1000,
+    lazy = false,
+    opts = {
+      words = { enabled = true },
+      scratch = { ft = function() return "markdown" end }
+    },
+    keys = {
+      { "<leader>go", function() Snacks.gitbrowse.open() end, mode = { 'n' } },
+    }
+  },
+  {
     -- See copilot-cmp
     'zbirenbaum/copilot.lua',
     event = "VeryLazy",
