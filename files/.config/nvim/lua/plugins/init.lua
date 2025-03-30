@@ -2444,7 +2444,8 @@ return {
   },
   {
     'ray-x/navigator.lua',
-    enabled = not is_light_mode and not vim.g.vscode,
+    enabled = false,
+    -- enabled = not is_light_mode and not vim.g.vscode,
     event = "VeryLazy",
     dependencies = {
       {
