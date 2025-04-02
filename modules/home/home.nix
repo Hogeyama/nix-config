@@ -616,6 +616,7 @@ in
         gsh = "git show --ext-diff";
         gshn = "git show";
         gsw = "git switch -m";
+        gswn = "git switch -m --no-track";
         j = "just";
         da = "direnv allow";
         dr = "direnv reload";
