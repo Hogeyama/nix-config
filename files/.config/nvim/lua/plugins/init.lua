@@ -1261,42 +1261,9 @@ return {
     end
   },
   {
-    'saghen/blink.cmp',
-    version = '1.*',
-    build = 'nix run .#build-plugin',
-    enabled = true and not vim.g.vscode,
-    opts = {
-      keymap = { preset = 'super-tab' },
-      completion = { documentation = { auto_show = true } },
-      signature = { enabled = true },
-      cmdline = { completion = { menu = { auto_show = true } } },
-      sources = {
-        default = { 'copilot', 'lsp', 'path', 'snippets', 'buffer' },
-        providers = {
-          copilot = {
-            name = "copilot",
-            module = "blink-cmp-copilot",
-            score_offset = 100,
-            async = true,
-          },
-        },
-      },
-    },
-    dependencies = {
-      { 'giuxtaposition/blink-cmp-copilot' },
-    },
-  },
-  {
-    'saghen/blink.compat',
-    version = '*',
-    lazy = true,
-    opts = {},
-  },
-  {
     'hrsh7th/nvim-cmp',
     event = "InsertEnter",
-    enabled = false,
-    -- enabled = true and not vim.g.vscode,
+    enabled = true and not vim.g.vscode,
     config = function()
       local cmp = require("cmp")
       ---@diagnostic disable-next-line: redundant-parameter
@@ -1761,6 +1728,7 @@ return {
       -- NOP
 
       -- [[on_attach]]
+      ---@diagnostic disable-next-line: duplicate-set-field
       vim.g.lsp_default_on_attach = function(client, bufnr)
         local bmap = function(mode, key, cmd)
           vim.keymap.set(mode, key, cmd, { noremap = true, silent = true })
@@ -1862,7 +1830,7 @@ return {
 
       -- [[capabilities]]
       -- enable completion
-      vim.g.lsp_default_capabilities = require('blink.cmp').get_lsp_capabilities()
+      vim.g.lsp_default_capabilities = require('cmp_nvim_lsp').default_capabilities()
       -- enable snippet support
       vim.g.lsp_default_capabilities.textDocument.completion.completionItem.snippetSupport = true
       -- [[set default]]
