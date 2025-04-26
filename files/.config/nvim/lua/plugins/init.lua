@@ -308,29 +308,6 @@ return {
     }
   },
   {
-    -- See copilot-cmp
-    'zbirenbaum/copilot.lua',
-    event = "VeryLazy",
-    enabled = true and not vim.g.vscode,
-    config = function()
-      require('copilot').setup({
-        panel = {
-          enabled = false,
-        },
-        suggestion = {
-          enabled = false,
-        },
-        filetypes = {
-          yaml = true,
-          markdown = true,
-          gitcommit = true,
-          gitrebase = true,
-          hgcommit = true,
-        },
-      })
-    end,
-  },
-  {
     "yetone/avante.nvim",
     event = "VeryLazy",
     lazy = false,
@@ -1270,6 +1247,28 @@ return {
         end
       },
       { 'onsails/lspkind.nvim' },
+      {
+        'zbirenbaum/copilot.lua',
+        event = "VeryLazy",
+        enabled = true and not vim.g.vscode,
+        config = function()
+          require('copilot').setup({
+            panel = {
+              enabled = false,
+            },
+            suggestion = {
+              enabled = false,
+            },
+            filetypes = {
+              yaml = true,
+              markdown = true,
+              gitcommit = true,
+              gitrebase = true,
+              hgcommit = true,
+            },
+          })
+        end,
+      },
     },
   },
   {
