@@ -2319,11 +2319,6 @@ return {
     enabled = not is_light_mode and not vim.g.vscode,
   },
   {
-    'VidocqH/lsp-lens.nvim',
-    enabled = false,
-    -- enabled = not is_light_mode and not vim.g.vscode,
-  },
-  {
     "mhanberg/output-panel.nvim",
     version = "*",
     event = "VeryLazy",
