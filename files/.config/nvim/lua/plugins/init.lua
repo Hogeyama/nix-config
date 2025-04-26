@@ -1128,7 +1128,6 @@ return {
     enabled = true and not vim.g.vscode,
     config = function()
       local cmp = require("cmp")
-      ---@diagnostic disable-next-line: redundant-parameter
       cmp.setup({
         formatting = {
           format = require('lspkind').cmp_format({ with_text = false }),
@@ -1147,7 +1146,7 @@ return {
             side_padding = 10,
           }),
         },
-        mapping = {
+        mapping = cmp.mapping.preset.insert({
           ['<CR>']    = cmp.mapping.confirm({ select = false }),
           ['<C-c>']   = cmp.mapping.abort(),
           -- NOTE: 挿入したくない場合は insert の代わりに select にする
@@ -1155,7 +1154,7 @@ return {
           ['<Down>']  = cmp.mapping.select_next_item({ behavior = "insert" }),
           ['<S-Tab>'] = cmp.mapping.select_prev_item({ behavior = "insert" }),
           ['<Up>']    = cmp.mapping.select_prev_item({ behavior = "insert" }),
-        },
+        }),
         sources = cmp.config.sources({
           { name = 'copilot' },
           { name = 'nvim_lsp' },
@@ -1189,19 +1188,9 @@ return {
         }
       })
       cmp.setup.cmdline(':', {
-        mapping = cmp.mapping.preset.cmdline({
-          ['<C-f>'] = {
-            c = cmp.mapping.complete_common_string(),
-          }
-        }),
+        mapping = cmp.mapping.preset.cmdline(),
         sources = cmp.config.sources({
-          {
-            name = 'path',
-            options = {
-              trailing_slash = false,
-              label_trailing_slash = false,
-            },
-          },
+          { name = 'path' }
         }, {
           { name = 'cmdline' },
           { name = 'cmp-nvim-lua' },
