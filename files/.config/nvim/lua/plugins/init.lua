@@ -162,38 +162,6 @@ return {
     },
   },
   {
-    'glacambre/firenvim',
-    enabled = not is_light_mode and not vim.g.vscode,
-    config = function()
-      if vim.g.started_by_firenvim == true then
-        vim.o.number = false
-        vim.o.laststatus = 0
-        vim.o.showtabline = 0
-        vim.api.nvim_create_autocmd({ 'BufEnter' }, {
-          command = "set filetype=markdown"
-        })
-        vim.g.firenvim_config = {
-          globalSettings = { alt = "all" },
-          localSettings = {
-            [".*"] = {
-              selector = "textarea",
-              takeover = "empty"
-            }
-          }
-        }
-        vim.g.firenvim_config.localSettings['.*'] = { takeover = 'empty' }
-        vim.g.firenvim_config.localSettings['.*'] = { cmdline = 'firenvim' }
-        vim.api.nvim_set_keymap("n", "<Esc><Esc>", "<Cmd>call firenvim#focus_page()<CR>", {})
-      end
-    end,
-    build = function()
-      vim.fn['firenvim#install'](0)
-    end,
-    dependencies = {
-      { 'ibhagwan/fzf-lua' },
-    },
-  },
-  {
     'miversen33/netman.nvim',
     event = "VeryLazy",
     enabled = not is_light_mode and not vim.g.vscode,
