@@ -504,7 +504,7 @@ return {
         color_overrides = {},
         custom_highlights = {},
         integrations = {
-          cmp = true,
+          cmp = false,
           gitsigns = true,
           nvimtree = true,
           treesitter = true,
@@ -976,7 +976,7 @@ return {
           override = {
             ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
             ["vim.lsp.util.stylize_markdown"] = true,
-            ["cmp.entry.get_documentation"] = true,
+            ["cmp.entry.get_documentation"] = false,
           },
           message = {
             view = "mini",
@@ -1123,9 +1123,78 @@ return {
     end
   },
   {
+    'saghen/blink.cmp',
+    build = 'nix run .#build-plugin',
+    opts = {
+      keymap = {
+        preset = 'super-tab',
+        ['<Up>'] = { 'select_prev', 'fallback' },
+        ['<Down>'] = { 'select_next', 'fallback' },
+      },
+      appearance = {
+        nerd_font_variant = 'mono'
+      },
+      completion = {
+        documentation = { auto_show = true },
+        menu = {
+          auto_show = true,
+          draw = {
+            columns = {
+              { "label",     "label_description", gap = 1 },
+              { "kind_icon", "kind" }
+            },
+          }
+        },
+        ghost_text = { enabled = true },
+        trigger = {
+          show_on_keyword = true,
+          show_on_trigger_character = true,
+          show_on_insert_on_trigger_character = true,
+          show_on_accept_on_trigger_character = true,
+        },
+      },
+      sources = {
+        default = { 'copilot', 'lsp', 'path', 'snippets', 'buffer' },
+        providers = {
+          copilot = {
+            name = "copilot",
+            module = "blink-copilot",
+            score_offset = 100,
+            async = true,
+          },
+        },
+      },
+      fuzzy = { implementation = "prefer_rust_with_warning" },
+      signature = { enabled = true }
+    },
+    opts_extend = { "sources.default" },
+    dependencies = {
+      {
+        'fang2hou/blink-copilot',
+        dependencies = {
+          {
+            "zbirenbaum/copilot.lua",
+            cmd = "Copilot",
+            event = "InsertEnter",
+            opts = {
+              suggestion = { enabled = false },
+              panel = { enabled = false },
+              filetypes = {
+                markdown = true,
+                help = true,
+              },
+            },
+          },
+        },
+      },
+    },
+
+  },
+  {
     'hrsh7th/nvim-cmp',
     event = "InsertEnter",
-    enabled = true and not vim.g.vscode,
+    enabled = false,
+    -- enabled = true and not vim.g.vscode,
     config = function()
       local cmp = require("cmp")
       cmp.setup({
@@ -1702,10 +1771,16 @@ return {
       end
 
       -- [[capabilities]]
-      -- enable completion
-      vim.g.lsp_default_capabilities = require('cmp_nvim_lsp').default_capabilities()
-      -- enable snippet support
-      vim.g.lsp_default_capabilities.textDocument.completion.completionItem.snippetSupport = true
+      vim.g.lsp_default_capabilities = require('blink.cmp').get_lsp_capabilities({
+        textDocumtent = {
+          completion = {
+            completionItem = {
+              snippetSupport = true,
+            },
+          },
+        },
+      })
+
       -- [[set default]]
       require 'lspconfig'.util.default_config = vim.tbl_extend("force",
         require 'lspconfig'.util.default_config,
@@ -2171,7 +2246,6 @@ return {
     dependencies = {
       "plenary.nvim",
       "nvim-treesitter",
-      'nvim-cmp',
       "fzf-lua",
     },
     opts = {
@@ -2186,7 +2260,7 @@ return {
         date_format = "%Y-%m-%d",
       },
       completion = {
-        nvim_cmp = true,
+        nvim_cmp = false,
         min_chars = 2,
       },
       mappings = {
