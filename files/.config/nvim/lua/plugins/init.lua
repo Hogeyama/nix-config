@@ -587,25 +587,6 @@ return {
     end
   },
   {
-    'Mofiqul/vscode.nvim',
-    enabled = false,
-    config = function()
-      require('vscode').setup({})
-      vim.cmd.colorscheme "vscode"
-    end,
-  },
-  {
-    'projekt0n/github-nvim-theme',
-    enabled = false,
-    name = 'github-theme',
-    lazy = false,
-    priority = 1000,
-    config = function()
-      require('github-theme').setup({})
-      vim.cmd('colorscheme github_dark_default')
-    end,
-  },
-  {
     'editorconfig/editorconfig-vim',
     enabled = true and not vim.g.vscode,
     config = function()
