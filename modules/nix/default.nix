@@ -1,7 +1,6 @@
-{ pkgs, ... }:
+{ ... }:
 {
   nix = {
-    package = pkgs.nixVersions.stable;
     settings = {
       substituters = [
         "https://cache.iog.io"
