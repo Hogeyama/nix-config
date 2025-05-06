@@ -1898,6 +1898,7 @@ return {
           }
         }
       }
+      require 'lspconfig'.gopls.setup {}
       require 'lspconfig'.graphql.setup {}
       require 'lspconfig'.pyright.setup {}
       -- require 'lspconfig'.yamlls.setup {}
