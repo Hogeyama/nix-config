@@ -4,8 +4,7 @@ local is_jdtls_disabled = vim.env.JDTLS_DISABLED == '1'
 
 local jdtls_cmd = function()
   local cache_dir = vim.env.HOME .. "/.cache/jdtls"
-  local lombok_jar = require("mason-registry").get_package("lombok-nightly"):get_install_path() ..
-      "/lombok.jar"
+  local lombok_jar = vim.env.MASON .. "/share/lombok-nightly/lombok.jar"
   local java_executable = vim.env.JDTLS_JAVA_HOME
       and " --java-executable " .. vim.env.JDTLS_JAVA_HOME .. "/bin/java"
       or ''
@@ -1821,9 +1820,11 @@ return {
 
       -- [[ts_ls]]
       -- thx! https://tech-blog.cloud-config.jp/2024-05-22-write-vue-with-neovim
+      -- > The contents of the package directory is not a stable interface and its structure may change without prior notice
+      -- らしいが、これよりいい方法があるか不明
       local vue_typescript_plugin =
-          require("mason-registry").get_package("vue-language-server"):get_install_path() ..
-          "/node_modules/@vue/language-server/node_modules/@vue/typescript-plugin"
+          vim.env.MASON ..
+          "/packages/vue-language-server/node_modules/@vue/language-server/node_modules/@vue/typescript-plugin"
       require 'lspconfig'.ts_ls.setup {
         root_dir = require 'lspconfig'.util.root_pattern("package.json"),
         init_options = {
