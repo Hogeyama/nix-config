@@ -1123,6 +1123,7 @@ return {
   },
   {
     'saghen/blink.cmp',
+    enabled = not vim.g.vscode,
     build = 'nix run .#build-plugin',
     opts = {
       keymap = {
