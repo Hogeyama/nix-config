@@ -2229,7 +2229,7 @@ return {
   {
     "iamcco/markdown-preview.nvim",
     enabled = not is_light_mode and not vim.g.vscode,
-    build = "cd app && yarn install",
+    build = function() vim.fn["mkdp#util#install"]() end,
     config = function()
       vim.g.mkdp_filetypes = { "markdown" }
       vim.g.mkdp_preview_options = {
