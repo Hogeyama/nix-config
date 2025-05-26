@@ -2238,6 +2238,20 @@ return {
     end,
   },
   {
+    'MeanderingProgrammer/render-markdown.nvim',
+    enabled = not is_light_mode and not vim.g.vscode,
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter',
+      'nvim-tree/nvim-web-devicons'
+    },
+    config = function()
+      require('render-markdown').setup({
+        completions = { blink = { enabled = true } },
+      })
+      vim.cmd [[RenderMarkdown disable]]
+    end
+  },
+  {
     'vim-voom/VOoM',
     enabled = not is_light_mode and not vim.g.vscode,
   },
