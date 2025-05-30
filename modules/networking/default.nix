@@ -10,5 +10,8 @@
       enable = true;
     };
     useDHCP = pkgs.lib.mkForce true;
+    firewall = {
+      allowedUDPPorts = [ 30000 ];
+    };
   };
 }
