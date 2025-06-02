@@ -7,7 +7,6 @@
       aws-sam-cli
       bat
       bind
-      bluedevil
       bluez
       bluez-alsa
       bluez-tools
@@ -59,7 +58,6 @@
       wezterm
       wget
       xsel
-      xsv
       yq
     ];
   };

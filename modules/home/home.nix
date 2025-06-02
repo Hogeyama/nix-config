@@ -164,7 +164,7 @@ in
       htop
       jnv
       jq
-      krdc
+      kdePackages.krdc
       just
       libreoffice
       lsof
@@ -188,8 +188,8 @@ in
       pass
       pgcli
       pre-commit
-      python310
-      python310Packages.httpie
+      python313
+      python313Packages.httpie
       ripgrep
       scrot
       shellcheck
@@ -280,7 +280,7 @@ in
   };
   fonts = {
     fontconfig = {
-      enable = true;
+      enable = false;
       defaultFonts = {
         monospace = [
           "UDEV Gothic NF"
@@ -517,7 +517,7 @@ in
         export JAVA21_HOME=${pkgs.openjdk21}/lib/openjdk
         source-if-exists "$HOME/.zshenv.local"
       '';
-      initExtra = ''
+      initContent = ''
         zstyle ':completion:*' verbose yes
         zstyle ':completion:*' format '%B%d%b'
         zstyle ':completion:*:warnings' format 'No matches for: %d'
