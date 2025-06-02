@@ -164,6 +164,7 @@ in
       htop
       jnv
       jq
+      libsForQt5.konsole
       kdePackages.krdc
       just
       libreoffice
