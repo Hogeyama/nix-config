@@ -5,3 +5,5 @@
 .local/
 .vim-bookmarks
 Session.vim
+
+**/.claude/settings.local.json
