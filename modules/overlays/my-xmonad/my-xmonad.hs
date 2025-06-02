@@ -17,6 +17,7 @@ import XMonad.Hooks.DynamicLog (
   PP (..),
   dynamicLogString,
   statusBar,
+  xmobarPP,
  )
 import XMonad.Hooks.EwmhDesktops (ewmh)
 import XMonad.Hooks.ManageDocks (
@@ -70,6 +71,12 @@ main = do
       xmonad (myConfig terminal browser) {layoutHook = myLayoutHook1}
     Just "2" ->
       xmonad (myConfig terminal browser) {layoutHook = myLayoutHook2}
+    Just "1+xmobar" -> do
+      config <- xmobar' (ewmh (myConfig terminal browser))
+      xmonad config {layoutHook = myLayoutHook1}
+    Just "2+xmobar" -> do
+      config <- xmobar' (ewmh (myConfig terminal browser))
+      xmonad config {layoutHook = myLayoutHook2}
     _ ->
       xmonad (myConfig terminal browser) {layoutHook = myLayoutHook1}
   where
@@ -85,10 +92,15 @@ main = do
               <+> manageHook def
               <+> composeAll
                 [ className =? "plasmashell" --> doFloat
-                -- , className =? "firefox-esr" --> doFloat
-                , resource =? "Alert" --> doFloat -- firefox notification
+                , -- , className =? "firefox-esr" --> doFloat
+                  resource =? "Alert" --> doFloat -- firefox notification
                 ]
-        , startupHook = mapM_ spawn []
+        , startupHook =
+            mapM_
+              spawn
+              [ "autorandr -l default"
+              , "feh --bg-full $HOME/Pictures/reflexion.jpg"
+              ]
         , handleExtraArgs = \xs conf -> do
             mborder <- tryAnyDeep $ read <$> readFile "/tmp/xmonad_borderwidth"
             handleExtraArgs
@@ -128,6 +140,7 @@ main = do
         , ("M-C-s", spawn $ unwords ["scrot", "-s", screenShotName])
         , ("M-S-b", spawn "$HOME/.local/bin/bttoggle")
         , ("M-m", toggleTouchPad)
+        , ("M-b", sendMessage ToggleStruts) -- xmobar
         ]
         `additionalKeysP`
         --
@@ -152,6 +165,26 @@ main = do
 
     myWorkspaces :: [String]
     myWorkspaces = map show [1 .. 9 :: Int]
+
+-------------------------------------------------------------------------------
+-- xmobar
+-------------------------------------------------------------------------------
+
+xmobar' ::
+  (LayoutClass l Window) =>
+  XConfig l ->
+  IO (XConfig (ModifiedLayout AvoidStruts l))
+xmobar' = statusBar "my-xmobar" xmobarPP {ppLayout = ppLayout'} defToggleStrutsKey
+  where
+    ppLayout' s = case parseLayoutType s of
+      LayoutFull -> "Full"
+      LayoutTabbed -> "Tabbed"
+      LayoutTwoCol -> "TwoCol"
+      LayoutTwoRow -> "TwoRow"
+
+-- | Default @mod-b@ key binding for 'withEasySB'
+defToggleStrutsKey :: XConfig t -> (KeyMask, KeySym)
+defToggleStrutsKey XConfig {modMask = modm} = (modm, xK_b)
 
 -------------------------------------------------------------------------------
 -- Layout
