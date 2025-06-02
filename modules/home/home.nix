@@ -671,11 +671,11 @@ in
       enable = true;
     };
     vscode = {
-      enable = false;
-      package = (pkgs.vscode.override { isInsiders = false; }).overrideAttrs (oldAttrs: {
+      enable = true;
+      package = (pkgs.vscode.override { isInsiders = true; }).overrideAttrs (oldAttrs: {
         src = (builtins.fetchTarball {
-          url = "https://vscode.download.prss.microsoft.com/dbazure/download/stable/05047486b6df5eb8d44b2ecd70ea3bdf775fd937/code-stable-x64-1706696875.tar.gz";
-          sha256 = "sha256:1r88dhqlk5f48bsnfhkc64pqxgwz5rqkf9rr2d3ip844364zlr9p";
+          url = "https://code.visualstudio.com/sha/download?build=insider&os=linux-x64";
+          sha256 = "sha256:1kbidggnrrly2dij4g4ny2pza2pcnv82jy7bzr5398y9xsxcq0nq";
         });
         buildInputs = oldAttrs.buildInputs ++ [ pkgs.libkrb5 ];
         version = "latest";
