@@ -81,6 +81,10 @@ renamed = '🎨'
 deleted = '🚮'
 style = 'green'
 
+[hg_branch]
+format = '[$symbol$branch(:$remote_branch)]($style) '
+disabled = false
+
 [container]
 format = '[\[$name\]]($style) '
 
