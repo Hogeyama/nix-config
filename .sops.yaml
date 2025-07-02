@@ -5,12 +5,16 @@
 #   sudo ssh-to-age -i /etc/ssh/ssh_host_ed25519_key.pub
 # To edit secrets.yaml, run:
 #   SOPS_AGE_KEY=$(sudo ssh-to-age -private-key -i /etc/ssh/ssh_host_ed25519_key) sops secrets.yaml
+# To apply the key changes, run:
+#   SOPS_AGE_KEY=$(sudo ssh-to-age -private-key -i /etc/ssh/ssh_host_ed25519_key) sops updatekeys secrets/common.yaml
 keys:
   - &home age1yf6qufzs04ehgta7cnheengu9vcxyxkl2h0t6dazlprn7wkr5v4qn7fhtv
-  - &work age1tllgpk9y8ph5x282apvr4387kh66er4zpmhua6a75eter6fn8exsytfrnu
+  - &homewin age1nzxcdfw87twmxpa337fcf396sjy7vrr445kgc9hr0w8em8fkl4dq8h6n9c
+  - &work age1zqd34u03df28ydu4ure7u3q63hplu9scfnvesgyyap2yersc9pfsh5sv2z
 creation_rules:
   - path_regex: secrets/common\.yaml
     key_groups:
       - age:
           - *home
+          - *homewin
           - *work
