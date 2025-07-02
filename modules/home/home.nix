@@ -676,7 +676,7 @@ in
       package = (pkgs.vscode.override { isInsiders = true; }).overrideAttrs (oldAttrs: {
         src = (builtins.fetchTarball {
           url = "https://code.visualstudio.com/sha/download?build=insider&os=linux-x64";
-          sha256 = "sha256:1kbidggnrrly2dij4g4ny2pza2pcnv82jy7bzr5398y9xsxcq0nq";
+          sha256 = "sha256:1x4rj7f3l5hxala6wrsdjcc5kbfj6y30h0r6l5czf458036p4myl";
         });
         buildInputs = oldAttrs.buildInputs ++ [ pkgs.libkrb5 ];
         version = "latest";
