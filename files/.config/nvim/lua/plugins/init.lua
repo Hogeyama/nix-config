@@ -746,7 +746,7 @@ return {
   {
     "sontungexpt/sttusline",
     branch = "table_version",
-    enabled = not is_light_mode and not vim.g.vscode,
+    enabled = false,
     dependencies = {
       "nvim-tree/nvim-web-devicons",
     },
@@ -2009,6 +2009,7 @@ return {
       },
       {
         'nvimtools/none-ls.nvim',
+        enabled = false,
         config = function()
           local null_ls = require("null-ls")
           local helpers = require("null-ls.helpers")
