@@ -1934,6 +1934,7 @@ return {
       },
       {
         'nvimtools/none-ls.nvim',
+        enabled = not is_light_mode and not vim.g.vscode,
         config = function()
           local null_ls = require("null-ls")
           local helpers = require("null-ls.helpers")
