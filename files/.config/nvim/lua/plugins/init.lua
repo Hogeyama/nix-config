@@ -701,53 +701,18 @@ return {
     },
   },
   {
-    "sontungexpt/sttusline",
-    branch = "table_version",
+    'nvim-lualine/lualine.nvim',
     enabled = not is_light_mode and not vim.g.vscode,
-    dependencies = {
-      "nvim-tree/nvim-web-devicons",
+    opts = {
+      sections = {
+        -- default + copilot
+        lualine_x = { 'copilot', 'encoding', 'fileformat', 'filetype' },
+      },
     },
-    event = { "BufEnter" },
-    config = function(_, _)
-      require("sttusline").setup {
-        statusline_color = "StatusLine",
-        disabled = {
-          filetypes = {},
-          buftypes = { "terminal" },
-        },
-        components = {
-          "mode",
-          "filename",
-          "git-branch",
-          "git-diff",
-          "%=",
-          "diagnostics",
-          "lsps-formatters",
-          "copilot-loading",
-          "indent",
-          {
-            "encoding",
-            {
-              update = function()
-                return vim.opt.fileformat._value .. "/" .. vim.opt.fileencoding._value
-              end,
-            }
-          },
-          {
-            "pos-cursor",
-            {
-              update = function()
-                -- Use display offset instead of byte offset
-                local cursor = vim.api.nvim_win_get_cursor(0)
-                local line = vim.api.nvim_get_current_line()
-                local display_offset = vim.fn.strdisplaywidth(line:sub(1, cursor[2] + 1))
-                return cursor[1] .. ":" .. display_offset
-              end,
-            }
-          },
-        },
-      }
-    end,
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+      'AndreM222/copilot-lualine',
+    }
   },
   {
     'nanozuki/tabby.nvim',
