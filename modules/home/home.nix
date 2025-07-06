@@ -276,6 +276,7 @@ in
         ncurses
         gmp
         icu
+        openssl
       ];
     };
   };
