@@ -699,16 +699,6 @@ in
     dropbox.enable = false;
     flameshot.enable = true;
   };
-  systemd.user.services.maestral = {
-    Unit.Description = "Maestral daemon";
-    Install.WantedBy = [ "default.target" ];
-    Service = {
-      ExecStart = "${pkgs.maestral}/bin/maestral start -f";
-      ExecStop = "${pkgs.maestral}/bin/maestral stop";
-      Restart = "on-failure";
-      Nice = 10;
-    };
-  };
   systemd.user.services.plasma-xmonad = {
     Unit.Description = "Plasma XMonad Window Manager";
     Unit.Before = [ "plasma-workspace.target" ];
