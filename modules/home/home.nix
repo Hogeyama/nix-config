@@ -673,7 +673,7 @@ in
       enable = true;
     };
     vscode = {
-      enable = true;
+      enable = env.installVSCode;
       package = (pkgs.vscode.override { isInsiders = true; }).overrideAttrs (oldAttrs: {
         src = (builtins.fetchTarball {
           url = "https://code.visualstudio.com/sha/download?build=insider&os=linux-x64";

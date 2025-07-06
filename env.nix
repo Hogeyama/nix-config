@@ -1,7 +1,9 @@
 rec {
   hostName = "nixos";
 
-  isWsl = false;
+  isWsl = true;
+
+  installVSCode = false;
 
   user = {
     name = "hogeyama";
