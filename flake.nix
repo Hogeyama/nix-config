@@ -34,9 +34,9 @@
     #
     #     Signed-off-by: Fernando Rodrigues <alpha@sigmasquadron.net>
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
-    neovim-nightly-overlay.inputs.nixpkgs.follows = "nixpkgs-pinned";
+    # neovim-nightly-overlay.inputs.nixpkgs.follows = "nixpkgs-pinned";
     # 問題が起こる一つ前のコミット
-    nixpkgs-pinned.url = "github:NixOS/nixpkgs/0587bb087781334c0881ef540b7d5f690ead86fa";
+    # nixpkgs-pinned.url = "github:NixOS/nixpkgs/0587bb087781334c0881ef540b7d5f690ead86fa";
 
     nixos-wsl.url = "github:nix-community/NixOS-WSL";
     nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
