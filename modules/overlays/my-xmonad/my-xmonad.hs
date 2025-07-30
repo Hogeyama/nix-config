@@ -72,11 +72,9 @@ main = do
     Just "2" ->
       xmonad (myConfig terminal browser) {layoutHook = myLayoutHook2}
     Just "1+xmobar" -> do
-      config <- xmobar' (ewmh (myConfig terminal browser))
-      xmonad config {layoutHook = myLayoutHook1}
+      xmonad =<< xmobar' (ewmh (myConfig terminal browser) {layoutHook = myLayoutHook1})
     Just "2+xmobar" -> do
-      config <- xmobar' (ewmh (myConfig terminal browser))
-      xmonad config {layoutHook = myLayoutHook2}
+      xmonad =<< xmobar' (ewmh (myConfig terminal browser) {layoutHook = myLayoutHook2})
     _ ->
       xmonad (myConfig terminal browser) {layoutHook = myLayoutHook1}
   where
