@@ -1,6 +1,7 @@
 local is_light_mode = vim.env.NVIM_LIGHT_MODE == "1"
 local is_inside_vscode = vim.env.VSCODE_INJECTION == '1'
-local is_jdtls_disabled = vim.env.JDTLS_DISABLED == '1'
+-- local is_jdtls_disabled = vim.env.JDTLS_DISABLED == '1'
+local is_jdtls_disabled = 1
 
 local jdtls_cmd = function()
   local cache_dir = vim.env.HOME .. "/.cache/jdtls"
