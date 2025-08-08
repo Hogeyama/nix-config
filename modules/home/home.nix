@@ -214,6 +214,15 @@ in
       xsel
       yq
       zip
+      ### wayland
+      kanshi
+      slurp
+      grim
+      slurp
+      wl-clipboard
+      swayidle
+      swaylock
+      pavucontrol
       ### font
       udev-gothic.nerdfont
       noto-fonts-emoji
@@ -240,6 +249,11 @@ in
           pinentry-program ${pkgs.pinentry-tty}/bin/pinentry-tty
         '';
       };
+      ".config/waybar/macchiato.css".source =
+        builtins.fetchurl {
+          url = "https://github.com/catppuccin/waybar/releases/download/v1.1/macchiato.css";
+          sha256 = "sha256:1g7i3lrzf9dqys0p983wrmn06zqq4z3q8b8lh1pdp035gxww1ki8";
+        };
     };
     sessionVariables = {
       EDITOR = "nvimw";
@@ -684,11 +698,116 @@ in
     nix-index = {
       enable = true;
     };
+    waybar = {
+      enable = true;
+      systemd.enable = true;
+      settings = {
+        mainBar = {
+          layer = "top";
+          position = "top";
+          height = 48;
+          output = [ "HDMI-A-2" ];
+
+          modules-left = [ "hyprland/workspaces" ];
+          modules-center = [ "clock" ];
+          modules-right = [ "cpu" "memory" "pulseaudio" "network" "battery" "tray" ];
+
+          clock = {
+            format = "{:%Y-%m-%d %a %H:%M:%S}";
+            interval = 1;
+          };
+          cpu = {
+            format = "CPU {usage}%";
+          };
+          memory = {
+            format = "MEM {percentage}%";
+          };
+          pulseaudio = {
+            format = " {volume}%";
+            format-muted = " ";
+            on-click = "pavucontrol";
+          };
+          network = {
+            format = "{ifname}: {bandwidthUpBits}↑ {bandwidthDownBits}↓";
+            format-disconnected = "No network";
+          };
+          "hyprland/workspaces" = {
+            all-outputs = true;
+            on-click = "activate";
+            format = "{id}";
+          };
+          tray.icon-size = 32;
+        };
+      };
+    };
+    waylogout = {
+      enable = true;
+    };
   };
   services = {
     dropbox.enable = false;
     flameshot.enable = true;
+    mako.enable = true; # 通知
+    kanshi = {
+      enable = true;
+      profiles = {
+        home = {
+          outputs = [
+            {
+              criteria = "DP-1";
+              status = "enable";
+              mode = "3840x2160@60";
+              position = "0,0";
+              scale = 1.25;
+              transform = "270";
+            }
+            {
+              criteria = "HDMI-A-2";
+              status = "enable";
+              mode = "3840x2160@60";
+              position = "1728,912";
+              scale = 1.0;
+              transform = "normal";
+            }
+          ];
+        };
+      };
+    };
+    swayidle = {
+      enable = true;
+      timeouts = [
+        {
+          # 5分でロック
+          timeout = 300;
+          command = "${pkgs.swaylock}/bin/swaylock -f -c 000000";
+        }
+      ];
+    };
+    hyprpaper = {
+      enable = true;
+      settings = {
+        preload = [
+          "${config.home.homeDirectory}/Pictures/reflexion.jpg"
+        ];
+        wallpaper = [
+          "DP-1,${config.home.homeDirectory}/Pictures/reflexion.jpg"
+          "HDMI-A-2,${config.home.homeDirectory}/Pictures/reflexion.jpg"
+        ];
+      };
+    };
   };
+  wayland.windowManager.hyprland = {
+    enable = true;
+    extraConfig = ''
+      source = ./hyprland.raw.conf
+    '';
+    # パッケージはNixOSで管理
+    package = null;
+    portalPackage = null;
+  };
+  # hyprlandにsession変数を渡す
+  xdg.configFile."uwsm/env".source = "${config.home.sessionVariablesPackage}/etc/profile.d/hm-session-vars.sh";
+
   systemd.user.services.plasma-xmonad = {
     Unit.Description = "Plasma XMonad Window Manager";
     Unit.Before = [ "plasma-workspace.target" ];
