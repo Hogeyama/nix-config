@@ -1,6 +1,41 @@
 #!/usr/bin/env bash
-if command -v clip.exe >/dev/null; then
-  cat - | tee >(xsel -p) >(xsel -b) >(iconv -c -f utf-8 -t sjis | clip.exe)
+# Wayland/X11 をセッション種別で分岐し、クリップボードへ複製する
+# - Wayland: wl-clipboard (wl-copy)
+# - X11    : xsel
+# - 追加   : WSL等で clip.exe があればSJISに再符号化して渡す
+
+set -euo pipefail
+
+targets=()
+
+# セッション判定（優先: XDG_SESSION_TYPE、次点: 環境変数の有無）
+if [[ "${XDG_SESSION_TYPE:-}" == "wayland" || -n "${WAYLAND_DISPLAY:-}" ]]; then
+  targets+=('wl-copy --primary')
+  targets+=('wl-copy') # 通常のクリップボード
+elif [[ "${XDG_SESSION_TYPE:-}" == "x11" || -n "${DISPLAY:-}" ]]; then
+  targets+=('xsel -p') # PRIMARY
+  targets+=('xsel -b') # CLIPBOARD
 else
-  cat - | tee >(xsel -p) >(xsel -b)
+  # 不明な場合は wl-copy があればWayland前提、なければxsel
+  if command -v wl-copy >/dev/null 2>&1; then
+    targets+=('wl-copy --primary')
+    targets+=('wl-copy')
+  else
+    targets+=('xsel -p')
+    targets+=('xsel -b')
+  fi
 fi
+
+# WSLなどで clip.exe があれば追加（SJISへ変換して渡す）
+if command -v clip.exe >/dev/null 2>&1; then
+  targets+=('iconv -c -f utf-8 -t sjis | clip.exe')
+fi
+
+# stdin を各ターゲットへ分岐
+cmd="tee"
+for t in "${targets[@]}"; do
+  cmd+=" >($t)"
+done
+
+# 実行（標準出力は捨てる）
+exec bash -c "$cmd"
