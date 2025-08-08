@@ -39,8 +39,13 @@
   services.desktopManager.plasma6.enable = true;
   services.displayManager.sddm.enable = true;
 
-  # Remenber display layout
+  # Remember display layout
   services.autorandr.enable = true;
 
   services.displayManager.defaultSession = "xfce+xmonad";
+
+  programs.hyprland = {
+    enable = true;
+    withUWSM = true;
+  };
 }
