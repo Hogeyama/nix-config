@@ -165,6 +165,7 @@ in
       jnv
       jq
       libsForQt5.konsole
+      libsecret
       kdePackages.krdc
       just
       libreoffice
