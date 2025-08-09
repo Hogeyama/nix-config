@@ -745,6 +745,7 @@ in
     };
   };
   services = {
+    pass-secret-service.enable = true;
     dropbox.enable = false;
     flameshot.enable = true;
     mako.enable = true; # 通知
