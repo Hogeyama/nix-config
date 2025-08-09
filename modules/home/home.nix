@@ -746,7 +746,7 @@ in
   };
   services = {
     pass-secret-service.enable = true;
-    dropbox.enable = false;
+    pasystray.enable = true;
     flameshot.enable = true;
     mako.enable = true; # 通知
     kanshi = {
