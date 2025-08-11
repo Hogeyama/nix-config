@@ -40,21 +40,32 @@ rec {
       "x-scheme-handler/http" = "${user.browser}.desktop";
     };
 
-    home-manager.users.${user.name}.programs = {
-      git = {
-        userName = user.name;
-        userEmail = user.email;
-      };
-      vscode = {
-        enable = true;
-        package = (pkgs.vscode.override { isInsiders = true; }).overrideAttrs (oldAttrs: {
-          src = (builtins.fetchTarball {
-            url = "https://code.visualstudio.com/sha/download?build=insider&os=linux-x64";
-            sha256 = "sha256:08h0i8bspqmxqvp2w1c2czsh3lyrb6jsbq55kfbrami1q7av4i88";
+    home-manager.users.${user.name} = {
+      programs = {
+        git = {
+          userName = user.name;
+          userEmail = user.email;
+        };
+        vscode = {
+          enable = true;
+          package = (pkgs.vscode.override { isInsiders = true; }).overrideAttrs (oldAttrs: {
+            src = (builtins.fetchTarball {
+              url = "https://code.visualstudio.com/sha/download?build=insider&os=linux-x64";
+              sha256 = "sha256:08h0i8bspqmxqvp2w1c2czsh3lyrb6jsbq55kfbrami1q7av4i88";
+            });
+            buildInputs = oldAttrs.buildInputs ++ [ pkgs.libkrb5 ];
+            version = "latest";
           });
-          buildInputs = oldAttrs.buildInputs ++ [ pkgs.libkrb5 ];
-          version = "latest";
-        });
+        };
+      };
+      services = {
+        swayidle.timeouts = [
+          {
+            # 5分でロック
+            timeout = 3000;
+            command = "${pkgs.swaylock}/bin/swaylock -f -c 000000";
+          }
+        ];
       };
     };
 

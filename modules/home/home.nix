@@ -777,13 +777,7 @@ in
     };
     swayidle = {
       enable = true;
-      timeouts = [
-        {
-          # 5分でロック
-          timeout = 300;
-          command = "${pkgs.swaylock}/bin/swaylock -f -c 000000";
-        }
-      ];
+      timeouts = [ ]; # env.nixで設定する
     };
     hyprpaper = {
       enable = true;
