@@ -66,6 +66,29 @@ rec {
             command = "${pkgs.swaylock}/bin/swaylock -f -c 000000";
           }
         ];
+        kanshi.profiles.home.outputs = [
+          {
+            criteria = "DP-1";
+            status = "enable";
+            mode = "3840x2160@60";
+            position = "0,0";
+            scale = 1.25;
+            transform = "270";
+          }
+          {
+            criteria = "HDMI-A-2";
+            status = "enable";
+            mode = "3840x2160@60";
+            position = "1728,912";
+            scale = 1.0;
+            transform = "normal";
+          }
+        ];
+      };
+      wayland.windowManager.hyprland = {
+        # パッケージはNixOSで管理
+        package = null;
+        portalPackage = null;
       };
     };
 
