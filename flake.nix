@@ -24,19 +24,7 @@
     nix-alien.inputs.nix-index-database.follows = "nix-index-database";
     nix-alien.inputs.flake-utils.follows = "flake-utils";
 
-    # 次の変更からエラーが起こるようになってしまった。nixpkgsをpinして回避している。
-    # commit 05580f4b4433fda48fff30f60dfd303d6ee05d21
-    # Author: Fernando Rodrigues <alpha@sigmasquadron.net>
-    # Date:   Sun Apr 20 23:33:11 2025 -0300
-    #     treewide: switch instances of lib.teams.*.members to the new meta.teams attribute
-    #
-    #     Follow-up to #394797.
-    #
-    #     Signed-off-by: Fernando Rodrigues <alpha@sigmasquadron.net>
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
-    # neovim-nightly-overlay.inputs.nixpkgs.follows = "nixpkgs-pinned";
-    # 問題が起こる一つ前のコミット
-    # nixpkgs-pinned.url = "github:NixOS/nixpkgs/0587bb087781334c0881ef540b7d5f690ead86fa";
 
     nixos-wsl.url = "github:nix-community/NixOS-WSL";
     nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
