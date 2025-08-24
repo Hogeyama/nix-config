@@ -53,6 +53,14 @@ let
     '';
   };
 
+  neovim011 = pkgs.symlinkJoin {
+    name = "nvim-0.11";
+    paths = [ pkgs.neovim ];
+    postBuild = ''
+      mv $out/bin/nvim $out/bin/nvim-0.11
+    '';
+  };
+
   checkstyle = pkgs.writeScriptBin "checkstyle" ''
     #!${pkgs.stdenv.shell}
     set -eu
@@ -176,6 +184,7 @@ in
       manix
       maestral
       mercurial
+      neovim011
       neovim-remote
       nix-du
       nix-output-monitor
