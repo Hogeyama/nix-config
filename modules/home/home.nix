@@ -309,7 +309,7 @@ in
   };
   fonts = {
     fontconfig = {
-      enable = false;
+      enable = true;
       defaultFonts = {
         monospace = [
           "UDEV Gothic NF"
