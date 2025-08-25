@@ -12,7 +12,7 @@ rec {
     xmonad-layout = "1+xmobar";
   };
 
-  nixosModule = { pkgs, config, ... }: {
+  nixosModule = args@{ pkgs, config, ... }: {
     users = {
       users = {
         ${user.name} = {
@@ -40,58 +40,6 @@ rec {
       "x-scheme-handler/http" = "${user.browser}.desktop";
     };
 
-    home-manager.users.${user.name} = {
-      programs = {
-        git = {
-          userName = user.name;
-          userEmail = user.email;
-        };
-        vscode = {
-          enable = true;
-          package = (pkgs.vscode.override { isInsiders = true; }).overrideAttrs (oldAttrs: {
-            src = (builtins.fetchTarball {
-              url = "https://code.visualstudio.com/sha/download?build=insider&os=linux-x64";
-              sha256 = "sha256:08h0i8bspqmxqvp2w1c2czsh3lyrb6jsbq55kfbrami1q7av4i88";
-            });
-            buildInputs = oldAttrs.buildInputs ++ [ pkgs.libkrb5 ];
-            version = "latest";
-          });
-        };
-      };
-      services = {
-        swayidle.timeouts = [
-          {
-            # 5分でロック
-            timeout = 3000;
-            command = "${pkgs.swaylock}/bin/swaylock -f -c 000000";
-          }
-        ];
-        kanshi.profiles.home.outputs = [
-          {
-            criteria = "DP-1";
-            status = "enable";
-            mode = "3840x2160@60";
-            position = "0,0";
-            scale = 1.25;
-            transform = "270";
-          }
-          {
-            criteria = "HDMI-A-2";
-            status = "enable";
-            mode = "3840x2160@60";
-            position = "1728,912";
-            scale = 1.0;
-            transform = "normal";
-          }
-        ];
-      };
-      wayland.windowManager.hyprland = {
-        # パッケージはNixOSで管理
-        package = null;
-        portalPackage = null;
-      };
-    };
-
     sops.secrets."login-password" = {
       sopsFile = ./secrets/common.yaml;
       neededForUsers = true;
@@ -116,7 +64,60 @@ rec {
       !include ${config.sops.templates."nix-secret.conf".path}
     '';
 
-
     programs.steam.enable = true;
+
+    home-manager.users.${user.name} = homeManagerModule args;
+  };
+
+  homeManagerModule = { pkgs, ... }: {
+    programs = {
+      git = {
+        userName = user.name;
+        userEmail = user.email;
+      };
+      vscode = {
+        enable = true;
+        package = (pkgs.vscode.override { isInsiders = true; }).overrideAttrs (oldAttrs: {
+          src = (builtins.fetchTarball {
+            url = "https://code.visualstudio.com/sha/download?build=insider&os=linux-x64";
+            sha256 = "sha256:08h0i8bspqmxqvp2w1c2czsh3lyrb6jsbq55kfbrami1q7av4i88";
+          });
+          buildInputs = oldAttrs.buildInputs ++ [ pkgs.libkrb5 ];
+          version = "latest";
+        });
+      };
+    };
+    services = {
+      swayidle.timeouts = [
+        {
+          # 5分でロック
+          timeout = 3000;
+          command = "${pkgs.swaylock}/bin/swaylock -f -c 000000";
+        }
+      ];
+      kanshi.profiles.home.outputs = [
+        {
+          criteria = "DP-1";
+          status = "enable";
+          mode = "3840x2160@60";
+          position = "0,0";
+          scale = 1.25;
+          transform = "270";
+        }
+        {
+          criteria = "HDMI-A-2";
+          status = "enable";
+          mode = "3840x2160@60";
+          position = "1728,912";
+          scale = 1.0;
+          transform = "normal";
+        }
+      ];
+    };
+    wayland.windowManager.hyprland = {
+      # パッケージはNixOSで管理
+      package = null;
+      portalPackage = null;
+    };
   };
 }
