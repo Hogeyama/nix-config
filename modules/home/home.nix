@@ -774,8 +774,7 @@ in
           "${config.home.homeDirectory}/Pictures/reflexion.jpg"
         ];
         wallpaper = [
-          "DP-1,${config.home.homeDirectory}/Pictures/reflexion.jpg"
-          "HDMI-A-2,${config.home.homeDirectory}/Pictures/reflexion.jpg"
+          ",${config.home.homeDirectory}/Pictures/reflexion.jpg"
         ];
       };
     };
