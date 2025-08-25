@@ -718,8 +718,6 @@ in
         mainBar = {
           layer = "top";
           position = "top";
-          height = 48;
-          output = [ "HDMI-A-2" ];
 
           modules-left = [ "hyprland/workspaces" ];
           modules-center = [ "clock" ];

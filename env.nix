@@ -86,6 +86,12 @@ rec {
           version = "latest";
         });
       };
+      waybar = {
+        settings.mainBar = {
+          height = 48;
+          output = [ "HDMI-A-2" ];
+        };
+      };
     };
     services = {
       swayidle.timeouts = [
