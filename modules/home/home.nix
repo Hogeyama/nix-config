@@ -758,8 +758,11 @@ in
   services = {
     pass-secret-service.enable = true;
     pasystray.enable = true;
-    flameshot.enable = true;
-    mako.enable = true; # 通知
+    mako.enable = true;
+    flameshot = {
+      enable = true;
+      package = pkgs.flameshot.override { enableWlrSupport = true; };
+    };
     kanshi = {
       enable = true;
       profiles = { }; # env.nixで設定する
