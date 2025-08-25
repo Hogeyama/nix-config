@@ -131,7 +131,6 @@ in
   home = {
     stateVersion = "22.11";
     packages = with pkgs; [
-      albert
       autorandr
       awscli2
       aws-sam-cli
@@ -172,7 +171,6 @@ in
       htop
       jnv
       jq
-      libsForQt5.konsole
       libsecret
       kdePackages.krdc
       just
