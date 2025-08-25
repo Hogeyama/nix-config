@@ -232,7 +232,12 @@ in
       wl-clipboard
       swayidle
       swaylock
+      hyprshot
       pavucontrol
+      xdg-desktop-portal
+      xdg-desktop-portal-hyprland
+      nwg-displays
+      uwsm
       ### font
       udev-gothic.nerdfont
       noto-fonts-emoji
@@ -787,6 +792,10 @@ in
   };
   # hyprlandにsession変数を渡す
   xdg.configFile."uwsm/env".source = "${config.home.sessionVariablesPackage}/etc/profile.d/hm-session-vars.sh";
+  xdg.portal.enable = true;
+  xdg.portal.extraPortals = with pkgs; [
+    xdg-desktop-portal-hyprland
+  ];
 
   systemd.user.services.plasma-xmonad = {
     Unit.Description = "Plasma XMonad Window Manager";
