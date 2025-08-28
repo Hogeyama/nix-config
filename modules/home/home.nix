@@ -659,7 +659,7 @@ in
       userEmail = env.user.email;
       extraConfig = {
         alias.stash-all = "stash save --include-untracked";
-        alias.show-upstream = "git rev-parse --abbrev-ref --symbolic-full-name @{u}";
+        alias.show-upstream = "rev-parse --abbrev-ref --symbolic-full-name @{u}";
         blame.ignoreRevsFile = ".git-blame-ignore-revs";
         core.autoCRLF = false;
         core.autoLF = false;
