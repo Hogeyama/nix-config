@@ -791,10 +791,6 @@ in
   };
   # hyprlandにsession変数を渡す
   xdg.configFile."uwsm/env".source = "${config.home.sessionVariablesPackage}/etc/profile.d/hm-session-vars.sh";
-  xdg.portal.enable = true;
-  xdg.portal.extraPortals = with pkgs; [
-    xdg-desktop-portal-hyprland
-  ];
 
   systemd.user.services.plasma-xmonad = {
     Unit.Description = "Plasma XMonad Window Manager";
