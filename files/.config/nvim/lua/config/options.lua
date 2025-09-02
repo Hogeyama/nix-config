@@ -42,3 +42,8 @@ vim.opt.updatetime = 300
 vim.opt.cursorline = false
 vim.opt.signcolumn = "yes"
 vim.opt.fillchars = 'eob: '
+
+-- https://github.com/vscode-neovim/vscode-neovim/issues/2507#issuecomment-3059712058
+if vim.g.vscode then
+  vim.opt.cmdheight = 100
+end
