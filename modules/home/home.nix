@@ -567,26 +567,20 @@ in
         source-if-exists $HOME/.zshrc.local
 
         function audio-switch() {
-          local cards=("''${(f)$(pactl list cards short | awk '{print $2}')}")
           local card
-          if [[ ''${#cards} -eq 0 ]]; then
-            echo "No audio cards found"
-            return
-          elif [[ ''${#cards} -eq 1 ]]; then
-            card=''$cards[1]
-          else
-            card=$(printf "%s\n" ''${cards[@]} | fzf --prompt="Select audio card: ")
-          fi
-          if [[ -z "$card" ]]; then
-            return
-          fi
+          card=$(
+            pactl -f json list cards short |
+            jq -r '.[].name' |
+            fzf --prompt="Select audio card: " --select-1
+          )
 
           local profile=$1
           if [[ -z $profile ]]; then
             profile=$(
-              pactl list cards \
-              | awk '/Profiles:/{p=1;next} /Active Profile:/{p=0} p==1{sub(/:$/,"",$1);print $1}' \
-              | fzf --prompt="Select audio profile: "
+              pactl -f json list cards \
+                | jq -r '.[0].profiles|to_entries[]|[.value.description, .key] | @tsv' \
+                | fzf --with-nth=1 --delimiter='\t' --prompt='Profile> ' \
+                | cut -f2
             )
           fi
           if [[ -z "$profile" ]]; then
