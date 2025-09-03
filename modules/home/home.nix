@@ -193,6 +193,7 @@ in
       nodePackages.npm
       nodePackages.prettier
       openssl
+      pamixer
       pandoc
       pass
       pgcli
@@ -737,6 +738,7 @@ in
             format = " {volume}%";
             format-muted = " ";
             on-click = "pavucontrol";
+            on-click-middle = "pamixer --toggle-mute";
           };
           network = {
             format = "{ifname}: {bandwidthUpBits}↑ {bandwidthDownBits}↓";
