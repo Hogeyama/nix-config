@@ -776,8 +776,13 @@ in
       source = ./hyprland.raw.conf
     '';
   };
-  # hyprlandにsession変数を渡す
-  xdg.configFile."uwsm/env".source = "${config.home.sessionVariablesPackage}/etc/profile.d/hm-session-vars.sh";
+  xdg = {
+    # hyprlandにsession変数を渡す
+    configFile."uwsm/env".source = "${config.home.sessionVariablesPackage}/etc/profile.d/hm-session-vars.sh";
+    # XDG_DATA_DIRSのデフォルト値。これがないとDebian環境でxdg-desktop-portal等が動かない。
+    # 少なくともgsettingsに依存するものが軒並み死ぬようだ。
+    systemDirs.data = [ "/usr/share" "/usr/local/share" ];
+  };
 
   systemd.user.services.plasma-xmonad = {
     Unit.Description = "Plasma XMonad Window Manager";
