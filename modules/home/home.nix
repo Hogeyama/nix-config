@@ -784,16 +784,6 @@ in
     systemDirs.data = [ "/usr/share" "/usr/local/share" ];
   };
 
-  systemd.user.services.plasma-xmonad = {
-    Unit.Description = "Plasma XMonad Window Manager";
-    Unit.Before = [ "plasma-workspace.target" ];
-    Install.WantedBy = [ "plasma-workspace.target" ];
-    Service = {
-      ExecStart = "${xmonad}/bin/xmonad-x86_64-linux";
-      Slice = "session.slice";
-      Restart = "on-failure";
-    };
-  };
   manual.manpages.enable = false;
 
   # https://nixos.wiki/wiki/Virt-manager
