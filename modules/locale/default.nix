@@ -11,9 +11,5 @@
     };
   };
 
-  environment = {
-    sessionVariables = {
-      GTK_IM_MODULE_FILE = "/run/current-system/sw/etc/gtk-3.0/immodules.cache";
-    };
-  };
+  environment = { };
 }
