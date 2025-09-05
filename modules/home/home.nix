@@ -784,8 +784,6 @@ in
     systemDirs.data = [ "/usr/share" "/usr/local/share" ];
   };
 
-  manual.manpages.enable = false;
-
   # https://nixos.wiki/wiki/Virt-manager
   dconf.settings = {
     "org/virt-manager/virt-manager/connections" = {
