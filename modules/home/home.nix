@@ -190,6 +190,7 @@ in
       pgcli
       pre-commit
       python313
+      python313Packages.grip
       python313Packages.httpie
       ripgrep
       scrot
@@ -246,6 +247,23 @@ in
         executable = true;
         text = ''echo "Nothing to do"'';
       };
+      ".grip/settings.py".text = ''
+        import subprocess
+        STYLE_URLS = ['/__/grip/asset/github-markdown.css', '/__/grip/asset/page.css']
+        PASSWORD = subprocess.run("gh auth token", shell=True, capture_output=True, text=True).stdout.strip()
+      '';
+      ".grip/cache-${pkgs.python312Packages.grip.version}/github-markdown.css".source = pkgs.fetchurl {
+        url = "https://raw.githubusercontent.com/sindresorhus/github-markdown-css/gh-pages/github-markdown.css";
+        sha256 = "sha256-MNaimU8CBRRB7PsFr2UMc3P6X9W4JhHYj6m+q0VyAw0=";
+      };
+      ".grip/cache-${pkgs.python312Packages.grip.version}/page.css".text = ''
+        .page {
+          max-width: 1000px;
+          margin: auto;
+          padding: 30px;
+        }
+      '';
+
       ".gnupg/gpg-agent.conf" = {
         text = ''
           # 100h
