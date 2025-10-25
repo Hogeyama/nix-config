@@ -174,3 +174,5 @@ colorscheme midnight
 #  "zO": "zoom 0.3",
 #  ".": "repeat"
 #}
+
+:blacklistadd localhost
