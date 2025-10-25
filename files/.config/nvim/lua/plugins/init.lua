@@ -1,22 +1,5 @@
 local is_light_mode = vim.env.NVIM_LIGHT_MODE == "1"
 local is_inside_vscode = vim.env.VSCODE_INJECTION == '1'
--- local is_jdtls_disabled = vim.env.JDTLS_DISABLED == '1'
-local is_jdtls_disabled = 1
-
-local jdtls_cmd = function()
-  local cache_dir = vim.env.HOME .. "/.cache/jdtls"
-  local lombok_jar = vim.env.MASON .. "/share/lombok-nightly/lombok.jar"
-  local java_executable = vim.env.JDTLS_JAVA_HOME
-      and " --java-executable " .. vim.env.JDTLS_JAVA_HOME .. "/bin/java"
-      or ''
-  return { "bash", "-c",
-    "sleep 1 && jdtls  "
-    .. " -configuration " .. cache_dir .. "/config"
-    .. " -data " .. cache_dir .. "/workspace"
-    .. " --jvm-arg=-javaagent:" .. lombok_jar
-    .. java_executable
-  }
-end
 
 return {
   { 'nvim-lua/plenary.nvim' },
@@ -1784,13 +1767,6 @@ return {
         filetypes = { "javascript", "typescript", "typescriptreact", "javascriptreact", "vue" },
       })
 
-      -- [[jdtls]]
-      if not is_jdtls_disabled then
-        enable_lsp('jdtls', {
-          cmd = jdtls_cmd(),
-        })
-      end
-
       -- [[lua_ls]]
       enable_lsp('lua_ls')
       -- [[nil_ls]]
@@ -2015,20 +1991,6 @@ return {
         config = function()
           require("neoconf").setup({})
         end,
-      },
-      {
-        'nvim-java/nvim-java',
-        opts = {
-          jdtls = {
-            -- version = 'v1.36.0',
-          },
-          jdk = {
-            auto_install = false,
-          },
-          spring_boot_tools = {
-            enable = false,
-          },
-        }
       },
     },
   },
