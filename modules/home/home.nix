@@ -301,6 +301,9 @@ in
       # my-fzf-wrapper
       FZFW_FD_EXCLUDE_PATHS = ".git,.hg,.hie,dist-newstyle,__pycache__,Session.vim,.direnv,node_modules,.next,.nuxt,.output,dist";
 
+      # ssh
+      SSH_ASKPASS = "";
+
       # nix-ld
       # 典型的な実行ファイルはそのまま動くようにしておく。
       # NIX_LD_LIBRARY_PATH は必要そうなものを適宜足していく運用にする。
