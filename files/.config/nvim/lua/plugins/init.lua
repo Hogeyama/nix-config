@@ -1044,7 +1044,7 @@ return {
       completion = {
         documentation = { auto_show = true },
         menu = {
-          auto_show = true,
+          -- nvim-cmp style menu
           draw = {
             columns = {
               { "label",     "label_description", gap = 1 },
@@ -1054,10 +1054,9 @@ return {
         },
         ghost_text = { enabled = true },
         trigger = {
-          show_on_keyword = true,
-          show_on_trigger_character = true,
-          show_on_insert_on_trigger_character = true,
-          show_on_accept_on_trigger_character = true,
+          -- Copilot向け
+          show_on_backspace = true,
+          show_on_insert = true,
         },
       },
       sources = {
@@ -1072,7 +1071,11 @@ return {
         },
       },
       fuzzy = { implementation = "prefer_rust_with_warning" },
-      signature = { enabled = true }
+      signature = { enabled = true },
+      cmdline = {
+        keymap = { preset = 'inherit' },
+        completion = { menu = { auto_show = true } },
+      },
     },
     opts_extend = { "sources.default" },
     dependencies = {
@@ -1084,8 +1087,8 @@ return {
             cmd = "Copilot",
             event = "InsertEnter",
             opts = {
-              suggestion = { enabled = false },
-              panel = { enabled = false },
+              suggestion = { enabled = true },
+              panel = { enabled = true },
               filetypes = {
                 markdown = true,
                 help = true,
