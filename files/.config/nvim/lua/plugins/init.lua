@@ -1706,17 +1706,26 @@ return {
       })
 
       -- [[set default]]
-      require 'lspconfig'.util.default_config = vim.tbl_extend("force",
-        require 'lspconfig'.util.default_config,
-        {
-          on_attach = vim.g.lsp_default_on_attach,
-          capabilities = vim.g.lsp_default_capabilities,
-        }
-      )
+      vim.lsp.config('*', {
+        on_attach = vim.g.lsp_default_on_attach,
+        capabilities = vim.g.lsp_default_capabilities,
+      })
+
+      local enabled_servers = {}
+      local function enable_lsp(name, opts)
+        if opts then
+          vim.lsp.config(name, opts)
+        end
+        if enabled_servers[name] then
+          return
+        end
+        enabled_servers[name] = true
+        vim.lsp.enable(name)
+      end
 
       -- [Per server]
       -- [[hls]]
-      require 'lspconfig'.hls.setup {
+      enable_lsp('hls', {
         cmd = {
           -- a wrapper of haskell-language-server-wrapper that
           -- fall backs to haskell-language-server
@@ -1732,16 +1741,16 @@ return {
           },
         },
         filetypes = { 'haskell', 'lhaskell', 'cabal' },
-      }
+      })
 
       -- [[denols]]
-      require 'lspconfig'.denols.setup {
-        root_dir = require 'lspconfig'.util.root_pattern("deno.json"),
+      enable_lsp('denols', {
+        root_markers = { "deno.json" },
         init_options = {
           lint = true,
         },
         single_file_support = false,
-      }
+      })
 
       -- [[ts_ls]]
       -- thx! https://tech-blog.cloud-config.jp/2024-05-22-write-vue-with-neovim
@@ -1750,8 +1759,8 @@ return {
       local vue_typescript_plugin =
           vim.env.MASON ..
           "/packages/vue-language-server/node_modules/@vue/language-server/node_modules/@vue/typescript-plugin"
-      require 'lspconfig'.ts_ls.setup {
-        root_dir = require 'lspconfig'.util.root_pattern("package.json"),
+      enable_lsp('ts_ls', {
+        root_markers = { "package.json" },
         init_options = {
           lint = true,
           plugins = {
@@ -1764,28 +1773,28 @@ return {
         },
         single_file_support = false,
         filetypes = { "javascript", "typescript", "javascriptreact", "typescriptreact", "vue" },
-      }
-      require 'lspconfig'.volar.setup {
-        root_dir = require 'lspconfig'.util.root_pattern("vue.config.js", "nuxt.config.ts", "src/App.vue"),
+      })
+      enable_lsp('volar', {
+        root_markers = { "vue.config.js", "nuxt.config.ts", "src/App.vue" },
         init_options = {
           vue = {
             hybridMode = false,
           },
         },
         filetypes = { "javascript", "typescript", "typescriptreact", "javascriptreact", "vue" },
-      }
+      })
 
       -- [[jdtls]]
       if not is_jdtls_disabled then
-        require 'lspconfig'.jdtls.setup {
+        enable_lsp('jdtls', {
           cmd = jdtls_cmd(),
-        }
+        })
       end
 
       -- [[lua_ls]]
-      require 'lspconfig'.lua_ls.setup {}
+      enable_lsp('lua_ls')
       -- [[nil_ls]]
-      require 'lspconfig'.nil_ls.setup {
+      enable_lsp('nil_ls', {
         settings = {
           ["nil"] = {
             formatting = {
@@ -1793,12 +1802,12 @@ return {
             },
           },
         },
-      }
+      })
       -- [[others]]
-      require 'lspconfig'.bashls.setup {}
-      require 'lspconfig'.eslint.setup {}
-      require 'lspconfig'.biome.setup {}
-      require 'lspconfig'.tailwindcss.setup {
+      enable_lsp('bashls')
+      enable_lsp('eslint')
+      enable_lsp('biome')
+      enable_lsp('tailwindcss', {
         filetypes = {
           "html",
           "css",
@@ -1809,10 +1818,10 @@ return {
           "typescriptreact",
           "vue",
         },
-      }
-      require 'lspconfig'.dhall_lsp_server.setup {}
-      -- require 'lspconfig'.jsonls.setup {}
-      require 'lspconfig'.rust_analyzer.setup {
+      })
+      enable_lsp('dhall_lsp_server')
+      -- enable_lsp('jsonls')
+      enable_lsp('rust_analyzer', {
         settings = {
           ['rust-analyzer'] = {
             check = {
@@ -1823,17 +1832,17 @@ return {
             },
           }
         }
-      }
-      require 'lspconfig'.gopls.setup {}
-      require 'lspconfig'.graphql.setup {}
-      require 'lspconfig'.pyright.setup {}
-      -- require 'lspconfig'.yamlls.setup {}
-      require 'lspconfig'.terraformls.setup {}
-      require 'lspconfig'.tflint.setup {}
-      require 'lspconfig'.dockerls.setup {}
-      require 'lspconfig'.sqlls.setup {}
-      require 'lspconfig'.gradle_ls.setup {}
-      require 'lspconfig'.unison.setup {}
+      })
+      enable_lsp('gopls')
+      enable_lsp('graphql')
+      enable_lsp('pyright')
+      -- enable_lsp('yamlls')
+      enable_lsp('terraformls')
+      enable_lsp('tflint')
+      enable_lsp('dockerls')
+      enable_lsp('sqlls')
+      enable_lsp('gradle_ls')
+      enable_lsp('unison')
     end,
     dependencies = {
       {
