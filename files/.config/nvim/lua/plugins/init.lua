@@ -1757,7 +1757,7 @@ return {
         single_file_support = false,
         filetypes = { "javascript", "typescript", "javascriptreact", "typescriptreact", "vue" },
       })
-      enable_lsp('volar', {
+      enable_lsp('vue_ls', {
         root_markers = { "vue.config.js", "nuxt.config.ts", "src/App.vue" },
         init_options = {
           vue = {
