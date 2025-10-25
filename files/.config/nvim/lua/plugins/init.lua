@@ -1337,6 +1337,7 @@ return {
   {
     'michaelb/sniprun',
     enabled = not is_light_mode,
+    build = "sh install.sh",
     config = function()
       local sa = require('sniprun.api')
       local state = {}
