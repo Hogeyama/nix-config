@@ -2161,7 +2161,16 @@ return {
         completions = { blink = { enabled = true } },
       })
       vim.cmd [[RenderMarkdown disable]]
-    end
+    end,
+    keys = {
+      {
+        '<leader>mr',
+        function() require('render-markdown').toggle() end,
+        mode = { 'n' },
+        desc = "Toggle Render Markdown",
+      },
+    },
+
   },
   {
     'vim-voom/VOoM',
