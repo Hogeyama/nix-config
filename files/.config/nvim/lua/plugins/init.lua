@@ -1,5 +1,4 @@
 local is_light_mode = vim.env.NVIM_LIGHT_MODE == "1"
-local is_inside_vscode = vim.env.VSCODE_INJECTION == '1'
 
 return {
   { 'nvim-lua/plenary.nvim' },
@@ -287,7 +286,9 @@ return {
       scratch = { ft = function() return "markdown" end }
     },
     keys = {
-      { "<leader>go", function() Snacks.gitbrowse.open() end, mode = { 'n' } },
+      { "<leader>go", function() Snacks.gitbrowse.open() end,  mode = { 'n' } },
+      { "<leader>bd", function() Snacks.bufdelete.other() end, mode = { 'n' } },
+      { "<leader>bD", function() Snacks.bufdelete.all() end,   mode = { 'n' } },
     }
   },
   {
