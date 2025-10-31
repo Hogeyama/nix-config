@@ -1693,8 +1693,14 @@ return {
       })
 
       -- [[set default]]
+      vim.api.nvim_create_autocmd('LspAttach', {
+        callback = function(ev)
+          local client = vim.lsp.get_client_by_id(ev.data.client_id)
+          local bufnr = ev.buf
+          vim.g.lsp_default_on_attach(client, bufnr)
+        end
+      })
       vim.lsp.config('*', {
-        on_attach = vim.g.lsp_default_on_attach,
         capabilities = vim.g.lsp_default_capabilities,
       })
 
