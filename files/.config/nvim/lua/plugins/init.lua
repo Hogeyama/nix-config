@@ -2169,7 +2169,7 @@ return {
     enabled = not is_light_mode and not vim.g.vscode,
   },
   {
-    'epwalsh/obsidian.nvim',
+    'obsidian-nvim/obsidian.nvim',
     enabled = not is_light_mode and not vim.g.vscode,
     version = "*",
     ft = "markdown",
@@ -2190,28 +2190,7 @@ return {
         date_format = "%Y-%m-%d",
       },
       completion = {
-        nvim_cmp = false,
         min_chars = 2,
-      },
-      mappings = {
-        ["gf"] = {
-          action = function()
-            return require("obsidian").util.gf_passthrough()
-          end,
-          opts = { noremap = false, expr = true, buffer = true },
-        },
-        ["<leader>ch"] = {
-          action = function()
-            return require("obsidian").util.toggle_checkbox()
-          end,
-          opts = { buffer = true },
-        },
-        ["<cr>"] = {
-          action = function()
-            return require("obsidian").util.smart_action()
-          end,
-          opts = { buffer = true, expr = true },
-        }
       },
       picker = {
         name = "fzf-lua",
@@ -2219,6 +2198,12 @@ return {
           new = "<C-x>",
           insert_link = "<C-l>",
         },
+      },
+      footer = {
+        enable = false,
+      },
+      checkbox = {
+        order = { " ", "x" },
       },
       -- %Y%m%dT%H%M%S-XXXX
       note_id_func = function(title)
@@ -2257,16 +2242,13 @@ return {
       end,
       ui = {
         enable = false,
-        checkboxes = {
-          [" "] = { char = "󰄱", hl_group = "ObsidianTodo" },
-          ["x"] = { char = "", hl_group = "ObsidianDone" },
-        },
       },
+      legacy_commands = false,
     },
     keys = {
-      { '<C-t>',      "<Cmd>ObsidianToday<CR>",       mode = { 'n' } },
-      { '<leader>ob', "<Cmd>ObsidianBacklinks<CR>",   mode = { 'n' } },
-      { '<leader>oq', "<Cmd>ObsidianQuickSwitch<CR>", mode = { 'n' } },
+      { '<C-t>',      "<Cmd>Obsidian today<CR>",        mode = { 'n' } },
+      { '<leader>ob', "<Cmd>Obsidian backlinks<CR>",    mode = { 'n' } },
+      { '<leader>oq', "<Cmd>Obsidian quick_switch<CR>", mode = { 'n' } },
     },
   },
   {
