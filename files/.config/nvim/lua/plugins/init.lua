@@ -672,19 +672,6 @@ return {
     end
   },
   {
-    "utilyre/barbecue.nvim",
-    enabled = not is_light_mode and not vim.g.vscode and not is_inside_vscode,
-    name = "barbecue",
-    version = "*",
-    dependencies = {
-      "SmiteshP/nvim-navic",
-      "nvim-tree/nvim-web-devicons", -- optional dependency
-    },
-    opts = {
-      -- TODO
-    },
-  },
-  {
     'nvim-lualine/lualine.nvim',
     enabled = not is_light_mode and not vim.g.vscode,
     opts = {
@@ -2050,7 +2037,7 @@ return {
           virtual_text = false,
         },
         symbol_in_winbar = {
-          enable = false,
+          enable = true,
         },
         finder = {
           keys = {
