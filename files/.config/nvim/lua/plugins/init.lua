@@ -1732,7 +1732,12 @@ return {
 
       -- [[denols]]
       enable_lsp('denols', {
-        root_markers = { "deno.json" },
+        root_dir = function(_, on_dir)
+          local dir = vim.fs.root(0, 'deno.json')
+          if dir then
+            on_dir(dir)
+          end
+        end,
         init_options = {
           lint = true,
         },
@@ -1747,7 +1752,12 @@ return {
           vim.env.MASON ..
           "/packages/vue-language-server/node_modules/@vue/language-server/node_modules/@vue/typescript-plugin"
       enable_lsp('ts_ls', {
-        root_markers = { "package.json" },
+        root_dir = function(_, on_dir)
+          local dir = vim.fs.root(0, 'package.json')
+          if dir then
+            on_dir(dir)
+          end
+        end,
         init_options = {
           lint = true,
           plugins = {
