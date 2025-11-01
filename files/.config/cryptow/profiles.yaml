@@ -1,0 +1,29 @@
+profiles:
+  codex:
+    command:
+      - codex
+    injectors:
+      - type: gocryptfs
+        password_entry: gocryptfs/codex
+        mount_dir: ~/.codex
+      - type: env
+        password_entry: openai_api_key
+        env: OPENAI_API_KEY
+  acme.sh:
+    command:
+      - acme.sh
+    injectors:
+      - type: gocryptfs
+        password_entry: gocryptfs/acme-sh
+        mount_dir: ~/.acme.sh
+      - type: env
+        password_entry: cloudflare/api-key
+        env: CF_Token
+  local-https-proxy:
+    command:
+      - local-https-proxy
+    injectors:
+      - type: gocryptfs
+        password_entry: gocryptfs/acme-sh
+        cipher_dir: ~/.local/share/cryptow/profiles/acme.sh/cipher
+        mount_dir: ~/.acme.sh
