@@ -1,0 +1,8 @@
+[Unit]
+Description=Renew LE wildcard via acme.sh (Cloudflare via pass)
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -lc "cryptow run acme.sh -- --server letsencrypt --renew --dns dns_cf -d 'localhost.hogeyama.com' -d '*.localhost.hogeyama.com'"
+
