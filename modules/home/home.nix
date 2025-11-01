@@ -123,6 +123,7 @@ in
   home = {
     stateVersion = "22.11";
     packages = with pkgs; [
+      acme-sh
       autorandr
       awscli2
       aws-sam-cli
