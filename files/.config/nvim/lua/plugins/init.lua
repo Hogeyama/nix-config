@@ -1886,22 +1886,16 @@ return {
         config = function()
           vim.g.format_on_save_enabled = true
           require("conform").setup({
-            formatters_by_ft = {
-              vue = { "prettier" },
-              typescript = { "prettier" },
-              typescriptreact = { "prettier" },
-              java = { "spotless" },
-            },
             format_on_save = function()
               if vim.b.format_on_save_enabled ~= nil then
                 return vim.b.format_on_save_enabled and {
                   timeout_ms = 500,
-                  lsp_fallback = true,
+                  lsp_format = "prefer",
                 } or nil
               else
                 return vim.g.format_on_save_enabled and {
                   timeout_ms = 500,
-                  lsp_fallback = true,
+                  lsp_format = "prefer",
                 } or nil
               end
             end,
@@ -1966,7 +1960,7 @@ return {
               null_ls.builtins.formatting.just,
               null_ls.builtins.formatting.prettier.with({
                 condition = function(utils)
-                  return not utils.root_has_file({ "biome.json", "biome.jsonc" })
+                  return not utils.root_has_file({ "biome.json", "biome.jsonc", "deno.json" })
                 end,
                 filetypes = {
                   "javascript",
