@@ -37,5 +37,12 @@ for t in "${targets[@]}"; do
   cmd+=" >($t)"
 done
 
-# 実行（標準出力は捨てる）
-exec bash -c "$cmd"
+if [[ $# -eq 0 ]]; then
+  # 実行（標準出力は捨てる）
+  bash -c "$cmd"
+else
+  {
+    printf "$ %s\n" "$*"
+    "$@"
+  } | bash -c "$cmd"
+fi
