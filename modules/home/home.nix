@@ -687,7 +687,7 @@ in
         mergetool.nvimdiff.trustExitCode = false;
         pull.rebase = true;
         push.autoSetupRemote = true;
-        push.default = "current";
+        push.default = "simple";
         rebase.autoStash = true;
         rebase.rebaseMerges = "rebase-cousins";
         rebase.updateRefs = true;
