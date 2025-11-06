@@ -1925,25 +1925,6 @@ return {
         enabled = not is_light_mode and not vim.g.vscode,
         config = function()
           local null_ls = require("null-ls")
-          local helpers = require("null-ls.helpers")
-          local gradlew_spotless = helpers.make_builtin({
-            name = "spotless",
-            method = null_ls.methods.FORMATTING,
-            filetypes = { "java" },
-            generator_opts = {
-              command = "./gradlew",
-              args = {
-                "--console=plain",
-                "--quiet",
-                '--no-configuration-cache',
-                "spotlessApply",
-                "-PspotlessIdeHook=$FILENAME",
-                '-PspotlessIdeHookUseStdOut',
-              },
-              timeout = 3000,
-            },
-            factory = helpers.formatter_factory,
-          })
           null_ls.setup {
             log_level = "trace",
             on_attach = vim.g.lsp_default_on_attach,
@@ -1976,8 +1957,6 @@ return {
                   "vue",
                 },
               }),
-              null_ls.builtins.formatting.markdownlint,
-              gradlew_spotless,
               -- [code_action]
               null_ls.builtins.code_actions.gitrebase,
             }
