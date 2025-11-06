@@ -1790,6 +1790,7 @@ return {
       enable_lsp('bashls')
       enable_lsp('eslint')
       enable_lsp('biome')
+      enable_lsp('ruff')
       enable_lsp('tailwindcss', {
         filetypes = {
           "html",
@@ -1956,7 +1957,6 @@ return {
               null_ls.builtins.diagnostics.hadolint,
               -- null_ls.builtins.diagnostics.yamllint,
               -- [formatter]
-              null_ls.builtins.formatting.black,
               null_ls.builtins.formatting.just,
               null_ls.builtins.formatting.prettier.with({
                 condition = function(utils)
