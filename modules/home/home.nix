@@ -654,7 +654,8 @@ in
         gsh = "git show --ext-diff";
         gshn = "git show";
         gsw = "git switch -m";
-        gswn = "git switch -m --no-track";
+        gswc = "git switch -m --no-track -c";
+        gswC = "git switch -m --no-track -C";
         j = "just";
         da = "direnv allow";
         dr = "direnv reload";
