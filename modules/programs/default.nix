@@ -73,7 +73,7 @@
 
   programs.nix-ld = {
     enable = true;
-    package = pkgs.unstable.nix-ld-rs;
+    package = pkgs.unstable.nix-ld;
   };
 
   programs.zsh.enable = true;
