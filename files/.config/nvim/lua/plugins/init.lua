@@ -1497,7 +1497,7 @@ return {
   {
     'sindrets/diffview.nvim',
     event = "VeryLazy",
-    enabled = not is_light_mode and not vim.g.vscode,
+    enabled = not vim.g.vscode,
     config = function()
       require("diffview").setup {
         view = {
@@ -1516,6 +1516,21 @@ return {
           },
         },
       }
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = "gitrebase",
+        callback = function()
+          vim.keymap.set('n', '<CR>', function()
+            local line = vim.api.nvim_get_current_line()
+            -- pick xxxxxx ...
+            local commit_hash = line:match("^%s*%a+%s+(%x+)")
+            if commit_hash == nil then
+              vim.notify("No commit hash found in the current line.", vim.log.levels.ERROR)
+              return
+            end
+            vim.cmd("DiffviewOpen " .. commit_hash .. "^!")
+          end, { buffer = true, desc = "Preview diff" })
+        end,
+      })
     end,
     keys = {
       -- --no-mergesのようなオプションを追加したい場合があるので<CR>で閉じないでおく
@@ -1523,21 +1538,11 @@ return {
       { "<leader>dh", ":DiffviewFileHistory<CR>", mode = { "v" },      desc = "DiffviewFileHistory" },
       { "<leader>do", ":DiffviewOpen",            mode = { "n", "v" }, desc = "DiffviewOpen" },
     },
+    ft = { "gitrebase" },
   },
   {
     'tpope/vim-fugitive',
     enabled = true and not vim.g.vscode,
-  },
-  {
-    'lambdalisue/gina.vim',
-    enabled = true and not vim.g.vscode,
-    config = function()
-      vim.cmd [[
-        autocmd FileType gina-log   nmap F <Plug>(gina-show-commit-vsplit)zv
-        autocmd FileType gina-blame nmap F <Plug>(gina-show-commit-tab)zv
-        command Gblame Gina blame
-      ]]
-    end
   },
   {
     'lewis6991/gitsigns.nvim',
