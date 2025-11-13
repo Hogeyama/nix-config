@@ -41,18 +41,6 @@ let
     in
     dotfilesSymlinks' "";
 
-  xmonad = pkgs.symlinkJoin {
-    name = "xmonad-x86_64-linux";
-    paths = [ pkgs.my-xmonad ];
-    buildInputs = [ pkgs.makeWrapper ];
-    postBuild = ''
-      wrapProgram $out/bin/xmonad-x86_64-linux \
-        --set BROWSER  ${env.user.browser} \
-        --set TERMINAL ${env.user.terminal} \
-        --set XMONAD_LAYOUT ${env.user.xmonad-layout}
-    '';
-  };
-
   checkstyle = pkgs.writeScriptBin "checkstyle" ''
     #!${pkgs.stdenv.shell}
     set -eu
@@ -241,11 +229,6 @@ in
     ];
     file = dotfilesSymlinks { } // {
       ".local/share/tridactyl/native_main".source = "${pkgs.tridactyl-native}/bin/native_main";
-      ".xmonad/xmonad-x86_64-linux".source = "${xmonad}/bin/xmonad-x86_64-linux";
-      ".xmonad/build" = {
-        executable = true;
-        text = ''echo "Nothing to do"'';
-      };
       ".grip/settings.py".text = ''
         import subprocess
         STYLE_URLS = ['/__/grip/asset/github-markdown.css', '/__/grip/asset/page.css']

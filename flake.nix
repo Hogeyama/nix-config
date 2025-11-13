@@ -104,8 +104,5 @@
           env.homeManagerModule
         ];
       };
-
-      devShells.${system}.xmonad =
-        self.nixosConfigurations.${hostName}.pkgs.my-xmonad.passthru.shell;
     };
 }
