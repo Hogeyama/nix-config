@@ -1822,6 +1822,7 @@ return {
           }
         }
       })
+      enable_lsp('gdscript')
       enable_lsp('gopls')
       enable_lsp('graphql')
       enable_lsp('pyright')
