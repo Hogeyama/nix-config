@@ -2179,7 +2179,7 @@ return {
         },
       },
       footer = {
-        enable = false,
+        enabled = false,
       },
       checkbox = {
         order = { " ", "x" },
