@@ -79,17 +79,17 @@ rec {
           };
         };
       };
-      vscode = {
-        enable = true;
-        package = (pkgs.vscode.override { isInsiders = true; }).overrideAttrs (oldAttrs: {
-          src = (builtins.fetchTarball {
-            url = "https://code.visualstudio.com/sha/download?build=insider&os=linux-x64";
-            sha256 = "sha256:1pzig9hkasyrvbx3r4xc7i890a1rpfwydrb7advg0x43l5zgp44a";
-          });
-          buildInputs = oldAttrs.buildInputs ++ [ pkgs.libkrb5 ];
-          version = "latest";
-        });
-      };
+      # vscode = {
+      #   enable = true;
+      #   package = (pkgs.vscode.override { isInsiders = true; }).overrideAttrs (oldAttrs: {
+      #     src = (builtins.fetchTarball {
+      #       url = "https://code.visualstudio.com/sha/download?build=insider&os=linux-x64";
+      #       sha256 = "sha256:1fiv5ac7bwandbqlvkfv66125m10rjj2mv8m98cvhyq6cxwprz4p";
+      #     });
+      #     buildInputs = oldAttrs.buildInputs ++ [ pkgs.libkrb5 ];
+      #     version = "latest";
+      #   });
+      # };
       waybar = {
         settings.mainBar = {
           height = 48;
