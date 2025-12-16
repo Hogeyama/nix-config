@@ -787,13 +787,5 @@ in
     # 少なくともgsettingsに依存するものが軒並み死ぬようだ。
     systemDirs.data = [ "/usr/share" "/usr/local/share" ];
   };
-
-  # https://nixos.wiki/wiki/Virt-manager
-  dconf.settings = {
-    "org/virt-manager/virt-manager/connections" = {
-      autoconnect = [ "qemu:///system" ];
-      uris = [ "qemu:///system" ];
-    };
-  };
 }
 # vim:foldmethod=indent:
