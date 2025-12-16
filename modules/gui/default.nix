@@ -19,7 +19,7 @@
   # Remember display layout
   services.autorandr.enable = true;
 
-  services.displayManager.defaultSession = "xfce+xmonad";
+  services.displayManager.defaultSession = "hyprland-uwsm";
 
   programs.hyprland = {
     enable = true;
