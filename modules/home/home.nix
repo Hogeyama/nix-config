@@ -178,7 +178,6 @@ in
       nix-du
       nix-output-monitor
       nix-tree
-      nodejs
       nodePackages.bash-language-server
       nodePackages.mermaid-cli
       nodePackages.npm
@@ -211,7 +210,7 @@ in
       wget
       xclip
       xdg-utils
-      xdragon
+      dragon-drop
       xsel
       yq
       zip
@@ -231,7 +230,7 @@ in
       uwsm
       ### font
       udev-gothic.nerdfont
-      noto-fonts-emoji
+      noto-fonts-color-emoji
       rounded-mgenplus
       ### my packages
       my-xmobar
@@ -352,7 +351,7 @@ in
     };
     neovim = {
       enable = true;
-      package = inputs.neovim-nightly-overlay.packages.${pkgs.system}.default;
+      package = inputs.neovim-nightly-overlay.packages.${pkgs.stdenv.hostPlatform.system}.default;
       withNodeJs = true;
       withPython3 = true;
       extraPython3Packages = pyPkgs: with pyPkgs; [
@@ -663,9 +662,9 @@ in
     };
     git = {
       enable = true;
-      userName = env.user.name;
-      userEmail = env.user.email;
-      extraConfig = {
+      settings = {
+        user.name = env.user.name;
+        user.email = env.user.email;
         alias.stash-all = "stash save --include-untracked";
         alias.show-upstream = "rev-parse --abbrev-ref --symbolic-full-name @{u}";
         blame.ignoreRevsFile = ".git-blame-ignore-revs";
@@ -774,7 +773,7 @@ in
     };
     kanshi = {
       enable = true;
-      profiles = { }; # env.nixで設定する
+      settings = [ ]; # env.nixで上書きする
     };
     swayidle = {
       enable = true;

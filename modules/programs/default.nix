@@ -9,7 +9,6 @@
       bluez
       bluez-alsa
       bluez-tools
-      libsForQt5.bluez-qt
       curl
       deno
       docker
