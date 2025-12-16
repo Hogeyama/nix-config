@@ -72,8 +72,12 @@ rec {
   homeManagerModule = { pkgs, ... }: {
     programs = {
       git = {
-        userName = user.name;
-        userEmail = user.email;
+        settings = {
+          user = {
+            name = user.name;
+            email = user.email;
+          };
+        };
       };
       vscode = {
         enable = true;
@@ -101,22 +105,29 @@ rec {
           command = "${pkgs.swaylock}/bin/swaylock -f -c 000000";
         }
       ];
-      kanshi.profiles.home.outputs = [
+      kanshi.settings = [
         {
-          criteria = "DP-1";
-          status = "enable";
-          mode = "3840x2160@60";
-          position = "0,0";
-          scale = 1.25;
-          transform = "270";
-        }
-        {
-          criteria = "HDMI-A-2";
-          status = "enable";
-          mode = "3840x2160@60";
-          position = "1728,912";
-          scale = 1.0;
-          transform = "normal";
+          profile = {
+            name = "home";
+            outputs = [
+              {
+                criteria = "DP-1";
+                status = "enable";
+                mode = "3840x2160@60";
+                position = "0,0";
+                scale = 1.25;
+                transform = "270";
+              }
+              {
+                criteria = "HDMI-A-2";
+                status = "enable";
+                mode = "3840x2160@60";
+                position = "1728,912";
+                scale = 1.0;
+                transform = "normal";
+              }
+            ];
+          };
         }
       ];
     };
