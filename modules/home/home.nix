@@ -126,7 +126,6 @@ in
       acme-sh
       autorandr
       awscli2
-      aws-sam-cli
       aws-vault
       bat
       bind

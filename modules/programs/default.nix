@@ -4,7 +4,6 @@
     systemPackages = with pkgs; [
       age
       awscli2
-      aws-sam-cli
       bat
       bind
       bluez
