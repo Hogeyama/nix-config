@@ -152,8 +152,9 @@ in
       jnv
       jq
       libsecret
-      kdePackages.krdc
       just
+      kdePackages.krdc
+      kooha
       libreoffice
       lsof
       # neovim requires 5.1 for now
