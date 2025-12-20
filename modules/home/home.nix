@@ -525,6 +525,7 @@ in
         extraConfig = ''
           # do not load any identities on start
           zstyle :omz:plugins:ssh-agent lazy yes
+          ZSH=${pkgs.oh-my-zsh}/share/oh-my-zsh
         '';
       };
       envExtra = ''
