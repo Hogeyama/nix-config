@@ -611,6 +611,21 @@
         "type": "github"
       }
     },
+    "nixpkgs_6": {
+      "locked": {
+        "lastModified": 1764687629,
+        "narHash": "sha256-EzQkqsL5rxnJ/Ds5Mzg7XcM7ZcpjdY2SK4JWuuFBofM=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "00f088c2fe4aae69181cddf918515e8f87bf7380",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "determinate": "determinate",
@@ -624,7 +639,8 @@
         "nixpkgs": "nixpkgs_5",
         "nixpkgs-for-haskell": "nixpkgs-for-haskell",
         "nixpkgs-unstable": "nixpkgs-unstable",
-        "sops-nix": "sops-nix"
+        "sops-nix": "sops-nix",
+        "vscode-insiders-nightly": "vscode-insiders-nightly"
       }
     },
     "rust-analyzer-src": {
@@ -677,6 +693,24 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "vscode-insiders-nightly": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_6"
+      },
+      "locked": {
+        "lastModified": 1766189839,
+        "narHash": "sha256-rWktOgY0eh03HhxRqB7rLoqtChS+HtQmHps5wrGKG14=",
+        "owner": "iosmanthus",
+        "repo": "code-insiders-flake",
+        "rev": "80c96fca8a84d41db40a7eafe5827cef58f2ea81",
+        "type": "github"
+      },
+      "original": {
+        "owner": "iosmanthus",
+        "repo": "code-insiders-flake",
         "type": "github"
       }
     }
