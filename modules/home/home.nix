@@ -167,6 +167,7 @@ in
       nix-du
       nix-output-monitor
       nix-tree
+      nixpkgs-fmt
       nodePackages.bash-language-server
       nodePackages.mermaid-cli
       nodePackages.npm
