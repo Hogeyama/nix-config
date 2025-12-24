@@ -328,7 +328,13 @@ in
     };
     atuin = {
       enable = true;
+      daemon.enable = true;
       flags = [ "--disable-up-arrow" ];
+      settings = {
+        auto_sync = true;
+        search_mode = "skim";
+        local_timeout = 1;
+      };
     };
     fzf = {
       enable = true;
