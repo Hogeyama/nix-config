@@ -137,6 +137,7 @@ in
       fuse
       gcc
       gh
+      ghostty
       gitflow
       git-remote-codecommit
       glow
