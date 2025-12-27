@@ -1,5 +1,6 @@
-{ inputs, system, ... }:
+{ inputs, pkgs, ... }:
 let
+  system = pkgs.stdenv.hostPlatform.system;
   overlays = [
     inputs.nix-alien.overlays.default
     (pkgs: _: {
