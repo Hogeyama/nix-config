@@ -693,8 +693,11 @@ in
         credential."https://github.com".helper = "!${pkgs.gh}/bin/gh auth git-credential";
         include.path = "config.local";
       };
-      delta.enable = true;
-      delta.options = {
+    };
+    delta = {
+      enable = true;
+      enableGitIntegration = true;
+      options = {
         side-by-side = false;
         line-numbers = false;
       };
