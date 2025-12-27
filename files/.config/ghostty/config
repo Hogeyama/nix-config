@@ -140,7 +140,7 @@ font-family = UDEV Gothic NFLG
 # On Linux with GTK, font size is scaled according to both display-wide and
 # text-specific scaling factors, which are often managed by your desktop
 # environment (e.g. the GNOME display scale and large text settings).
-#font-size = 12
+font-size = 14
 
 # A repeatable configuration to set one or more font variations values for
 # a variable font. A variable font is a single font, usually with a filename
@@ -443,7 +443,7 @@ font-family = UDEV Gothic NFLG
 # be fixed in a future update:
 #
 #   - macOS: titlebar tabs style is not updated when switching themes.
-#theme =
+theme = Tomorrow Night
 
 # Background color for the window.
 # Specified as either hex (`#RRGGBB` or `RRGGBB`) or a named X11 color.
@@ -2125,12 +2125,12 @@ font-family = UDEV Gothic NFLG
 #   * `allow`
 #   * `deny`
 #
-#clipboard-read = ask
+clipboard-read = allow
 
-#clipboard-write = allow
+clipboard-write = allow
 # Trims trailing whitespace on data that is copied to the clipboard. This does
 # not affect data sent to the clipboard via `clipboard-write`.
-#clipboard-trim-trailing-spaces = true
+clipboard-trim-trailing-spaces = true
 
 # Require confirmation before pasting text that appears unsafe. This helps
 # prevent a "copy/paste attack" where a user may accidentally execute unsafe
