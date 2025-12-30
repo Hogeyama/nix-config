@@ -13,6 +13,8 @@ rec {
   };
 
   nixosModule = args@{ pkgs, config, ... }: {
+    time.hardwareClockInLocalTime = true; # Windows とのデュアルブート対策
+
     users = {
       users = {
         ${user.name} = {
