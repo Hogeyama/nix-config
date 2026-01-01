@@ -600,15 +600,37 @@ in
 
         # DIRENV_DIFFに変更があればcompinit -uを実行する
         # thx! https://hiroqn.hatenablog.com/entry/2022/04/03/191131
-        export COMPINIT_DIFF=""
-        _chpwd_compinit() {
+        typeset -g COMPINIT_DIFF=""
+        typeset -g _DEVSHELL_SITE_FUNCS=""
+        _devshell_update_fpath() {
+          local new_dir
+          if [[ -n $DEVSHELL_DIR ]]; then
+            new_dir="$DEVSHELL_DIR/share/zsh/site-functions"
+          else
+            new_dir=""
+          fi
+          # 前回の値と同じなら何もしない
+          [[ $new_dir == $_DEVSHELL_SITE_FUNCS ]] && return
+          # 前回のディレクトリを fpath から外す
+          if [[ -n $_DEVSHELL_SITE_FUNCS ]]; then
+            fpath=(''${fpath:#''$_DEVSHELL_SITE_FUNCS})
+          fi
+          # 新しい DEVSHELL_DIR があれば追加
+          if [[ -n ''$new_dir && -d ''$new_dir ]]; then
+            fpath=(''$new_dir ''$fpath)
+          fi
+          # 記録を更新
+          _DEVSHELL_SITE_FUNCS=''$new_dir
+        }
+        _precmd_compinit() {
           if [[ -n "$IN_NIX_SHELL" ]] && [[ "$COMPINIT_DIFF" != "$DIRENV_DIFF" ]]; then
+            _devshell_update_fpath
             compinit -u
             COMPINIT_DIFF="$DIRENV_DIFF"
           fi
         }
-        if [[ -z ''${precmd_functions[(r)_chpwd_compinit]} ]]; then
-          precmd_functions=( ''${precmd_functions[@]} _chpwd_compinit )
+        if [[ -z ''${precmd_functions[(r)_precmd_compinit]} ]]; then
+          precmd_functions+=(_precmd_compinit)
         fi
 
         # tmux起動中はCtrl-Oでpopupを開いてコマンドラインを編集する
