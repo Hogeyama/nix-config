@@ -113,10 +113,12 @@ in
     packages = with pkgs; [
       acme-sh
       autorandr
+      asunder
       awscli2
       aws-vault
       bat
       bind
+      btop
       cachix
       cargo
       checkstyle
@@ -125,10 +127,12 @@ in
       curl
       deno
       dmenu
+      deno
       difftastic
       docker
       docker-compose
       docker-credential-helpers
+      dragon-drop
       eslint_d
       expect
       eza
@@ -150,12 +154,15 @@ in
       hadolint
       hr
       htop
+      inotify-tools
+
       jnv
       jq
       libsecret
       just
       kdePackages.krdc
       kooha
+      lazygit
       libreoffice
       lsof
       # neovim requires 5.1 for now
@@ -169,6 +176,7 @@ in
       nix-output-monitor
       nix-tree
       nixpkgs-fmt
+      nmap
       nodePackages.bash-language-server
       nodePackages.mermaid-cli
       nodePackages.npm
@@ -179,6 +187,7 @@ in
       pass
       pgcli
       pre-commit
+      psmisc
       python313
       python313Packages.grip
       python313Packages.httpie
@@ -192,16 +201,18 @@ in
       textql
       time
       tldr
+      traceroute
+      tree
       tree-sitter
       ulauncher
       unar
       unzip
       vifm
+      watchman
       watson
       wget
       xclip
       xdg-utils
-      dragon-drop
       xsel
       yq
       zip
@@ -211,6 +222,7 @@ in
       grim
       slurp
       wl-clipboard
+      wofi
       swayidle
       swaylock
       hyprshot
