@@ -155,12 +155,12 @@ in
       hr
       htop
       inotify-tools
-
       jnv
       jq
       libsecret
       just
       kdePackages.krdc
+      kitty
       kooha
       lazygit
       libreoffice
