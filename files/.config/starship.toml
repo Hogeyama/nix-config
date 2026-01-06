@@ -14,15 +14,11 @@ $deno\
 $golang\
 $haskell\
 $java\
-$nodejs\
-$python\
 $rust\
-$scala\
 $terraform\
 $nix_shell\
 $memory_usage\
 $aws\
-$openstack\
 $env_var\
 $custom\
 $sudo\
