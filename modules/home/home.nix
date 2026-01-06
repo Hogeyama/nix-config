@@ -428,6 +428,8 @@ in
             set-option -g popup-border-lines "rounded"
             # screen-capture
             set-option -g @screen-capture-key "M-Z"
+            # image.nvim
+            set-option -g allow-passthrough on
           '';
         }
         {
