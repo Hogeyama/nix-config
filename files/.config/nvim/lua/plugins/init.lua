@@ -53,6 +53,40 @@ return {
     end,
   },
   {
+    "3rd/image.nvim",
+    build = false,
+    event = 'VeryLazy',
+    opts = {
+      backend = "kitty",
+      processor = "magick_cli",
+    },
+    keys = {
+      {
+        "<leader>im",
+        function()
+          local api = require("image")
+          local path = vim.fn.expand("<cfile>")
+          local image = api.from_file(path, {})
+          image:render()
+        end,
+        mode = { "n" },
+        desc = "Open image under cursor",
+      },
+      {
+        "<leader>iq",
+        function()
+          local api = require("image")
+          local images = api.get_images()
+          for _, current_image in ipairs(images) do
+            current_image:clear(true)
+          end
+        end,
+        mode = { "n" },
+        desc = "Close image viewer",
+      }
+    },
+  },
+  {
     'ibhagwan/fzf-lua',
     event = "VeryLazy",
     enabled = true,
