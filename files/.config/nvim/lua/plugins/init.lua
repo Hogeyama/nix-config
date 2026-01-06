@@ -59,12 +59,33 @@ return {
     opts = {
       backend = "kitty",
       processor = "magick_cli",
+      integrations = {
+        markdown = {
+          enabled = false,
+        },
+        neorg = {
+          enabled = false,
+        },
+        typst = {
+          enabled = false,
+        },
+        html = {
+          enabled = false,
+        },
+        css = {
+          enabled = false,
+        },
+      },
     },
     keys = {
       {
         "<leader>im",
         function()
           local api = require("image")
+          local images = api.get_images()
+          for _, current_image in ipairs(images) do
+            current_image:clear(true)
+          end
           local path = vim.fn.expand("<cfile>")
           local image = api.from_file(path, {})
           image:render()
@@ -317,7 +338,21 @@ return {
     lazy = false,
     opts = {
       words = { enabled = true },
-      scratch = { ft = function() return "markdown" end }
+      scratch = { ft = function() return "markdown" end },
+      image = {
+        doc = {
+          enabled = false,
+        }
+      },
+      explorer = {},
+      picker = {
+        sources = {
+          explorer = {
+            -- your explorer picker configuration comes here
+            -- or leave it empty to use the default settings
+          }
+        }
+      }
     },
     keys = {
       { "<leader>go", function() Snacks.gitbrowse.open() end,  mode = { 'n' } },
@@ -1005,7 +1040,32 @@ return {
   {
     'stevearc/oil.nvim',
     enabled = not is_light_mode,
-    opts = {},
+    opts = {
+      default_file_explorer = true,
+      float = {
+        border = 'rounded',
+      },
+      keymaps = {
+        ["<C-i>"] = {
+          callback = function()
+            local buf = vim.api.nvim_get_current_buf()
+            local oil = require("oil")
+            local dir = oil.get_current_dir(buf)
+            local api = require("image")
+            local images = api.get_images()
+            for _, current_image in ipairs(images) do
+              current_image:clear(true)
+            end
+            local path = vim.fn.expand("<cfile>")
+            local image = api.from_file(dir .. "/" .. path, {
+              -- FIXME: 画面右側に表示したい
+            })
+            image:render()
+          end
+        },
+
+      },
+    },
     dependencies = { "nvim-tree/nvim-web-devicons" },
   },
   {
