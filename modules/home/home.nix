@@ -668,7 +668,7 @@ in
         open = "xdg-open";
         v = "nvimw";
         vv = "NVIM_NO_AUTO_SESSOIN=1 nvimw";
-        gd = "git diff";
+        gd = "git -c diff.external=difft diff";
         gdn = "git diff --no-ext-diff";
         gp = "git push";
         gpf = "git push --force-with-lease --force-if-includes";
@@ -704,7 +704,6 @@ in
         core.quotePath = false;
         blame.date = "short";
         branch.sort = "-committerdate";
-        diff.external = "difft";
         diff.algorithm = "histogram";
         difftool.gron.cmd = ''diff --color -u <(gron "$LOCAL") <(gron "$REMOTE")'';
         fetch.prune = true;
