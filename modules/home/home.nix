@@ -370,6 +370,7 @@ in
         require("config.options")
         require("config.keymaps")
         require("config.commands")
+        require("config.wrap")
         pcall(require, "config.local")
 
         -- plugins
