@@ -138,7 +138,10 @@ return {
       },
       {
         "<c-.>",
-        function() require("sidekick.cli").toggle() end,
+        function()
+          vim.api.nvim_exec_autocmds("User", { pattern = "SidekickToggled" })
+          require("sidekick.cli").toggle()
+        end,
         desc = "Sidekick Toggle",
         mode = { "n", "t", "i", "x" },
       },
@@ -665,13 +668,26 @@ return {
         border = 'rounded',
         dimensions = { height = 0.9, width = 0.9 }
       }
+      local is_any_open = function()
+        for _, s in pairs(shells) do
+          if s.win and vim.api.nvim_win_is_valid(s.win) then return true end
+        end
+        return false
+      end
       local toggle_shell = function(shell)
         for _, s in pairs(shells) do
           if s ~= shell then
             s:close()
           end
         end
+        local was_open = is_any_open()
         shell:toggle()
+        local now_open = is_any_open()
+        if not was_open and now_open then
+          vim.api.nvim_exec_autocmds("User", { pattern = "FTermOpened" })
+        elseif was_open and not now_open then
+          vim.api.nvim_exec_autocmds("User", { pattern = "FTermClosed" })
+        end
       end
       local zsh = function()
         return {
@@ -714,6 +730,23 @@ return {
           s:close()
         end
       end, { bang = true, nargs = "*" })
+      -- FTermが開いたらSidekickを閉じる
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "FTermOpened",
+        callback = function()
+          local ok, sidekick_cli = pcall(require, "sidekick.cli")
+          if ok then sidekick_cli.hide() end
+        end,
+      })
+      -- Sidekickが開いたらFTermを閉じる
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "SidekickToggled",
+        callback = function()
+          for _, s in pairs(shells) do
+            s:close()
+          end
+        end,
+      })
     end,
   },
   {
