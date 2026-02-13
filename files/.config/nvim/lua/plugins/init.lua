@@ -2348,6 +2348,7 @@ return {
       daily_notes = {
         folder = "dailies",
         date_format = "%Y-%m-%d",
+        template = "daily.md",
       },
       completion = {
         min_chars = 2,
@@ -2364,6 +2365,12 @@ return {
       },
       checkbox = {
         order = { " ", "x" },
+      },
+      templates = {
+        folder = "templates",
+        date_format = "%Y-%m-%d",
+        time_format = "%H:%M",
+        substitutions = {},
       },
       -- %Y%m%dT%H%M%S-XXXX
       note_id_func = function(title)
