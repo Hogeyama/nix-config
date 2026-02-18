@@ -39,7 +39,7 @@ done
 
 if [[ $# -eq 0 ]]; then
   # 実行（標準出力は捨てる）
-  bash -c "$cmd"
+  bash -c "$cmd" >/dev/null
 else
   {
     printf "$ %s\n" "$*"
