@@ -346,7 +346,7 @@ in
       flags = [ "--disable-up-arrow" ];
       settings = {
         auto_sync = true;
-        search_mode = "skim";
+        search_mode = "fuzzy";
         local_timeout = 1;
       };
     };
