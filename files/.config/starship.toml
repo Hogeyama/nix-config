@@ -8,10 +8,7 @@ $git_state\
 $git_metrics\
 $hg_branch\
 $docker_context\
-$package\
 $container\
-$deno\
-$golang\
 $haskell\
 $java\
 $rust\
@@ -27,9 +24,9 @@ $status\
 $username\
 $hostname\
 $time\
+$direnv\
 $line_break\
 $jobs\
-$battery\
 $shell\
 $character\
 """
@@ -37,9 +34,9 @@ $character\
 # Inserts a blank line between shell prompts
 add_newline = true
 
-[aws]
-format = '[($symbol$profile)]($style)'
-symbol = '☁️ '
+[character]
+success_symbol = '[\$](bold white)'
+error_symbol = '[\$](bold white)'
 
 [directory]
 format = '[$path]($style)[$read_only]($read_only_style) '
@@ -47,9 +44,14 @@ style = 'bold blue'
 truncation_length = 10
 truncate_to_repo = false
 
-[character]
-success_symbol = '[\$](bold white)'
-error_symbol = '[\$](bold white)'
+[direnv]
+disabled = false
+format = '[$allowed]($style) '
+symbol = ''
+allowed_msg = ''
+loaded_msg = ''
+not_allowed_msg = 'direnv not allowed'
+unloaded_msg = 'direnv not loaded'
 
 [git_branch]
 format = '[$symbol$branch(:$remote_branch)]($style)'
@@ -95,9 +97,6 @@ disabled = true
 [lua]
 disabled = true
 
-[package]
-disabled = false
-
 [cmd_duration]
 format = '[took $duration]($style) '
 style = 'dimmed white'
@@ -120,3 +119,72 @@ style = 'dimmed white'
 disabled = false
 format = '[\[$time\]]($style) '
 style = 'dimmed white'
+
+# Disabled
+##########
+
+[aws]
+disabled = true
+
+[battery]
+disabled = true
+
+[buf]
+disabled = true
+
+[bun]
+disabled = true
+
+[c]
+disabled = true
+
+[cmake]
+disabled = true
+
+[cobol]
+disabled = true
+
+[conda]
+disabled = true
+
+[crystal]
+disabled = true
+
+[daml]
+disabled = true
+
+[dart]
+disabled = true
+
+[deno]
+disabled = true
+
+[dotnet]
+disabled = true
+
+[elixir]
+disabled = true
+
+[elm]
+disabled = true
+
+[erlang]
+disabled = true
+
+[fennel]
+disabled = true
+
+[fill]
+disabled = true
+
+[fortran]
+disabled = true
+
+[gcloud]
+disabled = true
+
+[gleam]
+disabled = true
+
+[golang]
+disabled = true
