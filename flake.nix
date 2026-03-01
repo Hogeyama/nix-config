@@ -88,7 +88,7 @@
         pkgs = self.nixosConfigurations.${hostName}.pkgs;
         modules = [
           ({ config, pkgs, ... }: import ./modules/home/home.nix { inherit inputs env config pkgs self; })
-          inputs.nix-index-database.hmModules.nix-index
+          inputs.nix-index-database.homeModules.nix-index
           {
             home = {
               inherit username;

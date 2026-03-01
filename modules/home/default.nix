@@ -5,6 +5,6 @@
   home-manager.users.${env.user.name} = ./home.nix;
   home-manager.extraSpecialArgs = { inherit self env inputs; };
   home-manager.sharedModules = [
-    inputs.nix-index-database.hmModules.nix-index
+    inputs.nix-index-database.homeModules.nix-index
   ];
 }

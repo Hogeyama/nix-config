@@ -70,7 +70,7 @@
 
   programs.nix-ld = {
     enable = true;
-    package = pkgs.unstable.nix-ld;
+    package = pkgs.lib.mkForce pkgs.unstable.nix-ld;
   };
 
   programs.zsh.enable = true;

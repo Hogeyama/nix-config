@@ -241,14 +241,14 @@ in
       # pkgs.lib.fileContents "${pkgs.stdenv.cc}/nix-support/dynamic-linker"; の方が正しそうだが
       # access to canonical path is forbidden in restricted mode エラーが出るので妥協。
       NIX_LD = "${pkgs.glibc}/lib/ld-linux-x86-64.so.2";
-      NIX_LD_LIBRARY_PATH = with pkgs; lib.makeLibraryPath [
+      NIX_LD_LIBRARY_PATH = pkgs.lib.mkForce (with pkgs; lib.makeLibraryPath [
         stdenv.cc.cc
         zlib
         ncurses
         gmp
         icu
         openssl
-      ];
+      ]);
     };
   };
   fonts = {
