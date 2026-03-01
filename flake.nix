@@ -51,8 +51,10 @@
       # For NixOS
       nixosConfigurations.${hostName} = nixpkgs.lib.nixosSystem {
         inherit system;
-        modules = [
+        modules = (if env.isWsl then [
           nixos-wsl.nixosModules.wsl
+        ] else [ ])
+        ++ [
           home-manager.nixosModules.home-manager
           sops-nix.nixosModules.sops
         ]
