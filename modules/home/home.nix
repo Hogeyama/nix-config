@@ -432,6 +432,11 @@ in
             set-option -g @screen-capture-key "M-Z"
             # image.nvim
             set-option -g allow-passthrough on
+            # notification
+            set-option -g bell-action any
+            set-hook -g alert-bell 'if-shell -F "#{m:*copilot*,#{window_name}}" { run-shell "notify-send \"Copilot is waiting your input\" \"\"" }'
+            # name
+            set-window-option -g allow-rename on
           '';
         }
         {
