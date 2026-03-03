@@ -6,4 +6,5 @@
 .vim-bookmarks
 Session.vim
 
+.agent-sandbox.yml
 **/.claude/settings.local.json
