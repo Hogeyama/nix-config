@@ -687,10 +687,11 @@ in
         user.email = env.user.email;
         alias.stash-all = "stash save --include-untracked";
         alias.show-upstream = "rev-parse --abbrev-ref --symbolic-full-name @{u}";
-        blame.ignoreRevsFile = ".git-blame-ignore-revs";
+        # blame.ignoreRevsFile = ".git-blame-ignore-revs";
         core.autoCRLF = false;
         core.autoLF = false;
         core.quotePath = false;
+        core.commentChar = ";";
         blame.date = "short";
         branch.sort = "-committerdate";
         diff.algorithm = "histogram";
