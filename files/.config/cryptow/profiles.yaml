@@ -6,9 +6,13 @@ profiles:
       - type: gocryptfs
         password_entry: gocryptfs/codex
         mount_dir: ~/.codex
-      - type: env
-        password_entry: openai_api_key
-        env: OPENAI_API_KEY
+  claude:
+    command:
+      - claude
+    injectors:
+      - type: gocryptfs
+        password_entry: gocryptfs/claude
+        mount_dir: ~/.claude
   acme.sh:
     command:
       - acme.sh
