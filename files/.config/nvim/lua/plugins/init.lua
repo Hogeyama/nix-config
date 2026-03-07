@@ -2437,9 +2437,6 @@ return {
         end)()
         return path:with_suffix(".md")
       end,
-      follow_url_func = function(url)
-        vim.fn.jobstart({ "xdg-open", url })
-      end,
       ui = {
         enable = false,
       },
