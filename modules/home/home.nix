@@ -474,6 +474,7 @@ in
 
         # prefix=C-q
         set -g prefix C-q
+        bind C-S-q send-prefix
         # Enable Italic
         set-option -g default-terminal "tmux-256color"
         # Enable True Color on xterm-256color
