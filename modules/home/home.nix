@@ -474,6 +474,7 @@ in
 
         # prefix=C-q
         set -g prefix C-q
+        bind C-q send-prefix
         # Enable Italic
         set-option -g default-terminal "tmux-256color"
         # Enable True Color on xterm-256color
@@ -511,7 +512,7 @@ in
 
         setw -g mode-keys vi
 
-        bind C-q copy-mode
+        bind C-p copy-mode
 
         bind -T copy-mode-vi v send -X begin-selection
         bind -T copy-mode-vi V send -X select-line
