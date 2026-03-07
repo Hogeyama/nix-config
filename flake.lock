@@ -482,11 +482,11 @@
         "nixpkgs": "nixpkgs_4"
       },
       "locked": {
-        "lastModified": 1770683284,
-        "narHash": "sha256-apBvGZyudvBg+SZRGzdxxn9unHNOKVsKww2aqFpPGYE=",
+        "lastModified": 1772842926,
+        "narHash": "sha256-xxEfGEqmx+74jIql149bj055MUrKpnjSEiemdszywFU=",
         "owner": "iosmanthus",
         "repo": "code-insiders-flake",
-        "rev": "9429e0e71bd6887380e48fe19e4b4e6a71c75333",
+        "rev": "9587e3e8a68cd3d551af0ffd5e6e5ff31700d659",
         "type": "github"
       },
       "original": {
