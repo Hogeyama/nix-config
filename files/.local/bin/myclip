@@ -26,6 +26,11 @@ else
   fi
 fi
 
+# SSH接続中なら OSC 52 で端末クリップボードへ送る
+if [[ -n "${SSH_TTY:-}${SSH_CONNECTION:-}" ]]; then
+  targets+=('base64 | tr -d "\n" | { printf "\e]52;c;" > /dev/tty; cat > /dev/tty; printf "\a" > /dev/tty; }')
+fi
+
 # WSLなどで clip.exe があれば追加（SJISへ変換して渡す）
 if command -v clip.exe >/dev/null 2>&1; then
   targets+=('iconv -c -f utf-8 -t sjis | clip.exe')
