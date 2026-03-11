@@ -643,39 +643,42 @@ in
             bindkey "^O" edit-command-line
         fi
       '';
-      shellAliases = {
-        ls = "eza -s name";
-        cd = "z";
-        mv = "mv -i";
-        cp = "cp -iL";
-        l = "ls -F";
-        ll = "ls -ahlF";
-        la = "ls -a";
-        DU = "du -hd1 | sort -h";
-        open = "xdg-open";
-        v = "nvimw";
-        vv = "NVIM_NO_AUTO_SESSOIN=1 nvimw";
-        gd = "git -c diff.external=difft diff";
-        gdn = "git diff --no-ext-diff";
-        gp = "git push";
-        gpf = "git push --force-with-lease --force-if-includes";
-        glog = ''git log --pretty=format:"%C(yellow)%h%Creset %C(green)%ad%Creset %s %Cred%d%Creset %Cblue[%an]" --date=short --graph'';
-        rlog = ''git reflog --format="%C(yellow)%h%Creset %C(green)%gd%Creset %gs %Cred%d%Creset %Cblue[%an]" --date=iso-strict'';
-        gmt = "git mergetool";
-        gra = "git rebase --abort";
-        grc = "git rebase --continue";
-        grs = "git restore";
-        gre = "git reset";
-        gs = "git status --short --branch";
-        gsh = "git show --ext-diff";
-        gshn = "git show";
-        gsw = "git switch -m";
-        gswc = "git switch -m --no-track -c";
-        gswC = "git switch -m --no-track -C";
-        j = "just";
-        da = "direnv allow";
-        dr = "direnv reload";
-        awslocal = ''AWS_ACCESS_KEY_ID=dummy AWS_SECRET_ACCESS_KEY=dummy AWS_DEFAULT_REGION=''${DEFAULT_REGION:-''${AWS_DEFAULT_REGION:-ap-northeast-1}} aws --endpoint-url=http://''${LOCALSTACK_HOST:-localhost.localstack.cloud}:4566'';
+      zsh-abbr = {
+        enable = true;
+        abbreviations = {
+          ls = "eza -s name";
+          cd = "z";
+          mv = "mv -i";
+          cp = "cp -iL";
+          l = "ls -F";
+          ll = "ls -ahlF";
+          la = "ls -a";
+          DU = "du -hd1 | sort -h";
+          open = "xdg-open";
+          v = "nvimw";
+          vv = "NVIM_NO_AUTO_SESSOIN=1 nvimw";
+          gd = "git -c diff.external=difft diff";
+          gdn = "git diff --no-ext-diff";
+          gp = "git push";
+          gpf = "git push --force-with-lease --force-if-includes";
+          glog = ''git log --pretty=format:"%C(yellow)%h%Creset %C(green)%ad%Creset %s %Cred%d%Creset %Cblue[%an]" --date=short --graph'';
+          rlog = ''git reflog --format="%C(yellow)%h%Creset %C(green)%gd%Creset %gs %Cred%d%Creset %Cblue[%an]" --date=iso-strict'';
+          gmt = "git mergetool";
+          gra = "git rebase --abort";
+          grc = "git rebase --continue";
+          grs = "git restore";
+          gre = "git reset";
+          gs = "git status --short --branch";
+          gsh = "git show --ext-diff";
+          gshn = "git show";
+          gsw = "git switch -m";
+          gswc = "git switch -m --no-track -c";
+          gswC = "git switch -m --no-track -C";
+          j = "just";
+          da = "direnv allow";
+          dr = "direnv reload";
+          awslocal = ''AWS_ACCESS_KEY_ID=dummy AWS_SECRET_ACCESS_KEY=dummy AWS_DEFAULT_REGION=''${DEFAULT_REGION:-''${AWS_DEFAULT_REGION:-ap-northeast-1}} aws --endpoint-url=http://''${LOCALSTACK_HOST:-localhost.localstack.cloud}:4566'';
+        };
       };
     };
     git = {
