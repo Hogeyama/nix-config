@@ -227,8 +227,6 @@ in
       swaylock
       hyprshot
       pavucontrol
-      xdg-desktop-portal
-      xdg-desktop-portal-hyprland
       nwg-displays
       uwsm
       ### font
