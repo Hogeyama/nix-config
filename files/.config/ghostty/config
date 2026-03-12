@@ -2187,7 +2187,7 @@ clipboard-trim-trailing-spaces = true
 #   * `ignore` - Do nothing, ignore the right-click.
 #
 # The default value is `context-menu`.
-#right-click-action = context-menu
+right-click-action = copy
 
 # The time in milliseconds between clicks to consider a click a repeat
 # (double, triple, etc.) or an entirely new single click. A value of zero will
@@ -3512,4 +3512,3 @@ shell-integration-features = no-cursor,no-sudo,title,no-ssh-env,no-ssh-terminfo,
 #
 # This only works on macOS since only macOS has an auto-update feature.
 #auto-update-channel =
-
