@@ -1,0 +1,107 @@
+default: claude
+
+_common_infra: &common_infra
+  nix:
+    enable: auto
+    mount-socket: true
+  docker:
+    enable: true
+    shared: true
+  gcloud:
+    mount-config: true
+  aws:
+    mount-config: true
+  gpg:
+    forward-agent: true
+
+_common_network: &common_network
+  network:
+    allowlist:
+      - api.anthropic.com
+      - statsig.anthropic.com
+      - platform.claude.com
+      - code.claude.com
+      - claude.ai
+      - api.openai.com
+      - chatgpt.com
+      - "*.api.openai.com"
+      - github.com
+      - www.github.com
+      - api.github.com
+      - api.githubcopilot.com
+      - telemetry.individual.githubcopilot.com
+      - api.individual.githubcopilot.com
+      - npm.pkg.github.com
+      - raw.githubusercontent.com
+      - pkg-npm.githubusercontent.com
+      - objects.githubusercontent.com
+      - codeload.github.com
+      - avatars.githubusercontent.com
+      - camo.githubusercontent.com
+      - gist.github.com
+      - gitlab.com
+      - www.gitlab.com
+      - registry.gitlab.com
+      - bitbucket.org
+      - www.bitbucket.org
+      - api.bitbucket.org
+      - registry-1.docker.io
+      - auth.docker.io
+      - index.docker.io
+      - hub.docker.com
+      - www.docker.com
+      - production.cloudflare.docker.com
+      - download.docker.com
+      - gcr.io
+      - "*.gcr.io"
+      - ghcr.io
+      - mcr.microsoft.com
+      - "*.data.mcr.microsoft.com"
+      - public.ecr.aws
+      - registry.npmjs.org
+      - jsr.io
+      - deno.land
+
+_common_env: &common_env
+  env:
+    - key: GITHUB_TOKEN
+      val_cmd: gh auth token
+
+profiles:
+  claude:
+    agent: claude
+    agent-args:
+      - --allowedTools
+      - "Bash(*)"
+      - --allowedTools
+      - "Edit"
+      - --disallowedTools
+      - "Bash(git push *)"
+    <<: [*common_infra, *common_network, *common_env]
+
+  codex:
+    agent: codex
+    agent-args:
+      - --ask-for-approval
+      - never
+      - --sandbox
+      - danger-full-access
+    <<: [*common_infra, *common_network, *common_env]
+    extra-mounts:
+      - # gitignoreが居る
+        src: ~/nix-config
+        dst: ~/nix-config
+        mode: ro
+      - # codexでkeyringに認証情報を持たせるなら必須
+        # だけど権限強すぎるよなあ
+        src: /run/user/1000/bus
+        dst: /run/user/1000/bus
+
+  copilot:
+    agent: copilot
+    agent-args:
+      - --allow-all-paths
+      - --allow-tool=shell
+      - --allow-tool=write
+      - --deny-tool=shell(git push)
+    <<: [*common_infra, *common_network, *common_env]
