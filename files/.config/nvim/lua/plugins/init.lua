@@ -122,6 +122,11 @@ return {
             border = "rounded",
           }
         },
+        tools = {
+          claude = { cmd = { "nas", "--quiet", "claude" } },
+          codex = { cmd = { "nas", "--quiet", "codex" } },
+          copilot = { cmd = { "nas", "--quiet", "copilot" } },
+        },
       },
       nes = { enabled = false },
     },
