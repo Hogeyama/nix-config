@@ -21,42 +21,41 @@ let
   common_network = {
     network = {
       allowlist = [
+        # Anthropic / Claude
         "api.anthropic.com"
         "statsig.anthropic.com"
         "platform.claude.com"
-        "storage.googleapis.com"
         "mcp-proxy.anthropic.com"
-        "http-intake.logs.us5.datadoghq.com"
         "code.claude.com"
-        "release-assets.githubusercontent.com"
         "claude.ai"
+
+        # OpenAI / ChatGPT
         "api.openai.com"
+        "*.api.openai.com"
         "ab.chatgpt.com"
         "chatgpt.com"
-        "*.api.openai.com"
-        "github.com"
-        "docs.github.com"
-        "www.github.com"
+
+        # Google
+        "storage.googleapis.com"
+
+        # GitHub
         "api.github.com"
-        "api.githubcopilot.com"
-        "api.individual.githubcopilot.com"
-        "api.business.githubcopilot.com"
-        "telemetry.individual.githubcopilot.com"
-        "telemetry.business.githubcopilot.com"
-        "npm.pkg.github.com"
-        "raw.githubusercontent.com"
-        "pkg-npm.githubusercontent.com"
-        "objects.githubusercontent.com"
-        "codeload.github.com"
-        "avatars.githubusercontent.com"
-        "camo.githubusercontent.com"
+        # ユーザーのやつ
+        "github.com"
         "gist.github.com"
-        "gitlab.com"
-        "www.gitlab.com"
-        "registry.gitlab.com"
-        "bitbucket.org"
-        "www.bitbucket.org"
-        "api.bitbucket.org"
+        "raw.githubusercontent.com"
+        "release-assets.githubusercontent.com"
+        # Copilot
+        "api.githubcopilot.com"
+        "telemetry.individual.githubcopilot.com"
+        "api.individual.githubcopilot.com"
+        "telemetry.business.githubcopilot.com"
+        "api.business.githubcopilot.com"
+        # 画像系
+        "camo.githubusercontent.com"
+        "avatars.githubusercontent.com"
+
+        # Docker Hub
         "registry-1.docker.io"
         "auth.docker.io"
         "index.docker.io"
@@ -64,22 +63,33 @@ let
         "www.docker.com"
         "production.cloudflare.docker.com"
         "download.docker.com"
-        "gcr.io"
-        "*.gcr.io"
-        "ghcr.io"
-        "mcr.microsoft.com"
+
+        # Container Registries
+        "*.gcr.io" # Google Container Registry
+        "ghcr.io" # GitHub Container Registry
+        "mcr.microsoft.com" # Microsoft Container Registry
         "*.data.mcr.microsoft.com"
-        "public.ecr.aws"
-        "oidc.ap-northeast-1.amazonaws.com"
+        "public.ecr.aws" # AWS ECR
+
+        # Package Registries
+        # npm
         "registry.npmjs.org"
-        "jsr.io"
-        "deno.land"
+        # deno
+        "jsr.io" # JSR (Deno)
+        "deno.land" # Deno
+        # Rust
         "index.crates.io"
         "static.crates.io"
+
+        # IETF Datatracker
         "datatracker.ietf.org"
       ];
       prompt = {
         enable = true;
+        denylist = [
+          # Claude Codeがなんか送ってるやつ
+          "http-intake.logs.us5.datadoghq.com"
+        ];
       };
     };
   };
