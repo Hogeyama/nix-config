@@ -8,12 +8,26 @@ let
       enable = true;
       shared = true;
     };
+    display = {
+      enable = true;
+    };
     extra-mounts = [
       {
         # gitignoreが居る
         src = "~/nix-config";
         dst = "~/nix-config";
         mode = "ro";
+      }
+      {
+        src = "~/.cache/nix-index/";
+        dst = "~/.cache/nix-index/";
+        mode = "ro";
+      }
+      {
+        # for playwright-cli
+        src = "~/.local/share/pnpm";
+        dst = "~/.local/share/pnpm";
+        mode = "rw";
       }
     ];
   };
@@ -28,6 +42,12 @@ let
         "mcp-proxy.anthropic.com"
         "code.claude.com"
         "claude.ai"
+        # bedrock
+        "oidc.ap-northeast-1.amazonaws.com"
+        "portal.sso.ap-northeast-1.amazonaws.com"
+        "sts.ap-northeast-1.amazonaws.com"
+        "bedrock.us-east-1.amazonaws.com"
+        "bedrock-runtime.us-east-1.amazonaws.com"
 
         # OpenAI / ChatGPT
         "api.openai.com"
@@ -40,6 +60,7 @@ let
 
         # GitHub
         "api.github.com"
+        "codeload.github.com"
         # ユーザーのやつ
         "github.com"
         "gist.github.com"
@@ -72,6 +93,10 @@ let
         "public.ecr.aws" # AWS ECR
 
         # Package Registries
+        # nix
+        "cache.iog.io"
+        "cache.nixos.org"
+        "channel.nixos.org"
         # npm
         "registry.npmjs.org"
         # deno
@@ -89,6 +114,11 @@ let
         denylist = [
           # Claude Codeがなんか送ってるやつ
           "http-intake.logs.us5.datadoghq.com"
+          # Chrome / Chromiumが勝手にアクセスするやつ
+          "www.google.com"
+          "mtalk.google.com"
+          "clients2.google.com"
+          "accounts.google.com"
         ];
       };
     };
@@ -102,6 +132,13 @@ let
       { key = "GIT_CONFIG_COUNT"; val = "1"; }
       { key = "GIT_CONFIG_KEY_0"; val = "gpg.program"; }
       { key = "GIT_CONFIG_VALUE_0"; val = "gpg"; }
+      # for playwright-cli
+      {
+        key = "PATH";
+        val = "~/.local/share/pnpm";
+        mode = "prefix";
+        separator = ":";
+      }
     ];
   };
 
@@ -148,6 +185,28 @@ let
           approval = "allow";
           fallback = "container";
         }
+        {
+          id = "dotnet";
+          match = {
+            argv0 = "dotnet";
+          };
+          cwd = {
+            mode = "workspace-or-session-tmp";
+          };
+          approval = "allow";
+          fallback = "container";
+        }
+        {
+          id = "playwright-cli";
+          match = {
+            argv0 = "playwright-cli";
+          };
+          cwd = {
+            mode = "workspace-or-session-tmp";
+          };
+          approval = "allow";
+          fallback = "container";
+        }
       ];
     };
   };
@@ -161,12 +220,7 @@ in
     claude = mkProfile [
       { agent = "claude"; }
       { agent-args = [ "--dangerously-skip-permissions" ]; }
-      {
-        env = common_env.env ++ [
-          # 認証
-          { key = "CLAUDE_CODE_OAUTH_TOKEN"; val_cmd = "pass claude_code_oauth_token"; }
-        ];
-      }
+      common_env
       common_infra
       common_network
       common_hostexec
