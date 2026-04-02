@@ -4,6 +4,9 @@ let
       enable = "auto";
       mount-socket = true;
     };
+    session = {
+      enable = true;
+    };
     docker = {
       enable = false;
       shared = true;
@@ -102,6 +105,7 @@ let
         "cache.iog.io"
         "cache.nixos.org"
         "channels.nixos.org"
+        "cache.iog.io"
         # npm
         "registry.npmjs.org"
         # deno
@@ -198,9 +202,24 @@ let
           fallback = "container";
         }
         {
-          id = "dotnet";
+          id = "wl-paste";
           match = {
-            argv0 = "dotnet";
+            argv0 = "wl-paste";
+          };
+          cwd = {
+            mode = "workspace-or-session-tmp";
+          };
+          inherit-env = {
+            mode = "minimal";
+            keys = [ "WAYLAND_DISPLAY" "XDG_RUNTIME_DIR" ];
+          };
+          approval = "allow";
+          fallback = "container";
+        }
+        {
+          id = "mo";
+          match = {
+            argv0 = "mo";
           };
           cwd = {
             mode = "workspace-or-session-tmp";
