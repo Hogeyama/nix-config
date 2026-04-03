@@ -21,8 +21,8 @@ rec {
           home = user.homeDirectory;
           group = user.name;
           extraGroups = [ "wheel" "networkmanager" "docker" ];
-          hashedPasswordFile = config.sops.secrets.login-password.path;
-          shell = pkgs.zsh;
+          hashedPassword = "$6$19LAXLPYvinmFiDD$sIkXS36IWVX/hu7Cc0BwvGHlz3s0cko1bDLIvqJxFESiFDcffNNtRBpVReqqzzdoV6y.MJN4HflH1af8P5kZ7/"; 
+	  shell = pkgs.zsh;
         };
       };
       groups = {
@@ -40,29 +40,29 @@ rec {
       "x-scheme-handler/http" = "${user.browser}.desktop";
     };
 
-    sops.secrets."login-password" = {
-      sopsFile = ./secrets/common.yaml;
-      neededForUsers = true;
-    };
-    sops.secrets."aws/hogeyama" = {
-      sopsFile = ./secrets/common.yaml;
-      mode = "0440";
-      path = "/root/.aws/credentials";
-    };
-    sops.secrets."gh-auth-token" = {
-      sopsFile = ./secrets/common.yaml;
-    };
-    sops.templates."nix-secret.conf" = {
-      content = ''
-        access-tokens = github.com=${config.sops.placeholder.gh-auth-token}
-      '';
-      owner = user.name;
-      group = user.name;
-      mode = "0400";
-    };
-    nix.extraOptions = ''
-      !include ${config.sops.templates."nix-secret.conf".path}
-    '';
+    #sops.secrets."login-password" = {
+    #  sopsFile = ./secrets/common.yaml;
+    #  neededForUsers = true;
+    #};
+    #sops.secrets."aws/hogeyama" = {
+    #  sopsFile = ./secrets/common.yaml;
+    #  mode = "0440";
+    #  path = "/root/.aws/credentials";
+    #};
+    #sops.secrets."gh-auth-token" = {
+    #  sopsFile = ./secrets/common.yaml;
+    #};
+    #sops.templates."nix-secret.conf" = {
+    #  content = ''
+    #    access-tokens = github.com=${config.sops.placeholder.gh-auth-token}
+    #  '';
+    #  owner = user.name;
+    #  group = user.name;
+    #  mode = "0400";
+    #};
+    #nix.extraOptions = ''
+    #  !include ${config.sops.templates."nix-secret.conf".path}
+    #'';
 
     programs.steam.enable = true;
 
@@ -76,11 +76,11 @@ rec {
         userEmail = user.email;
       };
       vscode = {
-        enable = true;
+        enable = false;
         package = (pkgs.vscode.override { isInsiders = true; }).overrideAttrs (oldAttrs: {
           src = (builtins.fetchTarball {
             url = "https://code.visualstudio.com/sha/download?build=insider&os=linux-x64";
-            sha256 = "sha256:1rw6bk9r8nhz2xcnhfcqdvw2fgzsic3zp2vw5ln130if4x8fx1y3";
+            sha256 = "sha256:1lcsz51za1jdmnay4h59brczclva1ak342s5vqi7bgcry3z2j650";
           });
           buildInputs = oldAttrs.buildInputs ++ [ pkgs.libkrb5 ];
           version = "latest";

@@ -254,7 +254,7 @@ in
       '';
       ".grip/cache-${pkgs.python312Packages.grip.version}/github-markdown.css".source = pkgs.fetchurl {
         url = "https://raw.githubusercontent.com/sindresorhus/github-markdown-css/gh-pages/github-markdown.css";
-        sha256 = "sha256-MNaimU8CBRRB7PsFr2UMc3P6X9W4JhHYj6m+q0VyAw0=";
+        sha256 = "sha256-YRJob5VNtdOAb7lhFtKrIK0wGEaasQFcWH/Y7+fSXPQ=";
       };
       ".grip/cache-${pkgs.python312Packages.grip.version}/page.css".text = ''
         .page {
