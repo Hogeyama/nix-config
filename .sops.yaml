@@ -9,7 +9,7 @@
 #   SOPS_AGE_KEY=$(sudo ssh-to-age -private-key -i /etc/ssh/ssh_host_ed25519_key) sops updatekeys secrets/common.yaml
 keys:
   - &home age1yf6qufzs04ehgta7cnheengu9vcxyxkl2h0t6dazlprn7wkr5v4qn7fhtv
-  - &homewin age1nzxcdfw87twmxpa337fcf396sjy7vrr445kgc9hr0w8em8fkl4dq8h6n9c
+  - &homewin age1c48tpgr78dn7qupcumqk4ajxqkuagsj7fyfc7aehpsn8meaee33qftw30q
   - &work age1zqd34u03df28ydu4ure7u3q63hplu9scfnvesgyyap2yersc9pfsh5sv2z
 creation_rules:
   - path_regex: secrets/common\.yaml
