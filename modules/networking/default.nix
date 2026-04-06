@@ -10,6 +10,7 @@
       enable = true;
     };
     useDHCP = pkgs.lib.mkForce true;
+    dhcpcd.denyInterfaces = [ "veth*" ];
     firewall = {
       allowedUDPPorts = [ 30000 ];
     };
