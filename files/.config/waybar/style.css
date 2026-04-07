@@ -39,6 +39,7 @@ window#waybar {
 }
 
 #cpu,
+#custom-iowait,
 #memory,
 #network,
 #pulseaudio,

@@ -753,7 +753,7 @@ in
 
           modules-left = [ "hyprland/workspaces" ];
           modules-center = [ "clock" ];
-          modules-right = [ "cpu" "memory" "pulseaudio" "network" "battery" "tray" ];
+          modules-right = [ "cpu" "custom/iowait" "memory" "pulseaudio" "network" "battery" "tray" ];
 
           clock = {
             format = "{:%Y-%m-%d %a %H:%M:%S}";
@@ -761,6 +761,27 @@ in
           };
           cpu = {
             format = "CPU {usage}%";
+          };
+          "custom/iowait" = {
+            exec = ''
+              awk '/^cpu / {idle=$5; iowait=$6; total=0; for(i=2;i<=NF;i++) total+=$i; print idle, iowait, total}' /proc/stat > /tmp/iowait_prev
+              sleep 2
+              while true; do
+                awk '/^cpu / {idle=$5; iowait=$6; total=0; for(i=2;i<=NF;i++) total+=$i; print idle, iowait, total}' /proc/stat > /tmp/iowait_curr
+                read pidle piowait ptotal < /tmp/iowait_prev
+                read cidle ciowait ctotal < /tmp/iowait_curr
+                dtotal=$((ctotal - ptotal))
+                if [ "$dtotal" -gt 0 ]; then
+                  diowait=$((ciowait - piowait))
+                  pct=$((diowait * 100 / dtotal))
+                  echo "IO $pct%"
+                fi
+                cp -f /tmp/iowait_curr /tmp/iowait_prev
+                sleep 2
+              done
+            '';
+            format = "{}";
+            return-type = "";
           };
           memory = {
             format = "MEM {percentage}%";
