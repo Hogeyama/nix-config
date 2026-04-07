@@ -37,6 +37,8 @@ rec {
     nix.settings.trusted-users = [ user.name ];
     nix.settings.keep-derivations = false;
 
+    zramSwap.enable = true;
+
     nix.gc = {
       automatic = true;
       dates = "weekly";
