@@ -36,6 +36,12 @@ rec {
     };
     nix.settings.trusted-users = [ user.name ];
 
+    nix.gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 14d";
+    };
+
     xdg.mime.defaultApplications = {
       "text/html" = "${user.browser}.desktop";
       "x-scheme-handler/https" = "${user.browser}.desktop";
