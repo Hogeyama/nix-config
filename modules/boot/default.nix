@@ -11,6 +11,6 @@
       "vfio-pci"
     ];
     kernelParams = [ "intel_iommu=on" ];
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages;
   };
 }
