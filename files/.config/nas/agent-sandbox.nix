@@ -5,7 +5,7 @@ let
       mount-socket = true;
     };
     docker = {
-      enable = true;
+      enable = false;
       shared = true;
     };
     display = {
@@ -22,6 +22,11 @@ let
         src = "~/.cache/nix-index/";
         dst = "~/.cache/nix-index/";
         mode = "ro";
+      }
+      {
+        src = "~/.nix-profile/bin";
+        dst = "~/.nix-profile/bin";
+        mode = "rw";
       }
       {
         # for playwright-cli
@@ -96,7 +101,7 @@ let
         # nix
         "cache.iog.io"
         "cache.nixos.org"
-        "channel.nixos.org"
+        "channels.nixos.org"
         # npm
         "registry.npmjs.org"
         # deno
@@ -119,6 +124,7 @@ let
           "mtalk.google.com"
           "clients2.google.com"
           "accounts.google.com"
+          "android.clients.google.com"
         ];
       };
     };
@@ -132,11 +138,17 @@ let
       { key = "GIT_CONFIG_COUNT"; val = "1"; }
       { key = "GIT_CONFIG_KEY_0"; val = "gpg.program"; }
       { key = "GIT_CONFIG_VALUE_0"; val = "gpg"; }
+      {
+        key = "PATH";
+        val = "~/.nix-profile/bin";
+        mode = "suffix";
+        separator = ":";
+      }
       # for playwright-cli
       {
         key = "PATH";
         val = "~/.local/share/pnpm";
-        mode = "prefix";
+        mode = "suffix";
         separator = ":";
       }
     ];
@@ -189,17 +201,6 @@ let
           id = "dotnet";
           match = {
             argv0 = "dotnet";
-          };
-          cwd = {
-            mode = "workspace-or-session-tmp";
-          };
-          approval = "allow";
-          fallback = "container";
-        }
-        {
-          id = "playwright-cli";
-          match = {
-            argv0 = "playwright-cli";
           };
           cwd = {
             mode = "workspace-or-session-tmp";
