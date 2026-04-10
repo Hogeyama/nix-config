@@ -1,7 +1,7 @@
 rec {
   hostName = "nixos";
 
-  isWsl = false;
+  isWsl = true;
 
   user = {
     name = "hogeyama";
