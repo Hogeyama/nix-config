@@ -65,6 +65,7 @@ let
       my-fzf-wrapper = inputs.my-fzf-wrapper.outputs.packages.${system}.default;
       vscode-insiders-nightly = inputs.vscode-insiders-nightly.packages.${system}.vscode-insider;
 
+      mo = import ./mo { inherit (final) fetchurl stdenvNoCC autoPatchelfHook; };
       illusion = import ./illusion { pkgs = final; };
       udev-gothic = import ./udev-gothic { inherit (final) fetchzip; };
       my-xmobar = import ./my-xmobar { pkgs = final.haskell-updates; };

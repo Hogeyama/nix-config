@@ -171,6 +171,7 @@ in
       manix
       maestral
       mercurial
+      mo
       neovim-remote
       nix-du
       nix-output-monitor
