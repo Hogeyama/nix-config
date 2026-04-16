@@ -13,6 +13,7 @@
     dhcpcd.denyInterfaces = [ "veth*" ];
     firewall = {
       allowedUDPPorts = [ 30000 ];
+      trustedInterfaces = [ "docker0" ];
     };
   };
 }
