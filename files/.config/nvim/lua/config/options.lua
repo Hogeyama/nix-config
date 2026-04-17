@@ -44,3 +44,25 @@ vim.opt.fillchars = 'eob: '
 if vim.g.vscode then
   vim.opt.cmdheight = 100
 end
+
+-- 1. 外部でファイルが変更されたら自動的に読み込み直す（未保存の変更がない場合）
+vim.opt.autoread = true
+
+-- 2. 様々なアクションのタイミングで、ファイルの変更状態をチェック（checktime）する
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
+  pattern = "*",
+  callback = function()
+    -- コマンドラインモードでは実行しない
+    if vim.fn.mode() ~= 'c' then
+      vim.cmd("checktime")
+    end
+  end,
+})
+
+-- 3. 自動リロードされた時に通知を出す
+vim.api.nvim_create_autocmd("FileChangedShellPost", {
+  pattern = "*",
+  callback = function()
+    vim.api.nvim_echo({ { "File changed on disk. Buffer reloaded.", "WarningMsg" } }, false, {})
+  end,
+})
