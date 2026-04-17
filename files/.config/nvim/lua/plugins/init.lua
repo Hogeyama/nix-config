@@ -2332,17 +2332,6 @@ return {
     end
   },
   {
-    "iamcco/markdown-preview.nvim",
-    enabled = not is_light_mode and not vim.g.vscode,
-    build = function() vim.fn["mkdp#util#install"]() end,
-    config = function()
-      vim.g.mkdp_filetypes = { "markdown" }
-      vim.g.mkdp_preview_options = {
-        disable_sync_scroll = true,
-      }
-    end,
-  },
-  {
     'MeanderingProgrammer/render-markdown.nvim',
     enabled = not is_light_mode and not vim.g.vscode,
     dependencies = {
