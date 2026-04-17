@@ -282,12 +282,6 @@ return {
     },
   },
   {
-    'miversen33/netman.nvim',
-    event = "VeryLazy",
-    enabled = not is_light_mode and not vim.g.vscode,
-    config = true,
-  },
-  {
     'stevearc/resession.nvim',
     enabled = not is_light_mode and not vim.g.vscode,
     dependencies = {
@@ -1080,13 +1074,11 @@ return {
       "plenary.nvim",
       "nvim-web-devicons",
       "nui.nvim",
-      "netman.nvim",
     },
     config = function()
       require("neo-tree").setup({
         sources = {
           "filesystem",
-          "netman.ui.neo-tree",
         },
         source_selector = {
           winbar = true,
@@ -1105,26 +1097,6 @@ return {
         },
         filesystem = {
           bind_to_cwd = false,
-          filtered_items = {
-            hide_dotfiles = false,
-            hide_hidden = false,
-            never_show = {
-              ".git",
-            },
-          },
-          window = {
-            mappings = {
-              ["z"] = {},
-              ["zl"] = "unfocus",
-            },
-          },
-          commands = {
-            unfocus = function(_)
-              vim.cmd [[wincmd l]]
-            end,
-          },
-        },
-        ["netman.ui.neo-tree"] = {
           filtered_items = {
             hide_dotfiles = false,
             hide_hidden = false,
