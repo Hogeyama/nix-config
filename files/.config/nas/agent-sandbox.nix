@@ -5,14 +5,14 @@ let
       mount-socket = true;
     };
     session = {
-      enable = true;
+      multiplex = true;
     };
     docker = {
       enable = false;
       shared = true;
     };
     display = {
-      enable = true;
+      sandbox = "xpra";
     };
     extra-mounts = [
       {
@@ -29,13 +29,22 @@ let
       {
         src = "~/.nix-profile/bin";
         dst = "~/.nix-profile/bin";
-        mode = "rw";
+        mode = "ro";
       }
       {
-        # for playwright-cli
-        src = "~/.local/share/pnpm";
-        dst = "~/.local/share/pnpm";
-        mode = "rw";
+        src = "~/.config/nvim";
+        dst = "~/.config/nvim";
+        mode = "ro";
+      }
+      {
+        src = "~/.config/tmux";
+        dst = "~/.config/tmux";
+        mode = "ro";
+      }
+      {
+        src = "~/.local/share/nvim";
+        dst = "~/.local/share/nvim";
+        mode = "ro";
       }
     ];
   };
@@ -129,7 +138,12 @@ let
           "clients2.google.com"
           "accounts.google.com"
           "android.clients.google.com"
+          # Copilot CLIがなんか送ってるやつ
+          "copilot-telemetry.githubusercontent.com"
         ];
+      };
+      proxy = {
+        forward-ports = [ 8080 5432 ];
       };
     };
   };
@@ -142,6 +156,11 @@ let
       { key = "GIT_CONFIG_COUNT"; val = "1"; }
       { key = "GIT_CONFIG_KEY_0"; val = "gpg.program"; }
       { key = "GIT_CONFIG_VALUE_0"; val = "gpg"; }
+      { key = "TERM"; val = "xterm-256color"; }
+      {
+        key = "GITHUB_TOKEN";
+        val_cmd = "pass github/token/for-agent";
+      }
       {
         key = "PATH";
         val = "~/.nix-profile/bin";
@@ -155,6 +174,34 @@ let
         mode = "suffix";
         separator = ":";
       }
+      {
+        # mo の危険引数を遮断：
+        #   --port/-p: forward-ports と衝突させるとホスト側 mo がコンテナから読める
+        #   --bind/-b: 非ループバックへ bind されるとネットワーク越しに露出
+        #   --dangerously-allow-remote-access: 安全プロンプトのバイパス
+        #   絶対パス / ~ / .. を含む位置引数・値: workspace 外の host ファイル参照を禁止
+        id = "mo-guard";
+        match = {
+          argv0 = "mo";
+          arg-regex = ''((^|\s)(--port|-p|--bind|-b|--dangerously-allow-remote-access)(\s|=|$))|((^|\s|=)/)|((^|\s|=)~)|((^|\s|=|/)\.\.(\s|$|/))'';
+        };
+        cwd = {
+          mode = "workspace-or-session-tmp";
+        };
+        approval = "deny";
+        fallback = "deny";
+      }
+      {
+        id = "mo";
+        match = {
+          argv0 = "mo";
+        };
+        cwd = {
+          mode = "workspace-or-session-tmp";
+        };
+        approval = "allow";
+        fallback = "container";
+      }
     ];
   };
 
@@ -167,39 +214,16 @@ let
       };
       rules = [
         {
-          id = "git-fetch-pull";
+          id = "git-push";
           match = {
             argv0 = "git";
-            arg-regex = ''^(fetch|pull)\b'';
+            arg-regex = ''push'';
           };
           cwd = {
             mode = "workspace-or-session-tmp";
           };
-          approval = "allow";
-          fallback = "container";
-        }
-        {
-          id = "gh";
-          match = {
-            argv0 = "gh";
-          };
-          cwd = {
-            mode = "workspace-or-session-tmp";
-          };
-          approval = "allow";
-          fallback = "container";
-        }
-        {
-          id = "gpg-sign";
-          match = {
-            argv0 = "gpg";
-            arg-regex = ''(^|\s)(--sign|-[a-zA-Z]*s[a-zA-Z]*)(\s|$)'';
-          };
-          cwd = {
-            mode = "workspace-or-session-tmp";
-          };
-          approval = "allow";
-          fallback = "container";
+          approval = "deny";
+          fallback = "deny";
         }
         {
           id = "wl-paste";
@@ -212,6 +236,20 @@ let
           inherit-env = {
             mode = "minimal";
             keys = [ "WAYLAND_DISPLAY" "XDG_RUNTIME_DIR" ];
+          };
+          approval = "allow";
+          fallback = "container";
+        }
+        {
+          # git commit/tag -S が呼ぶ形だけを通す:
+          #   gpg --status-fd=2 -bsau <keyid>
+          id = "gpg-git-sign";
+          match = {
+            argv0 = "gpg";
+            arg-regex = ''^--status-fd=2 -bsau [0-9A-Fa-f]{8,40}$'';
+          };
+          cwd = {
+            mode = "workspace-or-session-tmp";
           };
           approval = "allow";
           fallback = "container";
@@ -235,6 +273,12 @@ let
 in
 {
   default = "claude";
+
+  ui = {
+    enable = true;
+    port = 3939;
+    idle-timeout = 300;
+  };
 
   profiles = {
     claude = mkProfile [
@@ -285,16 +329,6 @@ in
       {
         agent-args = [
           "--allow-all"
-        ];
-      }
-      {
-        extra-mounts = [
-          {
-            # gitignoreが居る
-            src = "~/nix-config";
-            dst = "~/nix-config";
-            mode = "ro";
-          }
         ];
       }
       common_env
