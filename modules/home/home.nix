@@ -419,6 +419,10 @@ in
             set-option -g @screen-capture-key "M-Z"
             # mouse
             set-option -g focus-events on
+            # extended-keys
+            set-option -sa terminal-features 'xterm*:extkeys'
+            set-option -g extended-keys always
+            set-option -g extended-keys-format csi-u
           '';
         }
         {
