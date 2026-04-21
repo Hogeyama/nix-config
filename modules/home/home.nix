@@ -399,6 +399,10 @@ in
             set-option -g popup-border-lines "rounded"
             # screen-capture
             set-option -g @screen-capture-key "M-Z"
+            # extended-keys
+            set-option -sa terminal-features 'xterm*:extkeys'
+            set-option -g extended-keys always
+            set-option -g extended-keys-format csi-u
             # image.nvim
             set-option -g allow-passthrough on
             # notification
