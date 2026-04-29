@@ -39,7 +39,7 @@ window#waybar {
 }
 
 #cpu,
-#custom-iowait,
+#custom-psi,
 #memory,
 #network,
 #pulseaudio,
@@ -50,4 +50,14 @@ window#waybar {
   color: @rosewater;
   background-color: @surface1;
   color: @text;
+}
+
+#custom-psi.warning {
+  background-color: @yellow;
+  color: @base;
+}
+
+#custom-psi.critical {
+  background-color: @red;
+  color: @base;
 }

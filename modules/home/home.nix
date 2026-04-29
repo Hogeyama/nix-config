@@ -741,7 +741,7 @@ in
 
           modules-left = [ "hyprland/workspaces" ];
           modules-center = [ "clock" ];
-          modules-right = [ "cpu" "custom/iowait" "memory" "pulseaudio" "network" "battery" "tray" ];
+          modules-right = [ "cpu" "custom/psi" "memory" "pulseaudio" "network" "battery" "tray" ];
 
           clock = {
             format = "{:%Y-%m-%d %a %H:%M:%S}";
@@ -750,26 +750,40 @@ in
           cpu = {
             format = "CPU {usage}%";
           };
-          "custom/iowait" = {
+          "custom/psi" = {
+            # CPU/MEM は PSI avg10 (CPU=some, MEM=full)。
+            # IO だけは PSI を使わず /proc/diskstats の io_ticks 差分から実 %util を算出。
+            # i915 の display flip 待ちが PSI io を偽って押し上げる既知問題への対処。
             exec = ''
-              awk '/^cpu / {idle=$5; iowait=$6; total=0; for(i=2;i<=NF;i++) total+=$i; print idle, iowait, total}' /proc/stat > /tmp/iowait_prev
-              sleep 2
+              disk_ticks() {
+                awk '$3 ~ /^(nvme[0-9]+n[0-9]+|sd[a-z]+|vd[a-z]+)$/ {
+                  if ($13+0 > m) m = $13+0
+                } END { print m+0 }' /proc/diskstats
+              }
+              prev=$(disk_ticks)
               while true; do
-                awk '/^cpu / {idle=$5; iowait=$6; total=0; for(i=2;i<=NF;i++) total+=$i; print idle, iowait, total}' /proc/stat > /tmp/iowait_curr
-                read pidle piowait ptotal < /tmp/iowait_prev
-                read cidle ciowait ctotal < /tmp/iowait_curr
-                dtotal=$((ctotal - ptotal))
-                if [ "$dtotal" -gt 0 ]; then
-                  diowait=$((ciowait - piowait))
-                  pct=$((diowait * 100 / dtotal))
-                  echo "IO $pct%"
-                fi
-                cp -f /tmp/iowait_curr /tmp/iowait_prev
                 sleep 2
+                curr=$(disk_ticks)
+                io=$(( (curr - prev) / 20 ))
+                [ "$io" -lt 0 ] && io=0
+                [ "$io" -gt 100 ] && io=100
+                prev=$curr
+
+                cpu=$(awk '/^some/{sub("avg10=","",$2); print $2; exit}' /proc/pressure/cpu)
+                mem=$(awk '/^full/{sub("avg10=","",$2); print $2; exit}' /proc/pressure/memory)
+                ci=$(printf "%.0f" "$cpu")
+                mi=$(printf "%.0f" "$mem")
+
+                max=$ci; [ "$io" -gt "$max" ] && max=$io; [ "$mi" -gt "$max" ] && max=$mi
+                cls=normal
+                [ "$max" -gt 20 ] && cls=warning
+                [ "$max" -gt 50 ] && cls=critical
+                printf '{"text":"C%d/D%d/M%d","class":"%s","tooltip":"cpu(some,avg10)=%s%%  disk(%%util,2s)=%d%%  mem(full,avg10)=%s%%"}\n' \
+                  "$ci" "$io" "$mi" "$cls" "$cpu" "$io" "$mem"
               done
             '';
             format = "{}";
-            return-type = "";
+            return-type = "json";
           };
           memory = {
             format = "MEM {percentage}%";
