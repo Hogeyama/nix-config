@@ -75,7 +75,10 @@ rec {
       !include ${config.sops.templates."nix-secret.conf".path}
     '';
 
-    programs.steam.enable = true;
+    programs.steam = {
+      enable = true;
+      extraCompatPackages = [ pkgs.proton-ge-bin ];
+    };
 
     home-manager.users.${user.name} = homeManagerModule args;
   };
