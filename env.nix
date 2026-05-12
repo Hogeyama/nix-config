@@ -37,7 +37,7 @@ rec {
     nix.settings.trusted-users = [ user.name ];
     nix.settings.keep-derivations = false;
 
-    zramSwap.enable = true;
+    zramSwap.enable = false;
 
     nix.gc = {
       automatic = true;
