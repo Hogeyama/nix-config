@@ -833,6 +833,8 @@ in
   xdg = {
     # hyprlandにsession変数を渡す
     configFile."uwsm/env".source = "${config.home.sessionVariablesPackage}/etc/profile.d/hm-session-vars.sh";
+    # zsh-abbrが実行時にもuser-abbreviationsを書き込むため、HMの管理ファイルと衝突する
+    configFile."zsh-abbr/user-abbreviations".force = true;
     # XDG_DATA_DIRSのデフォルト値。これがないとDebian環境でxdg-desktop-portal等が動かない。
     # 少なくともgsettingsに依存するものが軒並み死ぬようだ。
     systemDirs.data = [ "/usr/share" "/usr/local/share" ];
