@@ -682,7 +682,7 @@ in
         rebase.rebaseMerges = "rebase-cousins";
         rebase.updateRefs = true;
         rebase.missingCommitsCheck = "warn";
-        rebase.abbreviateCommands = true;
+        rebase.abbreviateCommands = false;
         rerere.enabled = true;
         credential."https://github.com".helper = "!${pkgs.gh}/bin/gh auth git-credential";
         include.path = "config.local";
