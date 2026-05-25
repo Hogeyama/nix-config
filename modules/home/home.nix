@@ -101,7 +101,6 @@ in
       gcc
       gh
       ghostty
-      gitflow
       git-remote-codecommit
       glow
       gnumake
