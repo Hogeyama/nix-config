@@ -514,6 +514,11 @@ in
         source-if-exists "$HOME/.zshenv.local"
       '';
       initContent = ''
+        # /etc/zsh/zshrc が nix-daemon.sh を読み、$HOME/.nix-profile/bin を
+        # PATH 先頭に挿入してしまうため、.local/bin を再度最優先に戻す
+        typeset -U path PATH
+        path=("$HOME/.local/bin" $path)
+
         zstyle ':completion:*' verbose yes
         zstyle ':completion:*' format '%B%d%b'
         zstyle ':completion:*:warnings' format 'No matches for: %d'
