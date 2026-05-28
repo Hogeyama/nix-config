@@ -399,11 +399,8 @@ in
             set-option -g popup-border-lines "rounded"
             # screen-capture
             set-option -g @screen-capture-key "M-Z"
-            # image.nvim
-            set-option -g allow-passthrough on
-            # notification
-            set-option -g bell-action any
-            set-hook -g alert-bell 'if-shell -F "#{m:*nas*,#{window_name}}" { run-shell "notify-send \"Copilot is waiting your input\" \"\"" }'
+            # mouse
+            set-option -g focus-events on
           '';
         }
         {
