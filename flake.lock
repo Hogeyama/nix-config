@@ -310,22 +310,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-for-haskell": {
-      "locked": {
-        "lastModified": 1700463343,
-        "narHash": "sha256-6HpM0MP3V6jYsnAklIkjw6Wa+L0Zgokq+OBduVBR3n4=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "3fb937a1e9f4157f57011965b99fcb7f4139d9ad",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "3fb937a1e9f4157f57011965b99fcb7f4139d9ad",
-        "type": "github"
-      }
-    },
     "nixpkgs-stable": {
       "locked": {
         "lastModified": 1703351344,
@@ -415,7 +399,6 @@
         "nix-index-database": "nix-index-database",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs_3",
-        "nixpkgs-for-haskell": "nixpkgs-for-haskell",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "sops-nix": "sops-nix",
         "vscode-insiders-nightly": "vscode-insiders-nightly"

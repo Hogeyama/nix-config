@@ -61,15 +61,12 @@ let
     in
     {
       unstable = inputs.nixpkgs-unstable.outputs.legacyPackages.${system};
-      haskell-updates = inputs.nixpkgs-for-haskell.outputs.legacyPackages.${system};
       my-fzf-wrapper = inputs.my-fzf-wrapper.outputs.packages.${system}.default;
       vscode-insiders-nightly = inputs.vscode-insiders-nightly.packages.${system}.vscode-insider;
 
       mo = import ./mo { inherit (final) fetchurl stdenvNoCC autoPatchelfHook; };
       illusion = import ./illusion { pkgs = final; };
       udev-gothic = import ./udev-gothic { inherit (final) fetchzip; };
-      my-xmobar = import ./my-xmobar { pkgs = final.haskell-updates; };
-      my-xmonad = import ./my-xmonad { pkgs = final.haskell-updates; };
       pass-secret-service = prev.pass-secret-service.override { python3 = patchedPython3; };
     })
   ];

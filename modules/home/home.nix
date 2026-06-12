@@ -235,7 +235,6 @@ in
       noto-fonts-color-emoji
       rounded-mgenplus
       ### my packages
-      my-xmobar
       my-fzf-wrapper
       ### unstable
       unstable.dasel
