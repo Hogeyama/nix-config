@@ -1,4 +1,7 @@
 local is_light_mode = vim.env.NVIM_LIGHT_MODE == "1"
+-- NVIM_NATIVE_CMP=1 で blink.cmp の代わりに Neovim 0.12+ のネイティブ補完
+-- ('autocomplete' + vim.lsp.completion) を試す
+local use_native_cmp = vim.env.NVIM_NATIVE_CMP == "1"
 
 return {
   { 'nvim-lua/plenary.nvim' },
@@ -854,7 +857,10 @@ return {
     opts = {
       sections = {
         -- default + copilot
-        lualine_x = { 'copilot', 'encoding', 'fileformat', 'filetype' },
+        -- native モードは copilot.lua を読まない (copilot-lualine が依存) ので外す
+        lualine_x = use_native_cmp
+            and { 'encoding', 'fileformat', 'filetype' }
+            or { 'copilot', 'encoding', 'fileformat', 'filetype' },
       },
     },
     dependencies = {
@@ -1195,8 +1201,27 @@ return {
     end
   },
   {
+    -- copilot.lua は blink モード専用 (blink-copilot のメニューソースの backend)。
+    -- native モードでは copilot-language-server + vim.lsp.inline_completion を使うので無効化。
+    'zbirenbaum/copilot.lua',
+    enabled = not vim.g.vscode and not use_native_cmp,
+    cmd = "Copilot",
+    event = "InsertEnter",
+    opts = {
+      suggestion = { enabled = false },
+      panel = { enabled = false },
+      filetypes = {
+        markdown = true,
+        help = true,
+        gitcommit = true,
+        gitrebase = true,
+        yaml = true,
+      },
+    },
+  },
+  {
     'saghen/blink.cmp',
-    enabled = not vim.g.vscode,
+    enabled = not vim.g.vscode and not use_native_cmp,
     version = 'v1.7.0',
     build = 'nix run .#build-plugin',
     opts = {
@@ -1262,21 +1287,8 @@ return {
     dependencies = {
       {
         'fang2hou/blink-copilot',
-        dependencies = {
-          {
-            "zbirenbaum/copilot.lua",
-            cmd = "Copilot",
-            event = "InsertEnter",
-            opts = {
-              suggestion = { enabled = true },
-              panel = { enabled = true },
-              filetypes = {
-                markdown = true,
-                help = true,
-              },
-            },
-          },
-        },
+        -- copilot.lua の実体はトップレベルの spec に集約 (依存だけ宣言)
+        dependencies = { 'zbirenbaum/copilot.lua' },
       },
     },
 
@@ -1396,28 +1408,8 @@ return {
         end
       },
       { 'onsails/lspkind.nvim' },
-      {
-        'zbirenbaum/copilot.lua',
-        event = "VeryLazy",
-        enabled = true and not vim.g.vscode,
-        config = function()
-          require('copilot').setup({
-            panel = {
-              enabled = false,
-            },
-            suggestion = {
-              enabled = false,
-            },
-            filetypes = {
-              yaml = true,
-              markdown = true,
-              gitcommit = true,
-              gitrebase = true,
-              hgcommit = true,
-            },
-          })
-        end,
-      },
+      -- copilot.lua の実体はトップレベルの spec に集約
+      { 'zbirenbaum/copilot.lua' },
     },
   },
   {
@@ -1867,15 +1859,47 @@ return {
       end
 
       -- [[capabilities]]
-      vim.g.lsp_default_capabilities = require('blink.cmp').get_lsp_capabilities({
-        textDocumtent = {
-          completion = {
-            completionItem = {
-              snippetSupport = true,
+      if use_native_cmp then
+        -- ネイティブ補完 (:h vim.lsp.completion / :h 'autocomplete')
+        vim.o.autocomplete = true
+        vim.o.completeopt = "menu,menuone,noselect,popup,fuzzy"
+        local caps = vim.lsp.protocol.make_client_capabilities()
+        caps.textDocument.completion.completionItem.snippetSupport = true
+        vim.g.lsp_default_capabilities = caps
+        -- pum のナビゲーション (確定は <C-y>, キャンセルは <C-e>)
+        vim.keymap.set('i', '<Tab>', function()
+          return vim.fn.pumvisible() == 1 and '<C-n>' or '<Tab>'
+        end, { expr = true })
+        vim.keymap.set('i', '<S-Tab>', function()
+          return vim.fn.pumvisible() == 1 and '<C-p>' or '<S-Tab>'
+        end, { expr = true })
+        -- 補完メニューを catppuccin macchiato に合わせて見やすく
+        -- (素の Pmenu=透明+cyan だと地獄なので上書き)
+        vim.o.pumblend = 10
+        vim.o.pumheight = 15
+        local hl = function(group, opts) vim.api.nvim_set_hl(0, group, opts) end
+        local base, sel = '#363a4f', '#5b6078'                       -- surface0 / surface2
+        hl('Pmenu', { fg = '#cad3f5', bg = base })                   -- text
+        hl('PmenuSel', { fg = '#cad3f5', bg = sel, bold = true })
+        hl('PmenuKind', { fg = '#8aadf4', bg = base })               -- blue
+        hl('PmenuKindSel', { fg = '#8aadf4', bg = sel, bold = true })
+        hl('PmenuExtra', { fg = '#a5adcb', bg = base })              -- subtext0
+        hl('PmenuExtraSel', { fg = '#a5adcb', bg = sel, bold = true })
+        hl('PmenuMatch', { fg = '#8bd5ca', bg = base, bold = true }) -- teal (一致文字)
+        hl('PmenuMatchSel', { fg = '#8bd5ca', bg = sel, bold = true })
+        hl('PmenuSbar', { bg = '#494d64' })                          -- surface1
+        hl('PmenuThumb', { bg = '#6e738d' })                         -- overlay0
+      else
+        vim.g.lsp_default_capabilities = require('blink.cmp').get_lsp_capabilities({
+          textDocumtent = {
+            completion = {
+              completionItem = {
+                snippetSupport = true,
+              },
             },
           },
-        },
-      })
+        })
+      end
 
       -- [[set default]]
       vim.api.nvim_create_autocmd('LspAttach', {
@@ -1883,6 +1907,23 @@ return {
           local client = vim.lsp.get_client_by_id(ev.data.client_id)
           local bufnr = ev.buf
           vim.g.lsp_default_on_attach(client, bufnr)
+          if use_native_cmp and client and client:supports_method('textDocument/completion') then
+            vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = true })
+          end
+          -- Copilot 等の inlineCompletion (= ゴーストテキスト) をネイティブで有効化
+          if use_native_cmp and client and client:supports_method('textDocument/inlineCompletion') then
+            vim.lsp.inline_completion.enable(true, { bufnr = bufnr })
+            -- 確定 (候補が無ければ何もしない / pum ナビの <Tab> とは別キー)
+            vim.keymap.set('i', '<C-l>', vim.lsp.inline_completion.get,
+              { buffer = bufnr, desc = 'Copilot accept' })
+            -- 候補送り
+            vim.keymap.set({ 'i', 'n' }, '<M-]>',
+              function() vim.lsp.inline_completion.select({ count = 1 }) end,
+              { buffer = bufnr, desc = 'Copilot next' })
+            vim.keymap.set({ 'i', 'n' }, '<M-[>',
+              function() vim.lsp.inline_completion.select({ count = -1 }) end,
+              { buffer = bufnr, desc = 'Copilot prev' })
+          end
         end
       })
       vim.lsp.config('*', {
@@ -1984,6 +2025,10 @@ return {
           },
         },
       })
+      -- [[copilot]] native モードのみ。inlineCompletion を LspAttach で有効化する
+      if use_native_cmp then
+        enable_lsp('copilot')
+      end
       -- [[others]]
       enable_lsp('bashls')
       enable_lsp('eslint')
@@ -2034,6 +2079,7 @@ return {
           require('mason-tool-installer').setup {
             ensure_installed = {
               -- [LSP]
+              "copilot-language-server", -- native inline completion (vim.lsp.inline_completion)
               "bash-language-server",
               "dhall-lsp",
               "diagnostic-languageserver",
