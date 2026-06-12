@@ -269,10 +269,6 @@ in
       AWS_VAULT_BACKEND = "pass";
       AWS_VAULT_PASS_PREFIX = "aws-vault/";
 
-      # fzf
-      FZF_TMUX = 1;
-      FZF_TMUX_OPTS = "-p 80%";
-
       # direnv
       DIRENV_LOG_FORMAT = "";
 
