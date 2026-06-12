@@ -320,17 +320,6 @@ in
       enable = true;
       nix-direnv.enable = true;
     };
-    atuin = {
-      enable = true;
-      forceOverwriteSettings = true;
-      daemon.enable = true;
-      flags = [ "--disable-up-arrow" ];
-      settings = {
-        auto_sync = true;
-        search_mode = "fuzzy";
-        local_timeout = 1;
-      };
-    };
     fzf = {
       enable = true;
       enableZshIntegration = true;
