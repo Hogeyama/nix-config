@@ -323,6 +323,27 @@ in
     fzf = {
       enable = true;
       enableZshIntegration = true;
+      # 全ウィジェット共通の見た目（Ctrl-T / Alt-C / Ctrl-R）
+      defaultOptions = [
+        "--height=60%"
+        "--layout=reverse"
+        "--border=rounded"
+        "--info=inline-right"
+        "--prompt='❯ '"
+        "--pointer='▶'"
+        "--marker='✓'"
+        "--cycle"
+      ];
+      # Ctrl-R 専用
+      historyWidgetOptions = [
+        "--scheme=history"
+        "--preview 'echo {2..} | bat --color=always -pl bash'" # 選択中コマンドの全文をプレビュー
+        "--preview-window='down:3:wrap'"
+        "--bind 'ctrl-/:toggle-preview'"
+        "--bind 'ctrl-y:execute-silent(echo -n {2..} | wl-copy)+abort'" # C-yで実行せずコピー
+        "--color=header:italic"
+        "--header='C-/ preview · C-y copy'"
+      ];
     };
     neovim = {
       enable = true;
@@ -542,6 +563,13 @@ in
         zstyle ':completion:*' matcher-list "" 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
         # drwxrwxrwxなるディレクトリ(other writable)が見にくいのを直す
         eval $(dircolors | sed 's/ow=[^:]*:/ow=01;34:/') #青背景白文字
+        # history (atuin相当の一意な履歴に近づける)
+        HISTSIZE=1000000             # メモリ上に保持する件数
+        SAVEHIST=1000000             # ファイルに保存する件数 (oh-my-zshの10000を上書き)
+        setopt HIST_IGNORE_ALL_DUPS  # 既存の重複を消して最新だけ残す
+        setopt HIST_SAVE_NO_DUPS     # 保存時も重複を書かない
+        setopt HIST_FIND_NO_DUPS     # 検索時に重複を表示しない
+        unsetopt HIST_EXPIRE_DUPS_FIRST # ALL_DUPSと競合するためoh-my-zshの設定を解除
         # bindkey
         bindkey "^K" up-line-or-history
         bindkey "^J" down-line-or-history
