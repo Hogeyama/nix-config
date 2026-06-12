@@ -449,6 +449,8 @@ in
         set-option -g default-terminal "tmux-256color"
         # Enable True Color on xterm-256color
         set-option -ga terminal-overrides ",xterm-256color:Tc"
+        # image.nvim とか claude とか
+        set-option -g allow-passthrough on
         # status bar on top
         set-option -g status-position top
         # no mouse
