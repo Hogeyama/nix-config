@@ -37,7 +37,6 @@
       moreutils
       neovim-remote
       nodejs
-      nodePackages.npm
       nil
       nixpkgs-fmt
       nix-alien

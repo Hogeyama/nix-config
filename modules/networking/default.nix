@@ -1,11 +1,8 @@
 { pkgs, ... }:
 {
   networking = {
-    # Enables wireless support via wpa_supplicant.
-    # TODO
-    wireless = {
-      enable = false;
-    };
+    # wpa_supplicant is enabled and DBus-controlled by NetworkManager
+    # (networking.networkmanager sets wireless.enable since nixos-26.05).
     networkmanager = {
       enable = true;
     };

@@ -178,10 +178,10 @@ in
       nix-tree
       nixpkgs-fmt
       nmap
-      nodePackages.bash-language-server
-      nodePackages.mermaid-cli
-      nodePackages.npm
-      nodePackages.prettier
+      bash-language-server
+      mermaid-cli
+      nodejs # provides npm
+      prettier
       openssl
       pamixer
       pandoc
@@ -340,13 +340,14 @@ in
       package = inputs.neovim-nightly-overlay.packages.${pkgs.stdenv.hostPlatform.system}.default;
       withNodeJs = true;
       withPython3 = true;
+      withRuby = true; # nixos-26.05 changed the default to false; keep legacy behavior
       extraPython3Packages = pyPkgs: with pyPkgs; [
         # for molten-nvim
         jupyter-client
         pyperclip
         nbformat
       ];
-      extraLuaConfig = "\n" + ''
+      initLua = "\n" + ''
         -- config
         require("config.options")
         require("config.keymaps")
@@ -488,7 +489,10 @@ in
         bind -T copy-mode-vi y     send-keys -X copy-pipe-and-cancel "myclip"
       '';
     };
-    yazi.enable = true;
+    yazi = {
+      enable = true;
+      shellWrapperName = "yy"; # nixos-26.05 changed the default to "y"; keep legacy behavior
+    };
     xplr.enable = true;
     zsh = {
       enable = true;
@@ -837,6 +841,8 @@ in
   };
   wayland.windowManager.hyprland = {
     enable = true;
+    # nixos-26.05 changed the default to "lua"; our config below is hyprlang.
+    configType = "hyprlang";
     extraConfig = ''
       source = ./hyprland.raw.conf
     '';
