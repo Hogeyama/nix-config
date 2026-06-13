@@ -2251,7 +2251,6 @@ return {
   {
     'j-hui/fidget.nvim',
     enabled = not is_light_mode and not vim.g.vscode,
-    tag = 'legacy',
     config = function()
       require 'fidget'.setup {}
     end
