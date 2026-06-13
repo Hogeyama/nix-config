@@ -1159,6 +1159,18 @@ return {
     },
   },
   {
+    'folke/lazydev.nvim',
+    enabled = not vim.g.vscode,
+    ft = "lua",
+    opts = {
+      library = {
+        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+        "lazy.nvim",
+        "snacks.nvim",
+      },
+    },
+  },
+  {
     'saghen/blink.cmp',
     enabled = not vim.g.vscode and not use_native_cmp,
     version = 'v1.7.0',
@@ -1205,13 +1217,18 @@ return {
         },
       },
       sources = {
-        default = { 'copilot', 'lsp', 'path', 'snippets', 'buffer' },
+        default = { 'lazydev', 'copilot', 'lsp', 'path', 'snippets', 'buffer' },
         providers = {
           copilot = {
             name = "copilot",
             module = "blink-copilot",
             score_offset = 100,
             async = true,
+          },
+          lazydev = {
+            name = "LazyDev",
+            module = "lazydev.integrations.blink",
+            score_offset = 100,
           },
         },
       },
