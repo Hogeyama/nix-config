@@ -1371,17 +1371,6 @@ return {
     enabled = not is_light_mode and not vim.g.vscode,
   },
   {
-    'folke/zen-mode.nvim',
-    enabled = not is_light_mode and not vim.g.vscode,
-    opts = {
-      plugins = {
-        tmux = {
-          enabled = true,
-        }
-      }
-    },
-  },
-  {
     "GCBallesteros/jupytext.nvim",
     enabled = not is_light_mode and not vim.g.vscode,
     config = true,
