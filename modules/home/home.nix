@@ -844,12 +844,16 @@ in
     };
     hyprpaper = {
       enable = true;
+      # hyprpaper 0.8 (nixos-26.05) で設定書式が刷新された。
+      # preloadは廃止され、wallpaperはカテゴリブロック形式になった。
+      # monitorを空にすると全モニターのフォールバック壁紙になる。
       settings = {
-        preload = [
-          "${config.home.homeDirectory}/Pictures/reflexion.jpg"
-        ];
         wallpaper = [
-          ",${config.home.homeDirectory}/Pictures/reflexion.jpg"
+          {
+            monitor = "";
+            path = "${config.home.homeDirectory}/Pictures/reflexion.jpg";
+            fit_mode = "cover";
+          }
         ];
       };
     };
