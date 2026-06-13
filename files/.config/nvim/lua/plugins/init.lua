@@ -1539,8 +1539,67 @@ return {
     ft = { "markdown" }
   },
   {
-    'nvim-pack/nvim-spectre',
+    'MagicDuck/grug-far.nvim',
     enabled = not is_light_mode and not vim.g.vscode,
+    cmd = "GrugFar",
+    opts = {},
+    keys = {
+      {
+        "<leader>S",
+        mode = { "n" },
+        function() require("grug-far").open() end,
+        desc = "grug-far",
+      },
+      {
+        "<leader>sw",
+        mode = { "n" },
+        function()
+          require("grug-far").open({ prefills = { search = vim.fn.expand("<cword>") } })
+        end,
+        desc = "grug-far: current word",
+      },
+      {
+        "<leader>sw",
+        mode = { "x" },
+        function()
+          local sel = vim.fn.getregion(vim.fn.getpos("v"), vim.fn.getpos("."), { type = vim.fn.mode() })
+          require("grug-far").open({ prefills = { search = table.concat(sel, "\n") } })
+        end,
+        desc = "grug-far: selection",
+      },
+      {
+        "<leader>sp",
+        mode = { "n" },
+        function()
+          require("grug-far").open({
+            prefills = { search = vim.fn.expand("<cword>"), paths = vim.fn.expand("%") },
+          })
+        end,
+        desc = "grug-far: current file",
+      },
+      {
+        -- rip-substitute 相当: カレントファイルのクイック置換
+        "<leader>fs",
+        mode = { "n" },
+        function()
+          require("grug-far").open({ prefills = { paths = vim.fn.expand("%") } })
+        end,
+        desc = "grug-far: substitute (current file)",
+      },
+      {
+        -- rip-substitute 相当: 選択範囲に限定して置換
+        "<leader>fs",
+        mode = { "x" },
+        function()
+          require("grug-far").open({ visualSelectionUsage = "operate-within-range" })
+        end,
+        desc = "grug-far: substitute (within selection)",
+      },
+    },
+  },
+  {
+    'nvim-pack/nvim-spectre',
+    enabled = false,
     config = function()
       vim.keymap.set('n', '<leader>S', '<cmd>lua require("spectre").toggle()<CR>', {
         desc = "Toggle Spectre"
