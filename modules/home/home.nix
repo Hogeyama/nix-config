@@ -41,46 +41,6 @@ let
     in
     dotfilesSymlinks' "";
 
-  checkstyle = pkgs.writeScriptBin "checkstyle" ''
-    #!${pkgs.stdenv.shell}
-    set -eu
-    JAVA=$JAVA_HOME/bin/java
-    CHECKSTYLE=${pkgs.checkstyle}/checkstyle/checkstyle-all.jar
-
-    ARGS=()
-
-    # コンフィグファイル
-    if [ -n "''${CHECKSTYLE_CONFIG_FILE:-}" ]; then
-        ARGS+=("-c" "''${CHECKSTYLE_CONFIG_FILE}")
-    else
-        echo "CHECKSTYLE_CONFIG_FILE is not set" >&2
-        exit 1
-    fi
-
-    # プロパティファイル
-    PROPERTIES=$(mktemp)
-    cat <<EOF >"$PROPERTIES"
-    suppressions_xml = ''${CHECKSTYLE_SUPPRESSIONS_XML:-/dummy}
-    config_loc       = ''${CHECKSTYLE_CONFIG_LOC:-/dummy}
-    EOF
-    ARGS+=("-p" "$PROPERTIES")
-
-    # コマンドライン引数。null-ls.nvimが余計な引数を渡してくるため、`--`まで読み飛ばす
-    while [[ $# -gt 0 ]]; do
-        case $1 in
-            --)
-                shift
-                break
-                ;;
-            *) ;;
-        esac
-        shift
-    done
-    ARGS+=("$@")
-
-    "$JAVA" -jar $CHECKSTYLE "''${ARGS[@]}"
-  '';
-
   nixDaemonS3CredentialsBin =
     pkgs.writeShellScriptBin "nix-daemon-s3-credentials" ''
       set -euo pipefail
@@ -121,7 +81,6 @@ in
       btop
       cachix
       cargo
-      checkstyle
       comma
       commitizen
       curl
