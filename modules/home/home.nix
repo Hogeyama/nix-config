@@ -141,6 +141,7 @@ in
       mermaid-cli
       nodejs # provides npm
       prettier
+      pulseaudio
       openssl
       pamixer
       pandoc
