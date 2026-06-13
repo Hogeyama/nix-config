@@ -7,7 +7,6 @@ return {
   { 'nvim-lua/plenary.nvim' },
   { 'nvim-lua/popup.nvim' },
   { 'MunifTanjim/nui.nvim' },
-  { 'nvim-tree/nvim-web-devicons' },
   {
     'gbprod/yanky.nvim',
     enabled = true,
@@ -184,7 +183,6 @@ return {
     'ibhagwan/fzf-lua',
     event = "VeryLazy",
     enabled = true,
-    dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
       local actions = require "fzf-lua.actions"
       require("fzf-lua").setup({
@@ -839,7 +837,6 @@ return {
       },
     },
     dependencies = {
-      'nvim-tree/nvim-web-devicons',
       'AndreM222/copilot-lualine',
     }
   },
@@ -1078,7 +1075,6 @@ return {
     keys = {
       { "<leader>f", function() require("oil").toggle_float() end, mode = { 'n' }, desc = "Oil (float)" },
     },
-    dependencies = { "nvim-tree/nvim-web-devicons" },
   },
   {
     'klen/nvim-config-local',
@@ -1426,7 +1422,6 @@ return {
       'nvim-lua/plenary.nvim',
       'nvim-telescope/telescope.nvim',
       'ibhagwan/fzf-lua',
-      'nvim-tree/nvim-web-devicons',
     },
     config = function()
       require "octo".setup({
@@ -2334,7 +2329,6 @@ return {
     enabled = not is_light_mode and not vim.g.vscode,
     dependencies = {
       'nvim-treesitter/nvim-treesitter',
-      'nvim-tree/nvim-web-devicons'
     },
     config = function()
       require('render-markdown').setup({
