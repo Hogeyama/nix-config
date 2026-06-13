@@ -501,18 +501,11 @@ return {
         },
         filetype = "nu",
       }
-
-      -- nvim-treehopper
-      vim.cmd [[
-        omap     <silent> m :<C-U>lua require('tsht').nodes()<CR>
-        xnoremap <silent> m :lua require('tsht').nodes()<CR>
-      ]]
     end,
     dependencies = {
       { 'nvim-treesitter/playground' },
       { 'nvim-treesitter/nvim-treesitter-textobjects' },
       { 'nvim-treesitter/nvim-treesitter-context' },
-      { 'mfussenegger/nvim-treehopper' },
       {
         'JoosepAlviste/nvim-ts-context-commentstring',
         config = function()
@@ -765,6 +758,29 @@ return {
     },
   },
   {
+    'folke/flash.nvim',
+    enabled = true,
+    event = "VeryLazy",
+    opts = {
+      search = {
+        multi_window = false,
+        smart_case = true,
+      },
+      modes = {
+        char = { enabled = true },
+        search = { enabled = false },
+      },
+    },
+    keys = {
+      {
+        "m",
+        mode = { "o", "x" },
+        function() require("flash").treesitter() end,
+        desc = "Flash Treesitter",
+      },
+    },
+  },
+  {
     'smoka7/hop.nvim',
     enabled = true,
     config = function()
@@ -958,7 +974,7 @@ return {
   },
   {
     'rhysd/clever-f.vim',
-    enabled = true,
+    enabled = false,
     config = function()
       vim.cmd [[
       let g:clever_f_smart_case = 1
