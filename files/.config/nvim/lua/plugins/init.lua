@@ -2092,13 +2092,7 @@ return {
         end,
         dependencies = {
           {
-            'williamboman/mason-lspconfig.nvim',
-            version = 'v1.11.0',
-            config = true,
-          },
-          {
-            'williamboman/mason.nvim',
-            version = 'v1.11.0',
+            'mason-org/mason.nvim',
             opts = {
               -- registries = {
               --   -- 'github:Hogeyama/jdtls-mason-registry',
