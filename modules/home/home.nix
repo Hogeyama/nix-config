@@ -820,10 +820,12 @@ in
   };
   wayland.windowManager.hyprland = {
     enable = true;
-    # nixos-26.05 changed the default to "lua"; our config below is hyprlang.
-    configType = "hyprlang";
+    # Hyprland 0.55+ (nixos-26.05) でデフォルト設定書式が hyprlang から lua に変わった。
+    # 設定本体は files/.config/hypr/main.lua（編集可能なシンボリックリンク）に置き、
+    # home-manager 生成の hyprland.lua から dofile する。
+    configType = "lua";
     extraConfig = ''
-      source = ./hyprland.raw.conf
+      dofile(os.getenv("HOME") .. "/.config/hypr/main.lua")
     '';
   };
   xdg = {
