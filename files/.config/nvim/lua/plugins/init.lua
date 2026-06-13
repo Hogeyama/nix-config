@@ -9,19 +9,6 @@ return {
   { 'MunifTanjim/nui.nvim' },
   { 'nvim-tree/nvim-web-devicons' },
   {
-    'rcarriga/nvim-notify',
-    enabled = not is_light_mode and not vim.g.vscode,
-    opts = {
-      timeout = 2000,
-      render = "compact",
-      stages = "static",
-      on_open = function(win)
-        vim.api.nvim_set_option_value("winblend", 30, { win = win })
-        vim.api.nvim_win_set_config(win, { zindex = 100 })
-      end
-    },
-  },
-  {
     'gbprod/yanky.nvim',
     enabled = true,
     config = function()
@@ -419,6 +406,14 @@ return {
     opts = {
       words = { enabled = true },
       scratch = { ft = function() return "markdown" end },
+      indent = {
+        scope = { enabled = false },
+      },
+      notifier = {
+        enabled = true,
+        timeout = 2000,
+        style = "compact",
+      },
       image = {
         doc = {
           enabled = false,
@@ -591,7 +586,7 @@ return {
           gitsigns = true,
           nvimtree = true,
           treesitter = true,
-          notify = true,
+          snacks = true,
           mini = {
             enabled = true,
             indentscope_color = "",
@@ -601,10 +596,6 @@ return {
           },
           fidget = true,
           hop = true,
-          indent_blankline = {
-            enabled = true,
-            colored_indent_levels = true,
-          },
           markdown = true,
           neotree = true,
           noice = true,
@@ -749,7 +740,7 @@ return {
   },
   {
     'lukas-reineke/indent-blankline.nvim',
-    enabled = not is_light_mode and not vim.g.vscode,
+    enabled = false,
     main = "ibl",
     opts = {
       scope = {
@@ -1018,7 +1009,7 @@ return {
     'folke/noice.nvim',
     event = "VeryLazy",
     enabled = not is_light_mode and not vim.g.vscode,
-    dependencies = { "nui.nvim", "nvim-notify" },
+    dependencies = { "nui.nvim" },
     config = function()
       require("noice").setup {
         presets = {
@@ -1059,8 +1050,7 @@ return {
           view_search = "mini",
         },
         notify = {
-          enabled = true,
-          view = "notify",
+          enabled = false,
         },
         throttle = 1000 / 30, -- how frequently does Noice need to check for ui updates? This has no effect when in blocking mode.
         lsp = {
