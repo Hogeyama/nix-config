@@ -259,19 +259,6 @@ return {
     },
   },
   {
-    "chrisgrieser/nvim-rip-substitute",
-    enabled = not is_light_mode and not vim.g.vscode,
-    cmd = "RipSubstitute",
-    keys = {
-      {
-        "<leader>fs",
-        function() require("rip-substitute").sub() end,
-        mode = { "n", "x" },
-        desc = "rip substitute",
-      },
-    },
-  },
-  {
     'stevearc/resession.nvim',
     enabled = not is_light_mode and not vim.g.vscode,
     dependencies = {
