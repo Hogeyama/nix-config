@@ -316,6 +316,9 @@ return {
     event = "VeryLazy",
     enabled = true,
     config = function()
+      require('mini.icons').setup()
+      -- nvim-web-devicons を mini.icons で肩代わりさせる (アイコン定義を一元化)
+      MiniIcons.mock_nvim_web_devicons()
       require('mini.ai').setup()
       require('mini.align').setup({
         mappings = {
