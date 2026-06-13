@@ -597,7 +597,6 @@ return {
           fidget = true,
           hop = true,
           markdown = true,
-          neotree = true,
           noice = true,
           dap = true,
           dap_ui = true,
@@ -1077,62 +1076,6 @@ return {
         },
       }
     end,
-  },
-  {
-    'nvim-neo-tree/neo-tree.nvim',
-    event = "VeryLazy",
-    enabled = not is_light_mode and not vim.g.vscode,
-    dependencies = {
-      "plenary.nvim",
-      "nvim-web-devicons",
-      "nui.nvim",
-    },
-    config = function()
-      require("neo-tree").setup({
-        sources = {
-          "filesystem",
-        },
-        source_selector = {
-          winbar = true,
-          statusline = false
-        },
-        window = {
-          mappings = {
-            ["z"] = {},
-            ["zl"] = "unfocus",
-          },
-        },
-        commands = {
-          unfocus = function(_)
-            vim.cmd [[wincmd l]]
-          end,
-        },
-        filesystem = {
-          bind_to_cwd = false,
-          filtered_items = {
-            hide_dotfiles = false,
-            hide_hidden = false,
-            never_show = {
-              ".git",
-            },
-          },
-          window = {
-            mappings = {
-              ["z"] = {},
-              ["zl"] = "unfocus",
-            },
-          },
-          commands = {
-            unfocus = function(_)
-              vim.cmd [[wincmd l]]
-            end,
-          },
-        },
-      })
-      vim.cmd [[
-        nnoremap <Leader>f :Neotree<CR>
-      ]]
-    end
   },
   {
     'stevearc/oil.nvim',
