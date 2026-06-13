@@ -1888,6 +1888,10 @@ return {
           local client = vim.lsp.get_client_by_id(ev.data.client_id)
           local bufnr = ev.buf
           vim.g.lsp_default_on_attach(client, bufnr)
+          -- inlay hints (0.10+)
+          if client and client:supports_method('textDocument/inlayHint') then
+            vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+          end
           if use_native_cmp and client and client:supports_method('textDocument/completion') then
             vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = true })
           end
