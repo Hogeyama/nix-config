@@ -54,6 +54,26 @@ hl.config({
   },
   master = {
     new_status = "master",
+    orientation = "left", -- master を左ペイン、slave を右ペインに
+  },
+  -- 右ペインの slave を group 化するとタブ/スタックのように 1 枚ずつ切替できる
+  group = {
+    focus_removed_window = true,
+    drag_into_group = true, -- ウィンドウをグループ(のバー)へドラッグして放り込めるように
+    groupbar = {
+      enabled = true,
+      stacked = true, -- タブを縦積み表示
+      -- gradients=false だと col.* はインジケータ線のみで背景は透明＝文字が読めない。
+      -- true にするとタブ背景が col.* で塗りつぶされる。
+      gradients = true,
+      col = {
+        active = "rgba(12283aff)", -- アクティブタブ背景
+        inactive = "rgba(222222ff)", -- 非アクティブタブ背景
+      },
+      text_color = "rgba(ffffffff)",
+      text_color_inactive = "rgba(bbbbbbff)",
+      font_size = 12,
+    },
   },
   misc = {
     force_default_wallpaper = -1,
@@ -138,6 +158,17 @@ hl.bind(mainMod .. " + V", hl.dsp.window.float())
 -- SUPER+F: 元設定で makoctl invoke と fullscreen が二重定義され後者が有効だった
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen(1))
 
+-- Group (右ペインをタブ化スタックとして使う)
+-- 既存窓をグループへ入れるキーボード関数は新lua API(0.55.2)に無い。
+-- 取り込みはマウスでタブバーへD&D(group.drag_into_group=true)、
+-- もしくはグループにフォーカス中に新規窓を開くと自動参加する。
+hl.bind(mainMod .. " + U", hl.dsp.group.toggle()) -- 単独グループ作成 / グループ全体を解除
+hl.bind(mainMod .. " + Tab", hl.dsp.group.next()) -- グループ内タブ切替（次）
+hl.bind(mainMod .. " + SHIFT + Tab", hl.dsp.group.prev()) -- グループ内タブ切替（前）
+-- move_window はグループ内でのタブ位置の入れ替え専用（要: 自身がグループ内）
+hl.bind(mainMod .. " + CTRL + H", hl.dsp.group.move_window({ direction = "left" })) -- タブを前へ
+hl.bind(mainMod .. " + CTRL + L", hl.dsp.group.move_window({ direction = "right" })) -- タブを後へ
+
 -- Switch workspaces with mainMod + [0-9]
 for i = 1, 9 do
   hl.bind(mainMod .. " + " .. i, hl.dsp.focus({ workspace = tostring(i) }))
@@ -155,8 +186,9 @@ hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(mainMod .. " + mouse_up", hl.dsp.focus({ workspace = "e-1" }))
 
 -- Move/resize windows with mainMod + LMB/RMB and dragging
-hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(), { drag = true })
-hl.bind(mainMod .. " + mouse:273", hl.dsp.window.drag({ mode = "resize" }), { drag = true })
+-- マウスドラッグbindは { mouse = true }。{ drag = true } はリリースbindになり機能しない。
+hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
+hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 -- Laptop multimedia keys for volume and LCD brightness (locked + repeat)
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"),
