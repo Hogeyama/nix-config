@@ -1733,8 +1733,10 @@ return {
           prefix = "",
         },
       })
-      vim.keymap.set('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', { noremap = true, silent = true })
-      vim.keymap.set('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', { noremap = true, silent = true })
+      vim.keymap.set('n', '[d', function() vim.diagnostic.jump({ count = -1, float = true }) end,
+        { noremap = true, silent = true })
+      vim.keymap.set('n', ']d', function() vim.diagnostic.jump({ count = 1, float = true }) end,
+        { noremap = true, silent = true })
 
       -- [[code lens]]
       -- NOP
