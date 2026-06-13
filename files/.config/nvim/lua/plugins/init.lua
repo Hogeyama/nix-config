@@ -430,7 +430,6 @@ return {
       }
     },
     keys = {
-      { "<leader>f",  function() Snacks.explorer() end,        mode = { 'n' } },
       { "<leader>go", function() Snacks.gitbrowse.open() end,  mode = { 'n' } },
       { "<leader>bd", function() Snacks.bufdelete.other() end, mode = { 'n' } },
       { "<leader>bD", function() Snacks.bufdelete.all() end,   mode = { 'n' } },
@@ -1106,6 +1105,9 @@ return {
         },
 
       },
+    },
+    keys = {
+      { "<leader>f", function() require("oil").toggle_float() end, mode = { 'n' }, desc = "Oil (float)" },
     },
     dependencies = { "nvim-tree/nvim-web-devicons" },
   },
