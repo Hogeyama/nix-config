@@ -424,40 +424,32 @@ return {
   },
   {
     'nvim-treesitter/nvim-treesitter',
+    branch = 'main',
+    build = ':TSUpdate',
     event = "VeryLazy",
     enabled = true and not vim.g.vscode,
     config = function()
-      require 'nvim-treesitter.configs'.setup {
-        ensure_installed = {},
-        sync_install = false,
-        auto_install = false,
-        highlight = {
-          enable = true,
-          disable = function(_, buf)
-            local max_filesize = 100 * 1024 -- 100 KB
-            local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-            if ok and stats and stats.size > max_filesize then
-              return true
-            end
-          end,
-          additional_vim_regex_highlighting = false,
-        },
-        textsubjects = {
-          enable = true,
-          keymaps = {
-            ['.'] = 'textsubjects-smart',
-          },
-        },
-        incremental_selection = {
-          enable = true,
-          keymaps = {
-            init_selection = "b",
-            node_incremental = "b",
-            node_decremental = "v",
-            scope_incremental = false,
-          },
-        },
-      }
+      require('nvim-treesitter').setup()
+
+      -- FileType ごとに highlight を開始 (大きいファイルは無効化)
+      local function ts_start(buf)
+        local max_filesize = 100 * 1024 -- 100 KB
+        local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+        if ok and stats and stats.size > max_filesize then
+          return
+        end
+        pcall(vim.treesitter.start, buf)
+      end
+      vim.api.nvim_create_autocmd('FileType', {
+        callback = function(args) ts_start(args.buf) end,
+      })
+      -- VeryLazy ロード時点で既に開いているバッファにも適用
+      for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+        if vim.api.nvim_buf_is_loaded(buf) then
+          ts_start(buf)
+        end
+      end
+
       require 'treesitter-context'.setup {
         enable = true,
         max_lines = 0,            -- How many lines the window should span. Values <= 0 mean no limit.
@@ -472,21 +464,8 @@ return {
         zindex = 20,     -- The Z-index of the context window
         on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
       }
-
-      -- configure nushell
-      local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
-      parser_config.nu = {
-        install_info = {
-          url = "https://github.com/nushell/tree-sitter-nu",
-          files = { "src/parser.c" },
-          branch = "main",
-        },
-        filetype = "nu",
-      }
     end,
     dependencies = {
-      { 'nvim-treesitter/playground' },
-      { 'nvim-treesitter/nvim-treesitter-textobjects' },
       { 'nvim-treesitter/nvim-treesitter-context' },
       {
         'JoosepAlviste/nvim-ts-context-commentstring',
