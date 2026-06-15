@@ -193,8 +193,6 @@ in
       udev-gothic.nerdfont
       noto-fonts-color-emoji
       rounded-mgenplus
-      ### my packages
-      my-fzf-wrapper
       ### unstable
       unstable.dasel
       nixDaemonS3CredentialsBin
