@@ -67,7 +67,7 @@ hl.config({
       -- true にするとタブ背景が col.* で塗りつぶされる。
       gradients = true,
       col = {
-        active = "rgba(12283aff)", -- アクティブタブ背景
+        active = "rgba(12283aff)",   -- アクティブタブ背景
         inactive = "rgba(222222ff)", -- 非アクティブタブ背景
       },
       text_color = "rgba(ffffffff)",
@@ -141,7 +141,6 @@ hl.bind(mainMod .. " + SPACE", hl.dsp.layout("nextlayout"))
 hl.bind(mainMod .. " + RETURN", hl.dsp.focus({ monitor = "+1" }))
 hl.bind(mainMod .. " + S", hl.dsp.workspace.swap_monitors({ monitor1 = "current", monitor2 = "+1" }))
 hl.bind(mainMod .. " + D", hl.dsp.exec_cmd("makoctl dismiss"))
--- SHIFT+R: 元設定で kanshictl reload と hyprctl reload が二重定義され後者が有効だった
 hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("hyprctl reload"))
 hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd("hyprshot -m region"))
 hl.bind(mainMod .. " + H", hl.dsp.focus({ direction = "left" }))
@@ -162,11 +161,11 @@ hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen(1))
 -- 既存窓をグループへ入れるキーボード関数は新lua API(0.55.2)に無い。
 -- 取り込みはマウスでタブバーへD&D(group.drag_into_group=true)、
 -- もしくはグループにフォーカス中に新規窓を開くと自動参加する。
-hl.bind(mainMod .. " + U", hl.dsp.group.toggle()) -- 単独グループ作成 / グループ全体を解除
-hl.bind(mainMod .. " + Tab", hl.dsp.group.next()) -- グループ内タブ切替（次）
-hl.bind(mainMod .. " + SHIFT + Tab", hl.dsp.group.prev()) -- グループ内タブ切替（前）
+hl.bind(mainMod .. " + U", hl.dsp.group.toggle())                                    -- 単独グループ作成 / グループ全体を解除
+hl.bind(mainMod .. " + Tab", hl.dsp.group.next())                                    -- グループ内タブ切替（次）
+hl.bind(mainMod .. " + SHIFT + Tab", hl.dsp.group.prev())                            -- グループ内タブ切替（前）
 -- move_window はグループ内でのタブ位置の入れ替え専用（要: 自身がグループ内）
-hl.bind(mainMod .. " + CTRL + H", hl.dsp.group.move_window({ direction = "left" })) -- タブを前へ
+hl.bind(mainMod .. " + CTRL + H", hl.dsp.group.move_window({ direction = "left" }))  -- タブを前へ
 hl.bind(mainMod .. " + CTRL + L", hl.dsp.group.move_window({ direction = "right" })) -- タブを後へ
 
 -- Switch workspaces with mainMod + [0-9]
