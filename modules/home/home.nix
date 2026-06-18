@@ -408,6 +408,8 @@ in
         set-option -ga terminal-overrides ",xterm-256color:Tc"
         # image.nvim とか claude とか
         set-option -g allow-passthrough on
+        # OSC 52 clipboard (claude code が使うので追加)
+        set-option -g set-clipboard on
         # status bar on top
         set-option -g status-position top
         # no mouse
