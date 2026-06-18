@@ -66,7 +66,7 @@ language =
 # this within config files if you want to clear previously set values in
 # configuration files or on the CLI if you want to clear values set on the
 # CLI.
-font-family = UDEV Gothic NFLG
+font-family = 
 
 font-family-bold = 
 font-family-italic = 
@@ -160,7 +160,7 @@ font-feature =
 # On Linux with GTK, font size is scaled according to both display-wide and
 # text-specific scaling factors, which are often managed by your desktop
 # environment (e.g. the GNOME display scale and large text settings).
-font-size = 14
+font-size = 12
 
 # A repeatable configuration to set one or more font variations values for
 # a variable font. A variable font is a single font, usually with a filename
@@ -492,7 +492,7 @@ freetype-load-flags = hinting,no-force-autohint,no-monochrome,autohint,light
 # be fixed in a future update:
 # 
 #   - macOS: titlebar tabs style is not updated when switching themes.
-theme = Tomorrow Night
+theme = 
 
 # Background color for the window.
 # Specified as either hex (`#RRGGBB` or `RRGGBB`) or a named X11 color.
@@ -2573,7 +2573,7 @@ focus-follows-mouse = false
 #   * `allow`
 #   * `deny`
 # 
-clipboard-read = allow
+clipboard-read = ask
 
 clipboard-write = allow
 # Trims trailing whitespace on data that is copied to the clipboard. This does
@@ -2637,7 +2637,7 @@ copy-on-select = true
 #   * `ignore` - Do nothing, ignore the right-click.
 # 
 # The default value is `context-menu`.
-right-click-action = copy
+right-click-action = context-menu
 
 # The time in milliseconds between clicks to consider a click a repeat
 # (double, triple, etc.) or an entirely new single click. A value of zero will
@@ -3042,7 +3042,7 @@ shell-integration = detect
 # when both `ssh-env` and `ssh-terminfo` are enabled, Ghostty will install its
 # terminfo on remote hosts and use `xterm-ghostty` as TERM, falling back to
 # `xterm-256color` with environment variables if terminfo installation fails.
-shell-integration-features = no-cursor,no-sudo,title,no-ssh-env,no-ssh-terminfo,path
+shell-integration-features = cursor,no-sudo,title,no-ssh-env,no-ssh-terminfo,path
 
 # Custom entries into the command palette.
 # 
