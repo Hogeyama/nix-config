@@ -2,6 +2,7 @@ local is_light_mode = vim.env.NVIM_LIGHT_MODE == "1"
 -- NVIM_NATIVE_CMP=1 で blink.cmp の代わりに Neovim 0.12+ のネイティブ補完
 -- ('autocomplete' + vim.lsp.completion) を試す
 local use_native_cmp = vim.env.NVIM_NATIVE_CMP == "1"
+local use_copilot = vim.env.NVIM_COPILOT == "1"
 
 return {
   { 'nvim-lua/plenary.nvim' },
@@ -1121,7 +1122,7 @@ return {
     -- copilot.lua は blink モード専用 (blink-copilot のメニューソースの backend)。
     -- native モードでは copilot-language-server + vim.lsp.inline_completion を使うので無効化。
     'zbirenbaum/copilot.lua',
-    enabled = not vim.g.vscode and not use_native_cmp,
+    enabled = not vim.g.vscode and not use_native_cmp and use_copilot,
     cmd = "Copilot",
     event = "InsertEnter",
     opts = {
