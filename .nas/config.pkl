@@ -1,0 +1,13 @@
+amends "modulepath:/global.pkl"
+
+profiles {
+  for (name, _ in super.profiles) {
+    [name] {
+      extraMounts = new Listing {
+        for (_m in super.extraMounts.toList().filter((m) -> m.src != "~/nix-config")) {
+          _m
+        }
+      }
+    }
+  }
+}
