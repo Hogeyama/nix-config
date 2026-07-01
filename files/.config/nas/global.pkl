@@ -31,93 +31,107 @@ local commonEnv: Listing<EnvConfig> = new {
   }
 }
 
+local function allow(h: String) = new ReviewRule { host = h; action = "allow" }
+local function deny(h: String) = new ReviewRule { host = h; action = "deny" }
+
 local commonNetwork: NetworkConfig = new {
-  allowlist = new Listing {
+  reviewRules {
+    // --- deny (telemetry / 自動アクセス) ---
+    // Claude Codeがなんか送ってるやつ
+    deny("http-intake.logs.us5.datadoghq.com")
+    // Chrome / Chromiumが勝手にアクセスするやつ
+    deny("www.google.com")
+    deny("mtalk.google.com")
+    deny("clients2.google.com")
+    deny("accounts.google.com")
+    deny("android.clients.google.com")
+    // Copilot CLIがなんか送ってるやつ
+    deny("copilot-telemetry.githubusercontent.com")
+
+    // --- allow ---
     // Anthropic / Claude
-    "api.anthropic.com"
-    "statsig.anthropic.com"
-    "platform.claude.com"
-    "mcp-proxy.anthropic.com"
-    "code.claude.com"
-    "claude.ai"
-    "downloads.claude.ai"
+    for (h in List(
+      "api.anthropic.com",
+      "statsig.anthropic.com",
+      "platform.claude.com",
+      "mcp-proxy.anthropic.com",
+      "code.claude.com",
+      "claude.ai",
+      "downloads.claude.ai"
+    )) { allow(h) }
 
     // OpenAI / ChatGPT
-    "api.openai.com"
-    "*.api.openai.com"
-    "ab.chatgpt.com"
-    "chatgpt.com"
-    "developers.openai.com"
+    for (h in List(
+      "api.openai.com",
+      "*.api.openai.com",
+      "ab.chatgpt.com",
+      "chatgpt.com",
+      "developers.openai.com"
+    )) { allow(h) }
 
     // Google
-    "storage.googleapis.com"
+    allow("storage.googleapis.com")
 
     // GitHub
-    "api.github.com"
-    "release-assets.githubusercontent.com"
-    "codeload.github.com"
-    // ユーザーのやつ
-    "github.com"
-    "gist.github.com"
-    "raw.githubusercontent.com"
+    for (h in List(
+      "api.github.com",
+      "release-assets.githubusercontent.com",
+      "codeload.github.com",
+      "github.com",
+      "gist.github.com",
+      "raw.githubusercontent.com"
+    )) { allow(h) }
     // Copilot
-    "api.githubcopilot.com"
-    "telemetry.individual.githubcopilot.com"
-    "api.individual.githubcopilot.com"
-    "telemetry.business.githubcopilot.com"
-    "api.business.githubcopilot.com"
+    for (h in List(
+      "api.githubcopilot.com",
+      "telemetry.individual.githubcopilot.com",
+      "api.individual.githubcopilot.com",
+      "telemetry.business.githubcopilot.com",
+      "api.business.githubcopilot.com"
+    )) { allow(h) }
     // 画像系
-    "camo.githubusercontent.com"
-    "avatars.githubusercontent.com"
+    allow("camo.githubusercontent.com")
+    allow("avatars.githubusercontent.com")
 
     // Docker Hub
-    "registry-1.docker.io"
-    "auth.docker.io"
-    "index.docker.io"
-    "hub.docker.com"
-    "www.docker.com"
-    "production.cloudflare.docker.com"
-    "download.docker.com"
+    for (h in List(
+      "registry-1.docker.io",
+      "auth.docker.io",
+      "index.docker.io",
+      "hub.docker.com",
+      "www.docker.com",
+      "production.cloudflare.docker.com",
+      "download.docker.com"
+    )) { allow(h) }
 
     // Container Registries
-    "*.gcr.io"                    // Google Container Registry
-    "ghcr.io"                     // GitHub Container Registry
-    "mcr.microsoft.com"           // Microsoft Container Registry
-    "*.data.mcr.microsoft.com"
-    "public.ecr.aws"              // AWS ECR
+    allow("*.gcr.io")
+    allow("ghcr.io")
+    allow("mcr.microsoft.com")
+    allow("*.data.mcr.microsoft.com")
+    allow("public.ecr.aws")
 
     // Package Registries
     // nix
-    "cache.iog.io"
-    "cache.nixos.org"
-    "channels.nixos.org"
-    "cache.iog.io"
+    for (h in List(
+      "cache.iog.io",
+      "cache.nixos.org",
+      "channels.nixos.org"
+    )) { allow(h) }
     // npm
-    "registry.npmjs.org"
+    allow("registry.npmjs.org")
     // deno
-    "jsr.io"                      // JSR (Deno)
-    "deno.land"                   // Deno
+    allow("jsr.io")
+    allow("deno.land")
     // Rust
-    "index.crates.io"
-    "static.crates.io"
+    allow("index.crates.io")
+    allow("static.crates.io")
 
     // IETF Datatracker
-    "datatracker.ietf.org"
-  }
-  prompt {
-    enable = true
-    denylist = new Listing {
-      // Claude Codeがなんか送ってるやつ
-      "http-intake.logs.us5.datadoghq.com"
-      // Chrome / Chromiumが勝手にアクセスするやつ
-      "www.google.com"
-      "mtalk.google.com"
-      "clients2.google.com"
-      "accounts.google.com"
-      "android.clients.google.com"
-      // Copilot CLIがなんか送ってるやつ
-      "copilot-telemetry.githubusercontent.com"
-    }
+    allow("datatracker.ietf.org")
+
+    // catch-all: unmatched → pending (replaces prompt.enable = true)
+    new { action = "review" }
   }
   proxy {
     forwardPorts = new Listing {
