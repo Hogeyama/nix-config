@@ -7,6 +7,8 @@ model=$(echo "$input" | jq -r '.model.display_name')
 effort=$(echo "$input" | jq -r '.effort.level // empty')
 used=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
 cost=$(echo "$input" | jq -r '.cost.total_cost_usd // empty')
+lines_add=$(echo "$input" | jq -r '.cost.total_lines_added // empty')
+lines_del=$(echo "$input" | jq -r '.cost.total_lines_removed // empty')
 five_hour=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty')
 five_reset=$(echo "$input" | jq -r '.rate_limits.five_hour.resets_at // empty')
 seven_day=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty')
@@ -67,9 +69,14 @@ parts=()
 display_dir=$(echo "$current_dir" | sed "s|^$HOME|~|")
 parts+=("${BLUE}󰉋 ${display_dir}${RST}")
 
-# --- git branch ---
+# --- git branch + unstaged diff ---
 if [ -n "$branch" ]; then
-  parts+=("${PURPLE}󰘬 ${branch}${RST}")
+  branch_text="󰘬 ${branch}"
+  us_stat=$(git -C "$current_dir" --no-optional-locks diff --numstat 2>/dev/null | awk '{a+=$1;d+=$2}END{if(NR)printf "+%d/-%d",a,d}')
+  if [ -n "$us_stat" ]; then
+    branch_text+=" ${GREEN}${us_stat%%/*}${RST}${PURPLE}/${RST}${RED}${us_stat#*/}${RST}"
+  fi
+  parts+=("${PURPLE}${branch_text}${RST}")
 fi
 
 # --- model ---
@@ -86,10 +93,14 @@ if [ -n "$used" ]; then
   parts+=("$(usage_color "$used_fmt")󰍛 ${used_fmt}%${RST}")
 fi
 
-# --- session cost ---
+# --- session cost + session lines changed ---
 if [ -n "$cost" ]; then
   cost_fmt=$(awk -v c="$cost" 'BEGIN{printf "%.2f", c}')
-  parts+=("${GOLD}\$${cost_fmt}${RST}")
+  cost_text="\$${cost_fmt}"
+  if [ -n "$lines_add" ] || [ -n "$lines_del" ]; then
+    cost_text+=" ${GREEN}+${lines_add:-0}${RST}${GOLD}/${RST}${RED}-${lines_del:-0}${RST}"
+  fi
+  parts+=("${GOLD}${cost_text}${RST}")
 fi
 
 # --- rate limit: 5h window (+ reset countdown) ---
