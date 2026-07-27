@@ -3,6 +3,16 @@
 ----------------
 hl.monitor({ output = ",", mode = "preferred", position = "auto", scale = "auto" })
 
+-- nwg-displays (0.4.3+) が書き出す monitors.lua を取り込む。
+-- 中身は hl.monitor({...}) の羅列なので dofile するだけでよい。
+-- 未生成のうちは上の catch-all のままになる。
+local monitors_lua = os.getenv("HOME") .. "/.config/hypr/monitors.lua"
+local fh = io.open(monitors_lua, "r")
+if fh then
+  fh:close()
+  dofile(monitors_lua)
+end
+
 -------------------
 --- MY PROGRAMS ---
 -------------------
