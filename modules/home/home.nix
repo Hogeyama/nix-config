@@ -66,6 +66,29 @@ let
       fi
     '';
 
+  # GUIセッションではqt、sshではtty、とpinentryを出し分ける。
+  pinentryAutoBin =
+    pkgs.writeShellScriptBin "pinentry-auto" ''
+      # 候補をstore pathとして固定しておく。こうしておくとGCで消えないので、
+      # 設定ファイル側からrebuildなしで実装を差し替えられる。
+      PINENTRY_QT=${pkgs.pinentry-qt}/bin/pinentry-qt
+      PINENTRY_CURSES=${pkgs.pinentry-curses}/bin/pinentry-curses
+      PINENTRY_TTY=${pkgs.pinentry-tty}/bin/pinentry-tty
+
+      GUI_PINENTRY=$PINENTRY_QT
+      TTY_PINENTRY=$PINENTRY_TTY
+
+      conf="''${XDG_CONFIG_HOME:-$HOME/.config}/pinentry-auto/config"
+      # shellcheck source=/dev/null
+      [ -r "$conf" ] && . "$conf"
+
+      if [ -n "''${DISPLAY:-}" ]; then
+        exec "$GUI_PINENTRY" "$@"
+      else
+        exec "$TTY_PINENTRY" "$@"
+      fi
+    '';
+
 in
 {
   home = {
@@ -203,7 +226,7 @@ in
           # 100h
           default-cache-ttl 360000
           max-cache-ttl     360000
-          pinentry-program ${pkgs.pinentry-tty}/bin/pinentry-tty
+          pinentry-program ${pinentryAutoBin}/bin/pinentry-auto
         '';
       };
       ".config/waybar/macchiato.css".source =

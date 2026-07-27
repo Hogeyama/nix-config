@@ -1,0 +1,13 @@
+# pinentry-auto の設定。シェルスクリプトとして source される。
+# out-of-store symlink なので、編集すれば次のプロンプトから効く。switch は不要。
+#
+# 使える変数:
+#   GUI_PINENTRY  DISPLAY があるとき(= Hyprland セッション)に起動するもの
+#   TTY_PINENTRY  DISPLAY が無いとき(= ssh)に起動するもの
+#
+# 候補は以下があらかじめ用意してある(nix の store path に解決済み):
+#   $PINENTRY_QT      Qt6 のダイアログ。複数行の説明文をそのまま表示できる
+#   $PINENTRY_TTY     端末に素朴に出す
+
+GUI_PINENTRY=$PINENTRY_QT
+TTY_PINENTRY=$PINENTRY_TTY
