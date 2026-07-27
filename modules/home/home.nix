@@ -212,6 +212,28 @@ in
           url = "https://github.com/catppuccin/waybar/releases/download/v1.1/macchiato.css";
           sha256 = "sha256:1g7i3lrzf9dqys0p983wrmn06zqq4z3q8b8lh1pdp035gxww1ki8";
         };
+      # kanshiが稼働中はwlr-output-managementが構成を握り、
+      # hl.monitor(= nwg-displaysが書くmonitors.lua)による位置指定が一切通らなくなる。
+      # nwg-displaysで調整したいときに止められるよう、drunから叩けるようにしておく。
+      # xdg.desktopEntriesはxdg.enableにgateされていて今は無効なので、home.fileで直接置く。
+      ".local/share/applications/kanshi-stop.desktop".text = ''
+        [Desktop Entry]
+        Type=Application
+        Name=kanshi: stop
+        Comment=kanshiを止めてnwg-displays/monitors.luaを効くようにする
+        Exec=systemctl --user stop kanshi.service
+        Icon=video-display
+        Terminal=false
+      '';
+      ".local/share/applications/kanshi-start.desktop".text = ''
+        [Desktop Entry]
+        Type=Application
+        Name=kanshi: start
+        Comment=kanshiを再開してprofileを適用する
+        Exec=systemctl --user start kanshi.service
+        Icon=video-display
+        Terminal=false
+      '';
     };
     sessionVariables = {
       EDITOR = "nvimw";
