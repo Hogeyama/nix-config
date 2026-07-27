@@ -1,25 +1,18 @@
-{ pkgs, env, ... }:
+{ pkgs, ... }:
 {
-  services.xserver = {
+  services.greetd = {
     enable = true;
-    xkb.layout = "jp";
-    desktopManager = {
-      xterm.enable = false;
-      xfce = {
-        enable = true;
-        noDesktop = true;
-        enableXfwm = false;
-      };
+    settings.default_session = {
+      command = builtins.concatStringsSep " " [
+        "${pkgs.greetd.tuigreet}/bin/tuigreet"
+        "--time"
+        "--remember"
+        "--remember-session"
+        "--sessions /run/current-system/sw/share/wayland-sessions"
+      ];
+      user = "greeter";
     };
   };
-
-  services.desktopManager.plasma6.enable = true;
-  services.displayManager.sddm.enable = true;
-
-  # Remember display layout
-  services.autorandr.enable = true;
-
-  services.displayManager.defaultSession = "hyprland-uwsm";
 
   programs.hyprland = {
     enable = true;

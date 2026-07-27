@@ -117,7 +117,6 @@ in
       jq
       libsecret
       just
-      kdePackages.krdc
       kitty
       kooha
       lazygit
