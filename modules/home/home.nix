@@ -93,6 +93,13 @@ in
 {
   home = {
     stateVersion = "22.11";
+    # 収録sizeは24/30/36/48。
+    pointerCursor = {
+      package = pkgs.graphite-cursors;
+      name = "graphite-dark";
+      size = 48;
+      hyprcursor.enable = true;
+    };
     packages = with pkgs; [
       acme-sh
       autorandr

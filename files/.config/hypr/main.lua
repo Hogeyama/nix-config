@@ -22,8 +22,6 @@ local menu = "wofi --show drun"
 -----------------------------
 --- ENVIRONMENT VARIABLES ---
 -----------------------------
-hl.env("XCURSOR_SIZE", "24")
-hl.env("HYPRCURSOR_SIZE", "24")
 
 ---------------------
 --- LOOK AND FEEL ---
