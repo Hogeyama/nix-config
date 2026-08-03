@@ -82,7 +82,24 @@ let
       # shellcheck source=/dev/null
       [ -r "$conf" ] && . "$conf"
 
+      # GUI/tty判定はDISPLAYだけで行う。gpgはクライアントごとにAssuanの
+      # OPTION displayを送るのでlocalとsshを正しく区別できるが、後述の
+      # WAYLAND_DISPLAYはsystemd user manager由来でssh時にも引けてしまうため、
+      # 判定に混ぜるとsshからローカル画面にダイアログを出すことになる。
       if [ -n "''${DISPLAY:-}" ]; then
+        # gpg-agentがWAYLAND_DISPLAYを持たない場合に補う。gpg-agentはsocket
+        # activationでHyprlandセッションより先に起動しうるが、既に起動済みの
+        # serviceには後からの環境が反映されない。そしてAssuanで渡るのはDISPLAYだけで
+        # WAYLAND_DISPLAYはプロトコルに存在しない。結果Qtがwaylandに乗れず
+        # xcb側で約23秒スタックする(補うと61msになることを実測)。
+        if [ -z "''${WAYLAND_DISPLAY:-}" ] && [ -n "''${XDG_RUNTIME_DIR:-}" ]; then
+          wd=$(${pkgs.systemd}/bin/systemctl --user show-environment 2>/dev/null |
+            ${pkgs.gnused}/bin/sed -n 's/^WAYLAND_DISPLAY=//p')
+          case "$wd" in
+            /*) [ -S "$wd" ] && export WAYLAND_DISPLAY="$wd" ;;
+            ?*) [ -S "$XDG_RUNTIME_DIR/$wd" ] && export WAYLAND_DISPLAY="$wd" ;;
+          esac
+        fi
         exec "$GUI_PINENTRY" "$@"
       else
         exec "$TTY_PINENTRY" "$@"
@@ -234,6 +251,11 @@ in
           default-cache-ttl 360000
           max-cache-ttl     360000
           pinentry-program ${pinentryAutoBin}/bin/pinentry-auto
+          # pinentryにsecret service(libsecret)経由の外部キャッシュを使わせない。
+          # org.freedesktop.secretsを握っているのはpass-secret-serviceで、これはstoreを
+          # 読むのにgpgを呼ぶ。つまりpinentryが問い合わせると循環し、DBusのタイムアウト
+          # 25秒を待たされる(pinentry-tty/cursesがlibsecretをリンクしているため主にssh側)。
+          no-allow-external-cache
         '';
       };
       ".config/waybar/macchiato.css".source =
