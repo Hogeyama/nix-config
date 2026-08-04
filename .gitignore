@@ -1,4 +1,5 @@
 .direnv
+.worktrees/
 result
 dist-newstyle/
 /home.nix
