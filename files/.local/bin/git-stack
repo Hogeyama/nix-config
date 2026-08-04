@@ -1,0 +1,433 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+    cat <<'EOF'
+NAME
+       git-stack - Edit a branch in a stack
+
+SYNOPSIS
+       git stack edit <local-branch>
+       git stack done
+       git stack list
+       git stack push-all
+EOF
+}
+
+die() {
+    echo "git stack: $*" >&2
+    exit 1
+}
+
+state_dir=
+target_branch=
+old_target_oid=
+return_branch=
+session_id=
+phase=
+moved=()
+
+init_state_path() {
+    state_dir=$(git rev-parse --git-path stack-edit)
+}
+
+clear_state() {
+    [[ -d $state_dir ]] || return 0
+    rm -f -- \
+        "$state_dir/target-branch" \
+        "$state_dir/old-target-oid" \
+        "$state_dir/return-branch" \
+        "$state_dir/session-id" \
+        "$state_dir/phase" \
+        "$state_dir/pre-oids"
+    rmdir -- "$state_dir"
+}
+
+rebase_in_progress() {
+    [[ -d $(git rev-parse --git-path rebase-merge) ||
+        -d $(git rev-parse --git-path rebase-apply) ]]
+}
+
+new_session_id() {
+    local target=$1
+    local old_oid=$2
+    local return=$3
+    printf '%s\0%s\0%s\0%s\0%s\n' \
+        "$target" "$old_oid" "$return" "$$" "$RANDOM" |
+        git hash-object --stdin
+}
+
+rebase_merge_dir() {
+    git rev-parse --git-path rebase-merge
+}
+
+mark_rebase_session() {
+    local directory
+    directory=$(rebase_merge_dir)
+    [[ -d $directory ]] || return 1
+    printf '%s\n' "$session_id" >"$directory/git-stack-session"
+}
+
+rebase_belongs_to_session() {
+    local directory marker
+    directory=$(rebase_merge_dir)
+    marker=$directory/git-stack-session
+    [[ -f $marker ]] && [[ $(<"$marker") == "$session_id" ]]
+}
+
+load_state() {
+    local file
+    [[ -d $state_dir ]] || die "no stack edit is active"
+    for file in target-branch old-target-oid return-branch session-id phase pre-oids; do
+        [[ -f $state_dir/$file ]] ||
+            die "stack edit state is incomplete: $state_dir"
+    done
+
+    target_branch=$(<"$state_dir/target-branch")
+    old_target_oid=$(<"$state_dir/old-target-oid")
+    return_branch=$(<"$state_dir/return-branch")
+    session_id=$(<"$state_dir/session-id")
+    phase=$(<"$state_dir/phase")
+    [[ $phase == edit || $phase == rebase ]] ||
+        die "unknown stack edit phase: $phase"
+    git cat-file -e "$old_target_oid^{commit}" 2>/dev/null ||
+        die "old target commit is unavailable: $old_target_oid"
+}
+
+refresh_state() {
+    local subcommand=$1
+    local current=
+    [[ -d $state_dir ]] || return 0
+    load_state
+
+    case $phase in
+        edit)
+            current=$(current_branch || :)
+            if [[ $current != "$target_branch" ]]; then
+                clear_state
+            fi
+            ;;
+        rebase)
+            if ! rebase_in_progress; then
+                clear_state
+            elif ! rebase_belongs_to_session; then
+                clear_state
+                if [[ $subcommand == "done" ]]; then
+                    die "active rebase does not belong to this stack edit"
+                fi
+            fi
+            ;;
+    esac
+}
+
+require_clean_worktree() {
+    [[ -z $(git status --porcelain) ]] ||
+        die "worktree is not clean"
+}
+
+write_edit_state() {
+    local target=$1
+    local old_target_oid=$2
+    local return_branch=$3
+    local new_session=$4
+    local branch
+
+    mkdir "$state_dir"
+    printf '%s\n' "$target" >"$state_dir/target-branch"
+    printf '%s\n' "$old_target_oid" >"$state_dir/old-target-oid"
+    printf '%s\n' "$return_branch" >"$state_dir/return-branch"
+    printf '%s\n' "$new_session" >"$state_dir/session-id"
+    printf '%s\n' edit >"$state_dir/phase"
+    {
+        while IFS= read -r branch; do
+            printf '%s\t%s\n' "$(git rev-parse "refs/heads/$branch")" "$branch"
+        done < <(stack_branches "$return_branch")
+        printf '%s\t%s\n' \
+            "$(git rev-parse "refs/heads/$return_branch")" "$return_branch"
+    } >"$state_dir/pre-oids"
+}
+
+require_worktree() {
+    git rev-parse --is-inside-work-tree >/dev/null 2>&1 ||
+        die "not inside a Git worktree"
+}
+
+current_branch() {
+    git symbolic-ref --quiet --short HEAD
+}
+
+local_branch_exists() {
+    git show-ref --verify --quiet "refs/heads/$1"
+}
+
+select_base() {
+    local current=$1
+    local current_ref=refs/heads/$current
+    local candidate candidate_ref distance
+    local best=
+    local best_distance=
+    local -a candidates=()
+
+    mapfile -t candidates < <(git config --get-all stack.baseBranch || :)
+    if ((${#candidates[@]} == 0)); then
+        candidates=(main master)
+    fi
+
+    for candidate in "${candidates[@]}"; do
+        candidate_ref=refs/heads/$candidate
+        local_branch_exists "$candidate" || continue
+        git merge-base --is-ancestor "$candidate_ref" "$current_ref" || continue
+        distance=$(git rev-list --ancestry-path --count "$candidate_ref..$current_ref")
+        if [[ -z $best_distance ]] || ((distance < best_distance)); then
+            best=$candidate
+            best_distance=$distance
+        fi
+    done
+
+    [[ -n $best ]] ||
+        die "no base branch applies; configure one with: git config --add stack.baseBranch <branch>"
+    printf '%s\n' "$best"
+}
+
+stack_branches() {
+    local current=$1
+    local base current_oid oid
+    base=$(select_base "$current")
+    current_oid=$(git rev-parse "refs/heads/$current")
+
+    while IFS= read -r oid; do
+        [[ $oid == "$current_oid" ]] && continue
+        git for-each-ref \
+            --points-at="$oid" \
+            --sort=refname \
+            --format='%(refname:short)' \
+            refs/heads
+    done < <(
+        git rev-list \
+            --topo-order \
+            --reverse \
+            --ancestry-path \
+            "refs/heads/$base..refs/heads/$current"
+    )
+}
+
+command_list() {
+    local current
+    current=$(current_branch) || die "detached HEAD is not a stack branch"
+    stack_branches "$current"
+}
+
+command_edit() {
+    local target=$1
+    local current old_target_oid candidate
+    local eligible=false
+
+    [[ ! -d $state_dir ]] ||
+        die "another stack edit is already active"
+    require_clean_worktree
+    current=$(current_branch) || die "detached HEAD cannot start a stack edit"
+    local_branch_exists "$target" ||
+        die "local branch does not exist: $target"
+    [[ $target != "$current" ]] ||
+        die "cannot edit the current branch: $target"
+
+    while IFS= read -r candidate; do
+        if [[ $candidate == "$target" ]]; then
+            eligible=true
+            break
+        fi
+    done < <(stack_branches "$current")
+    [[ $eligible == true ]] ||
+        die "$target is not editable from $current"
+
+    old_target_oid=$(git rev-parse "refs/heads/$target")
+    session_id=$(new_session_id "$target" "$old_target_oid" "$current")
+    write_edit_state "$target" "$old_target_oid" "$current" "$session_id"
+    if ! git switch "$target"; then
+        clear_state
+        die "could not switch to $target"
+    fi
+}
+
+collect_moved_branches() {
+    local oid branch current
+
+    moved=()
+    while IFS=$'\t' read -r oid branch; do
+        local_branch_exists "$branch" || continue
+        current=$(git rev-parse "refs/heads/$branch")
+        [[ $current == "$oid" ]] && continue
+        moved+=("$branch")
+    done <"$state_dir/pre-oids"
+}
+
+default_remote() {
+    local remote
+    local -a remotes=()
+
+    mapfile -t remotes < <(git remote)
+    if ((${#remotes[@]} == 1)); then
+        printf '%s\n' "${remotes[0]}"
+        return 0
+    fi
+    for remote in "${remotes[@]}"; do
+        if [[ $remote == origin ]]; then
+            printf '%s\n' origin
+            return 0
+        fi
+    done
+    return 1
+}
+
+prompt_pushes() {
+    local branch remote merge_ref display reply
+    local failed=0
+    local -a args=()
+
+    (($# > 0)) || return 0
+    for branch in "$@"; do
+        remote=$(git config --get "branch.$branch.remote" || :)
+        merge_ref=$(git config --get "branch.$branch.merge" || :)
+        if [[ -n $remote && -n $merge_ref ]]; then
+            display=$remote/${merge_ref#refs/heads/}
+            args=(push --force-with-lease --force-if-includes
+                "$remote" "refs/heads/$branch:$merge_ref")
+            printf 'Push %s to %s? [y/N] ' "$branch" "$display" >&2
+        else
+            remote=$(default_remote) || continue
+            display=$remote/$branch
+            args=(push --force-with-lease --force-if-includes --set-upstream
+                "$remote" "refs/heads/$branch:refs/heads/$branch")
+            printf 'Push %s to %s and set upstream? [y/N] ' \
+                "$branch" "$display" >&2
+        fi
+        if ! IFS= read -r reply; then
+            printf '\n' >&2
+            echo "git stack: no input; skipping remaining pushes" >&2
+            break
+        fi
+        case ${reply,,} in
+            y | yes) ;;
+            *) continue ;;
+        esac
+        if ! git "${args[@]}"; then
+            echo "git stack: push failed: $branch" >&2
+            failed=1
+        fi
+    done
+    return "$failed"
+}
+
+finish_session() {
+    local status=0
+
+    collect_moved_branches
+    clear_state
+    prompt_pushes "${moved[@]}" || status=$?
+    return "$status"
+}
+
+command_push_all() {
+    local current listing
+    local -a candidates=()
+
+    [[ ! -d $state_dir ]] || die "a stack edit is active"
+    current=$(current_branch) || die "detached HEAD is not a stack branch"
+    listing=$(stack_branches "$current")
+    if [[ -n $listing ]]; then
+        mapfile -t candidates <<<"$listing"
+    fi
+    candidates+=("$current")
+    prompt_pushes "${candidates[@]}"
+}
+
+command_done() {
+    local current
+    load_state
+
+    if [[ $phase == rebase ]]; then
+        if ! rebase_in_progress || ! rebase_belongs_to_session; then
+            die "active rebase does not belong to this stack edit"
+        fi
+        if git rebase --continue; then
+            local status=0
+            finish_session || status=$?
+            return "$status"
+        fi
+        rebase_in_progress || clear_state
+        return 1
+    fi
+
+    require_clean_worktree
+    current=$(current_branch) ||
+        die "target branch is not checked out"
+    [[ $current == "$target_branch" ]] ||
+        die "expected $target_branch, found $current"
+    local_branch_exists "$return_branch" ||
+        die "return branch no longer exists: $return_branch"
+
+    git switch "$return_branch"
+    printf '%s\n' rebase >"$state_dir/phase"
+    if git rebase \
+        --rebase-merges \
+        --onto "refs/heads/$target_branch" \
+        "$old_target_oid" \
+        --update-refs; then
+        local status=0
+        finish_session || status=$?
+        return "$status"
+    fi
+    if rebase_in_progress; then
+        mark_rebase_session ||
+            die "could not mark the active rebase as a stack session"
+    else
+        clear_state
+    fi
+    return 1
+}
+
+main() {
+    case ${1:-} in
+        -h | --help)
+            (($# == 1)) || die "--help takes no arguments"
+            usage
+            ;;
+        edit)
+            (($# == 2)) || die "usage: git stack edit <local-branch>"
+            require_worktree
+            init_state_path
+            refresh_state edit
+            command_edit "$2"
+            ;;
+        list)
+            (($# == 1)) || die "usage: git stack list"
+            require_worktree
+            init_state_path
+            refresh_state list
+            command_list
+            ;;
+        push-all)
+            (($# == 1)) || die "usage: git stack push-all"
+            require_worktree
+            init_state_path
+            refresh_state push-all
+            command_push_all
+            ;;
+        done)
+            (($# == 1)) || die "usage: git stack done"
+            require_worktree
+            init_state_path
+            refresh_state "done"
+            command_done
+            ;;
+        "")
+            usage >&2
+            exit 1
+            ;;
+        *)
+            die "unknown subcommand: $1"
+            ;;
+    esac
+}
+
+main "$@"

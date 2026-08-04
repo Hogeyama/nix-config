@@ -1,5 +1,14 @@
 % git
 
+# edit a branch in the current stack
+git stack edit <stack-branch>
+
+# finish editing a branch in the current stack
+git stack done
+
+# push every branch in the current stack
+git stack push-all
+
 # interactive rebase
 git rebase -i --keep-base --update-refs <commit>^
 
@@ -35,6 +44,7 @@ GIT_SEQUENCE_EDITOR="sed -i 's/p\(ick\)\? <commit>/e <commit>/'" git rebase --au
 
 $ commit:                  git log --oneline --color=always --- --map "awk '{print $1}'"
 $ commit-any:              git log --oneline --color=always --all --- --map "awk '{print $1}'"
+$ stack-branch:            git stack list
 $ remote:                  git remote show
 $ remote-branch:           git branch -r | sed -e 's/\(.*->\)//' -e 's/^\s*//'
 $ remote-branch-no-prefix: git branch -r | sed -e 's/\(.*->\)//' -e 's/^[^\/]*\///'
