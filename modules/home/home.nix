@@ -385,7 +385,7 @@ in
     };
     tmux = {
       enable = true;
-      package = pkgs.unstable.tmux;
+      package = pkgs.tmux;
       terminal = "tmux-256color";
       plugins = with pkgs; [
         {
