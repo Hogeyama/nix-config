@@ -383,10 +383,6 @@ in
         })
       '';
     };
-    vscode = {
-      enable = true;
-      package = pkgs.vscode-insiders-nightly;
-    };
     tmux = {
       enable = true;
       package = pkgs.unstable.tmux;
