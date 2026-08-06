@@ -41,31 +41,6 @@ let
     in
     dotfilesSymlinks' "";
 
-  nixDaemonS3CredentialsBin =
-    pkgs.writeShellScriptBin "nix-daemon-s3-credentials" ''
-      set -euo pipefail
-      ACTION=''${1:-enable}
-      AWS_SOURCE=~/.aws
-      AWS_TARGET=/var/secrets/.aws
-
-      if [ "$ACTION" = "enable" ]; then
-        sudo mkdir -p "$AWS_TARGET"
-        sudo ${pkgs.bindfs}/bin/bindfs -o ro \
-          -g nixbld \
-          -p g+rD \
-          "$AWS_SOURCE" "$AWS_TARGET"
-        sudo systemctl set-environment AWS_PROFILE="''${AWS_PROFILE:-default}"
-        sudo systemctl set-environment AWS_SHARED_CREDENTIALS_FILE="$AWS_TARGET/credentials"
-        sudo systemctl restart nix-daemon
-        echo "Enabled nix-daemon S3 credentials..."
-      else
-        sudo umount "$AWS_TARGET"
-        sudo systemctl unset-environment AWS_PROFILE AWS_SHARED_CREDENTIALS_FILE
-        sudo systemctl restart nix-daemon
-        echo "Disabled nix-daemon S3 credentials..."
-      fi
-    '';
-
   # GUIセッションではqt、sshではtty、とpinentryを出し分ける。
   pinentryAutoBin =
     pkgs.writeShellScriptBin "pinentry-auto" ''
@@ -241,7 +216,6 @@ in
       rounded-mgenplus
       ### unstable
       unstable.dasel
-      nixDaemonS3CredentialsBin
     ];
     file = dotfilesSymlinks { } // {
       ".local/share/tridactyl/native_main".source = "${pkgs.tridactyl-native}/bin/native_main";
