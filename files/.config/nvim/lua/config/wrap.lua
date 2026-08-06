@@ -1,6 +1,8 @@
 --------------------------------------------------------------------------------
 -- Long line wrap display (wrap=false時に長い行をfloating window/virtual textで表示)
 --------------------------------------------------------------------------------
+vim.o.wrap = true
+vim.o.number = true
 do
   local ns = vim.api.nvim_create_namespace("long_line_wrap")
   local float_winid = nil
@@ -145,7 +147,7 @@ do
 
       local float_height = math.min(#overflow_lines, right_height)
       local float_width = right_width + 1
-      local float_row = screen_row + 1
+      local float_row = screen_row
       local float_col = right_pos[2] - 1
 
       float_bufnr = vim.api.nvim_create_buf(false, true)
