@@ -125,6 +125,7 @@ in
       ghostty
       git-remote-codecommit
       glow
+      gocryptfs
       gnumake
       go
       golangci-lint
