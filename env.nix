@@ -162,5 +162,22 @@ rec {
       };
     };
 
+    systemd.user.services.local-https-proxy = {
+      Unit = {
+        Description = "Local HTTPS Proxy";
+        After = [ "network.target" ];
+        StartLimitIntervalSec = "5min";
+        StartLimitBurst = 5;
+      };
+      Service = {
+        ExecStart = ''/bin/bash -lc "cryptow run local-https-proxy -- --key ${user.homeDirectory}/.acme.sh/localhost.hogeyama.com_ecc/localhost.hogeyama.com.key --cert ${user.homeDirectory}/.acme.sh/localhost.hogeyama.com_ecc/localhost.hogeyama.com.cer --port 8443 --host-regex '(?<port>[0-9]{4})\\.localhost\\.hogeyama\\.com' --target 'http://localhost:{port}'"'';
+        Restart = "on-failure";
+        RestartSec = 10;
+      };
+      Install = {
+        WantedBy = [ "default.target" ];
+      };
+    };
+
   };
 }
