@@ -93,7 +93,13 @@
 
   services.atd.enable = true;
 
-  virtualisation.docker.enable = true;
+  virtualisation.docker = {
+    enable = true;
+    # NixOS defaults to "journald", which routed all container output through
+    # journald (~30% of journal entries) and risked silent drops from its rate
+    # limit. "local" keeps logs per-container, compressed and rotated.
+    logDriver = "local";
+  };
 
   # https://nixos.wiki/wiki/Podman
   # virtualisation.podman = {
