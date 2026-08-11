@@ -516,9 +516,16 @@ in
       history.extended = true;
       history.ignoreSpace = false;
 
+      plugins = [
+        {
+          name = "powerlevel10k";
+          src = pkgs.zsh-powerlevel10k;
+          file = "share/zsh/themes/powerlevel10k/powerlevel10k.zsh-theme";
+        }
+      ];
+
       oh-my-zsh = {
         enable = true;
-        theme = "frisk";
         plugins = [
           # [tool]
           "docker"
@@ -557,6 +564,8 @@ in
         source-if-exists "$HOME/.zshenv.local"
       '';
       initContent = ''
+        source-if-exists "$HOME/.p10k.zsh"
+
         # /etc/zsh/zshrc が nix-daemon.sh を読み、$HOME/.nix-profile/bin を
         # PATH 先頭に挿入してしまうため、.local/bin を再度最優先に戻す
         typeset -U path PATH
@@ -743,9 +752,6 @@ in
       enable = true;
     };
     navi = {
-      enable = true;
-    };
-    starship = {
       enable = true;
     };
     rofi = {
