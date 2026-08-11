@@ -4,11 +4,6 @@
 typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
   dir
   vcs
-  haskell_stack
-  java_version
-  rust_version
-  terraform
-  nix_shell
   command_execution_time
   status
   context
@@ -102,16 +97,6 @@ typeset -g POWERLEVEL9K_VCS_MODIFIED_FOREGROUND=yellow
 typeset -g POWERLEVEL9K_VCS_CONFLICTED_FOREGROUND=red
 typeset -g POWERLEVEL9K_VCS_LOADING_FOREGROUND=244
 typeset -g POWERLEVEL9K_VCS_BACKENDS=(git)
-
-# Show project runtimes only where they are relevant and label icon-free
-# environment segments so their values remain unambiguous.
-typeset -g POWERLEVEL9K_JAVA_VERSION_PROJECT_ONLY=true
-typeset -g POWERLEVEL9K_JAVA_VERSION_PREFIX='java '
-typeset -g POWERLEVEL9K_RUST_VERSION_PROJECT_ONLY=true
-typeset -g POWERLEVEL9K_RUST_VERSION_PREFIX='rust '
-typeset -g POWERLEVEL9K_HASKELL_STACK_PREFIX='haskell '
-typeset -g POWERLEVEL9K_TERRAFORM_PREFIX='terraform '
-typeset -g POWERLEVEL9K_NIX_SHELL_PREFIX='nix '
 
 # Hide successful status, but retain failures and long-command timing.
 typeset -g POWERLEVEL9K_STATUS_OK=false
