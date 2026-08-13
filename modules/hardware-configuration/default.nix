@@ -14,9 +14,13 @@
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
+  # Crucial T500 (nvme, LABEL=nixos-root). Moved off the TEAM TM8FP6001T, whose
+  # DRAM-less Realtek controller stalls ~24ms on the first read after >=0.5s idle.
+  # Old root (192a4b3e-dd0f-4690-a241-b18c821df301) is still intact on the TEAM
+  # drive and remains bootable via older generations.
   fileSystems."/" =
     {
-      device = "/dev/disk/by-uuid/192a4b3e-dd0f-4690-a241-b18c821df301";
+      device = "/dev/disk/by-uuid/09d78172-4c27-4922-9eb3-8eaa0eaa8536";
       fsType = "ext4";
     };
 
