@@ -103,6 +103,7 @@ in
       btop
       cachix
       cargo
+      chatgpt
       comma
       commitizen
       curl
