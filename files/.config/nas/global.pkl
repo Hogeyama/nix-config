@@ -272,6 +272,22 @@ profiles {
     agentArgs = new Listing { "--dangerously-skip-permissions" }
   }
 
+  ["qwen"] = (baseProfile) {
+    agent = "claude"
+    agentArgs = new Listing { "--dangerously-skip-permissions" }
+    env = (baseProfile.env) {
+      new { key = "OPENROUTER_API_KEY";   valCmd = "pass openrouter_api_key" }
+      new { key = "ANTHROPIC_BASE_URL";   val    = "https://openrouter.ai/api" }
+      new { key = "ANTHROPIC_AUTH_TOKEN"; valCmd = "pass openrouter_api_key" }
+      new { key = "ANTHROPIC_API_KEY";    val    = "" }
+      new { key = "ANTHROPIC_MODEL";      val    = "qwen/qwen3.8-max" }
+      new { key = "ANTHROPIC_DEFAULT_HAIKU_MODEL";  val = "qwen/qwen3.8-max" }
+      new { key = "ANTHROPIC_DEFAULT_SONNET_MODEL"; val = "qwen/qwen3.8-max" }
+      new { key = "ANTHROPIC_DEFAULT_OPUS_MODEL";   val = "qwen/qwen3.8-max" }
+      new { key = "CLAUDE_CODE_SUBAGENT_MODEL";     val = "qwen/qwen3.8-max" }
+    }
+  }
+
   ["codex"] = (baseProfile) {
     agent = "codex"
     agentArgs = new Listing { "--dangerously-bypass-approvals-and-sandbox" }
