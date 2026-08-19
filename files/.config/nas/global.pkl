@@ -14,7 +14,7 @@ local commonEnv: Listing<EnvConfig> = new {
   new { key = "TERM"; val = "xterm-256color" }
   new {
     key = "GITHUB_TOKEN"
-    valCmd = "pass github/token/for-agent"
+    val = "dummy"
   }
   new {
     key = "PATH"
@@ -84,6 +84,44 @@ local commonNetwork: NetworkConfig = new {
       fallback = "allow"
     }
 
+    ["github"] {
+      targets {
+        "api.github.com"
+        "github.com"
+      }
+      fallback = "allow"
+      secrets = new {
+        ["github-token"] = "inject"
+      }
+      inject {
+        new {
+          name = "authorization"
+          value = "template:Bearer ${github-token}"
+        }
+      }
+      rules {
+        ["git-transport"] {
+          match {
+            paths {
+              "/*/*/info/refs"
+              "/*/*/git-upload-pack"
+              "/*/*/git-receive-pack"
+            }
+          }
+          onMatch = "allow"
+          secrets = new {
+            ["github-basic"] = "inject"
+          }
+          inject {
+            new {
+              name = "authorization"
+              value = "template:Basic ${github-basic}"
+            }
+          }
+        }
+      }
+    }
+
     ["allowed"] {
       targets {
         // Anthropic / Claude
@@ -104,10 +142,8 @@ local commonNetwork: NetworkConfig = new {
         "storage.googleapis.com"
 
         // GitHub
-        "api.github.com"
         "release-assets.githubusercontent.com"
         "codeload.github.com"
-        "github.com"
         "gist.github.com"
         "raw.githubusercontent.com"
         // Copilot
@@ -273,6 +309,23 @@ local baseProfile: Profile = new {
   network = commonNetwork
   env = commonEnv
   hostexec = commonHostexec
+  secrets {
+    ["github-token"] {
+      from = "cmd:pass github/token/for-agent"
+    }
+    // git over HTTPS 用。base64("x-access-token:<token>") を値とする。
+    ["github-basic"] {
+      from = #"cmd:printf 'x-access-token:%s' "$(pass github/token/for-agent)" | base64 -w0"#
+    }
+    ["proxy-mask-test"] {
+      from = "cmd:printf nas-proxy-mask-test-8f3c2b1a"
+    }
+  }
+  mask = new MaskConfig {
+    maskfs = false
+    proxy = true
+    filter = false
+  }
 }
 
 // ---------------------------------------------------------------------------
