@@ -31,108 +31,133 @@ local commonEnv: Listing<EnvConfig> = new {
   }
 }
 
-local function allow(h: String) = new ReviewRule { host = h; action = "allow" }
-local function deny(h: String) = new ReviewRule { host = h; action = "deny" }
+// ---------------------------------------------------------------------------
+// network
+//
+// nas 0.15 で reviewRules / ReviewRule は廃止され、network.scopes の Scope と
+// Rule に置き換わった。ホスト単位の allow/deny は「ターゲット集合を持つスコープ
+// + その fallback」で表す。旧 catch-all の `new { action = "review" }` に対応
+// するのは network.fallback = "review"（どのスコープにも属さないホストの帰結）。
+// 同じ帰結しか持たないホストは 1 スコープに畳んでよい。
+//
+// https://github.com/Hogeyama/nix-agent-sandbox/blob/develop/docs/migration/network-scopes.md
+// ---------------------------------------------------------------------------
 
 local commonNetwork: NetworkConfig = new {
-  reviewRules {
+  fallback = "review"
+
+  scopes {
+    ["anthropic"] = module.presets.anthropic.v1
+
     // --- deny (telemetry / 自動アクセス) ---
-    // Claude Codeがなんか送ってるやつ
-    deny("http-intake.logs.us5.datadoghq.com")
+    ["telemetry"] {
+      targets {
+        // Claude Codeがなんか送ってるやつ
+        "http-intake.logs.us5.datadoghq.com"
+        // Copilot CLIがなんか送ってるやつ
+        "copilot-telemetry.githubusercontent.com"
+      }
+      fallback = "deny"
+    }
+
     // Chrome / Chromiumが勝手にアクセスするやつ
-    deny("www.google.com")
-    deny("mtalk.google.com")
-    deny("clients2.google.com")
-    deny("accounts.google.com")
-    deny("android.clients.google.com")
-    // Copilot CLIがなんか送ってるやつ
-    deny("copilot-telemetry.githubusercontent.com")
+    ["google-phone-home"] {
+      targets {
+        "www.google.com"
+        "mtalk.google.com"
+        "clients2.google.com"
+        "accounts.google.com"
+        "android.clients.google.com"
+      }
+      fallback = "deny"
+    }
 
     // --- allow ---
-    // Anthropic / Claude
-    for (h in List(
-      "api.anthropic.com",
-      "statsig.anthropic.com",
-      "platform.claude.com",
-      "mcp-proxy.anthropic.com",
-      "code.claude.com",
-      "claude.ai",
-      "downloads.claude.ai"
-    )) { allow(h) }
+    // WebSocket はスコープ単位の opt-in（既定 deny）。codex は chatgpt.com に
+    // WebSocket で繋ぐので、その 2 ホストだけ別スコープに切って開ける。
+    ["openai-ws"] {
+      targets {
+        "api.openai.com:443"
+        "chatgpt.com:443"
+      }
+      webSocket = "allow"
+      fallback = "allow"
+    }
 
-    // OpenAI / ChatGPT
-    for (h in List(
-      "api.openai.com",
-      "*.api.openai.com",
-      "ab.chatgpt.com",
-      "chatgpt.com",
-      "developers.openai.com"
-    )) { allow(h) }
+    ["allowed"] {
+      targets {
+        // Anthropic / Claude
+        "api.anthropic.com"
+        "statsig.anthropic.com"
+        "platform.claude.com"
+        "mcp-proxy.anthropic.com"
+        "code.claude.com"
+        "claude.ai"
+        "downloads.claude.ai"
 
-    // Google
-    allow("storage.googleapis.com")
+        // OpenAI / ChatGPT
+        "*.api.openai.com"
+        "ab.chatgpt.com"
+        "developers.openai.com"
 
-    // GitHub
-    for (h in List(
-      "api.github.com",
-      "release-assets.githubusercontent.com",
-      "codeload.github.com",
-      "github.com",
-      "gist.github.com",
-      "raw.githubusercontent.com"
-    )) { allow(h) }
-    // Copilot
-    for (h in List(
-      "api.githubcopilot.com",
-      "telemetry.individual.githubcopilot.com",
-      "api.individual.githubcopilot.com",
-      "telemetry.business.githubcopilot.com",
-      "api.business.githubcopilot.com"
-    )) { allow(h) }
-    // 画像系
-    allow("camo.githubusercontent.com")
-    allow("avatars.githubusercontent.com")
+        // Google
+        "storage.googleapis.com"
 
-    // Docker Hub
-    for (h in List(
-      "registry-1.docker.io",
-      "auth.docker.io",
-      "index.docker.io",
-      "hub.docker.com",
-      "www.docker.com",
-      "production.cloudflare.docker.com",
-      "download.docker.com"
-    )) { allow(h) }
+        // GitHub
+        "api.github.com"
+        "release-assets.githubusercontent.com"
+        "codeload.github.com"
+        "github.com"
+        "gist.github.com"
+        "raw.githubusercontent.com"
+        // Copilot
+        "api.githubcopilot.com"
+        "telemetry.individual.githubcopilot.com"
+        "api.individual.githubcopilot.com"
+        "telemetry.business.githubcopilot.com"
+        "api.business.githubcopilot.com"
+        // 画像系
+        "camo.githubusercontent.com"
+        "avatars.githubusercontent.com"
 
-    // Container Registries
-    allow("*.gcr.io")
-    allow("ghcr.io")
-    allow("mcr.microsoft.com")
-    allow("*.data.mcr.microsoft.com")
-    allow("public.ecr.aws")
+        // Docker Hub
+        "registry-1.docker.io"
+        "auth.docker.io"
+        "index.docker.io"
+        "hub.docker.com"
+        "www.docker.com"
+        "production.cloudflare.docker.com"
+        "download.docker.com"
 
-    // Package Registries
-    // nix
-    for (h in List(
-      "cache.iog.io",
-      "cache.nixos.org",
-      "channels.nixos.org"
-    )) { allow(h) }
-    // npm
-    allow("registry.npmjs.org")
-    // deno
-    allow("jsr.io")
-    allow("deno.land")
-    // Rust
-    allow("index.crates.io")
-    allow("static.crates.io")
+        // Container Registries
+        "gcr.io"
+        "*.gcr.io"
+        "ghcr.io"
+        "mcr.microsoft.com"
+        "*.data.mcr.microsoft.com"
+        "public.ecr.aws"
 
-    // IETF Datatracker
-    allow("datatracker.ietf.org")
+        // Package Registries
+        // nix
+        "cache.iog.io"
+        "cache.nixos.org"
+        "channels.nixos.org"
+        // npm
+        "registry.npmjs.org"
+        // deno
+        "jsr.io"
+        "deno.land"
+        // Rust
+        "index.crates.io"
+        "static.crates.io"
 
-    // catch-all: unmatched → pending (replaces prompt.enable = true)
-    new { action = "review" }
+        // IETF Datatracker
+        "datatracker.ietf.org"
+      }
+      fallback = "allow"
+    }
   }
+
   proxy {
     forwardPorts = new Listing {
       8080
