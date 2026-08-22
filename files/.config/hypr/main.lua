@@ -23,13 +23,26 @@ local menu = "wofi --show drun"
 --- ENVIRONMENT VARIABLES ---
 -----------------------------
 
+------------------------
+--- LAYOUT CONSTANTS ---
+------------------------
+-- hl.config と workspace rule の両方から参照するので定数に切り出す。
+-- (ウィンドウ1枚のときの gaps を計算するのに orientation と gaps_out が要る)
+local GAPS_OUT = 5
+local DEFAULT_ORIENTATION = "left" -- master を左ペイン、slave を右ペインに
+-- モニタ個別の orientation 上書き。ここが solo rule の向きにも効く。
+local MONITOR_ORIENTATION = {
+  ["DP-1"] = "top",
+  ["HDMI-A-2"] = "left",
+}
+
 ---------------------
 --- LOOK AND FEEL ---
 ---------------------
 hl.config({
   general = {
     gaps_in = 5,
-    gaps_out = 5,
+    gaps_out = GAPS_OUT,
     border_size = 2,
     ["col.active_border"] = { colors = { "rgba(33ccffee)", "rgba(00ff99ee)" }, angle = 45 },
     ["col.inactive_border"] = "rgba(595959aa)",
@@ -61,7 +74,7 @@ hl.config({
   },
   master = {
     new_status = "master",
-    orientation = "left", -- master を左ペイン、slave を右ペインに
+    orientation = DEFAULT_ORIENTATION,
   },
   -- 右ペインの slave を group 化するとタブ/スタックのように 1 枚ずつ切替できる
   group = {
@@ -123,9 +136,123 @@ hl.animation({ leaf = "workspaces", enabled = true, speed = 1.94, bezier = "almo
 hl.animation({ leaf = "workspacesIn", enabled = true, speed = 1.21, bezier = "almostLinear", style = "fade" })
 hl.animation({ leaf = "workspacesOut", enabled = true, speed = 1.94, bezier = "almostLinear", style = "fade" })
 
---- Workspace rules ("Smart gaps" / per-monitor orientation)
-hl.workspace_rule({ workspace = "m[DP-1]", layout_opts = { orientation = "top" } })
-hl.workspace_rule({ workspace = "m[HDMI-A-2]", layout_opts = { orientation = "left" } })
+--- Workspace rules (per-monitor orientation)
+for name, orientation in pairs(MONITOR_ORIENTATION) do
+  hl.workspace_rule({ workspace = "m[" .. name .. "]", layout_opts = { orientation = orientation } })
+end
+
+--- ウィンドウが1枚だけのときも master ペインの大きさに収める。
+--- 全画面はでかすぎるので、2枚目が既にあるかのように片側を空ける。
+--- 空ける幅は master の割合に揃えてあるので、2枚目を開いても1枚目は動かない。
+--- 全画面が欲しいときは今まで通り SUPER+F (fullscreen)。gaps は無視される。
+---
+--- 実装: w[tv1] = 「タイル表示のウィンドウがちょうど1枚」のワークスペースに
+--- 非対称な gaps_out を当てる。gaps_out は px 指定なのでモニタ毎に計算が要る。
+local MFACT_MIN, MFACT_MAX = 0.05, 0.95
+local OPPOSITE_ORIENTATION = { left = "right", right = "left", top = "bottom", bottom = "top" }
+
+-- 1枚のときにウィンドウを置く側。SUPER+A でモニタ毎に反転させる。
+local solo_flipped = {}
+
+-- master の割合。Hyprland はこれをワークスペース毎に保持していて読み出す API が
+-- ないので、SUPER+SHIFT+H/L の増減をこちら側でも同じように追跡する。
+local mfact_by_workspace = {}
+
+local function default_mfact()
+  return tonumber(hl.get_config("master.mfact")) or 0.55
+end
+
+local function workspace_mfact(ws)
+  return ws and mfact_by_workspace[ws.id] or default_mfact()
+end
+
+local function set_workspace_mfact(ws, value)
+  if ws then
+    mfact_by_workspace[ws.id] = math.max(MFACT_MIN, math.min(MFACT_MAX, value))
+  end
+end
+
+local function tiled_window_count(ws)
+  if not ws then return 0 end
+  local n = 0
+  for _, w in ipairs(hl.get_workspace_windows(ws)) do
+    if not w.floating then n = n + 1 end
+  end
+  return n
+end
+
+-- 直近にモニタへ撒いた gaps。値が同じでも hl.workspace_rule を呼ぶとレイアウトが
+-- 走り直して monitor.layout_changed が飛び、そこからここへ戻ってくる。差分が
+-- なければ撒かない、で閉ループを切る。
+local last_solo_gaps = {}
+
+local function gaps_equal(a, b)
+  return a ~= nil
+    and a.top == b.top
+    and a.right == b.right
+    and a.bottom == b.bottom
+    and a.left == b.left
+end
+
+local function emit_solo_master_rules()
+  for _, m in ipairs(hl.get_monitors()) do
+    -- gaps はモニタ毎に固定値なので、そのモニタで今見えているワークスペースの
+    -- 割合を使う。切り替わったら workspace.active で撒き直す。
+    local ws = m.active_workspace or hl.get_active_workspace(m.name)
+    local slave = 1 - workspace_mfact(ws) -- slave ペインが占めるはずだった割合
+
+    -- m.width/m.height は回転前のモード解像度(物理px)。gaps は回転後の論理px なので
+    -- 90/270 度回転(transform が奇数)では縦横を入れ替えてから scale で割る。
+    local scale = m.scale or 1
+    local width, height = m.width, m.height
+    if (m.transform or 0) % 2 == 1 then
+      width, height = height, width
+    end
+    width = width / scale
+    height = height / scale
+
+    local orientation = MONITOR_ORIENTATION[m.name] or DEFAULT_ORIENTATION
+    if solo_flipped[m.name] then
+      orientation = OPPOSITE_ORIENTATION[orientation] or orientation
+    end
+
+    local gaps = { top = GAPS_OUT, right = GAPS_OUT, bottom = GAPS_OUT, left = GAPS_OUT }
+    if orientation == "left" then
+      gaps.right = math.floor(width * slave)
+    elseif orientation == "right" then
+      gaps.left = math.floor(width * slave)
+    elseif orientation == "top" then
+      gaps.bottom = math.floor(height * slave)
+    elseif orientation == "bottom" then
+      gaps.top = math.floor(height * slave)
+    end
+
+    if not gaps_equal(last_solo_gaps[m.name], gaps) then
+      last_solo_gaps[m.name] = gaps
+      hl.workspace_rule({ workspace = "m[" .. m.name .. "] w[tv1]", gaps_out = gaps })
+    end
+  end
+end
+
+-- hl.workspace_rule がイベントを同期で配送してくると last_solo_gaps を更新しても
+-- その場で呼び戻されるので、再入もフラグで止める。落ちてもフラグが立ちっぱなしに
+-- ならないよう pcall で囲って必ず下ろす。
+local applying_solo_rules = false
+
+local function apply_solo_master_rules()
+  if applying_solo_rules then return end
+  applying_solo_rules = true
+  local ok, err = pcall(emit_solo_master_rules)
+  applying_solo_rules = false
+  if not ok then error(err, 0) end
+end
+
+-- 起動直後のconfigパース時点ではモニタが未確定なことがあるので、
+-- 初回呼び出しに加えてモニタ構成・表示ワークスペースの変化でも撒き直す。
+apply_solo_master_rules()
+hl.on("monitor.added", apply_solo_master_rules)
+hl.on("monitor.layout_changed", apply_solo_master_rules)
+hl.on("workspace.active", apply_solo_master_rules)
 
 -------------
 --- INPUT ---
@@ -154,12 +281,36 @@ hl.bind(mainMod .. " + H", hl.dsp.focus({ direction = "left" }))
 hl.bind(mainMod .. " + J", hl.dsp.focus({ direction = "down" }))
 hl.bind(mainMod .. " + K", hl.dsp.focus({ direction = "up" }))
 hl.bind(mainMod .. " + L", hl.dsp.focus({ direction = "right" }))
-hl.bind(mainMod .. " + SHIFT + H", hl.dsp.layout("mfact -0.02"))
-hl.bind(mainMod .. " + SHIFT + L", hl.dsp.layout("mfact +0.02"))
+-- Hyprland 側 (ワークスペース毎の内部値) と手元の追跡値を同じだけ動かして、
+-- 1枚だけのときの空き幅にも反映させる。
+local function nudge_mfact(delta)
+  return function()
+    hl.dispatch(hl.dsp.layout(string.format("mfact %+.2f", delta)))
+    local ws = hl.get_active_workspace()
+    set_workspace_mfact(ws, workspace_mfact(ws) + delta)
+    apply_solo_master_rules()
+  end
+end
+
+hl.bind(mainMod .. " + SHIFT + H", nudge_mfact(-0.02))
+hl.bind(mainMod .. " + SHIFT + L", nudge_mfact(0.02))
 hl.bind(mainMod .. " + M", hl.dsp.workspace.toggle_special("magic"))
 hl.bind(mainMod .. " + SHIFT + M", hl.dsp.window.move({ workspace = "special:magic" }))
--- SUPER+A: 元設定で swapwindow と swapwithmaster が二重定義され後者が有効だった
-hl.bind(mainMod .. " + A", hl.dsp.layout("swapwithmaster"))
+-- SUPER+A: 元設定で swapwindow と swapwithmaster が二重定義され後者が有効だった。
+-- 1枚だけのときは入れ替える相手がいないので、代わりに置く側を反転させる
+-- (orientation=left なら左半分 <-> 右半分、top なら上半分 <-> 下半分)。
+hl.bind(mainMod .. " + A", function()
+  local ws = hl.get_active_workspace()
+  if tiled_window_count(ws) == 1 then
+    local m = (ws and ws.monitor) or hl.get_active_monitor()
+    if m then
+      solo_flipped[m.name] = not solo_flipped[m.name]
+      apply_solo_master_rules()
+    end
+  else
+    hl.dispatch(hl.dsp.layout("swapwithmaster"))
+  end
+end)
 hl.bind(mainMod .. " + V", hl.dsp.window.float())
 -- SUPER+F: 元設定で makoctl invoke と fullscreen が二重定義され後者が有効だった
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen(1))
