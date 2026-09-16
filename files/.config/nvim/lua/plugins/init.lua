@@ -471,7 +471,24 @@ return {
           explorer = {
             -- your explorer picker configuration comes here
             -- or leave it empty to use the default settings
-          }
+          },
+          notifications = {
+            -- この source は既定で yank が未割り当てなので自前で足す。
+            win = {
+              input = {
+                keys = {
+                  ["y"] = { "yank_msg", mode = { "n", "x" } },
+                  ["<c-y>"] = { "yank_msg", mode = { "n", "i" } },
+                },
+              },
+            },
+            actions = {
+              yank_msg = function(_, item)
+                if not item or not item.item then return end
+                vim.fn.setreg(vim.v.register, item.item.msg)
+              end,
+            },
+          },
         }
       }
     },
@@ -479,6 +496,18 @@ return {
       { "<leader>go", function() Snacks.gitbrowse.open() end,  mode = { 'n' } },
       { "<leader>bd", function() Snacks.bufdelete.other() end, mode = { 'n' } },
       { "<leader>bD", function() Snacks.bufdelete.all() end,   mode = { 'n' } },
+      {
+        "<leader>n",
+        function() Snacks.picker.notifications() end,
+        mode = { 'n' },
+        desc = "Notification History",
+      },
+      {
+        "<leader>un",
+        function() Snacks.notifier.hide() end,
+        mode = { 'n' },
+        desc = "Dismiss Notifications",
+      },
     }
   },
   {
