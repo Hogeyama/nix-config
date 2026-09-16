@@ -181,59 +181,50 @@ return {
     },
   },
   {
-    "carlos-algms/agentic.nvim",
+    "yetone/avante.nvim",
     enabled = true and not vim.g.vscode,
-    --- @type agentic.PartialUserConfig
+    event = "VeryLazy",
+    version = false,
+    build = "curl",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+      "folke/snacks.nvim",
+    },
     opts = {
-      -- nix-agent-sandbox の ACP モード経由で claude を起動する
-      -- (.nas/config.pkl / ~/.config/nas/global.pkl の "claude-acp" プロファイルに対応)
+      log_level = vim.log.levels.DEBUG,
       provider = "claude-nas-acp",
       acp_providers = {
         ["claude-nas-acp"] = {
-          name = "Claude (nas ACP)",
           command = "nas",
           args = { "claude-acp" },
-          default_mode = "bypassPermissions",
+          env = vim.fn.environ(),
         },
+      },
+      behaviour = {
+        auto_suggestions = false,
+      },
+      ask = {
+        floating = true,
+      },
+      input = {
+        provider = "snacks",
       },
     },
     keys = {
       {
-        "<C-\\>",
-        function() require("agentic").toggle() end,
+        "<C-f>n",
+        function()
+          require("avante.api").zen_mode()
+        end,
         mode = { "n", "v", "i" },
-        desc = "Toggle Agentic Chat",
+        desc = "Toggle Avante",
       },
       {
-        "<C-'>",
-        function() require("agentic").add_selection_or_file_to_context() end,
-        mode = { "n", "v" },
-        desc = "Add file or selection to Agentic to Context",
-      },
-      {
-        "<C-,>",
-        function() require("agentic").new_session() end,
+        "<C-f>r",
+        "<cmd>AvanteHistory<cr>",
         mode = { "n", "v", "i" },
-        desc = "New Agentic Session",
-      },
-      {
-        "<A-i>r",
-        function() require("agentic").restore_session() end,
-        desc = "Agentic Restore session",
-        silent = true,
-        mode = { "n", "v", "i" },
-      },
-      {
-        "<leader>al",
-        function() require("agentic").add_current_line_diagnostics() end,
-        desc = "Add current line diagnostic to Agentic",
-        mode = { "n" },
-      },
-      {
-        "<leader>aD",
-        function() require("agentic").add_buffer_diagnostics() end,
-        desc = "Add all buffer diagnostics to Agentic",
-        mode = { "n" },
+        desc = "Avante Restore Session",
       },
     },
   },
