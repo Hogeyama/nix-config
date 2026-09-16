@@ -181,110 +181,59 @@ return {
     },
   },
   {
-    "olimorris/codecompanion.nvim",
-    enabled = not vim.g.vscode,
-    -- メジャーバージョン跨ぎの破壊的変更を避けるため範囲指定で固定する
-    version = "^19.0.0",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-treesitter/nvim-treesitter",
-    },
-    cmd = {
-      "CodeCompanion",
-      "CodeCompanionActions",
-      "CodeCompanionChat",
-      "CodeCompanionCmd",
-      "CodeCompanionCodeReview",
-    },
-    init = function()
-      -- フロートが重ならないよう、開いたら他の全画面フロートを閉じる
-      -- (逆方向は FTerm の FTermOpened / SidekickToggled 側で設定済み)
-      vim.api.nvim_create_autocmd("User", {
-        pattern = "CodeCompanionChatOpened",
-        callback = function()
-          pcall(vim.cmd, "FloatermHide")
-          local ok, sidekick_cli = pcall(require, "sidekick.cli")
-          if ok then sidekick_cli.hide() end
-        end,
-      })
-    end,
+    "carlos-algms/agentic.nvim",
+    enabled = true and not vim.g.vscode,
+    --- @type agentic.PartialUserConfig
     opts = {
-      adapters = {
-        acp = {
-          extend = {
-            claude_code = {
-              -- nas がコンテナ内で claude-agent-acp を起動し stdio を中継する
-              -- (~/.config/nas/global.pkl の "claude-acp" プロファイルに対応)。
-              -- sh -c で包んで stderr をファイルに落としている。CodeCompanion は
-              -- adapter プロセスの stderr を data ごと捨てるため (acp/init.lua の
-              -- start_agent_process)、こうしないと nas と claude-agent-acp が
-              -- 出すエラーが一切残らない。原因が分かったら素の
-              -- { "nas", "claude-acp" } に戻してよい。
-              commands = {
-                default = {
-                  "sh",
-                  "-c",
-                  ("exec nas claude-acp 2>%s/nas-acp-stderr.log"):format(vim.fn.stdpath("log")),
-                },
-              },
-              defaults = {
-                session_config_options = {
-                  mode = "bypassPermissions",
-                },
-              },
-            },
-          },
-        },
-      },
-      interactions = {
-        chat = {
-          adapter = "claude_code",
-        },
-      },
-      opts = {
-        -- 既定の ERROR では acp の RPC ログのパス (log:info で出る) すら見えない
-        log_level = "DEBUG",
-      },
-      display = {
-        chat = {
-          -- float のサイズは floating_window ではなく window の width/height を見る
-          -- (floating_window は diff 用)
-          window = {
-            layout = "float",
-            border = "rounded",
-            width = 0.9,
-            height = 0.9,
-          },
-          start_in_insert_mode = true,
+      -- nix-agent-sandbox の ACP モード経由で claude を起動する
+      -- (.nas/config.pkl / ~/.config/nas/global.pkl の "claude-acp" プロファイルに対応)
+      provider = "claude-nas-acp",
+      acp_providers = {
+        ["claude-nas-acp"] = {
+          name = "Claude (nas ACP)",
+          command = "nas",
+          args = { "claude-acp" },
+          default_mode = "bypassPermissions",
         },
       },
     },
     keys = {
       {
-        "<F7>",
-        function() require("codecompanion").toggle_chat() end,
-        mode = { "n", "v", "i", "t" },
-        desc = "Toggle CodeCompanion Chat",
+        "<C-\\>",
+        function() require("agentic").toggle() end,
+        mode = { "n", "v", "i" },
+        desc = "Toggle Agentic Chat",
       },
       {
-        "<C-f>a",
-        "<cmd>CodeCompanionChat Add<cr>",
+        "<C-'>",
+        function() require("agentic").add_selection_or_file_to_context() end,
         mode = { "n", "v" },
-        desc = "Add buffer or selection to CodeCompanion",
+        desc = "Add file or selection to Agentic to Context",
       },
       {
-        "<C-f>r",
-        function() require("codecompanion").sessions() end,
-        desc = "CodeCompanion Restore session",
+        "<C-,>",
+        function() require("agentic").new_session() end,
+        mode = { "n", "v", "i" },
+        desc = "New Agentic Session",
+      },
+      {
+        "<A-i>r",
+        function() require("agentic").restore_session() end,
+        desc = "Agentic Restore session",
         silent = true,
         mode = { "n", "v", "i" },
       },
       {
-        "<C-f>A",
-        "<cmd>CodeCompanionActions<cr>",
-        mode = { "n", "v" },
-
-        desc = "CodeCompanion Action Palette",
+        "<leader>al",
+        function() require("agentic").add_current_line_diagnostics() end,
+        desc = "Add current line diagnostic to Agentic",
+        mode = { "n" },
+      },
+      {
+        "<leader>aD",
+        function() require("agentic").add_buffer_diagnostics() end,
+        desc = "Add all buffer diagnostics to Agentic",
+        mode = { "n" },
       },
     },
   },
@@ -798,7 +747,7 @@ return {
       end
       local shellDefs = {
         zsh6 = { num = 6, def = zsh },
-        -- F7 は CodeCompanion のトグルに譲った
+        zsh7 = { num = 7, def = zsh },
         fzfw = { num = 8, def = fzfw },
         zsh9 = { num = 9, def = zsh },
         zsh0 = { num = 0, def = zsh },
@@ -823,23 +772,21 @@ return {
           s:close()
         end
       end, { bang = true, nargs = "*" })
-      -- FTermが開いたらSidekick/CodeCompanionを閉じる
+      -- FTermが開いたらSidekickを閉じる
       vim.api.nvim_create_autocmd("User", {
         pattern = "FTermOpened",
         callback = function()
           local ok, sidekick_cli = pcall(require, "sidekick.cli")
           if ok then sidekick_cli.hide() end
-          pcall(function() require("codecompanion").close_last_chat() end)
         end,
       })
-      -- Sidekickが開いたらFTerm/CodeCompanionを閉じる
+      -- Sidekickが開いたらFTermを閉じる
       vim.api.nvim_create_autocmd("User", {
         pattern = "SidekickToggled",
         callback = function()
           for _, s in pairs(shells) do
             s:close()
           end
-          pcall(function() require("codecompanion").close_last_chat() end)
         end,
       })
     end,
@@ -2477,16 +2424,9 @@ return {
     },
     config = function()
       require('render-markdown').setup({
-        file_types = { 'markdown', 'codecompanion' },
         completions = { blink = { enabled = true } },
       })
       vim.cmd [[RenderMarkdown disable]]
-      -- 通常のバッファでは既定 off のままだが、CodeCompanion のチャットは
-      -- 描画された方が読みやすいのでバッファ単位で有効化する
-      vim.api.nvim_create_autocmd('FileType', {
-        pattern = 'codecompanion',
-        command = 'RenderMarkdown buf_enable',
-      })
     end,
     keys = {
       {
