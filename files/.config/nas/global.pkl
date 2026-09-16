@@ -25,7 +25,7 @@ local commonEnv: Listing<EnvConfig> = new {
   // for playwright-cli
   new {
     key = "PATH"
-    val = "~/.local/share/pnpm"
+    val = "~/.local/share/pnpm/bin"
     mode = "suffix"
     separator = ":"
   }
@@ -193,16 +193,10 @@ local commonNetwork: NetworkConfig = new {
       fallback = "allow"
     }
   }
-
-  proxy {
-    forwardPorts = new Listing {
-      8080
-      5432
-    }
-  }
 }
 
 local commonHostexec: HostExecConfig = new {
+  installScript = true
   prompt {
     enable = true
     timeoutSeconds = 300
@@ -305,6 +299,7 @@ local baseProfile: Profile = new {
     new { src = "~/.config/nvim"; dst = "~/.config/nvim"; mode = "ro" }
     new { src = "~/.config/tmux"; dst = "~/.config/tmux"; mode = "ro" }
     new { src = "~/.local/share/nvim"; dst = "~/.local/share/nvim"; mode = "ro" }
+    new { src = "~/repo"; dst = "~/repo"; mode = "rw" }
   }
   network = commonNetwork
   env = commonEnv
@@ -325,6 +320,12 @@ local baseProfile: Profile = new {
     maskfs = false
     proxy = true
     filter = false
+  }
+  guide {
+    enable = true
+  }
+  direnv {
+    enable = true
   }
 }
 
