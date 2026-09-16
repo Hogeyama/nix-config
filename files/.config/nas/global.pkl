@@ -22,7 +22,12 @@ local commonEnv: Listing<EnvConfig> = new {
     mode = "suffix"
     separator = ":"
   }
-  // for playwright-cli
+  new {
+    key = "PATH"
+    val = "/run/current-system/sw/bin"
+    mode = "suffix"
+    separator = ":"
+  }
   new {
     key = "PATH"
     val = "~/.local/share/pnpm/bin"
@@ -299,7 +304,9 @@ local baseProfile: Profile = new {
     new { src = "~/.config/nvim"; dst = "~/.config/nvim"; mode = "ro" }
     new { src = "~/.config/tmux"; dst = "~/.config/tmux"; mode = "ro" }
     new { src = "~/.local/share/nvim"; dst = "~/.local/share/nvim"; mode = "ro" }
+    new { src = "~/.local/share/pnpm"; dst = "~/.local/share/pnpm"; mode = "ro" }
     new { src = "~/repo"; dst = "~/repo"; mode = "rw" }
+    new { src = "/run/current-system/sw/bin"; dst = "/run/current-system/sw/bin"; mode = "rw" }
   }
   network = commonNetwork
   env = commonEnv
@@ -349,6 +356,18 @@ profiles {
   ["claude"] = (baseProfile) {
     agent = "claude"
     agentArgs = new Listing { "--dangerously-skip-permissions" }
+  }
+
+  // CodeCompanion.nvim から ACP (Agent Client Protocol) で叩くための claude。
+  // nas はコンテナ内の claude-agent-acp を起動して stdio を中継するだけなので、
+  // guide は ACP モードでは設定エラーになる (指示は CLAUDE.md 側で与える)。
+  // session.multiplex は ACP では無視されるため解除不要。
+  ["claude-acp"] = (baseProfile) {
+    agent = "claude"
+    mode = "acp"
+    guide {
+      enable = false
+    }
   }
 
   ["qwen"] = (baseProfile) {
