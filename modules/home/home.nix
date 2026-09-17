@@ -364,6 +364,7 @@ in
         require("config.keymaps")
         require("config.commands")
         require("config.wrap")
+        require("config.nas_approval")
         pcall(require, "config.local")
 
         -- plugins

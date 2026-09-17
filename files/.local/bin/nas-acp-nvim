@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Run nas for an ACP client, with its approval requests routed into Neovim.
+#
+# Takes the same arguments as nas. Without a Neovim server address it is a
+# transparent wrapper, so running it from a terminal behaves like nas itself.
+set -euo pipefail
+
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+readonly SCRIPT_DIR
+
+server=${NAS_APPROVAL_NVIM_SERVER:-${NVIM:-}}
+
+runtime_dir=${XDG_RUNTIME_DIR:-/tmp}/nas-acp-nvim
+mkdir -p "$runtime_dir"
+# exec leaves no process behind to remove the session id file, so old ones are
+# swept here instead.
+find "$runtime_dir" -maxdepth 1 -type f -mmin +1440 -delete 2>/dev/null || true
+
+# exec keeps this pid, which makes the name unique for the life of the session.
+session_id_file=$runtime_dir/$$.session-id
+
+if [[ -n $server ]]; then
+    log_dir=${XDG_STATE_HOME:-$HOME/.local/state}/nas-approval
+    mkdir -p "$log_dir"
+    export NAS_APPROVAL_NVIM_SERVER=$server
+    for domain in hostexec network; do
+        "$SCRIPT_DIR/nas-approval-watch" "$domain" "$session_id_file" \
+            >/dev/null 2>>"$log_dir/$domain.log" &
+    done
+fi
+
+# nas requires its own flags to precede the profile name.
+exec nas --write-session-id "$session_id_file" "$@"

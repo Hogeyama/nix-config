@@ -196,9 +196,12 @@ return {
       provider = "claude-nas-acp",
       acp_providers = {
         ["claude-nas-acp"] = {
-          command = "nas",
+          -- nas の承認要求は ACP に乗らないので、ラッパーが購読して nvim へ回す。
+          command = "nas-acp-nvim",
           args = { "claude-acp" },
-          env = vim.fn.environ(),
+          env = vim.tbl_extend("force", vim.fn.environ(), {
+            NAS_APPROVAL_NVIM_SERVER = vim.v.servername,
+          }),
         },
       },
       behaviour = {

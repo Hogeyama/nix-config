@@ -1,0 +1,153 @@
+#!/usr/bin/env python3
+"""Report the number of pending nas approvals of one domain to a Neovim server.
+
+nas approvals for outbound network access and host command execution never
+travel over ACP, so an editor driving nas as an ACP agent has no way to learn
+that the agent is blocked on one. This subscribes to nas's approval stream and
+pushes the pending count into Neovim, which renders it and delegates the answer
+back to `nas <domain> review`.
+"""
+
+import json
+import os
+import re
+import subprocess
+import sys
+import threading
+import time
+
+DOMAINS = ("hostexec", "network")
+# The session id is interpolated into a Vim expression, so keep it to the
+# characters nas actually uses.
+SESSION_ID_PATTERN = re.compile(r"\A[A-Za-z0-9_-]+\Z")
+POLL_INTERVAL = 0.2
+OWNER_POLL_INTERVAL = 1.0
+DEFAULT_SESSION_TIMEOUT = 120.0
+
+
+def log(message):
+    print(f"nas-approval-watch: {message}", file=sys.stderr, flush=True)
+
+
+def read_session_id(path, timeout, owner_ppid):
+    """Wait for nas to write the session id, and return it.
+
+    Returns None when the file never arrives, the owner exits first, or the
+    id is not shaped the way nas writes it.
+    """
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        if os.getppid() != owner_ppid:
+            return None
+        try:
+            with open(path) as handle:
+                session_id = handle.readline().strip()
+        except OSError:
+            session_id = ""
+        if session_id:
+            if not SESSION_ID_PATTERN.match(session_id):
+                log(f"refusing unexpected session id: {session_id}")
+                return None
+            return session_id
+        time.sleep(POLL_INTERVAL)
+    return None
+
+
+def push(server, domain, session_id, count):
+    """Hand the count to Neovim, tolerating an editor that has already exited.
+
+    The session id travels with it so that the editor can hold `nas review` to
+    this session.
+    """
+    expr = (
+        "luaeval(\"require('config.nas_approval').set_pending(_A[1], _A[2], _A[3])\", "
+        f"['{domain}', '{session_id}', {count}])"
+    )
+    try:
+        subprocess.run(
+            ["nvim", "--server", server, "--remote-expr", expr],
+            stdout=subprocess.DEVNULL,
+            timeout=10,
+            check=True,
+        )
+    except (OSError, subprocess.SubprocessError) as error:
+        log(f"push failed: {error}")
+
+
+def stop_with_owner(process, owner_ppid):
+    """End the watch once the nas process this watcher belongs to is gone.
+
+    A watch started before its session registers never ends on its own, so an
+    nas that dies during startup would otherwise leave this running forever.
+    """
+    while process.poll() is None:
+        if os.getppid() != owner_ppid:
+            process.terminate()
+            return
+        time.sleep(OWNER_POLL_INTERVAL)
+
+
+def watch(domain, session_id, server, owner_ppid):
+    process = subprocess.Popen(
+        ["nas", domain, "watch", "--session", session_id],
+        stdout=subprocess.PIPE,
+        text=True,
+    )
+    threading.Thread(
+        target=stop_with_owner, args=(process, owner_ppid), daemon=True
+    ).start()
+
+    pending = set()
+    try:
+        for line in process.stdout:
+            try:
+                event = json.loads(line)
+            except ValueError:
+                log(f"unparsable line: {line.strip()}")
+                continue
+            before = len(pending)
+            if event.get("event") == "added":
+                request_id = (event.get("entry") or {}).get("requestId")
+                if request_id is not None:
+                    pending.add(request_id)
+            elif event.get("event") == "removed":
+                pending.discard(event.get("requestId"))
+            if len(pending) != before:
+                push(server, domain, session_id, len(pending))
+    finally:
+        process.stdout.close()
+        process.wait()
+    # EOF means the session ended; nothing is pending any more.
+    push(server, domain, session_id, 0)
+
+
+def main(argv):
+    if len(argv) != 2:
+        log("usage: nas-approval-watch <domain> <session-id-file>")
+        return 2
+    domain, session_id_file = argv
+    if domain not in DOMAINS:
+        log(f"unknown domain: {domain}")
+        return 2
+
+    server = os.environ.get("NAS_APPROVAL_NVIM_SERVER", "")
+    if not server:
+        log("NAS_APPROVAL_NVIM_SERVER is not set")
+        return 2
+
+    timeout = float(
+        os.environ.get("NAS_APPROVAL_SESSION_TIMEOUT", DEFAULT_SESSION_TIMEOUT)
+    )
+    owner_ppid = os.getppid()
+
+    session_id = read_session_id(session_id_file, timeout, owner_ppid)
+    if session_id is None:
+        log(f"no session id in {session_id_file}")
+        return 1
+
+    watch(domain, session_id, server, owner_ppid)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))
