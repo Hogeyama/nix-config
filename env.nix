@@ -147,7 +147,11 @@ rec {
     systemd.user.services.fcitx5 = {
       Unit = {
         Description = "Fcitx5 input method daemon";
-        After = [ "graphical-session-pre.target" ];
+        # WAYLAND_DISPLAY が uwsm_waitenv によって systemd user manager に投入されてから
+        # 起動する必要がある(投入前に起動すると waylandim が Wayland に接続できず、
+        # text-input-v3 を使う VS Code 等で IME が効かなくなる)。
+        # WantedBy だけでは順序付けにならないため After=graphical-session.target を明示する。
+        After = [ "graphical-session.target" ];
         PartOf = [ "graphical-session.target" ];
       };
       Service = {
