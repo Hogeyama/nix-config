@@ -283,6 +283,12 @@ in
       # ssh
       SSH_ASKPASS = "";
 
+      # Electron系アプリ(VS Code等)をWaylandネイティブで動かす。
+      # nixpkgsのwrapperがこれを見て --ozone-platform-hint=auto
+      # --enable-wayland-ime --wayland-text-input-version=3 等を付与する。
+      # WAYLAND_DISPLAY が無い環境ではwrapper側で無効化される。
+      NIXOS_OZONE_WL = "1";
+
       # nix-ld
       # 典型的な実行ファイルはそのまま動くようにしておく。
       # NIX_LD_LIBRARY_PATH は必要そうなものを適宜足していく運用にする。
@@ -384,6 +390,9 @@ in
           lockfile = vim.fn.getenv('HOME') .. "/nix-config/files/.config/nvim/lazy-lock.json",
         })
       '';
+    };
+    vscode = {
+      enable = true;
     };
     tmux = {
       enable = true;
