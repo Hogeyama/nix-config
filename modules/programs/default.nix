@@ -44,6 +44,7 @@
       pstree
       python3
       ripgrep
+      sbx
       scrot
       sops
       ssh-to-age

@@ -174,6 +174,7 @@ in
       python313Packages.grip
       python313Packages.httpie
       ripgrep
+      sbx
       scrot
       shellcheck
       shfmt

@@ -66,6 +66,7 @@ let
 
       chatgpt = final.callPackage ./chatgpt { };
       mo = import ./mo { inherit (final) fetchurl stdenvNoCC autoPatchelfHook; };
+      sbx = final.callPackage ./sbx { };
       illusion = import ./illusion { pkgs = final; };
       udev-gothic = import ./udev-gothic { inherit (final) fetchzip; };
       pass-secret-service = prev.pass-secret-service.override { python3 = patchedPython3; };
