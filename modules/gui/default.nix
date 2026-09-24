@@ -26,4 +26,9 @@
     enable = true;
     withUWSM = true;
   };
+
+  # Intel iGPU の VA-API ドライバ (iHD)。これが無いと Firefox の動画デコードが
+  # CPU に落ち、デコード済みフレームを毎回 GPU へ転送することになる。
+  # Intel 以外のホストでは読み込まれないだけで害はない。
+  hardware.graphics.extraPackages = [ pkgs.intel-media-driver ];
 }
