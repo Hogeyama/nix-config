@@ -40,6 +40,7 @@ window#waybar {
 
 #cpu,
 #custom-psi,
+#custom-gpu,
 #memory,
 #network,
 #pulseaudio,
@@ -52,12 +53,14 @@ window#waybar {
   color: @text;
 }
 
-#custom-psi.warning {
+#custom-psi.warning,
+#custom-gpu.warning {
   background-color: @yellow;
   color: @base;
 }
 
-#custom-psi.critical {
+#custom-psi.critical,
+#custom-gpu.critical {
   background-color: @red;
   color: @base;
 }

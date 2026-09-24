@@ -780,7 +780,7 @@ in
 
           modules-left = [ "hyprland/workspaces" ];
           modules-center = [ "clock" ];
-          modules-right = [ "cpu" "custom/psi" "memory" "pulseaudio" "network" "battery" "tray" ];
+          modules-right = [ "cpu" "custom/psi" "custom/gpu" "memory""pulseaudio" "network" "battery" "tray" ];
 
           clock = {
             format = "{:%Y-%m-%d %a %H:%M:%S}";
@@ -819,6 +819,37 @@ in
                 [ "$max" -gt 50 ] && cls=critical
                 printf '{"text":"C%d/D%d/M%d","class":"%s","tooltip":"cpu(some,avg10)=%s%%  disk(%%util,2s)=%d%%  mem(full,avg10)=%s%%"}\n' \
                   "$ci" "$io" "$mi" "$cls" "$cpu" "$io" "$mem"
+              done
+            '';
+            format = "{}";
+            return-type = "json";
+          };
+          "custom/gpu" = {
+            # Intel GPU の稼働率。RC6 (省電力状態) 滞在時間の差分から busy% を出す。
+            # intel_gpu_top は CAP_PERFMON が要るが、rc6_residency_ms は一般ユーザで読める。
+            # 周波数は RP0 (定格最大) 比を tooltip に出す。
+            # i915 の GT が無いホストでは空文字を出してモジュールを非表示にする。
+            exec = ''
+              gt=$(ls -d /sys/class/drm/card*/gt/gt0 2>/dev/null | head -1)
+              if [ -z "$gt" ]; then echo '{"text":""}'; exit 0; fi
+              max=$(cat "$gt/rps_RP0_freq_mhz")
+              prev=$(cat "$gt/rc6_residency_ms")
+              while true; do
+                sleep 2
+                curr=$(cat "$gt/rc6_residency_ms")
+                busy=$(( 100 - (curr - prev) / 20 ))
+                [ "$busy" -lt 0 ] && busy=0
+                [ "$busy" -gt 100 ] && busy=100
+                prev=$curr
+
+                freq=$(cat "$gt/rps_act_freq_mhz")
+                fpct=$(( freq * 100 / max ))
+
+                cls=normal
+                [ "$busy" -gt 50 ] && cls=warning
+                [ "$busy" -gt 80 ] && cls=critical
+                printf '{"text":"GPU %d%%","class":"%s","tooltip":"busy(1-rc6,2s)=%d%%  freq=%d/%dMHz (%d%%)"}\n' \
+                  "$busy" "$cls" "$busy" "$freq" "$max" "$fpct"
               done
             '';
             format = "{}";
