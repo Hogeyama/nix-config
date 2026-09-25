@@ -76,6 +76,9 @@
 
   programs.zsh.enable = true;
 
+  # Allow non-root users to mount FUSE filesystems with `-o allow_other`
+  programs.fuse.userAllowOther = true;
+
   # enable sshd
   services.openssh = {
     enable = true;
