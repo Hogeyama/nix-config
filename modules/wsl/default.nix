@@ -1,4 +1,4 @@
-{ env, ... }:
+{ config, env, ... }:
 {
   wsl = {
     enable = true;
@@ -7,4 +7,6 @@
     defaultUser = env.user.name;
     startMenuLaunchers = true;
   };
+  # WSLがresolv.confを生成するのでresolvconfは無効化する
+  networking.resolvconf.enable = !config.wsl.wslConf.network.generateResolvConf;
 }
