@@ -48,7 +48,31 @@ local commonEnv: Listing<EnvConfig> = new {
 // https://github.com/Hogeyama/nix-agent-sandbox/blob/develop/docs/migration/network-scopes.md
 // ---------------------------------------------------------------------------
 
+// GitHub へのアクセスはここに含まれる owner のリポジトリに限定する。
+// プロンプトインジェクションや情報漏洩の経路を狭めるため。
+local githubOwners: Listing<String> = new { "Hogeyama" }
+
+// GitHub への認証ヘッダを注入するスコープの雛形。
+// rules にマッチしないリクエストは手動確認にする。
+local githubAuthenticatedScope: Scope = new {
+  targets {}
+  fallback = "review"
+  secrets = new {
+    ["github-token"] = "inject"
+  }
+  inject {
+    new {
+      name = "authorization"
+      value = "template:Bearer ${github-token}"
+    }
+  }
+}
+
 local commonNetwork: NetworkConfig = new {
+  requestBodyAudit {
+    enable = true
+  }
+
   fallback = "review"
 
   scopes {
@@ -73,6 +97,21 @@ local commonNetwork: NetworkConfig = new {
         "clients2.google.com"
         "accounts.google.com"
         "android.clients.google.com"
+        "content-autofill.googleapis.com"
+        "dl.google.com"
+        "edgedl.me.gvt1.com"
+      }
+      fallback = "deny"
+    }
+
+    // VS Codeが勝手にアクセスするやつ
+    ["vscode"] {
+      targets {
+        "mobile.events.data.microsoft.com"
+        "default.exp-tas.com"
+        "westus-0.in.applicationinsights.azure.com"
+        "o33249.ingest.us.sentry.io"
+        "embeddings.vscode-cdn.net" // これは許可してもいいのかも
       }
       fallback = "deny"
     }
@@ -89,29 +128,102 @@ local commonNetwork: NetworkConfig = new {
       fallback = "allow"
     }
 
-    ["github"] {
-      targets {
-        "api.github.com"
-        "github.com"
-      }
-      fallback = "allow"
-      secrets = new {
-        ["github-token"] = "inject"
-      }
-      inject {
-        new {
-          name = "authorization"
-          value = "template:Bearer ${github-token}"
+    // REST / GraphQL API。githubOwners のリポジトリだけ自動許可する。
+    ["github-api"] = (githubAuthenticatedScope) {
+      targets { "api.github.com:443" }
+      rules {
+        ["rest"] {
+          match {
+            methods { "GET"; "HEAD" }
+            paths {
+              "/repos/{owner}/**"
+              "/users/{owner}/**"
+              "/orgs/{owner}/**"
+              "/user"
+              // 以下は GitHub Copilot の動作に必要
+              "/copilot_internal/user"
+              "/copilot_internal/v2/token"
+            }
+            captures { ["owner"] = githubOwners }
+          }
+          onMatch = "allow"
+        }
+
+        ["graphql"] {
+          match {
+            methods { "POST" }
+            paths { "/graphql" }
+            body { format = "json" }
+          }
+          onMatch = "allow"
+          onIndeterminate = "review"
+          expect {
+            new BodyExpect {
+              graphql {
+                operations { "query" }
+                // 自動許可する取得経路。
+                // うっかり starredRepos などを許可するとプロンプトインジェクションの経路になる。
+                fieldPaths {
+                  "/repository/nameWithOwner"
+                  "/repository/url"
+                  "/repository/issues/nodes/number"
+                  "/repository/issues/nodes/title"
+                  "/repository/issues/nodes/body"
+                  "/repository/issues/nodes/comments/nodes/body"
+                  "/repository/issues/pageInfo/endCursor"
+                  "/repository/issues/pageInfo/hasNextPage"
+                  "/repository/pullRequests/nodes/number"
+                  "/repository/pullRequests/nodes/title"
+                  "/repository/pullRequests/nodes/body"
+                  "/repository/pullRequests/nodes/comments/nodes/body"
+                  "/repository/pullRequests/pageInfo/endCursor"
+                  "/repository/pullRequests/pageInfo/hasNextPage"
+                  "/repository/pullRequests/nodes/url"
+                  "/repository/pullRequests/nodes/state"
+                  "/repository/pullRequests/nodes/id"
+                  "/repository/pullRequests/nodes/baseRefName"
+                  "/repository/pullRequests/nodes/headRefName"
+                  "/repository/pullRequests/nodes/isCrossRepository"
+                  "/repository/pullRequests/nodes/headRepositoryOwner/id"
+                  "/repository/pullRequests/nodes/headRepositoryOwner/login"
+                  "/repository/pullRequests/nodes/headRepositoryOwner/name"
+                  "/repository/defaultBranchRef/name"
+                  "/repository/parent/id"
+                  "/repository/parent/name"
+                  "/repository/parent/owner/id"
+                  "/repository/parent/owner/login"
+                  "/repository/object/text"
+                  "/organization/login"
+                  "/user/login"
+                  "/repositoryOwner/login"
+                }
+                // 各 root の出現ごとに、所有者を名指す引数が存在して
+                // githubOwners に含まれることを要求する。
+                fieldArguments {
+                  ["/repository"]      { ["owner"] = githubOwners }
+                  ["/organization"]    { ["login"] = githubOwners }
+                  ["/user"]            { ["login"] = githubOwners }
+                  ["/repositoryOwner"] { ["login"] = githubOwners }
+                }
+              }
+              onViolation = "review"
+            }
+          }
         }
       }
+    }
+
+    // Web ページと git over HTTPS。githubOwners のリポジトリだけ自動許可する。
+    ["github"] = (githubAuthenticatedScope) {
+      targets { "github.com:443" }
       rules {
-        ["git-transport"] {
+        // git over HTTPS。ref の取得は read に含まれるが、Basic 認証を付けるため
+        // より狭いルールとして切り出す。
+        ["git-refs"] {
           match {
-            paths {
-              "/*/*/info/refs"
-              "/*/*/git-upload-pack"
-              "/*/*/git-receive-pack"
-            }
+            methods { "GET" }
+            paths { "/{owner}/{repo}/info/refs" }
+            captures { ["owner"] = githubOwners }
           }
           onMatch = "allow"
           secrets = new {
@@ -124,7 +236,61 @@ local commonNetwork: NetworkConfig = new {
             }
           }
         }
+        ["git-pack"] {
+          match {
+            methods { "POST" }
+            paths {
+              "/{owner}/{repo}/git-upload-pack"
+              "/{owner}/{repo}/git-receive-pack"
+            }
+            captures { ["owner"] = githubOwners }
+          }
+          onMatch = "allow"
+          secrets = new {
+            ["github-basic"] = "inject"
+          }
+          inject {
+            new {
+              name = "authorization"
+              value = "template:Basic ${github-basic}"
+            }
+          }
+        }
+        ["read"] {
+          match {
+            methods { "GET"; "HEAD" }
+            paths { "/{owner}/**" }
+            captures { ["owner"] = githubOwners }
+          }
+          onMatch = "allow"
+        }
       }
+    }
+
+    // raw / archive / gist の配信も host 一括 allow にしない。
+    ["github-content"] {
+      targets {
+        "raw.githubusercontent.com:443"
+        "codeload.github.com:443"
+        "gist.github.com:443"
+        "gist.githubusercontent.com:443"
+      }
+      fallback = "review"
+      rules {
+        ["read"] {
+          match {
+            methods { "GET"; "HEAD" }
+            paths { "/{owner}/**" }
+            captures { ["owner"] = githubOwners }
+          }
+          onMatch = "allow"
+        }
+      }
+    }
+
+    // リリースのアップロード。認証ヘッダは付けるが許可は手動。
+    ["github-uploads"] = (githubAuthenticatedScope) {
+      targets { "uploads.github.com:443" }
     }
 
     ["allowed"] {
@@ -148,9 +314,6 @@ local commonNetwork: NetworkConfig = new {
 
         // GitHub
         "release-assets.githubusercontent.com"
-        "codeload.github.com"
-        "gist.github.com"
-        "raw.githubusercontent.com"
         // Copilot
         "api.githubcopilot.com"
         "telemetry.individual.githubcopilot.com"
@@ -221,7 +384,6 @@ local commonHostexec: HostExecConfig = new {
         keys = new Listing { "WAYLAND_DISPLAY"; "XDG_RUNTIME_DIR" }
       }
       approval = "allow"
-      fallback = "container"
     }
     new {
       // git commit/tag -S が呼ぶ形だけを通す:
@@ -235,7 +397,6 @@ local commonHostexec: HostExecConfig = new {
         mode = "workspace-or-session-tmp"
       }
       approval = "allow"
-      fallback = "container"
     }
     new {
       // mo の危険引数を遮断：
@@ -252,7 +413,6 @@ local commonHostexec: HostExecConfig = new {
         mode = "workspace-or-session-tmp"
       }
       approval = "deny"
-      fallback = "deny"
     }
     new {
       id = "mo"
@@ -263,7 +423,6 @@ local commonHostexec: HostExecConfig = new {
         mode = "workspace-or-session-tmp"
       }
       approval = "allow"
-      fallback = "container"
     }
   }
 }
@@ -284,17 +443,8 @@ local baseProfile: Profile = new {
     enable = false
     shared = true
   }
-  gcloud {
-    mountConfig = false
-  }
-  aws {
-    mountConfig = false
-  }
   display {
     sandbox = "none"
-  }
-  gpg {
-    forwardAgent = false
   }
   extraMounts {
     // gitignoreが居る
@@ -326,7 +476,7 @@ local baseProfile: Profile = new {
   mask = new MaskConfig {
     maskfs = false
     proxy = true
-    filter = false
+    filter = true
   }
   guide {
     enable = true
@@ -372,6 +522,10 @@ profiles {
 
   ["qwen"] = (baseProfile) {
     agent = "claude"
+    // OpenRouter の API key を使うので、proxy による Claude 認証情報の注入を止める
+    agentState {
+      auth = "shared"
+    }
     agentArgs = new Listing { "--dangerously-skip-permissions" }
     env = (baseProfile.env) {
       new { key = "OPENROUTER_API_KEY";   valCmd = "pass openrouter_api_key" }
