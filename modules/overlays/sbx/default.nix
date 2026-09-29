@@ -13,11 +13,11 @@
 }:
 stdenvNoCC.mkDerivation rec {
   pname = "sbx";
-  version = "0.43.0";
+  version = "0.45.1";
 
   src = fetchurl {
     url = "https://github.com/docker/sbx-releases/releases/download/v${version}/DockerSandboxes-linux-amd64.tar.gz";
-    sha256 = "sha256-PrFbhETpaaqo1jclC+8PK/kMsDCroKcBala45fzdJf4=";
+    sha256 = "sha256-pUcMq+MtJdJC4FoQ0aL+tnoz4eZo4OjCSI4OAnEudPc=";
   };
 
   sourceRoot = "docker-sbx";
