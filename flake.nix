@@ -65,6 +65,7 @@
           ./modules/locale
           ./modules/syslog
           ./modules/programs
+          ./modules/claude-code
           ./modules/fonts
           ./modules/keyboard
           ./modules/configuration
