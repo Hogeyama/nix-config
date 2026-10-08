@@ -8,3 +8,6 @@ Session.vim
 
 .agent-sandbox.yml
 **/.claude/settings.local.json
+
+**/.claude/.cc-writes/
+**/.local/tmp/
