@@ -11,3 +11,17 @@ Session.vim
 
 **/.claude/.cc-writes/
 **/.local/tmp/
+
+# Claude Code のサンドボックスがリポジトリ直下に置く空のマウントポイント
+/.bash_profile
+/.bashrc
+/.claude/
+/.gitconfig
+/.gitmodules
+/.idea
+/.mcp.json
+/.profile
+/.ripgreprc
+/.vscode
+/.zprofile
+/.zshrc
