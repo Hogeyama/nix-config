@@ -133,6 +133,7 @@ in
       gopls
       gron
       hadolint
+      herdr
       hr
       htop
       inotify-tools
@@ -181,6 +182,7 @@ in
       simplescreenrecorder
       sqlite
       ssh-to-age
+      terminal-browser
       textql
       time
       tldr
