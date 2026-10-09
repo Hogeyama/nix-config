@@ -65,8 +65,10 @@ let
       vscode-insiders-nightly = inputs.vscode-insiders-nightly.packages.${system}.vscode-insider;
 
       chatgpt = final.callPackage ./chatgpt { };
+      herdr = final.callPackage ./herdr { };
       mo = import ./mo { inherit (final) fetchurl stdenvNoCC autoPatchelfHook; };
       sbx = final.callPackage ./sbx { };
+      terminal-browser = final.callPackage ./terminal-browser { };
       illusion = import ./illusion { pkgs = final; };
       udev-gothic = import ./udev-gothic { inherit (final) fetchzip; };
       pass-secret-service = prev.pass-secret-service.override { python3 = patchedPython3; };

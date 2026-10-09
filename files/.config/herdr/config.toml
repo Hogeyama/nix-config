@@ -1,0 +1,30 @@
+# https://herdr.dev/docs/configuration/
+# 全キーとデフォルト値は `herdr --default-config` で見られる。
+# herdr自身(設定画面など)やterminal-browserがこのファイルを書き換えることがある。
+
+onboarding = false
+
+[keys]
+# ctrl+qを2回押すとctrl+qそのものがペインに送られる(terminal-browserの終了など)。
+prefix = "ctrl+q"
+
+# terminal-browserを右に開く。公式のherdrプラグイン
+# (zenbu-labs/terminal-browser/herdr-plugin)と同じことをしている。プラグインとして登録すると
+# 状態(~/.config/herdr/plugins.json)とcurl | bashのインストーラが付いてくるので、
+# カスタムコマンドで直接呼ぶ。
+# terminal-browserは呼び出し元のペインをHERDR_PANE_ID/HERDR_TAB_IDで知るが、カスタムコマンドに
+# 渡されるのはHERDR_ACTIVE_*の方なので詰め替える。
+# 割り当ては、デフォルトで空いているprefix+shift+英字(B=browser)。
+# pixelはペインが半分より広いと描画できない(herdrのkitty画像の保存上限が小さい)ので、
+# zoomや隣のペインを閉じると消える。
+# https://github.com/zenbu-labs/terminal-code/issues/11
+[[keys.command]]
+key = "prefix+shift+b"
+type = "shell"
+command = 'HERDR_PANE_ID="$HERDR_ACTIVE_PANE_ID" HERDR_TAB_ID="$HERDR_ACTIVE_TAB_ID" exec terminal-browser open --split right'
+description = "open terminal-browser (right split)"
+
+[terminal]
+# 既定でtrueだが、terminal-browserは起動時にこの行が無いと[experimental]に
+# 追記してくるので明示しておく。
+kitty_graphics = true
