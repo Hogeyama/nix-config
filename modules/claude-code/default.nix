@@ -6,6 +6,25 @@ let
   managedSettings = name: value: {
     "claude-code/managed-settings.d/${name}.json".text = builtins.toJSON value;
   };
+
+  # 複合コマンドの先頭で cd すると、その後の相対パスは実行してみるまで解決できないので、
+  # blockReadsOutsideWorkingDirectories が毎回人間に確認を求めてくる。拒否理由をモデルに
+  # 返して絶対パスで書き直させれば、確認は出ない。cd 単独のコマンドは通す。
+  rejectCdCompound = pkgs.writeShellApplication {
+    name = "claude-reject-cd-compound";
+    runtimeInputs = [ pkgs.jq pkgs.gnugrep ];
+    text = ''
+      command=$(jq -r '.tool_input.command // empty')
+      lone_cd='^[[:space:]]*cd([[:space:]]+[^;&|]*)?[[:space:]]*$'
+      if [[ $command != *$'\n'* && $command =~ $lone_cd ]]; then
+        exit 0
+      fi
+      if printf '%s\n' "$command" | grep -Eq '(^|[;&|(])[[:space:]]*cd([[:space:]]|$)'; then
+        echo "cd を含む複合コマンドは使わない。cd の後の相対パスは実行前に解決できず、読み取り制限の確認が人間に出る。cd を外して絶対パスで書くか、git -C などを使って書き直すこと。" >&2
+        exit 2
+      fi
+    '';
+  };
 in
 {
   # サンドボックスがプロキシの中継に使う。~ は denyRead で ~/.nix-profile の socat が
@@ -63,5 +82,18 @@ in
           }
         ];
       };
+    }
+    // managedSettings "40-hooks" {
+      hooks.PreToolUse = [
+        {
+          matcher = "Bash";
+          hooks = [
+            {
+              type = "command";
+              command = "${rejectCdCompound}/bin/claude-reject-cd-compound";
+            }
+          ];
+        }
+      ];
     };
 }
