@@ -668,9 +668,9 @@ in
           precmd_functions+=(_precmd_compinit)
         fi
 
-        # tmux起動中はCtrl-Oでpopupを開いてコマンドラインを編集する
-        if [[ -n "''$TMUX" ]]; then
-            export VISUAL="nvimw --tmux-popup --light-mode --"
+        # tmux / herdr 起動中はCtrl-Oでpopupを開いてコマンドラインを編集する
+        if [[ -n "''$TMUX" || "''${HERDR_ENV:-}" == 1 ]]; then
+            export VISUAL="nvimw --popup --light-mode --"
             autoload -Uz edit-command-line
             zle -N edit-command-line
             bindkey "^O" edit-command-line

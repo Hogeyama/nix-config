@@ -4,13 +4,13 @@ NVIM=${NVIM:-"${NVIM_LISTEN_ADDRESS:-}"}
 NVIMW_TMPDIR=$(mktemp -d -t nvimw.XXXXX)
 trap 'rm -rf "$NVIMW_TMPDIR"' EXIT
 
-declare -g TMUX_POPUP=0
+declare -g POPUP=0
 declare -g -a NVIM_ARGS
 parse_args() {
 	while [[ $# -gt 0 ]]; do
 		case $1 in
-			--tmux-popup)
-				TMUX_POPUP=1
+			--popup | --tmux-popup)
+				POPUP=1
 				;;
 			--light-mode)
 				export NVIM_LIGHT_MODE=1
@@ -43,20 +43,45 @@ ansifilter_if_available() {
 	fi
 }
 
+POPUP_NVIM_ARGS=(
+	-c 'set showtabline=0'
+	-c 'set winbar=""'
+	-c 'set statusline=""'
+	-c 'set laststatus=0'
+	-c 'set noshowcmd'
+	-c 'startinsert'
+	-c 'noremap q :wq<CR>'
+	-c 'inoremap <C-q> <Esc>:wq<CR>'
+)
+
 open_in_new_instance_on_tmux_popup() {
 	tmux popup -w90% -h90% -d "$PWD" -E \
 		env NVIM_LIGHT_MODE="${NVIM_LIGHT_MODE:-}" \
-		nvim \
-		-c 'set showtabline=0' \
-		-c 'set winbar=""' \
-		-c 'set statusline=""' \
-		-c 'set laststatus=0' \
-		-c 'set noshowcmd' \
-		-c 'set winbar=""' \
-		-c 'startinsert' \
-		-c 'noremap q :wq<CR>' \
-		-c 'inoremap <C-q> <Esc>:wq<CR>' \
-		"$@"
+		nvim "${POPUP_NVIM_ARGS[@]}" "$@"
+}
+
+shell_quote() {
+	local s=${1//\'/\'\\\'\'}
+	printf "'%s' " "$s"
+}
+
+# herdr は任意コマンドをポップアップで開く API を持たないため、my-fzf-wrapper の
+# herdr プラグイン (fzfw.popup) に実行するスクリプトを環境変数で渡す。
+# `herdr plugin pane open` は起動直後に返るので、終了時に作られるマーカーを待つ。
+open_in_new_instance_on_herdr_popup() {
+	local marker="$NVIMW_TMPDIR/done"
+	local script arg
+	script="trap $(shell_quote "touch $(shell_quote "$marker")") EXIT; trap 'exit 129' HUP INT TERM; "
+	script+="NVIM_LIGHT_MODE=$(shell_quote "${NVIM_LIGHT_MODE:-}") nvim "
+	for arg in "${POPUP_NVIM_ARGS[@]}" "$@"; do
+		script+=$(shell_quote "$arg")
+	done
+	herdr plugin pane open --plugin fzfw.popup --entrypoint run --placement popup \
+		--width 90% --height 90% --cwd "$PWD" \
+		--env "FZFW_POPUP_SCRIPT=$script" >/dev/null
+	while [[ ! -e $marker ]]; do
+		sleep 0.05
+	done
 }
 
 open_in_new_instance() {
@@ -77,8 +102,10 @@ open_in_existent_instance() {
 main() {
 	parse_args "$@"
 
-	if [[ -n ${TMUX:-} ]] && [[ ${TMUX_POPUP:-} -eq 1 ]]; then
+	if [[ -n ${TMUX:-} ]] && [[ ${POPUP:-} -eq 1 ]]; then
 		open_in_new_instance_on_tmux_popup "${NVIM_ARGS[@]}"
+	elif [[ ${HERDR_ENV:-} == 1 ]] && [[ ${POPUP:-} -eq 1 ]]; then
+		open_in_new_instance_on_herdr_popup "${NVIM_ARGS[@]}"
 	elif [[ -n "${VSCODE_INJECTION:-}" ]] || [[ -z "${NVIM:-}" ]]; then
 		open_in_new_instance "${NVIM_ARGS[@]}"
 	elif [[ -t 0 ]]; then
