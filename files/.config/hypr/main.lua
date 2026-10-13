@@ -141,11 +141,10 @@ for name, orientation in pairs(MONITOR_ORIENTATION) do
   hl.workspace_rule({ workspace = "m[" .. name .. "]", layout_opts = { orientation = orientation } })
 end
 
---- ウィンドウが1枚だけのときも master ペインの大きさに収める。
---- 全画面はでかすぎるので、2枚目が既にあるかのように片側を空ける。
+--- ウィンドウが1枚だけのときは、デフォルトでは画面全体に広げる。
+--- SUPER+SHIFT+A でモニタ毎に、master ペインの大きさに収めて片側を空けられる。
 --- 空ける幅は master の割合に揃えてあるので、2枚目を開いても1枚目は動かない。
 --- 全画面が欲しいときは今まで通り SUPER+F (fullscreen)。gaps は無視される。
---- SUPER+SHIFT+A でモニタ毎にこの挙動を off にでき、off の間は1枚でも画面全体に広がる。
 ---
 --- 実装: w[tv1] = 「タイル表示のウィンドウがちょうど1枚」のワークスペースに
 --- 非対称な gaps_out を当てる。gaps_out は px 指定なのでモニタ毎に計算が要る。
@@ -155,8 +154,8 @@ local OPPOSITE_ORIENTATION = { left = "right", right = "left", top = "bottom", b
 -- 1枚のときにウィンドウを置く側。SUPER+A でモニタ毎に反転させる。
 local solo_flipped = {}
 
--- true のモニタでは片側を空けない (1枚でも全体に広げる)。SUPER+SHIFT+A で切替。
-local solo_disabled = {}
+-- true のモニタでは片側を空ける。デフォルトは無効。SUPER+SHIFT+A で切替。
+local solo_enabled = {}
 
 -- master の割合。Hyprland はこれをワークスペース毎に保持していて読み出す API が
 -- ないので、SUPER+SHIFT+H/L の増減をこちら側でも同じように追跡する。
@@ -221,7 +220,7 @@ local function emit_solo_master_rules()
     end
 
     local gaps = { top = GAPS_OUT, right = GAPS_OUT, bottom = GAPS_OUT, left = GAPS_OUT }
-    if solo_disabled[m.name] then
+    if not solo_enabled[m.name] then
       -- 通常の gaps のまま。rule は消せないので素の値で上書きする。
     elseif orientation == "left" then
       gaps.right = math.floor(width * slave)
@@ -321,7 +320,7 @@ end)
 hl.bind(mainMod .. " + SHIFT + A", function()
   local m = hl.get_active_monitor()
   if m then
-    solo_disabled[m.name] = not solo_disabled[m.name]
+    solo_enabled[m.name] = not solo_enabled[m.name]
     apply_solo_master_rules()
   end
 end)
