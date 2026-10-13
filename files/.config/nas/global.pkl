@@ -221,7 +221,6 @@ local commonHostexec: HostExecConfig = new {
         keys = new Listing { "WAYLAND_DISPLAY"; "XDG_RUNTIME_DIR" }
       }
       approval = "allow"
-      fallback = "container"
     }
     new {
       // git commit/tag -S が呼ぶ形だけを通す:
@@ -235,7 +234,6 @@ local commonHostexec: HostExecConfig = new {
         mode = "workspace-or-session-tmp"
       }
       approval = "allow"
-      fallback = "container"
     }
     new {
       // mo の危険引数を遮断：
@@ -252,7 +250,6 @@ local commonHostexec: HostExecConfig = new {
         mode = "workspace-or-session-tmp"
       }
       approval = "deny"
-      fallback = "deny"
     }
     new {
       id = "mo"
@@ -263,7 +260,6 @@ local commonHostexec: HostExecConfig = new {
         mode = "workspace-or-session-tmp"
       }
       approval = "allow"
-      fallback = "container"
     }
   }
 }
@@ -284,17 +280,8 @@ local baseProfile: Profile = new {
     enable = false
     shared = true
   }
-  gcloud {
-    mountConfig = false
-  }
-  aws {
-    mountConfig = false
-  }
   display {
     sandbox = "none"
-  }
-  gpg {
-    forwardAgent = false
   }
   extraMounts {
     // gitignoreが居る
@@ -367,22 +354,6 @@ profiles {
     mode = "acp"
     guide {
       enable = false
-    }
-  }
-
-  ["qwen"] = (baseProfile) {
-    agent = "claude"
-    agentArgs = new Listing { "--dangerously-skip-permissions" }
-    env = (baseProfile.env) {
-      new { key = "OPENROUTER_API_KEY";   valCmd = "pass openrouter_api_key" }
-      new { key = "ANTHROPIC_BASE_URL";   val    = "https://openrouter.ai/api" }
-      new { key = "ANTHROPIC_AUTH_TOKEN"; valCmd = "pass openrouter_api_key" }
-      new { key = "ANTHROPIC_API_KEY";    val    = "" }
-      new { key = "ANTHROPIC_MODEL";      val    = "qwen/qwen3.8-max" }
-      new { key = "ANTHROPIC_DEFAULT_HAIKU_MODEL";  val = "qwen/qwen3.8-max" }
-      new { key = "ANTHROPIC_DEFAULT_SONNET_MODEL"; val = "qwen/qwen3.8-max" }
-      new { key = "ANTHROPIC_DEFAULT_OPUS_MODEL";   val = "qwen/qwen3.8-max" }
-      new { key = "CLAUDE_CODE_SUBAGENT_MODEL";     val = "qwen/qwen3.8-max" }
     }
   }
 
