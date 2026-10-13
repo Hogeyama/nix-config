@@ -2090,9 +2090,10 @@ keybind = alt+7=goto_tab:7
 keybind = alt+digit_8=goto_tab:8
 keybind = alt+8=goto_tab:8
 keybind = alt+9=last_tab
-keybind = ctrl+enter=toggle_fullscreen
+keybind = ctrl+enter=unbind
 keybind = ctrl+shift+enter=toggle_split_zoom
-keybind = ctrl+shift+p=toggle_command_palette
+keybind = ctrl+shift+p=unbind
+keybind = ctrl+shift+q=toggle_command_palette
 
 # Remap modifier keys within Ghostty. This allows you to swap or reassign
 # modifier keys at the application level without affecting system-wide
