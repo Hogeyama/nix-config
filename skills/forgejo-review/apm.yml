@@ -1,0 +1,4 @@
+name: forgejo-review
+version: 0.1.0
+description: 使い捨ての Forgejo に PR を立て、人間がコミット単位でレビューできるようにする
+target: claude

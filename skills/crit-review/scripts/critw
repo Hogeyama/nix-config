@@ -1,0 +1,212 @@
+#!/usr/bin/env bash
+# crit で文書の人間レビューを回すヘルパー。
+#
+# crit は外に向けて三つの通信をする。crit.md へレビューをアップロードする共有機能、
+# 現在のブランチの PR を探すための gh 呼び出し、GitHub Releases への更新確認である。
+# 文書を外部に出さないため、起動時に share 先を到達不能なループバックアドレスに向け、
+# gh の認証経路を全部塞ぎ、更新確認を無効にする。
+#
+# gh 呼び出しと更新確認はデーモンを新しく立ち上げるときだけ起き、動いているデーモンに
+# 再接続しても起きない。share 先はデーモンが起動時の値を持ち続け、後から変えられない。
+# そのため起動前に既存デーモンの share 先を検査し、違っていれば止めてから起動する。
+# 更新確認の無効化は /api/config に映らないので検査できないが、再接続では起きないので
+# 起動時の環境変数だけで足りる。
+set -uo pipefail
+
+# 設定ファイルで share_url を空にしても CLI は既定の crit.md に戻るので、空ではなく
+# 到達不能な URL を渡す。UI の Share ボタンも CLI の crit share もここへ向かって失敗する。
+CW_DEAD_SHARE_URL="http://127.0.0.1:9"
+
+# 更新確認はデーモンを立ち上げる呼び出しで走る。どの crit 呼び出しがデーモンを
+# 立ち上げることになっても効くよう、個々の呼び出しではなくここで環境に入れる。
+# CRIT_NO_INTEGRATION_CHECK はローカルの設定検査だけだが、stderr の Tip が減る。
+export CRIT_NO_UPDATE_CHECK=1
+export CRIT_NO_INTEGRATION_CHECK=1
+
+# GH_TOKEN が空だと gh は GITHUB_TOKEN、次いで保存済みの認証情報へ落ちる。
+# 三つとも塞ぐと gh はリクエストを送る前に終了する。デーモンは crit plan が spawn し
+# 環境を引き継ぐので、ここで入れておけば足りる。
+export GH_TOKEN=''
+export GITHUB_TOKEN=''
+export GH_CONFIG_DIR="${XDG_RUNTIME_DIR:-/tmp}/critw/gh-config"
+
+cw_die() {
+  echo "Error: $*" >&2
+  return 1
+}
+
+cw_run_dir() {
+  echo "${XDG_RUNTIME_DIR:-/tmp}/critw"
+}
+
+cw_slug() { cat "$(cw_run_dir)/slug" 2>/dev/null; }
+cw_port() { cat "$(cw_run_dir)/port" 2>/dev/null; }
+cw_report_file() { echo "$(cw_run_dir)/report.txt"; }
+
+# 動いているセッションを「port<TAB>プラン名」の行で列挙する。
+# crit はプランごとにデーモンを立てるので、デーモンは一つとは限らない。
+# status の daemon ブロックは複数あると running:false になるので使わず、sessions を読む。
+cw_sessions() {
+  crit status --json 2>/dev/null | python3 -c '
+import json, os, sys
+for s in json.load(sys.stdin).get("sessions") or []:
+    args = s.get("args") or []
+    plan = os.path.basename(os.path.dirname(args[0])) if args else ""
+    print(str(s.get("port") or "") + "\t" + plan)
+' 2>/dev/null
+}
+
+# slug のプランを持つデーモンのポート。なければ空。
+cw_slug_port() {
+  cw_sessions | awk -F '\t' -v slug="$1" '$2 == slug { print $1; exit }'
+}
+
+cw_config_of() {
+  curl -s --max-time 5 "http://127.0.0.1:$1/api/config"
+}
+
+cw_share_url_of() {
+  cw_config_of "$1" | sed -n 's/.*"share_url":"\([^"]*\)".*/\1/p'
+}
+
+# デーモンの share 先が潰れていれば 0。
+cw_daemon_safe() {
+  [ "$(cw_share_url_of "$1")" = "$CW_DEAD_SHARE_URL" ]
+}
+
+# share 先が潰れていないデーモンが一つでもあれば全部止める。
+# 同じ slug のデーモンが残っていれば crit はそれに接続するので、share 先が生きたまま
+# になる。別の slug のデーモンでも、同じ crit.md 設定を持つ以上は残す理由がない。
+# 2 ラウンド目以降は同じデーモンに接続するので、ユーザーのタブを保ったまま続けられる。
+cw_ensure_daemon_safe() {
+  local port plan
+  while IFS=$'\t' read -r port plan; do
+    [ -n "$port" ] || continue
+    cw_daemon_safe "$port" && continue
+    echo "share 先が潰れていないデーモン (port $port, plan $plan) を止める" >&2
+    crit stop --all >/dev/null 2>&1
+    return 0
+  done < <(cw_sessions)
+}
+
+cw_wait_daemon() {
+  local port
+  for _ in $(seq 1 60); do
+    port="$(cw_slug_port "$1")"
+    if [ -n "$port" ] && curl -s --max-time 2 -o /dev/null "http://127.0.0.1:$port/api/config"; then
+      echo "$port"
+      return 0
+    fi
+    sleep 0.5
+  done
+  return 1
+}
+
+usage() {
+  cat >&2 <<'USAGE'
+Usage:
+  critw request-review <file>
+      crit を起動して file を文書としてレビューに出す。URL を出力してから、
+      ユーザーが Finish Review を押すまで待機し、終了時にコメントと承認可否を出力する。
+      2 回目以降は同じコマンドで次のラウンドに入る。
+  critw report
+      直近の request-review が出した URL を表示する。
+  critw comments [--json]
+      未解決コメントを一覧する。
+  critw reply <comment-id>
+      stdin の本文でコメントに返信する。resolve はしない。
+  critw down
+      デーモンを止める。
+USAGE
+  exit 1
+}
+
+cmd_request_review() {
+  local file="${1:-}" slug run_dir port share_url pid rc report
+  [ -n "$file" ] || { cw_die "レビューするファイルを指定する"; return 1; }
+  [ -f "$file" ] || { cw_die "ファイルがない: $file"; return 1; }
+  command -v crit >/dev/null || { cw_die "crit がない"; return 1; }
+
+  # crit は slug を小文字に正規化して保存する。comments や reply で同じ名前を使えるよう
+  # こちらも小文字にそろえる。
+  slug="$(basename "$file")"
+  slug="$(printf '%s' "${slug%.*}" | tr '[:upper:]' '[:lower:]')"
+  run_dir="$(cw_run_dir)"
+  mkdir -p "$GH_CONFIG_DIR"
+  echo "$slug" >"$run_dir/slug"
+
+  cw_ensure_daemon_safe
+
+  crit plan --share-url "$CW_DEAD_SHARE_URL" --no-open --name "$slug" "$file" \
+    >"$run_dir/crit.out" 2>"$run_dir/crit.err" &
+  pid=$!
+  trap 'kill "$pid" 2>/dev/null' INT TERM
+
+  port="$(cw_wait_daemon "$slug")" || {
+    kill "$pid" 2>/dev/null
+    cat "$run_dir/crit.err" >&2
+    cw_die "crit デーモンが起動しない"
+    return 1
+  }
+  if ! cw_daemon_safe "$port"; then
+    kill "$pid" 2>/dev/null
+    crit stop --all >/dev/null 2>&1
+    cw_die "share_url が潰れていない: '$(cw_share_url_of "$port")'"
+    return 1
+  fi
+  share_url="$(cw_share_url_of "$port")"
+  echo "$port" >"$run_dir/port"
+
+  report="$(cw_report_file)"
+  {
+    echo "URL:  http://localhost:$port"
+    echo "slug: $slug"
+    echo "share_url: $share_url (到達不能)"
+    echo
+    echo "ブラウザでコメントを付け、Finish Review を押してもらう。"
+  } >"$report"
+  cat "$report"
+
+  wait "$pid"
+  rc=$?
+  echo
+  echo "--- review result ---"
+  cat "$run_dir/crit.out"
+  echo
+  grep -E '^approved:' "$run_dir/crit.err" || true
+  return "$rc"
+}
+
+cmd_report() {
+  cat "$(cw_report_file)" 2>/dev/null || cw_die "report がない。先に request-review を実行する"
+}
+
+cmd_comments() {
+  local slug
+  slug="$(cw_slug)" || true
+  [ -n "$slug" ] || { cw_die "slug がない。先に request-review を実行する"; return 1; }
+  crit comments --plan "$slug" "$@"
+}
+
+cmd_reply() {
+  local id="${1:-}" slug body
+  [ -n "$id" ] || { cw_die "comment-id を指定する"; return 1; }
+  slug="$(cw_slug)" || true
+  [ -n "$slug" ] || { cw_die "slug がない。先に request-review を実行する"; return 1; }
+  body="$(cat)"
+  [ -n "$body" ] || { cw_die "本文を stdin で渡す"; return 1; }
+  crit comment --plan "$slug" --reply-to "$id" "$body"
+}
+
+cmd_down() {
+  crit stop --all
+}
+
+case "${1:-}" in
+  request-review) shift; cmd_request_review "$@" ;;
+  report) cmd_report ;;
+  comments) shift; cmd_comments "$@" ;;
+  reply) shift; cmd_reply "$@" ;;
+  down) cmd_down ;;
+  *) usage ;;
+esac

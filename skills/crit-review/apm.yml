@@ -1,0 +1,4 @@
+name: crit-review
+version: 0.1.0
+description: ローカルの crit で Markdown の文書を開き、人間が行単位でコメントしてレビューできるようにする
+target: claude

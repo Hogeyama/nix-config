@@ -1,0 +1,170 @@
+#!/usr/bin/env bash
+# Forgejo 上でブランチのコミット単位レビューを回すヘルパー。
+#
+# Forgejo の PR はコメントを PR に紐づけて保持するため、レビュー中に修正をコミット
+# してもスレッドが生き、修正コミット自体が同じ PR のレビュー対象コミットとして加わる。
+set -uo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=lib/forgejo_instance.sh
+. "$SCRIPT_DIR/lib/forgejo_instance.sh"
+# shellcheck source=lib/forgejo_api.sh
+. "$SCRIPT_DIR/lib/forgejo_api.sh"
+# shellcheck source=lib/forgejo_format.sh
+. "$SCRIPT_DIR/lib/forgejo_format.sh"
+
+usage() {
+  cat >&2 <<'EOF'
+Usage:
+  forgejow request-review <range>
+      インスタンスを起動し、range を push して PR を用意し、
+      PR の URL とコミットごとの URL を出力してから、Forgejo が停止するまで待機する。
+  forgejow fetch-comments [--json]
+      スレッドを thread id の昇順で一括取得する。既定は平文、--json で生の JSON。
+  forgejow push
+      修正コミットを push し、PR に加わったコミットの URL を出力する。
+  forgejow reply <thread-id>
+      stdin の本文でスレッドに返信する。
+  forgejow resolve <thread-id>
+      stdin の summary で返信してから resolve する。
+      resolve は人間が UI で行う。ユーザーの明示的な指示があるときだけ使う。
+  forgejow report
+      直近の request-review が出したレビュー情報の全文を表示する。
+      request-review は Forgejo が停止するまで戻らないため、その標準出力は
+      末尾が欠ける。全文が要るときはこちらを使う。
+  forgejow down
+      インスタンスを破棄する。セッションストアと認証情報は残す。
+EOF
+  exit 1
+}
+
+cmd_request_review() {
+  local range="${1:-}" short subject web_pid owned_pid rc report
+  [ -n "$range" ] || { fj_die "range を指定する (例: implementation-base..HEAD)"; return 1; }
+
+  fj_up || return 1
+  trap 'fj_down' EXIT
+  trap 'exit 129' HUP
+  trap 'exit 130' INT
+  trap 'exit 143' TERM
+  web_pid="$(cat "$(fj_run_dir)/web.pid")"
+  owned_pid="${FJ_STARTED_PID:-}"
+  fj_smoke || return 1
+  fj_push_range "$range" || return 1
+  fj_ensure_pr "$range" >"$(fj_run_dir)/pr" || return 1
+  fj_wait_pr_ready "$(fj_pr_num)" || return 1
+
+  # ログイン情報は毎回出す。「人間がログイン済みか」をエージェント側から判定
+  # できないためである。セッションストアにはエージェント自身のセッションも入る
+  # ので、ファイルの有無や個数では人間のログインを表せない。
+  fj_credentials
+
+  # レビュー情報はファイルにも残す。このコマンドは Forgejo が停止するまで戻らないので、
+  # 標準出力を読む側は、プロセスが生きている間は最後の1ブロックを受け取れない。
+  # 全文が必要なときは forgejow report を使う。
+  report="$(fj_report_file)"
+  mkdir -p "$(dirname "$report")"
+  {
+    echo "PR: $(fj_pr_url)"
+    echo
+    # ログイン情報を先に出す。末尾に置くと、標準出力が切れたときに真っ先に失われる
+    # 一方、これが無いとユーザーは PR を開けないからである。
+    echo "未ログインの場合は reviewer でログインする。一度ログインすれば以降のインスタンスでも維持される。"
+    echo "  URL:        http://localhost:$(fj_port)/user/login"
+    echo "  ユーザー:   reviewer"
+    echo "  パスワード: $FJ_REVIEWER_PASS"
+    echo
+    # URL には完全な SHA を渡す。per-commit ビューは短縮 SHA では 404 になる。
+    # 表示は短縮のままにする。読み手が識別に使うのは先頭数桁だからである。
+    while read -r full short subject; do
+      echo "$short $subject"
+      echo "  $(fj_commit_url "$full")"
+    done < <(git log --reverse --format='%H %h %s' "$range")
+
+    echo
+    echo "診断ログ: $(fj_diagnostics_file)"
+  } >"$report"
+
+  # 先頭に出す。出力が途中で切れても、読み手が全文の在処を知れるようにするためである。
+  echo "レビュー情報: $report  (全文は forgejow report)"
+  cat "$report"
+
+  fj_wait_for_web "$web_pid" "$owned_pid"
+  rc=$?
+  trap - HUP INT TERM EXIT
+  fj_down
+  return "$rc"
+}
+
+cmd_report() {
+  local report
+  report="$(fj_report_file)"
+  [ -f "$report" ] || { fj_die "レビュー情報がない。request-review を先に実行する"; return 1; }
+  cat "$report"
+}
+
+cmd_fetch_comments() {
+  local as_json=0 threads
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --json) as_json=1 ;;
+    esac
+    shift
+  done
+  fj_healthy || { fj_die "インスタンスが起動していない。request-review を先に実行する"; return 1; }
+  threads="$(fj_threads)" || return 1
+  if [ "$as_json" = 1 ]; then
+    printf '%s\n' "$threads"
+  else
+    printf '%s\n' "$threads" | fj_format_threads
+    printf '%s\n' "$threads" | fj_format_pending
+  fi
+}
+
+cmd_reply() {
+  local tid="${1:-}"
+  [ -n "$tid" ] || { fj_die "thread-id を指定する"; return 1; }
+  fj_healthy || { fj_die "インスタンスが起動していない。request-review を先に実行する"; return 1; }
+  fj_reply "$tid" "$(cat)"
+}
+
+cmd_resolve() {
+  local tid="${1:-}" summary
+  [ -n "$tid" ] || { fj_die "thread-id を指定する"; return 1; }
+  fj_healthy || { fj_die "インスタンスが起動していない。request-review を先に実行する"; return 1; }
+  summary="$(cat)"
+  [ -z "$summary" ] || fj_reply "$tid" "$summary" || return 1
+  fj_resolve "$tid"
+}
+
+cmd_push() {
+  local shas short
+  fj_healthy || { fj_die "インスタンスが起動していない。request-review を先に実行する"; return 1; }
+  shas="$(fj_push_head)" || return 1
+  if [ -z "$shas" ]; then
+    echo "新しいコミットはない"
+    return 0
+  fi
+  while read -r full; do
+    echo "$(git log -1 --format='%h %s' "$full")"
+    echo "  $(fj_commit_url "$full")"
+  done <<<"$shas"
+}
+
+main() {
+  local cmd="${1:-}"
+  [ -n "$cmd" ] || usage
+  shift
+  case "$cmd" in
+    request-review) cmd_request_review "$@" ;;
+    report) cmd_report "$@" ;;
+    fetch-comments) cmd_fetch_comments "$@" ;;
+    push) cmd_push "$@" ;;
+    reply) cmd_reply "$@" ;;
+    resolve) cmd_resolve "$@" ;;
+    down) fj_down ;;
+    *) usage ;;
+  esac
+}
+
+main "$@"

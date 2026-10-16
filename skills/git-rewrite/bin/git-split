@@ -1,0 +1,6 @@
+#!/bin/sh
+# git split を呼ぶ薄いラッパ。同梱の splitstage パッケージを PYTHONPATH に
+# 載せて `python3 -m splitstage` を実行する。どのディレクトリからでも動く。
+# base directory (このファイルの1つ上 = skills/git-rewrite) に splitstage/ が同居する。
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" exec python3 -m splitstage "$@"
