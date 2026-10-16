@@ -340,10 +340,13 @@ hl.bind(mainMod .. " + CTRL + H", hl.dsp.group.move_window({ direction = "left" 
 hl.bind(mainMod .. " + CTRL + L", hl.dsp.group.move_window({ direction = "right" })) -- タブを後へ
 
 -- Switch workspaces with mainMod + [0-9]
+-- Hyprland は非表示のワークスペースも、最後に表示していたモニタの所属のまま残す。
+-- on_current_monitor を付けないとそのモニタへフォーカスが移るので、今のモニタへ移して表示する
+-- (別のモニタで表示中なら、2つのモニタの表示中のワークスペースを入れ替える)。
 for i = 1, 9 do
-  hl.bind(mainMod .. " + " .. i, hl.dsp.focus({ workspace = tostring(i) }))
+  hl.bind(mainMod .. " + " .. i, hl.dsp.focus({ workspace = tostring(i), on_current_monitor = true }))
 end
-hl.bind(mainMod .. " + 0", hl.dsp.focus({ workspace = "10" }))
+hl.bind(mainMod .. " + 0", hl.dsp.focus({ workspace = "10", on_current_monitor = true }))
 
 -- Move active window to a workspace with mainMod + SHIFT + [0-9]
 for i = 1, 9 do
