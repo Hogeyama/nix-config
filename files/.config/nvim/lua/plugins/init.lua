@@ -1834,7 +1834,7 @@ return {
       ---@diagnostic disable-next-line: duplicate-set-field
       vim.g.lsp_default_on_attach = function(client, bufnr)
         local bmap = function(mode, key, cmd)
-          vim.keymap.set(mode, key, cmd, { noremap = true, silent = true })
+          vim.keymap.set(mode, key, cmd, { noremap = true, silent = true, buf = bufnr })
         end
         local format = function()
           require 'conform'.format({
@@ -1875,7 +1875,11 @@ return {
           }
           vim.diagnostic.open_float(nil, opts)
         end)
+        -- クライアントごとに呼ばれるので、同じバッファに重複して登録しない
+        local diag_float_group = vim.api.nvim_create_augroup('lsp_diagnostic_float', { clear = false })
+        vim.api.nvim_clear_autocmds({ group = diag_float_group, buffer = bufnr })
         vim.api.nvim_create_autocmd("CursorHold", {
+          group = diag_float_group,
           buffer = bufnr,
           callback = function()
             local opts = {
