@@ -1344,10 +1344,6 @@ return {
     enabled = not is_light_mode and not vim.g.vscode,
   },
   {
-    'cshuaimin/ssr.nvim',
-    enabled = not is_light_mode and not vim.g.vscode,
-  },
-  {
     "GCBallesteros/jupytext.nvim",
     enabled = not is_light_mode and not vim.g.vscode,
     config = true,
