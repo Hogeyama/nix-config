@@ -514,13 +514,24 @@ return {
       require('nvim-treesitter').setup()
 
       -- FileType ごとに highlight を開始 (大きいファイルは無効化)
+      -- fold は parser があれば treesitter、なければ indent
       local function ts_start(buf)
+        local win = vim.fn.bufwinid(buf)
+        local function set_fold(method)
+          if win ~= -1 then
+            vim.wo[win][0].foldmethod = method
+            if method == 'expr' then
+              vim.wo[win][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+            end
+          end
+        end
         local max_filesize = 100 * 1024 -- 100 KB
         local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(buf))
         if ok and stats and stats.size > max_filesize then
+          set_fold('indent')
           return
         end
-        pcall(vim.treesitter.start, buf)
+        set_fold(pcall(vim.treesitter.start, buf) and 'expr' or 'indent')
       end
       vim.api.nvim_create_autocmd('FileType', {
         callback = function(args) ts_start(args.buf) end,
@@ -1173,33 +1184,6 @@ return {
         silent = false,             -- default
         lookup_parents = false,     -- default
       }
-    end
-  },
-  {
-    'jrudess/vim-foldtext',
-    enabled = not is_light_mode and not vim.g.vscode,
-  },
-  {
-    'kevinhwang91/nvim-ufo',
-    enabled = not is_light_mode and not vim.g.vscode,
-    dependencies = { 'kevinhwang91/promise-async' },
-    event = "VeryLazy",
-    config = function()
-      vim.o.foldcolumn = '0'
-      vim.o.foldlevel = 99
-      vim.o.foldlevelstart = 99
-      vim.o.foldenable = true
-      vim.keymap.set('n', 'zR', function()
-        vim.cmd [[Lazy reload nvim-ufo]]
-        return require('ufo').openAllFolds
-      end)
-      vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
-      vim.keymap.set('n', 'zv', '<Cmd>lua require("ufo").closeAllFolds()<CR>zvzO', { noremap = true })
-      require('ufo').setup({
-        provider_selector = function()
-          return { 'treesitter', 'indent' }
-        end
-      })
     end
   },
   {

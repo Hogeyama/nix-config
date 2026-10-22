@@ -51,6 +51,7 @@ nmap('ch', '<C-w>h:q<CR><C-w>l')
 nmap('cl', '<C-w>l:q<CR><C-w>h')
 
 nmap('zn', 'za')
+nmap('zv', 'zMzvzO')
 
 nmap('<C-a>', 'I')
 nmap('<C-e>', 'A')

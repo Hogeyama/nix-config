@@ -38,6 +38,12 @@ vim.opt.updatetime = 300
 vim.opt.cursorline = false
 vim.opt.signcolumn = "yes"
 vim.opt.fillchars = 'fold:-,eob: '
+-- 開いた状態で始める。foldmethod は treesitter の起動時に決める (plugins/init.lua)
+vim.opt.foldcolumn = '0'
+vim.opt.foldlevel = 99
+vim.opt.foldlevelstart = 99
+vim.opt.foldenable = true
+vim.opt.foldtext = '' -- 折り畳んだ行をシンタックスハイライト付きで表示
 
 -- https://github.com/vscode-neovim/vscode-neovim/issues/2507#issuecomment-3059712058
 if vim.g.vscode then
