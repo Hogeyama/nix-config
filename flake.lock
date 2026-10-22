@@ -1,5 +1,25 @@
 {
   "nodes": {
+    "crit": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1792598996,
+        "narHash": "sha256-XeK4oAWgjhWXQ9S/QYfFwFz4Hr2RP22NQYBmm1Y2AGI=",
+        "owner": "tomasz-tomczyk",
+        "repo": "crit",
+        "rev": "732b46dcaaf74c7571a1f9a1c80006ebcc8c977c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "tomasz-tomczyk",
+        "repo": "crit",
+        "type": "github"
+      }
+    },
     "fenix": {
       "inputs": {
         "nixpkgs": [
@@ -391,6 +411,7 @@
     },
     "root": {
       "inputs": {
+        "crit": "crit",
         "flake-utils": "flake-utils",
         "home-manager": "home-manager",
         "my-fzf-wrapper": "my-fzf-wrapper",

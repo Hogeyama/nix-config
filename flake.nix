@@ -30,6 +30,9 @@
 
     my-fzf-wrapper.url = "github:Hogeyama/my-fzf-wrapper";
     my-fzf-wrapper.inputs.flake-utils.follows = "flake-utils";
+
+    crit.url = "github:tomasz-tomczyk/crit";
+    crit.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =

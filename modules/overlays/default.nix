@@ -63,6 +63,7 @@ let
       unstable = inputs.nixpkgs-unstable.outputs.legacyPackages.${system};
       my-fzf-wrapper = inputs.my-fzf-wrapper.outputs.packages.${system}.default;
       vscode-insiders-nightly = inputs.vscode-insiders-nightly.packages.${system}.vscode-insider;
+      crit = inputs.crit.packages.${system}.default;
 
       chatgpt = final.callPackage ./chatgpt { };
       herdr = final.callPackage ./herdr { };

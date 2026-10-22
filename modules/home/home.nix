@@ -105,6 +105,7 @@ in
       cargo
       comma
       commitizen
+      crit
       curl
       deno
       dmenu
