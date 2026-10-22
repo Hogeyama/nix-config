@@ -583,6 +583,15 @@ in
         typeset -U path PATH
         path=("$HOME/.local/bin" $path)
 
+        # Claude Code のサンドボックス内では ~/.nix-profile のリンクが存在しないため、
+        # リンク先の実ディレクトリ経由のパスに置き換え、サンドボックス内からもたどれるようにする
+        () {
+          local target
+          target=$(readlink "$HOME/.nix-profile") || return
+          path=(''${path/#$HOME\/.nix-profile\//$target/})
+          export SHELL="$target/bin/zsh"
+        }
+
         zstyle ':completion:*' verbose yes
         zstyle ':completion:*' format '%B%d%b'
         zstyle ':completion:*:warnings' format 'No matches for: %d'
