@@ -999,10 +999,6 @@ return {
     enabled = true and not vim.g.vscode,
   },
   {
-    'machakann/vim-highlightedyank',
-    enabled = true and not vim.g.vscode,
-  },
-  {
     'glidenote/memolist.vim',
     enabled = not is_light_mode,
     config = function()

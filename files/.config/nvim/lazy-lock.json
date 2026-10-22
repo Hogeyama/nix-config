@@ -82,7 +82,6 @@
   "vim-foldtext": { "branch": "master", "commit": "dc923cf11fb46f65365b139c26626273bd7c1eb4" },
   "vim-fugitive": { "branch": "master", "commit": "3b753cf8c6a4dcde6edee8827d464ba9b8c4a6f0" },
   "vim-graphql": { "branch": "master", "commit": "640d32063cd2526e2395db1b67fcd733524099e2" },
-  "vim-highlightedyank": { "branch": "master", "commit": "285a61425e79742997bbde76a91be6189bc988fb" },
   "vim-just": { "branch": "main", "commit": "49f318424ed17fb8d49122daa39820fd6a2880f5" },
   "vim-markdown": { "branch": "master", "commit": "a657e697376909c41475a686eeef7fc7a4972d94" },
   "vim-markdown-runner": { "branch": "master", "commit": "8afc2b63e6b5856779647962b4de7093d3ae1c52" },
