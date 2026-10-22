@@ -1178,14 +1178,6 @@ return {
     },
   },
   {
-    'soulis-1256/eagle.nvim',
-    event = "VeryLazy",
-    enabled = not is_light_mode and not vim.g.vscode,
-    config = function()
-      require("eagle").setup {}
-    end,
-  },
-  {
     'dlvhdr/gh-addressed.nvim',
     enabled = not is_light_mode and not vim.g.vscode,
     dependencies = {
@@ -1197,24 +1189,6 @@ return {
     keys = {
       { "<leader>gc", "<cmd>GhReviewComments<cr>", desc = "GitHub Review Comments" },
     },
-  },
-  {
-    'pwntester/octo.nvim',
-    enabled = true and not vim.g.vscode,
-    event = "VeryLazy",
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'nvim-telescope/telescope.nvim',
-      'ibhagwan/fzf-lua',
-    },
-    config = function()
-      require "octo".setup({
-        picker = "fzf-lua",
-        suppress_missing_scope = {
-          projects_v2 = true,
-        }
-      })
-    end
   },
   {
     'michaelb/sniprun',
