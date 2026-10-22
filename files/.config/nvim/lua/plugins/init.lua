@@ -43,61 +43,6 @@ return {
     end,
   },
   {
-    "3rd/image.nvim",
-    build = false,
-    event = 'VeryLazy',
-    opts = {
-      backend = "kitty",
-      processor = "magick_cli",
-      integrations = {
-        markdown = {
-          enabled = false,
-        },
-        neorg = {
-          enabled = false,
-        },
-        typst = {
-          enabled = false,
-        },
-        html = {
-          enabled = false,
-        },
-        css = {
-          enabled = false,
-        },
-      },
-    },
-    keys = {
-      {
-        "<leader>im",
-        function()
-          local api = require("image")
-          local images = api.get_images()
-          for _, current_image in ipairs(images) do
-            current_image:clear(true)
-          end
-          local path = vim.fn.expand("<cfile>")
-          local image = api.from_file(path, {})
-          image:render()
-        end,
-        mode = { "n" },
-        desc = "Open image under cursor",
-      },
-      {
-        "<leader>iq",
-        function()
-          local api = require("image")
-          local images = api.get_images()
-          for _, current_image in ipairs(images) do
-            current_image:clear(true)
-          end
-        end,
-        mode = { "n" },
-        desc = "Close image viewer",
-      }
-    },
-  },
-  {
     "folke/sidekick.nvim",
     opts = {
       -- add any options here
@@ -1070,26 +1015,6 @@ return {
       default_file_explorer = true,
       float = {
         border = 'rounded',
-      },
-      keymaps = {
-        ["<C-i>"] = {
-          callback = function()
-            local buf = vim.api.nvim_get_current_buf()
-            local oil = require("oil")
-            local dir = oil.get_current_dir(buf)
-            local api = require("image")
-            local images = api.get_images()
-            for _, current_image in ipairs(images) do
-              current_image:clear(true)
-            end
-            local path = vim.fn.expand("<cfile>")
-            local image = api.from_file(dir .. "/" .. path, {
-              -- FIXME: 画面右側に表示したい
-            })
-            image:render()
-          end
-        },
-
       },
     },
     keys = {
