@@ -711,7 +711,8 @@ in
           j = "just";
           da = "direnv allow";
           dr = "direnv reload";
-          nasb = "nas -b@";
+          g = "./gradlew";
+          "$" = "";
         };
       };
     };
