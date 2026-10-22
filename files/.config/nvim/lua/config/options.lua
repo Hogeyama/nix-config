@@ -48,6 +48,10 @@ vim.opt.foldtext = '' -- 折り畳んだ行をシンタックスハイライト�
 -- https://github.com/vscode-neovim/vscode-neovim/issues/2507#issuecomment-3059712058
 if vim.g.vscode then
   vim.opt.cmdheight = 100
+else
+  -- メッセージ/cmdline の新UI (0.12+, experimental)。"Press ENTER" が出なくなる
+  -- 溢れたメッセージは g< で pager に出る
+  pcall(function() require('vim._core.ui2').enable({}) end)
 end
 
 -- 1. 外部でファイルが変更されたら自動的に読み込み直す（未保存の変更がない場合）

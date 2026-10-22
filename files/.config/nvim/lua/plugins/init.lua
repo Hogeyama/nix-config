@@ -656,7 +656,6 @@ return {
           fidget = true,
           hop = true,
           markdown = true,
-          noice = true,
           dap = true,
           dap_ui = true,
         },
@@ -677,8 +676,6 @@ return {
         hi! LspReferenceRead              guibg=black
         hi! LspReferenceText              guibg=black
         hi! LspReferenceWrite             guibg=black
-        hi! NoiceCmdlineIcon                          guifg=cyan
-        hi! NoiceSplitBorder              guibg=None  guifg=#555555
         hi! LspSagaCodeActionBorder       guibg=None  guifg=#555555
 
         hi! DiagnosticLineNrError guibg=#51202A guifg=#FF0000 gui=bold
@@ -1065,79 +1062,6 @@ return {
         end,
       }
     end
-  },
-  {
-    'folke/noice.nvim',
-    event = "VeryLazy",
-    enabled = not is_light_mode and not vim.g.vscode,
-    dependencies = { "nui.nvim" },
-    config = function()
-      require("noice").setup {
-        presets = {
-          command_palette = true,
-          lsp_doc_border = true,
-        },
-        views = {
-          cmdline_popup = {
-            position = {
-              row = 20,
-              col = "50%",
-            },
-          },
-        },
-        cmdline = {
-          enabled = true,
-          view = "cmdline_popup",
-          format = {
-            cmdline = { pattern = "^:", icon = "", lang = "vim" },
-            search_down = { kind = "search", pattern = "^/", icon = "  ", lang = "regex" },
-            search_up = { kind = "search", pattern = "^%?", icon = "  ", lang = "regex" },
-            filter = { pattern = "^:%s*!", icon = "$", lang = "bash" },
-            lua = { pattern = "^:%s*lua%s+", icon = " ", lang = "lua" },
-            help = { pattern = "^:%s*he?l?p?%s+", icon = "❓" },
-            input = {}, -- Used by input()
-          },
-        },
-        popupmenu = {
-          enabled = true,
-          backend = "nui",
-        },
-        messages = {
-          enabled = true,
-          view = "mini",
-          view_error = "mini",
-          view_warn = "mini",
-          view_history = "messages",
-          view_search = "mini",
-        },
-        notify = {
-          enabled = false,
-        },
-        throttle = 1000 / 30, -- how frequently does Noice need to check for ui updates? This has no effect when in blocking mode.
-        lsp = {
-          override = {
-            ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-            ["vim.lsp.util.stylize_markdown"] = true,
-            ["cmp.entry.get_documentation"] = false,
-          },
-          message = {
-            view = "mini",
-          },
-          -- defaults for hover and signature help
-          documentation = {
-            view = "hover",
-            ---type NoiceViewOptions
-            opts = {
-              lang = "markdown",
-              replace = true,
-              render = "plain",
-              format = { "{message}" },
-              win_options = { conceallevel = 0 },
-            },
-          },
-        },
-      }
-    end,
   },
   {
     'stevearc/oil.nvim',
@@ -1831,7 +1755,7 @@ return {
             end
           end
         end
-        bmap('n', '<C-h>', require("noice.lsp").hover)
+        bmap('n', '<C-h>', function() vim.lsp.buf.hover({ border = 'rounded' }) end)
         bmap('n', '<C-j>', function() require('trouble').first("definitions") end)
         bmap('n', '<C-k>', '<cmd>Lspsaga peek_definition<CR>')
         bmap('n', '<C-l>a', require("actions-preview").code_actions)
@@ -1841,7 +1765,7 @@ return {
         bmap('n', '<C-l>o', trouble('symbols', false))
         bmap('n', '<C-l>i', trouble('lsp_implementations', true))
         bmap('n', '<C-l>r', '<cmd>Lspsaga finder<CR>')
-        bmap('n', '<C-l>h', vim.lsp.buf.signature_help)
+        bmap('n', '<C-l>h', function() vim.lsp.buf.signature_help({ border = 'rounded' }) end)
         bmap('n', '<C-l>R', vim.lsp.buf.rename)
         bmap('n', '<C-l>l', vim.lsp.codelens.run)
         bmap('n', '<C-l>k', function()
