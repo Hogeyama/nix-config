@@ -784,7 +784,7 @@ in
 
           modules-left = [ "hyprland/workspaces" ];
           modules-center = [ "clock" ];
-          modules-right = [ "cpu" "custom/psi" "custom/gpu" "memory""pulseaudio" "network" "battery" "tray" ];
+          modules-right = [ "cpu" "custom/psi" "custom/gpu" "memory" "pulseaudio" "network" "battery" "tray" ];
 
           clock = {
             format = "{:%Y-%m-%d %a %H:%M:%S}";
