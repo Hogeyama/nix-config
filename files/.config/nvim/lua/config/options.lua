@@ -4,7 +4,6 @@ vim.opt.shell = "zsh"
 vim.opt.termguicolors = true
 vim.opt.mouse = "n"
 vim.opt.ambiwidth = "single"
-vim.opt.fillchars = "fold:-"
 vim.opt.visualbell = true
 vim.opt.hidden = true
 vim.opt.modeline = true
@@ -38,7 +37,7 @@ vim.opt.switchbuf = "split"
 vim.opt.updatetime = 300
 vim.opt.cursorline = false
 vim.opt.signcolumn = "yes"
-vim.opt.fillchars = 'eob: '
+vim.opt.fillchars = 'fold:-,eob: '
 
 -- https://github.com/vscode-neovim/vscode-neovim/issues/2507#issuecomment-3059712058
 if vim.g.vscode then
