@@ -362,7 +362,7 @@ return {
     }
   },
   {
-    'echasnovski/mini.nvim',
+    'nvim-mini/mini.nvim',
     event = "VeryLazy",
     enabled = true,
     config = function()
@@ -516,7 +516,7 @@ return {
       -- FileType ごとに highlight を開始 (大きいファイルは無効化)
       local function ts_start(buf)
         local max_filesize = 100 * 1024 -- 100 KB
-        local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+        local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(buf))
         if ok and stats and stats.size > max_filesize then
           return
         end
@@ -676,12 +676,20 @@ return {
         hi! DiagnosticLineNrHint  guibg=#1E205D guifg=#0000FF gui=bold
 
         hi! ContextVt             guibg=None    guifg=#444444
-
-        sign define DiagnosticSignError text= texthl=DiagnosticSignError linehl= numhl=DiagnosticLineNrError
-        sign define DiagnosticSignWarn  text= texthl=DiagnosticSignWarn  linehl= numhl=DiagnosticLineNrWarn
-        sign define DiagnosticSignInfo  text= texthl=DiagnosticSignInfo  linehl= numhl=DiagnosticLineNrInfo
-        sign define DiagnosticSignHint  text= texthl=DiagnosticSignHint  linehl= numhl=DiagnosticLineNrHint
       ]]
+      -- 0.12 から :sign define では diagnostic の sign を設定できない
+      local S = vim.diagnostic.severity
+      vim.diagnostic.config({
+        signs = {
+          text = { [S.ERROR] = "", [S.WARN] = "", [S.INFO] = "", [S.HINT] = "" },
+          numhl = {
+            [S.ERROR] = "DiagnosticLineNrError",
+            [S.WARN] = "DiagnosticLineNrWarn",
+            [S.INFO] = "DiagnosticLineNrInfo",
+            [S.HINT] = "DiagnosticLineNrHint",
+          },
+        },
+      })
     end
   },
   {
@@ -1591,7 +1599,7 @@ return {
       vim.api.nvim_create_autocmd({ 'FileType' }, {
         pattern = 'markdown',
         callback = function(_)
-          local opts = { noremap = true, silent = true, buffer = true }
+          local opts = { noremap = true, silent = true, buf = 0 }
           vim.keymap.set('n', '<Leader>q', function()
             vim.notify("Running sniprun")
             local bufnr = vim.api.nvim_get_current_buf()
@@ -1775,7 +1783,7 @@ return {
               return
             end
             vim.cmd("DiffviewOpen " .. commit_hash .. "^!")
-          end, { buffer = true, desc = "Preview diff" })
+          end, { buf = 0, desc = "Preview diff" })
         end,
       })
     end,
@@ -1907,9 +1915,7 @@ return {
           })
         end
         if client.server_capabilities.codeLensProvider then
-          vim.cmd [[
-          autocmd CursorHold,InsertLeave <buffer> lua vim.lsp.codelens.refresh()
-        ]]
+          vim.lsp.codelens.enable(true, { bufnr = bufnr })
         end
         -- hack for yamlls.
         -- https://github.com/redhat-developer/yaml-language-server/issues/486#issuecomment-1046792026
@@ -1955,7 +1961,7 @@ return {
         hl('PmenuThumb', { bg = '#6e738d' })                         -- overlay0
       else
         vim.g.lsp_default_capabilities = require('blink.cmp').get_lsp_capabilities({
-          textDocumtent = {
+          textDocument = {
             completion = {
               completionItem = {
                 snippetSupport = true,
@@ -2041,7 +2047,7 @@ return {
         init_options = {
           lint = true,
         },
-        single_file_support = false,
+        workspace_required = true,
       })
 
       -- [[ts_ls]]
@@ -2068,7 +2074,7 @@ return {
             },
           },
         },
-        single_file_support = false,
+        workspace_required = true,
         filetypes = { "javascript", "typescript", "javascriptreact", "typescriptreact", "vue" },
       })
       enable_lsp('vue_ls', {
