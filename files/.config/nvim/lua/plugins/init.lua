@@ -1812,8 +1812,6 @@ return {
       enable_lsp('graphql')
       enable_lsp('pyright')
       -- enable_lsp('yamlls')
-      enable_lsp('terraformls')
-      enable_lsp('tflint')
       enable_lsp('dockerls')
       enable_lsp('sqlls')
       enable_lsp('gradle_ls')
@@ -1837,8 +1835,6 @@ return {
               "json-lsp",
               "lua-language-server",
               "pyright",
-              "terraform-ls",
-              "tflint",
               "typescript-language-server",
               "tailwindcss-language-server",
               "yaml-language-server",
