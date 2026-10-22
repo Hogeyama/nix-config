@@ -952,17 +952,6 @@ return {
     enabled = true and not vim.g.vscode,
   },
   {
-    'glidenote/memolist.vim',
-    enabled = not is_light_mode,
-    config = function()
-      vim.g.memolist_path = '~/.memo'
-      vim.g.memolist_template_dir_path = '~/.memo/template'
-      vim.cmd [[
-        command! MemoToday MemoNewWithMeta 'note', 'daily', 'daily'
-      ]]
-    end
-  },
-  {
     'kana/vim-metarw',
     enabled = not is_light_mode and not vim.g.vscode,
   },
@@ -1144,125 +1133,6 @@ return {
       },
     },
 
-  },
-  {
-    'hrsh7th/nvim-cmp',
-    event = "InsertEnter",
-    enabled = false,
-    -- enabled = true and not vim.g.vscode,
-    config = function()
-      local cmp = require("cmp")
-      cmp.setup({
-        formatting = {
-          format = require('lspkind').cmp_format({ with_text = false }),
-        },
-        snippet = {
-          expand = function(args)
-            vim.fn['vsnip#anonymous'](args.body)
-          end,
-        },
-        window = {
-          completion = cmp.config.window.bordered({
-            zindex = 10,
-          }),
-          documentation = cmp.config.window.bordered({
-            zindex = 50,
-            side_padding = 10,
-          }),
-        },
-        mapping = cmp.mapping.preset.insert({
-          ['<CR>']    = cmp.mapping.confirm({ select = false }),
-          ['<C-c>']   = cmp.mapping.abort(),
-          -- NOTE: 挿入したくない場合は insert の代わりに select にする
-          ['<Tab>']   = cmp.mapping.select_next_item({ behavior = "insert" }),
-          ['<Down>']  = cmp.mapping.select_next_item({ behavior = "insert" }),
-          ['<S-Tab>'] = cmp.mapping.select_prev_item({ behavior = "insert" }),
-          ['<Up>']    = cmp.mapping.select_prev_item({ behavior = "insert" }),
-        }),
-        sources = cmp.config.sources({
-          { name = 'copilot' },
-          { name = 'nvim_lsp' },
-          { name = 'nvim_lsp_signature_help' },
-          { name = 'vsnip' },
-          { name = 'buffer' },
-          { name = 'rg',                     keyword_length = 3, },
-          {
-            name = 'path',
-            options = {
-              trailing_slash = false,
-              label_trailing_slash = false,
-            },
-            trigger_characters = { '/', '.', '~' },
-          },
-        }),
-        performance = {
-          debounce = 0,
-          throttle = 0,
-        },
-      })
-      cmp.setup.cmdline({ '/', '?' }, {
-        mapping = cmp.mapping.preset.cmdline({
-          ['<C-f>'] = {
-            c = cmp.mapping.complete_common_string(),
-          }
-        }),
-        sources = {
-          { name = 'buffer' },
-          { name = 'nvim_lsp_document_symbol' },
-        }
-      })
-      cmp.setup.cmdline(':', {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = cmp.config.sources({
-          { name = 'path' }
-        }, {
-          { name = 'cmdline' },
-          { name = 'cmp-nvim-lua' },
-        }),
-        matching = { disallow_symbol_nonprefix_matching = false }
-      })
-    end,
-    dependencies = {
-      { 'hrsh7th/cmp-nvim-lsp' },
-      { 'hrsh7th/cmp-nvim-lsp-document-symbol' },
-      { 'hrsh7th/cmp-buffer' },
-      { 'hrsh7th/cmp-path' },
-      { 'hrsh7th/cmp-emoji' },
-      { 'hrsh7th/cmp-cmdline' },
-      { 'hrsh7th/cmp-vsnip' },
-      { 'hrsh7th/cmp-nvim-lua' },
-      { 'lukas-reineke/cmp-rg' },
-      {
-        'hrsh7th/vim-vsnip',
-        config = function()
-          vim.cmd [[
-            let g:vsnip_snippet_dir = expand('~/.config/nvim/vsnip')
-            imap <expr> <C-f> vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-f>'
-            smap <expr> <C-f> vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-f>'
-            xmap        <C-f> <Plug>(vsnip-cut-text)
-          ]]
-        end,
-      },
-      {
-        'hrsh7th/vim-vsnip-integ',
-        config = function()
-          vim.cmd [[
-            autocmd User PumCompleteDone call vsnip_integ#on_complete_done(g:pum#completed_item)
-          ]]
-        end,
-      },
-      {
-        "zbirenbaum/copilot-cmp",
-        config = function()
-          require("copilot_cmp").setup({
-            fix_pairs = false,
-          })
-        end
-      },
-      { 'onsails/lspkind.nvim' },
-      -- copilot.lua の実体はトップレベルの spec に集約
-      { 'zbirenbaum/copilot.lua' },
-    },
   },
   {
     'direnv/direnv.vim',
@@ -2372,11 +2242,6 @@ return {
       "nvim-telescope/telescope.nvim",
       "nvim-lua/plenary.nvim",
     },
-  },
-  -- [[terraform]]
-  {
-    'hashivim/vim-terraform',
-    enabled = not is_light_mode and not vim.g.vscode,
   },
   -- [[Textile]]
   {
