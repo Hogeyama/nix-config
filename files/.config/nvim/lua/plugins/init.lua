@@ -2088,14 +2088,30 @@ return {
   {
     'MeanderingProgrammer/render-markdown.nvim',
     enabled = not is_light_mode and not vim.g.vscode,
+    ft = { 'markdown', 'Avante' },
     dependencies = {
       'nvim-treesitter/nvim-treesitter',
     },
     config = function()
       require('render-markdown').setup({
+        file_types = { 'markdown', 'Avante' },
         completions = { blink = { enabled = true } },
       })
+      -- 全体としては無効。AI パネルだけバッファ単位で有効化する。
       vim.cmd [[RenderMarkdown disable]]
+      vim.api.nvim_create_autocmd('FileType', {
+        group = vim.api.nvim_create_augroup('RenderMarkdownAvante', {}),
+        pattern = 'Avante',
+        callback = function(args)
+          -- 同じ FileType で走る render-markdown 本体の attach を待つ。
+          vim.schedule(function()
+            if not vim.api.nvim_buf_is_valid(args.buf) then return end
+            vim.api.nvim_buf_call(args.buf, function()
+              require('render-markdown').buf_enable()
+            end)
+          end)
+        end,
+      })
     end,
     keys = {
       {
