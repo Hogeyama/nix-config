@@ -24,14 +24,15 @@ type = "shell"
 command = 'HERDR_PANE_ID="$HERDR_ACTIVE_PANE_ID" HERDR_TAB_ID="$HERDR_ACTIVE_TAB_ID" exec terminal-browser open --split right'
 description = "open terminal-browser (right split)"
 
-# 今いるペインのディレクトリでシェルをポップアップする。exitで閉じる。
+# 今いるペインのディレクトリでシェルを一時的に全画面で開く。exitで閉じて元の画面に戻る。
+# type = "popup"はcopy modeもマウス選択も効かずyankできない(0.9.3)ので、
+# 普通のペインとして開くtype = "pane"を使う。これは呼び出し元ペインのcwdで
+# zoomした一時ペインを作り、終了時に元のフォーカスとzoom状態へ戻す。
 [[keys.command]]
 key = "prefix+f"
-type = "popup"
-command = 'cd "$HERDR_ACTIVE_PANE_CWD" && exec "$SHELL"'
-width = "80%"
-height = "80%"
-description = "popup shell (current pane cwd)"
+type = "pane"
+command = 'exec "$SHELL"'
+description = "scratch shell (current pane cwd)"
 
 [terminal]
 # 既定でtrueだが、terminal-browserは起動時にこの行が無いと[experimental]に
