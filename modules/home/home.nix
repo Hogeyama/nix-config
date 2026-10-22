@@ -182,7 +182,6 @@ in
       simplescreenrecorder
       sqlite
       ssh-to-age
-      terminal-browser
       textql
       time
       tldr
