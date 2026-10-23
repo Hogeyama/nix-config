@@ -900,8 +900,10 @@ in
             on-click-middle = "pamixer --toggle-mute";
           };
           network = {
-            format = "{ifname}: {bandwidthUpBits}↑ {bandwidthDownBits}↓";
+            format = "{bandwidthUpBits}↑ {bandwidthDownBits}↓";
             format-disconnected = "No network";
+            tooltip-format = "{ifname} {ipaddr}/{cidr}";
+            tooltip-format-wifi = "{ifname} {essid} ({signalStrength}%) {ipaddr}/{cidr}";
           };
           "hyprland/workspaces" = {
             all-outputs = true;
