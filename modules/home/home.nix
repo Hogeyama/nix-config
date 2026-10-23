@@ -120,6 +120,7 @@ in
       eza
       fd
       feh
+      forgejo
       fuse
       gcc
       gh
