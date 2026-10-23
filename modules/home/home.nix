@@ -742,6 +742,9 @@ in
           gsw = "git switch -m";
           gswc = "git switch -m --no-track -c";
           gswC = "git switch -m --no-track -C";
+          cdc = "claude-devcontainer";
+          cds = "claude-devcontainer code-server";
+          cdd = "claude-devcontainer down";
           j = "just";
           da = "direnv allow";
           dr = "direnv reload";
