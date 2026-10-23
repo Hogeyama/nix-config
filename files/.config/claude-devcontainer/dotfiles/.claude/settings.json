@@ -1,0 +1,32 @@
+{
+  "env": {
+    "_ZO_DOCTOR": "0",
+    "CLAUDE_CODE_TMPDIR": "/workspace/.local/tmp"
+  },
+  "permissions": {
+    "defaultMode": "auto"
+  },
+  "autoMode": {
+    "hard_deny": ["$defaults"],
+    "environment": ["$defaults"],
+    "classifyAllShell": true
+  },
+  "model": "opus",
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+  },
+  "effortLevel": "high",
+  "promptSuggestionEnabled": false,
+  "awaySummaryEnabled": false,
+  "autoUpdatesChannel": "latest",
+  "tui": "fullscreen",
+  "autoMemoryEnabled": false,
+  "skipDangerousModePermissionPrompt": true,
+  "editorMode": "vim",
+  "verbose": false,
+  "autoCompactEnabled": false,
+  "switchModelsOnFlag": false,
+  "inputNeededNotifEnabled": false,
+  "agentPushNotifEnabled": true
+}

@@ -1,0 +1,14 @@
+[agent]
+
+[agent.env]
+TZ = "Asia/Tokyo"
+
+[nix]
+enabled = true
+
+[docker]
+enabled = true
+shared_base = "cdc"
+
+[codeServer]
+enabled = true
