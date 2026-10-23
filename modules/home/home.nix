@@ -243,7 +243,15 @@ in
       ### unstable
       unstable.dasel
     ];
-    file = dotfilesSymlinks { } // {
+    file = dotfilesSymlinks { }
+      # claude-devcontainer内のgitにもホストと同じidentityとignoreを使わせる。
+      # 実体はホストの~/.config/gitに置いたまま、dotfilesから辿れるようにする。
+      // pkgs.lib.genAttrs' [ "config" "config.local" "ignore" ] (name:
+        pkgs.lib.nameValuePair ".config/claude-devcontainer/dotfiles/.config/git/${name}" {
+          source = config.lib.file.mkOutOfStoreSymlink
+            "${config.home.homeDirectory}/.config/git/${name}";
+        })
+      // {
       ".local/share/tridactyl/native_main".source = "${pkgs.tridactyl-native}/bin/native_main";
       ".gnupg/gpg-agent.conf" = {
         text = ''
