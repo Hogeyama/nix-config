@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+settings=$HOME/.claude/settings.json
+updated=$(jq '.sandbox.enabled = false' "$settings") || exit
+[ -n "$updated" ] || exit 1
+printf '%s\n' "$updated" >"$settings"
+echo "Claude Code sandbox disabled"
