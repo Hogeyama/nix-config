@@ -81,6 +81,26 @@ let
       fi
     '';
 
+  # システムのfontconfig設定とフォントを見せず、Notoだけが入った環境でコマンドを実行する。
+  fontCleanroomBin =
+    pkgs.writeShellScriptBin "font-cleanroom" ''
+      empty=$(mktemp -d)
+      trap 'rm -rf "$empty"' EXIT
+      export FONTCONFIG_PATH=$empty
+      export FONTCONFIG_CACHE_DIR=$empty
+      export XDG_DATA_HOME=$empty
+      # 空文字だとXDGの既定値/usr/local/share:/usr/shareが使われ、システムのフォントが見えてしまう。
+      export XDG_DATA_DIRS=$empty
+      export FONTCONFIG_FILE=${
+        pkgs.makeFontsConf {
+          fontDirectories = [ pkgs.noto-fonts pkgs.noto-fonts-cjk-sans ];
+          impureFontDirectories = [ ];
+          includes = [ ];
+        }
+      }
+      "$@"
+    '';
+
 in
 {
   home = {
@@ -120,6 +140,7 @@ in
       eza
       fd
       feh
+      fontCleanroomBin
       forgejo
       fuse
       gcc
