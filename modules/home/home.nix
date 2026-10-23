@@ -107,7 +107,7 @@ in
       commitizen
       crit
       curl
-      deno
+      (d2.overrideAttrs (old: { buildInputs = [ ]; }))
       dmenu
       deno
       difftastic
