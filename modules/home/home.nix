@@ -320,14 +320,17 @@ in
       # pkgs.lib.fileContents "${pkgs.stdenv.cc}/nix-support/dynamic-linker"; の方が正しそうだが
       # access to canonical path is forbidden in restricted mode エラーが出るので妥協。
       NIX_LD = "${pkgs.glibc}/lib/ld-linux-x86-64.so.2";
-      NIX_LD_LIBRARY_PATH = pkgs.lib.mkForce (with pkgs; lib.makeLibraryPath [
-        stdenv.cc.cc
-        zlib
-        ncurses
-        gmp
-        icu
-        openssl
-      ]);
+      # AppImageと同じライブラリ一式。ダウンロードしたElectron等のGUIアプリ用。
+      # libstdc++はbuildFHSEnvのベースが提供していてこの一式には含まれないので明示的に足す。
+      NIX_LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath (
+        (with pkgs; [
+          stdenv.cc.cc
+          ncurses
+          icu
+        ])
+        ++ pkgs.appimageTools.defaultFhsEnvArgs.multiPkgs pkgs
+        ++ pkgs.appimageTools.defaultFhsEnvArgs.targetPkgs pkgs
+      );
     };
   };
   fonts = {
