@@ -1,0 +1,452 @@
+<title>__TITLE__</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+JP:wght@400;500;700&display=swap">
+<style>
+/* Layout: a code-review desk. Narrative on the left, the printed listing on the right, marked with a highlighter. */
+:root {
+  --bg: #eef0f3;
+  --panel: #ffffff;
+  --ink: #1c2230;
+  --muted: #5a6374;
+  --rule: #d9dde4;
+  --accent: #2f4fa3;
+  --accent-soft: #e6ebf8;
+  --code-bg: #fbfbfc;
+  --code-no: #a2a9b6;
+  --mark: rgba(255, 196, 0, 0.24);
+  --mark-edge: #d9a200;
+  --syn-kw: #7a3e9d;
+  --syn-str: #2b6a46;
+  --syn-com: #7b8494;
+  --syn-fn: #2f4fa3;
+  --syn-num: #a3501b;
+  --syn-built: #0d6878;
+  --font-body: "IBM Plex Sans JP", "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --step-1: 0.8125rem;
+  --step0: 0.9375rem;
+  --step1: 1.125rem;
+  --step2: 1.375rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11141a; --panel: #171b23; --ink: #e2e6ed; --muted: #97a0b1; --rule: #2a303b;
+    --accent: #93abff; --accent-soft: #1f2840; --code-bg: #0e1116; --code-no: #4f5868;
+    --mark: rgba(255, 196, 0, 0.13); --mark-edge: #c08f12;
+    --syn-kw: #cfa5ef; --syn-str: #9dd2a0; --syn-com: #7a8396; --syn-fn: #9cb3ff; --syn-num: #eea36c; --syn-built: #7ccfda;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11141a; --panel: #171b23; --ink: #e2e6ed; --muted: #97a0b1; --rule: #2a303b;
+  --accent: #93abff; --accent-soft: #1f2840; --code-bg: #0e1116; --code-no: #4f5868;
+  --mark: rgba(255, 196, 0, 0.13); --mark-edge: #c08f12;
+  --syn-kw: #cfa5ef; --syn-str: #9dd2a0; --syn-com: #7a8396; --syn-fn: #9cb3ff; --syn-num: #eea36c; --syn-built: #7ccfda;
+  color-scheme: dark;
+}
+html, body { height: 100%; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: var(--step0); line-height: 1.75;
+}
+.app {
+  height: 100%; display: grid; grid-template-rows: auto 1fr;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 12px; gap: 12px; box-sizing: border-box;
+}
+header.bar {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px;
+}
+header.bar h1 {
+  font-size: var(--step2); font-weight: 700; margin: 0; letter-spacing: 0.01em; text-wrap: balance;
+}
+header.bar h1 code { font-family: var(--font-mono); font-weight: 600; }
+.meta { font-family: var(--font-mono); font-size: var(--step-1); color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.meta b { color: var(--ink); font-weight: 500; }
+main.desk {
+  --story-w: 420px;
+  min-height: 0; display: grid; grid-template-columns: var(--story-w) 14px minmax(0, 1fr);
+}
+.splitter {
+  cursor: col-resize; display: flex; align-items: center; justify-content: center;
+  touch-action: none; border-radius: 4px;
+}
+.splitter::before {
+  content: ""; width: 4px; height: 44px; border-radius: 2px;
+  background: var(--rule); box-shadow: 0 0 0 1px var(--rule);
+}
+.splitter:hover::before, .splitter.dragging::before { background: var(--accent); box-shadow: none; }
+.splitter:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+body.resizing { cursor: col-resize; user-select: none; }
+.story, .listing {
+  min-height: 0; min-width: 0; background: var(--panel); border: 1px solid var(--rule); border-radius: 6px;
+  display: flex; flex-direction: column;
+}
+.story-head {
+  padding: 14px 18px 10px; border-bottom: 1px solid var(--rule); display: grid; gap: 8px;
+}
+.progress { display: flex; flex-wrap: wrap; gap: 4px; }
+.progress button {
+  font: 500 var(--step-1)/1 var(--font-mono); width: 28px; height: 26px; border-radius: 4px;
+  border: 1px solid var(--rule); background: transparent; color: var(--muted); cursor: pointer;
+}
+.progress button[aria-current="step"] { background: var(--accent); border-color: var(--accent); color: var(--panel); }
+.progress button.seen:not([aria-current="step"]) { color: var(--ink); border-color: var(--muted); }
+.progress button:focus-visible, .nav button:focus-visible, .chip:focus-visible, .ref:focus-visible, .loc:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
+.eyebrow { font: 500 var(--step-1)/1.4 var(--font-mono); color: var(--muted); letter-spacing: 0.04em; }
+.story h2 { margin: 0; font-size: var(--step1); line-height: 1.45; text-wrap: balance; }
+.loc {
+  justify-self: start; font: 500 var(--step-1)/1.4 var(--font-mono); color: var(--accent);
+  background: var(--accent-soft); border: 0; border-radius: 4px; padding: 3px 8px; cursor: pointer;
+}
+.body {
+  flex: 1; min-height: 0; overflow-y: auto; padding: 14px 18px 18px;
+}
+.body p { margin: 0 0 0.9em; max-width: 65ch; }
+.body code, .body kbd {
+  font-family: var(--font-mono); font-size: 0.86em; background: var(--accent-soft);
+  padding: 1px 5px; border-radius: 3px; overflow-wrap: anywhere;
+}
+.body ul, .body ol { margin: 0 0 0.9em; padding-left: 1.3em; display: grid; gap: 4px; }
+.body strong { font-weight: 700; }
+.body .take {
+  border-top: 1px dashed var(--rule); padding-top: 10px; margin-top: 4px; color: var(--muted);
+}
+.body .take::before { content: "覚えておくこと"; display: block; font: 600 var(--step-1)/1.6 var(--font-mono); color: var(--ink); letter-spacing: 0.04em; }
+.tbl { overflow-x: auto; margin: 0 0 1em; }
+.tbl table { border-collapse: collapse; font-size: var(--step-1); width: 100%; }
+.tbl th, .tbl td { text-align: left; vertical-align: top; padding: 6px 8px; border-bottom: 1px solid var(--rule); }
+.tbl th { font-weight: 600; color: var(--muted); white-space: nowrap; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 1em; }
+.chip {
+  font: 500 var(--step-1)/1.3 var(--font-body); border: 1px solid var(--mark-edge); background: var(--mark);
+  color: var(--ink); border-radius: 4px; padding: 4px 9px; cursor: pointer;
+}
+.chip[aria-pressed="true"] { box-shadow: inset 0 0 0 1px var(--mark-edge); font-weight: 700; }
+.ref { cursor: pointer; text-decoration: underline dotted var(--accent); text-underline-offset: 3px; color: inherit; }
+.ref code { color: var(--accent); }
+.flow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 1em; font: 500 var(--step-1)/1.3 var(--font-mono); }
+.flow span { border: 1px solid var(--rule); border-radius: 4px; padding: 4px 7px; background: var(--code-bg); }
+.flow i { font-style: normal; color: var(--muted); }
+.nav {
+  display: flex; justify-content: space-between; gap: 8px; padding: 10px 18px 12px; border-top: 1px solid var(--rule);
+}
+.nav button {
+  font: 500 var(--step0)/1 var(--font-body); padding: 9px 14px; border-radius: 5px; cursor: pointer;
+  border: 1px solid var(--rule); background: transparent; color: var(--ink);
+}
+.nav button.next { background: var(--accent); border-color: var(--accent); color: var(--panel); }
+.nav button:disabled { opacity: 0.4; cursor: default; }
+.nav .hint { align-self: center; font-size: var(--step-1); color: var(--muted); }
+.listing-head {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; padding: 9px 14px;
+  border-bottom: 1px solid var(--rule); font: 500 var(--step-1)/1.4 var(--font-mono);
+}
+.listing-head .path { color: var(--ink); overflow-wrap: anywhere; }
+.listing-head .range { color: var(--muted); }
+.code {
+  flex: 1; min-height: 0; overflow: auto; background: var(--code-bg); border-radius: 0 0 6px 6px;
+  font: 400 0.8125rem/1.6 var(--font-mono); padding-block: 8px;
+}
+.code .ln { display: grid; grid-template-columns: 4.2em max-content; min-width: 100%; }
+.code .no { color: var(--code-no); text-align: right; padding-right: 1.1em; user-select: none; }
+.code .tx { white-space: pre; padding-right: 24px; }
+.code .ln.hl { background: var(--mark); }
+.code .ln.hl .no { color: var(--ink); box-shadow: inset 3px 0 0 var(--mark-edge); }
+.hljs-keyword, .hljs-meta .hljs-keyword { color: var(--syn-kw); }
+.hljs-string, .hljs-subst .hljs-string { color: var(--syn-str); }
+.hljs-comment { color: var(--syn-com); font-style: italic; }
+.hljs-title, .hljs-title.function_ { color: var(--syn-fn); }
+.hljs-number, .hljs-literal { color: var(--syn-num); }
+.hljs-built_in, .hljs-variable, .hljs-params { color: var(--syn-built); }
+.hljs-meta { color: var(--syn-com); }
+@media (max-width: 900px) {
+  html, body { height: auto; }
+  .app { height: auto; }
+  main.desk { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .splitter { display: none; }
+  .body { overflow: visible; }
+  .code { max-height: 62vh; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<div class="app">
+  <header class="bar">
+    <h1 id="tour-title"></h1>
+    <div class="meta">
+      <span id="meta-label"></span>
+      <span>commit <b id="meta-commit"></b></span>
+      <span id="meta-keys"></span>
+    </div>
+  </header>
+  <main class="desk">
+    <section class="story" id="story" aria-labelledby="step-title">
+      <div class="story-head">
+        <nav class="progress" id="progress"></nav>
+        <div class="eyebrow" id="eyebrow"></div>
+        <h2 id="step-title"></h2>
+        <button class="loc" id="loc" type="button"></button>
+      </div>
+      <div class="body" id="body"></div>
+      <div class="nav">
+        <button type="button" id="prev"></button>
+        <span class="hint" id="count"></span>
+        <button type="button" class="next" id="next"></button>
+      </div>
+    </section>
+    <div class="splitter" id="splitter" role="separator" aria-orientation="vertical" aria-controls="story"
+         tabindex="0"></div>
+    <section class="listing" id="listing">
+      <div class="listing-head"><span class="path" id="path"></span><span class="range" id="range"></span></div>
+      <div class="code" id="code" tabindex="0"></div>
+    </section>
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+// Filled in by scripts/build.py: {title, lang, label, commit, files: {key: {path, lang, text}}, steps}.
+const TOUR = /*__TOUR__*/;
+const UI = {
+  ja: { intro: 'はじめに', first: '序', prev: '← 前へ', next: '次へ →', keys: '← → で移動',
+        steps: 'ステップ', code: 'コード', reset: 'このステップのハイライトに戻る',
+        splitter: '解説とコードの幅', splitterTip: 'ドラッグで幅を変更、ダブルクリックで元に戻す' },
+  en: { intro: 'Overview', first: '0', prev: '← Back', next: 'Next →', keys: '← → to move',
+        steps: 'Steps', code: 'Code', reset: 'Back to this step\'s highlight',
+        splitter: 'Width of the narrative and the code', splitterTip: 'Drag to resize, double-click to reset' },
+};
+const T = UI[TOUR.lang] || UI.en;
+const FILES = TOUR.files;
+const STEPS = TOUR.steps;
+document.documentElement.lang = TOUR.lang || 'en';
+document.getElementById('tour-title').textContent = TOUR.title;
+document.getElementById('meta-label').textContent = TOUR.label || '';
+document.getElementById('meta-commit').textContent = TOUR.commit || '';
+document.getElementById('meta-keys').textContent = T.keys;
+document.getElementById('progress').setAttribute('aria-label', T.steps);
+document.getElementById('listing').setAttribute('aria-label', T.code);
+document.getElementById('loc').title = T.reset;
+document.getElementById('prev').textContent = T.prev;
+document.getElementById('next').textContent = T.next;
+document.getElementById('splitter').setAttribute('aria-label', T.splitter);
+document.getElementById('splitter').title = T.splitterTip;
+
+function escapeHtml(text) {
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// Split highlighted HTML into lines, closing and reopening spans that cross a newline.
+function splitLines(html) {
+  const lines = [];
+  const open = [];
+  let line = '';
+  const tokens = html.match(/<span[^>]*>|<\/span>|\n|[^<\n]+/g) || [];
+  for (const token of tokens) {
+    if (token === '\n') {
+      lines.push(line + '</span>'.repeat(open.length));
+      line = open.join('');
+    } else if (token.startsWith('<span')) {
+      open.push(token);
+      line += token;
+    } else if (token === '</span>') {
+      open.pop();
+      line += token;
+    } else {
+      line += token;
+    }
+  }
+  lines.push(line + '</span>'.repeat(open.length));
+  return lines;
+}
+
+const rendered = {};
+function renderFile(name) {
+  if (rendered[name]) return rendered[name];
+  const text = FILES[name].text.replace(/\n$/, '');
+  const language = FILES[name].lang;
+  let html;
+  try {
+    html = window.hljs && language && hljs.getLanguage(language)
+      ? hljs.highlight(text, { language, ignoreIllegals: true }).value : escapeHtml(text);
+  } catch (error) {
+    html = escapeHtml(text);
+  }
+  const container = document.createElement('div');
+  splitLines(html).forEach((content, index) => {
+    const row = document.createElement('div');
+    row.className = 'ln';
+    row.dataset.n = index + 1;
+    row.innerHTML = '<span class="no">' + (index + 1) + '</span><span class="tx">' + (content || ' ') + '</span>';
+    container.appendChild(row);
+  });
+  rendered[name] = container;
+  return container;
+}
+
+const codeEl = document.getElementById('code');
+let shownFile = null;
+function show(file, start, end) {
+  if (shownFile !== file) {
+    codeEl.replaceChildren(renderFile(file));
+    shownFile = file;
+  }
+  document.getElementById('path').textContent = FILES[file].path;
+  document.getElementById('range').textContent = start === end ? 'L' + start : 'L' + start + '–' + end;
+  const rows = codeEl.firstChild.children;
+  for (const row of rows) {
+    const n = Number(row.dataset.n);
+    row.classList.toggle('hl', n >= start && n <= end);
+  }
+  const target = rows[Math.max(0, start - 4)];
+  if (target) {
+    const smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    codeEl.scrollTo({ top: target.offsetTop - codeEl.offsetTop, behavior: smooth ? 'smooth' : 'auto' });
+  }
+}
+
+function parseRange(text) {
+  const [a, b] = text.split('-').map(Number);
+  return [a, b || a];
+}
+
+let current = 0;
+const seen = new Set();
+const progress = document.getElementById('progress');
+STEPS.forEach((step, index) => {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.textContent = index === 0 ? T.first : String(index);
+  button.title = step.title;
+  button.addEventListener('click', () => go(index));
+  progress.appendChild(button);
+});
+
+function go(index) {
+  current = Math.max(0, Math.min(STEPS.length - 1, index));
+  const step = STEPS[current];
+  seen.add(current);
+  [...progress.children].forEach((button, i) => {
+    if (i === current) button.setAttribute('aria-current', 'step'); else button.removeAttribute('aria-current');
+    button.classList.toggle('seen', seen.has(i));
+  });
+  document.getElementById('eyebrow').textContent = current === 0 ? T.intro : 'STEP ' + current + ' / ' + (STEPS.length - 1);
+  document.getElementById('step-title').textContent = step.title;
+  const [start, end] = step.range;
+  const loc = document.getElementById('loc');
+  loc.textContent = step.file + '  L' + start + '–' + end;
+  const body = document.getElementById('body');
+  body.innerHTML = step.body;
+  body.scrollTop = 0;
+  document.getElementById('prev').disabled = current === 0;
+  document.getElementById('next').disabled = current === STEPS.length - 1;
+  document.getElementById('count').textContent = (current + 1) + ' / ' + STEPS.length;
+  show(step.file, start, end);
+  try { history.replaceState(null, '', '#step-' + current); } catch (error) {}
+}
+
+document.getElementById('loc').addEventListener('click', () => {
+  const step = STEPS[current];
+  document.querySelectorAll('.chip').forEach((chip) => chip.setAttribute('aria-pressed', 'false'));
+  show(step.file, step.range[0], step.range[1]);
+});
+document.getElementById('body').addEventListener('click', (event) => {
+  const chip = event.target.closest('.chip');
+  if (chip) {
+    document.querySelectorAll('.chip').forEach((other) => other.setAttribute('aria-pressed', String(other === chip)));
+    const [start, end] = parseRange(chip.dataset.focus);
+    show(STEPS[current].file, start, end);
+    return;
+  }
+  const ref = event.target.closest('.ref');
+  if (ref) {
+    const [file, range] = ref.dataset.goto.split(':');
+    const [start, end] = parseRange(range);
+    show(file, start, end);
+  }
+});
+document.getElementById('body').addEventListener('keydown', (event) => {
+  const ref = event.target.closest('.ref');
+  if (ref && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); ref.click(); }
+});
+document.getElementById('prev').addEventListener('click', () => go(current - 1));
+document.getElementById('next').addEventListener('click', () => go(current + 1));
+// The splitter between the narrative and the code: drag, arrow keys, Home/End, double-click to reset.
+const desk = document.querySelector('main.desk');
+const splitter = document.getElementById('splitter');
+const DEFAULT_WIDTH = 420;
+const MIN_STORY = 260;
+const MIN_CODE = 320;
+const WIDTH_KEY = 'code-tour-story-width';
+function clampWidth(width) {
+  const max = Math.max(MIN_STORY, desk.clientWidth - MIN_CODE - splitter.offsetWidth);
+  return Math.round(Math.min(max, Math.max(MIN_STORY, width)));
+}
+let storyWidth = DEFAULT_WIDTH;
+function setWidth(width, remember) {
+  storyWidth = clampWidth(width);
+  desk.style.setProperty('--story-w', storyWidth + 'px');
+  splitter.setAttribute('aria-valuenow', String(storyWidth));
+  splitter.setAttribute('aria-valuemin', String(MIN_STORY));
+  splitter.setAttribute('aria-valuemax', String(clampWidth(Infinity)));
+  if (remember) {
+    try { localStorage.setItem(WIDTH_KEY, String(storyWidth)); } catch (error) {}
+  }
+}
+try {
+  const saved = Number(localStorage.getItem(WIDTH_KEY));
+  if (saved > 0) storyWidth = saved;
+} catch (error) {}
+setWidth(storyWidth, false);
+window.addEventListener('resize', () => setWidth(storyWidth, false));
+splitter.addEventListener('pointerdown', (event) => {
+  if (event.button !== 0) return;
+  event.preventDefault();
+  splitter.setPointerCapture(event.pointerId);
+  splitter.classList.add('dragging');
+  document.body.classList.add('resizing');
+});
+splitter.addEventListener('pointermove', (event) => {
+  if (!splitter.hasPointerCapture(event.pointerId)) return;
+  setWidth(event.clientX - desk.getBoundingClientRect().left - splitter.offsetWidth / 2, false);
+});
+function endDrag(event) {
+  if (!splitter.hasPointerCapture(event.pointerId)) return;
+  splitter.releasePointerCapture(event.pointerId);
+  splitter.classList.remove('dragging');
+  document.body.classList.remove('resizing');
+  setWidth(storyWidth, true);
+}
+splitter.addEventListener('pointerup', endDrag);
+splitter.addEventListener('pointercancel', endDrag);
+splitter.addEventListener('dblclick', () => setWidth(DEFAULT_WIDTH, true));
+splitter.addEventListener('keydown', (event) => {
+  const step = event.shiftKey ? 80 : 24;
+  const moves = { ArrowLeft: storyWidth - step, ArrowRight: storyWidth + step, Home: MIN_STORY, End: Infinity };
+  if (!(event.key in moves)) return;
+  event.preventDefault();
+  event.stopPropagation();
+  setWidth(moves[event.key], true);
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.target.closest('input, textarea, .splitter')) return;
+  if (event.key === 'ArrowRight') go(current + 1);
+  if (event.key === 'ArrowLeft') go(current - 1);
+});
+const observer = new MutationObserver(() => {
+  document.querySelectorAll('#body .ref:not([tabindex])').forEach((ref) => {
+    ref.setAttribute('tabindex', '0');
+    ref.setAttribute('role', 'button');
+  });
+});
+observer.observe(document.getElementById('body'), { childList: true });
+
+const match = /^#step-(\d+)$/.exec(location.hash);
+go(match ? Number(match[1]) : 0);
+</script>
