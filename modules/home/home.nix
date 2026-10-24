@@ -629,7 +629,7 @@ in
           local target
           target=$(readlink "$HOME/.nix-profile") || return
           path=(''${path/#$HOME\/.nix-profile\//$target/})
-          export SHELL="$target/bin/zsh"
+          export SHELL=''${SHELL/#$HOME\/.nix-profile\//$target/}
         }
 
         zstyle ':completion:*' verbose yes
