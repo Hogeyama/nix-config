@@ -1,18 +1,29 @@
 #!/usr/bin/env python3
-"""Build a code tour page from tour.json and the repository's files.
+"""Build a code tour page from tour.toml and the repository's files.
 
-Usage: build.py TOUR_JSON --root REPO --out PAGE_HTML
+Usage: build.py TOUR_TOML --root REPO --out PAGE_HTML
 
-TOUR_JSON:
-  {"title": "...", "lang": "ja" | "en", "label": "repo name (optional)",
-   "files": {"key": "path/from/root", ...},
-   "steps": [{"title": "...", "file": "key", "range": [start, end], "body": "<p>HTML</p>"}, ...]}
+TOUR_TOML (see assets/example-tour.toml):
+  title = "..."
+  lang = "ja"  # or "en"
+  label = "repo name"  # optional
+  [files]
+  key = "path/from/root"
+  [[steps]]
+  title = "..."
+  file = "key"
+  range = [start, end]
+  body = '''
+  <p>HTML</p>
+  '''
 
 The page embeds each file's full text as it is on disk, with the commit of
 HEAD (plus "+dirty" when a toured file differs from it). Every range is
 checked: a step's range, its chips (data-focus="a-b", within the step's
 range) and its links (data-goto="key:a-b", within that file). Exit 1 with
 every problem listed, so a tour never ships a highlight on the wrong lines.
+A "<" inside <code> is also reported: the body is inserted as HTML, so an
+unescaped one silently turns into a tag instead of showing.
 """
 import argparse
 import html
@@ -21,6 +32,7 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+import tomllib
 
 TEMPLATE = Path(__file__).resolve().parents[1] / 'assets/template.html'
 # highlight.js common-bundle names by suffix or file name; others show unhighlighted.
@@ -33,10 +45,10 @@ LANGUAGES = {
     '.css': 'css', '.scss': 'scss', '.html': 'xml', '.xml': 'xml', '.sql': 'sql', '.lua': 'lua',
     '.diff': 'diff', '.patch': 'diff', 'Makefile': 'makefile',
 }
-# Either quote: tour.json bodies use single quotes to avoid escaping.
 FOCUS = re.compile(r'''data-focus=(?:"([^"]*)"|'([^']*)')''')
 GOTO = re.compile(r'''data-goto=(?:"([^"]*)"|'([^']*)')''')
 RANGE = re.compile(r'(\d+)(?:-(\d+))?')
+CODE = re.compile(r'<code>(.*?)</code>', re.S)
 
 
 def git(root, *args):
@@ -75,6 +87,9 @@ def check(tour, lines):
         if not 1 <= start <= end <= lines[key]:
             problems.append(f'{at}: range {start}-{end} is outside {key} (1-{lines[key]})')
         body = step.get('body', '')
+        for text in CODE.findall(body):
+            if '<' in text:
+                problems.append(f'{at}: <code>{text}</code> needs "<" written as "&lt;"')
         for value in (a or b for a, b in FOCUS.findall(body)):
             focus = parse_range(value)
             if not focus or not (start <= focus[0] <= focus[1] <= end):
@@ -90,7 +105,8 @@ def check(tour, lines):
 
 
 def build(tour_path, root, out):
-    tour = json.loads(Path(tour_path).read_text())
+    with open(tour_path, 'rb') as stream:
+        tour = tomllib.load(stream)
     root = Path(root).resolve()
     files, lines = {}, {}
     for key, relative in tour.get('files', {}).items():

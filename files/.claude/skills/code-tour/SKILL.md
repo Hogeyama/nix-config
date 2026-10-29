@@ -5,34 +5,41 @@ description: Build a guided code tour as a private claude.ai Artifact. The narra
 
 # Code tour
 
-The page comes from `assets/template.html`, assembled by `scripts/build.py`, both in this skill's directory. You write only `tour.json`: the narrative and the line ranges.
+The page comes from `assets/template.html`, assembled by `scripts/build.py`, both in this skill's directory. You write only `tour.toml`: the narrative and the line ranges.
 
 ## Steps
 
 1. **Scope.** Turn the question into one flow you can walk in 6 to 15 steps. The overview (`steps[0]`) states what is left out.
 2. **Read the code** along that flow, and find out the order things happen at runtime. Configuration can change that order (a lazy connection, a deferred import, a hook that runs later than its place in the file suggests). Take every line number from the file as it is now (`grep -n`, or Read with an offset), never from memory.
-3. **Write `tour.json`** in the scratchpad (format below). Write it in the user's language and set `lang` to match.
+3. **Write `tour.toml`** in the scratchpad (format below). Write it in the user's language and set `lang` to match.
 4. **Build:**
    ```
-   python3 -I <this skill>/scripts/build.py <scratchpad>/tour.json --root <repo root> --out <scratchpad>/<slug>.html
+   python3 -I <this skill>/scripts/build.py <scratchpad>/tour.toml --root <repo root> --out <scratchpad>/<slug>.html
    ```
    `<slug>` is a short file name for the tour, such as `addon-tour`. The build embeds the files' full text and checks every range. Fix everything it reports and run it again. Do not publish a tour that failed the check. The check covers line numbers only, so also re-read each body against its highlighted code and fix any sentence the code does not bear out.
 5. **Publish.** For a new tour, call Artifact with `action: "quickstart"` and `intent: "other"`, as the Artifact tool requires for every new artifact. Then publish the built page as it is: `file_path` with `icon: "code"` and a one-sentence `description`. To revise a tour, rebuild to the same `--out` and publish that same `file_path`.
 6. **Reply** with the URL. Say what the tour covers, and that it is a snapshot of the commit shown in its header that will not follow later changes.
 
-## tour.json
+## tour.toml
 
-```json
-{
-  "title": "settings.py ツアー",
-  "lang": "ja",
-  "label": "claude-devcontainer",
-  "files": {"settings.py": ".devcontainer/claude/scripts/settings.py"},
-  "steps": [
-    {"title": "...", "file": "settings.py", "range": [1, 35], "body": "<p>...</p>"}
-  ]
-}
+```toml
+title = "settings.py ツアー"
+lang = "ja"
+label = "claude-devcontainer"
+
+[files]
+"settings.py" = ".devcontainer/claude/scripts/settings.py"
+
+[[steps]]
+title = "..."
+file = "settings.py"
+range = [1, 35]
+body = '''
+<p>...</p>
+'''
 ```
+
+`assets/example-tour.toml` is a complete tour of 15 steps.
 
 - `title` is the artifact's name: a short noun phrase, never a sentence.
 - `label` is the repository's name, shown in the header. Without it, the header shows the name of the `--root` directory, which is often unhelpful (`workspace`).
@@ -51,7 +58,7 @@ The page comes from `assets/template.html`, assembled by `scripts/build.py`, bot
 | `<div class='tbl'><table>...</table></div>` | A table that scrolls on its own when narrow |
 | `<div class='flow'><span>a</span><i>→</i><span>b</span></div>` | A one-line flow of boxes |
 
-Write attributes in single quotes (`class='chip' data-focus='12-20'`), so the JSON needs no escaping. Do not use headings (the step title is the heading), scripts, images or inline styles.
+Write each body as a `'''` literal string, breaking lines between elements. Nothing inside it is escaped for TOML, so attributes can use either quote. HTML escaping still applies: write `<` as `&lt;` and `&` as `&amp;`, as in `<code>Vec&lt;T&gt;</code>`. The build reports a `<` left inside `<code>`. Do not use headings (the step title is the heading), scripts, images or inline styles.
 
 ## Writing the steps
 
