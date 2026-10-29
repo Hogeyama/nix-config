@@ -1,0 +1,15 @@
+# https://github.com/shell-pool/shpool/blob/master/CONFIG.md
+# herdrのprefix+fで開くscratch shellの置き場として使う。
+
+# 再接続したときに、離れる前の画面を描き直す。
+session_restore_mode = "screen"
+
+# プロンプトの先頭にセッション名を足さない。
+prompt_prefix = ""
+
+motd = "never"
+
+# 既定のCtrl-Space Ctrl-qは、ctrl+qがherdrのprefixなのでshpoolまで届かない。
+[[keybinding]]
+binding = 'Ctrl-\'
+action = "detach"

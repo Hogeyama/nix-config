@@ -12,10 +12,13 @@ prefix = "ctrl+q"
 # type = "popup"はcopy modeもマウス選択も効かずyankできない(0.9.3)ので、
 # 普通のペインとして開くtype = "pane"を使う。これは呼び出し元ペインのcwdで
 # zoomした一時ペインを作り、終了時に元のフォーカスとzoom状態へ戻す。
+# シェルはshpoolのセッションとして動かし、呼び出し元ペインごとに1つ持つ。
+# ctrl+\でdetachするとペインだけ閉じてシェルは残り、同じペインから
+# 再びprefix+fを押すとそのシェルに戻る。shpoolのdaemonは初回のattachで立ち上がる。
 [[keys.command]]
 key = "prefix+f"
 type = "pane"
-command = 'exec "$SHELL"'
+command = 'exec shpool attach -d . "herdr-${HERDR_ACTIVE_PANE_ID:?}"'
 description = "scratch shell (current pane cwd)"
 
 [ui]

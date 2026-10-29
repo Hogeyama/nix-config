@@ -202,6 +202,7 @@ in
       scrot
       shellcheck
       shfmt
+      shpool
       simplescreenrecorder
       sqlite
       ssh-to-age
