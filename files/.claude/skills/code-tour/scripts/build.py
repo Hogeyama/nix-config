@@ -22,8 +22,13 @@ HEAD (plus "+dirty" when a toured file differs from it). Every range is
 checked: a step's range, its chips (data-focus="a-b", within the step's
 range) and its links (data-goto="key:a-b", within that file). Exit 1 with
 every problem listed, so a tour never ships a highlight on the wrong lines.
-A "<" inside <code> is also reported: the body is inserted as HTML, so an
-unescaped one silently turns into a tag instead of showing.
+A "<" inside <code> or a diagram is also reported: the body is inserted as
+HTML, so an unescaped one silently turns into a tag instead of showing.
+
+Diagrams: <pre class="d2">...</pre> is rendered here with the d2 command into
+an inline SVG (light and dark themes, following prefers-color-scheme), so d2
+must be on PATH when a tour uses one. <pre class="mermaid">...</pre> is left
+for the page, which renders it in the browser.
 """
 import argparse
 import html
@@ -49,6 +54,8 @@ FOCUS = re.compile(r'''data-focus=(?:"([^"]*)"|'([^']*)')''')
 GOTO = re.compile(r'''data-goto=(?:"([^"]*)"|'([^']*)')''')
 RANGE = re.compile(r'(\d+)(?:-(\d+))?')
 CODE = re.compile(r'<code>(.*?)</code>', re.S)
+DIAGRAM = re.compile(r'''<pre class=(?:"|')(d2|mermaid)(?:"|')>(.*?)</pre>''', re.S)
+D2 = re.compile(r'''<pre class=(?:"|')d2(?:"|')>(.*?)</pre>''', re.S)
 
 
 def git(root, *args):
@@ -90,6 +97,9 @@ def check(tour, lines):
         for text in CODE.findall(body):
             if '<' in text:
                 problems.append(f'{at}: <code>{text}</code> needs "<" written as "&lt;"')
+        for kind, text in DIAGRAM.findall(body):
+            if '<' in text:
+                problems.append(f'{at}: a {kind} diagram needs "<" written as "&lt;"')
         for value in (a or b for a, b in FOCUS.findall(body)):
             focus = parse_range(value)
             if not focus or not (start <= focus[0] <= focus[1] <= end):
@@ -101,6 +111,34 @@ def check(tour, lines):
                 problems.append(f'{at}: data-goto="{value}" names a file not in "files"')
             elif not goto or not (1 <= goto[0] <= goto[1] <= lines[target]):
                 problems.append(f'{at}: data-goto="{value}" is outside {target} (1-{lines[target]})')
+    return problems
+
+
+def render_d2(source):
+    """An inline <svg> for one d2 diagram, or raise ValueError with d2's message."""
+    try:
+        result = subprocess.run(['d2', '--dark-theme', '200', '--pad', '8', '-', '-'],
+                                input=source, capture_output=True, text=True)
+    except FileNotFoundError:
+        raise ValueError('a step has a d2 diagram, but the d2 command is not on PATH') from None
+    if result.returncode != 0:
+        raise ValueError('d2 failed:\n' + (result.stderr.strip() or 'no message'))
+    svg = result.stdout[result.stdout.index('<svg'):]
+    # Center the drawing when the zoom dialog is wider than the diagram's aspect.
+    return svg.replace('preserveAspectRatio="xMinYMin meet"', 'preserveAspectRatio="xMidYMid meet"', 1)
+
+
+def render_diagrams(tour):
+    """Replace every d2 <pre> in the step bodies with its rendered SVG."""
+    problems = []
+    for index, step in enumerate(tour['steps']):
+        def replace(match):
+            try:
+                return "<figure class='diagram'>" + render_d2(html.unescape(match.group(1))) + '</figure>'
+            except ValueError as error:
+                problems.append(f'step {index} ({step["title"]!r}): {error}')
+                return match.group(0)
+        step['body'] = D2.sub(replace, step['body'])
     return problems
 
 
@@ -117,6 +155,8 @@ def build(tour_path, root, out):
                       'lang': LANGUAGES.get(name) or LANGUAGES.get(Path(relative).suffix, '')}
         lines[key] = len(text.rstrip('\n').split('\n'))
     problems = check(tour, lines)
+    if not problems:
+        problems = render_diagrams(tour)
     if problems:
         sys.exit('error: the tour has problems:\n  ' + '\n  '.join(problems))
     commit = git(root, 'rev-parse', '--short', 'HEAD') or 'unknown'

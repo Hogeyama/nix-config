@@ -57,8 +57,12 @@ body = '''
 | `<a class='ref' data-goto='key:40-52'><code>name</code></a>` | Jumps to a range in any listed file, inside or outside the step's range |
 | `<div class='tbl'><table>...</table></div>` | A table that scrolls on its own when narrow |
 | `<div class='flow'><span>a</span><i>→</i><span>b</span></div>` | A one-line flow of boxes |
+| `<pre class='mermaid'>...</pre>` | A Mermaid diagram, rendered in the browser |
+| `<pre class='d2'>...</pre>` | A D2 diagram, rendered to SVG by the build (needs `d2` on PATH) |
 
-Write each body as a `'''` literal string, breaking lines between elements. Nothing inside it is escaped for TOML, so attributes can use either quote. HTML escaping still applies: write `<` as `&lt;` and `&` as `&amp;`, as in `<code>Vec&lt;T&gt;</code>`. The build reports a `<` left inside `<code>`. Do not use headings (the step title is the heading), scripts, images or inline styles.
+Diagrams sit in the narrow narrative column; a click opens one full-size in a modal. Use one when the shape of the flow (a sequence, a state machine, who calls whom) says more than a `flow` line or a table can, and keep it to about a dozen nodes. Inside a diagram, write `-->` as `--&gt;` and `->` as `-&gt;`, like any other text in the body. In D2, quote a name that contains a dot (`"tour.toml"`), or D2 nests it as a container. A D2 syntax error fails the build with D2's message.
+
+Write each body as a `'''` literal string, breaking lines between elements. Nothing inside it is escaped for TOML, so attributes can use either quote. HTML escaping still applies: write `<` as `&lt;` and `&` as `&amp;`, as in `<code>Vec&lt;T&gt;</code>`. The build reports a `<` left inside `<code>`. Do not use headings (the step title is the heading), scripts, images or inline styles; draw a picture as a diagram instead.
 
 ## Writing the steps
 
