@@ -4,6 +4,8 @@
 let
   dotfilesSymlinks =
     { rootDir ? "files"
+      # $HOME からの相対パス。rootDir の中身をこの下に貼る。
+    , targetDir ? ""
     , clonedPath ? "${config.home.homeDirectory}/nix-config"
     }:
     let
@@ -23,7 +25,7 @@ let
               newDirPath = if dirPath == "" then name else "${dirPath}/${name}";
               fileOrSymlink =
                 {
-                  "${newDirPath}" = {
+                  "${if targetDir == "" then newDirPath else "${targetDir}/${newDirPath}"}" = {
                     source = config.lib.file.mkOutOfStoreSymlink
                       (toAbsPathInVCS newDirPath);
                   };
@@ -245,6 +247,9 @@ in
       unstable.dasel
     ];
     file = dotfilesSymlinks { }
+      # skills/ は Claude Code と Codex の両方に配る。
+      // dotfilesSymlinks { rootDir = "skills"; targetDir = ".claude/skills"; }
+      // dotfilesSymlinks { rootDir = "skills"; targetDir = ".codex/skills"; }
       # claude-devcontainer内のgitにもホストと同じidentityとignoreを使わせる。
       # 実体はホストの~/.config/gitに置いたまま、dotfilesから辿れるようにする。
       // pkgs.lib.genAttrs' [ "config" "config.local" "ignore" ] (name:
