@@ -15,7 +15,7 @@
   --accent-soft: #e6ebf8;
   --code-bg: #fbfbfc;
   --code-no: #a2a9b6;
-  --mark: rgba(255, 196, 0, 0.24);
+  --mark: rgba(255, 196, 0, 0.14);
   --mark-edge: #d9a200;
   --add: rgba(46, 160, 67, 0.13);
   --add-sign: #1f7a35;
@@ -38,7 +38,7 @@
   :root:not([data-theme="light"]) {
     --bg: #11141a; --panel: #171b23; --ink: #e2e6ed; --muted: #97a0b1; --rule: #2a303b;
     --accent: #93abff; --accent-soft: #1f2840; --code-bg: #0e1116; --code-no: #4f5868;
-    --mark: rgba(255, 196, 0, 0.13); --mark-edge: #c08f12;
+    --mark: rgba(255, 196, 0, 0.08); --mark-edge: #c08f12;
     --add: rgba(63, 185, 80, 0.14); --add-sign: #6fd384; --del: rgba(248, 81, 73, 0.14); --del-sign: #ff8a83;
     --syn-kw: #cfa5ef; --syn-str: #9dd2a0; --syn-com: #7a8396; --syn-fn: #9cb3ff; --syn-num: #eea36c; --syn-built: #7ccfda;
     color-scheme: dark;
@@ -47,7 +47,7 @@
 :root[data-theme="dark"] {
   --bg: #11141a; --panel: #171b23; --ink: #e2e6ed; --muted: #97a0b1; --rule: #2a303b;
   --accent: #93abff; --accent-soft: #1f2840; --code-bg: #0e1116; --code-no: #4f5868;
-  --mark: rgba(255, 196, 0, 0.13); --mark-edge: #c08f12;
+  --mark: rgba(255, 196, 0, 0.08); --mark-edge: #c08f12;
   --add: rgba(63, 185, 80, 0.14); --add-sign: #6fd384; --del: rgba(248, 81, 73, 0.14); --del-sign: #ff8a83;
   --syn-kw: #cfa5ef; --syn-str: #9dd2a0; --syn-com: #7a8396; --syn-fn: #9cb3ff; --syn-num: #eea36c; --syn-built: #7ccfda;
   color-scheme: dark;
@@ -196,16 +196,15 @@ dialog.zoom::backdrop { background: rgba(10, 12, 16, 0.6); }
 .code .diff .ln { grid-template-columns: 3.4em 3.4em 1.6em max-content; }
 .code .diff .no { padding-right: 0.7em; }
 .code .sg { user-select: none; text-align: center; }
+.code .ln.hl { background-color: var(--mark); }
 .code .ln.add { background-color: var(--add); }
 .code .ln.del { background-color: var(--del); }
 .code .ln.add .sg { color: var(--add-sign); }
 .code .ln.del .sg { color: var(--del-sign); }
-/* The step's highlight is laid over the diff colors, so both stay readable. */
-.code .ln.hl { background-image: linear-gradient(var(--mark), var(--mark)); }
 .code .ln.hl .no { color: var(--ink); }
 .code .ln.hl .no:first-child { box-shadow: inset 3px 0 0 var(--mark-edge); }
-/* Side by side: the old half on the left, the new on the right. Each half colors its own cells,
-   so the highlight goes on the cells too; long lines wrap, since each half has half the width. */
+/* Side by side: the old half on the left, the new on the right. Long lines wrap, since each half
+   has half the width. */
 .code .split .ln { grid-template-columns: 3.4em minmax(0, 1fr) 3.4em minmax(0, 1fr); }
 .code .split .no { padding-right: 0.7em; }
 .code .split .no + .tx + .no { border-left: 1px solid var(--rule); }
@@ -213,7 +212,10 @@ dialog.zoom::backdrop { background: rgba(10, 12, 16, 0.6); }
 .code .split .tx.del { background-color: var(--del); }
 .code .split .tx.add { background-color: var(--add); }
 .code .split .tx.none { background-color: var(--rule); opacity: 0.35; }
-.code .split .ln.hl > span { background-image: linear-gradient(var(--mark), var(--mark)); }
+/* A diff already colors its changed rows, and yellow over red or green muddies both. There the
+   highlight keeps the rows' own colors and its edge mark, and the rows outside it are dimmed. */
+.code .diff .ln.hl:not(.add):not(.del), .code .split .ln.hl { background-color: transparent; }
+.code .diff .ln:not(.hl), .code .split .ln:not(.hl) { opacity: 0.7; }
 .hljs-keyword, .hljs-meta .hljs-keyword { color: var(--syn-kw); }
 .hljs-string, .hljs-subst .hljs-string { color: var(--syn-str); }
 .hljs-comment { color: var(--syn-com); font-style: italic; }
