@@ -22,7 +22,7 @@ The page comes from `assets/template.html`, assembled by `scripts/build.py`, bot
 
 ## Diff tours
 
-When the question is about a change (a commit, a branch, the working tree, a PR), set `base` in `tour.toml`. The build then reads each file at both sides and shows the whole file as a diff: removed lines interleaved where git diff puts them, added lines marked, and `+N −M` in the header.
+When the question is about a change (a commit, a branch, the working tree, a PR), set `base` in `tour.toml`. The build then reads each file at both sides and shows the whole file as a diff: removed lines interleaved where git diff puts them, added lines marked, and `+N −M` in the header. A button above the code switches a diff file to side by side, with the old file on the left and the new on the right; the page remembers the choice per viewer.
 
 ```toml
 base = "main"      # the old side: any revision
@@ -100,4 +100,4 @@ Write each body as a `'''` literal string, breaking lines between elements. Noth
 
 ## Comments
 
-Viewers comment on lines in the page. Read the comments with `ArtifactComments` `action: "read"` when the user asks. A comment anchored at `#code > div:nth-of-type(1) > div:nth-of-type(N)` is on line N of the file that was being shown. Its `[location]` row quotes that line's text, so confirm the line from it. In a diff tour, N counts rows, removed lines included, so it is not the line number; go by the quoted text. Answer in the thread. Resolve a thread only after acting on it; leave a question open for the commenter.
+Viewers comment on lines in the page. Read the comments with `ArtifactComments` `action: "read"` when the user asks. A comment anchored at `#code > div:nth-of-type(1) > div:nth-of-type(N)` is on line N of the file that was being shown. Its `[location]` row quotes that line's text, so confirm the line from it. In a diff tour, N counts rows in the view the commenter had open (removed lines and, side by side, empty cells included), so it is not the line number; go by the quoted text. Answer in the thread. Resolve a thread only after acting on it; leave a question open for the commenter.

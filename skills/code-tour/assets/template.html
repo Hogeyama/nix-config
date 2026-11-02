@@ -102,7 +102,7 @@ body.resizing { cursor: col-resize; user-select: none; }
 .progress button[aria-current="step"] { background: var(--accent); border-color: var(--accent); color: var(--panel); }
 .progress button.seen:not([aria-current="step"]) { color: var(--ink); border-color: var(--muted); }
 .progress button:focus-visible, .nav button:focus-visible, .chip:focus-visible, .ref:focus-visible, .loc:focus-visible,
-.diagram:focus-visible, .zoom-close:focus-visible {
+.diagram:focus-visible, .zoom-close:focus-visible, .view:focus-visible {
   outline: 2px solid var(--accent); outline-offset: 2px;
 }
 .eyebrow { font: 500 var(--step-1)/1.4 var(--font-mono); color: var(--muted); letter-spacing: 0.04em; }
@@ -178,6 +178,12 @@ dialog.zoom::backdrop { background: rgba(10, 12, 16, 0.6); }
 .listing-head .delta { color: var(--muted); margin-left: 10px; }
 .listing-head .delta .plus { color: var(--add-sign); }
 .listing-head .delta .minus { color: var(--del-sign); }
+.listing-head .tools { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.view {
+  font: 500 var(--step-1)/1 var(--font-body); padding: 4px 8px; border-radius: 4px; cursor: pointer;
+  border: 1px solid var(--rule); background: transparent; color: var(--muted);
+}
+.view[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
 .meta .plus { color: var(--add-sign); }
 .meta .minus { color: var(--del-sign); }
 .code {
@@ -198,6 +204,16 @@ dialog.zoom::backdrop { background: rgba(10, 12, 16, 0.6); }
 .code .ln.hl { background-image: linear-gradient(var(--mark), var(--mark)); }
 .code .ln.hl .no { color: var(--ink); }
 .code .ln.hl .no:first-child { box-shadow: inset 3px 0 0 var(--mark-edge); }
+/* Side by side: the old half on the left, the new on the right. Each half colors its own cells,
+   so the highlight goes on the cells too; long lines wrap, since each half has half the width. */
+.code .split .ln { grid-template-columns: 3.4em minmax(0, 1fr) 3.4em minmax(0, 1fr); }
+.code .split .no { padding-right: 0.7em; }
+.code .split .no + .tx + .no { border-left: 1px solid var(--rule); }
+.code .split .tx { white-space: pre-wrap; overflow-wrap: anywhere; padding-right: 12px; }
+.code .split .tx.del { background-color: var(--del); }
+.code .split .tx.add { background-color: var(--add); }
+.code .split .tx.none { background-color: var(--rule); opacity: 0.35; }
+.code .split .ln.hl > span { background-image: linear-gradient(var(--mark), var(--mark)); }
 .hljs-keyword, .hljs-meta .hljs-keyword { color: var(--syn-kw); }
 .hljs-string, .hljs-subst .hljs-string { color: var(--syn-str); }
 .hljs-comment { color: var(--syn-com); font-style: italic; }
@@ -244,7 +260,7 @@ dialog.zoom::backdrop { background: rgba(10, 12, 16, 0.6); }
     <div class="splitter" id="splitter" role="separator" aria-orientation="vertical" aria-controls="story"
          tabindex="0"></div>
     <section class="listing" id="listing">
-      <div class="listing-head"><span class="path" id="path"></span><span><span class="range" id="range"></span><span class="delta" id="delta"></span></span></div>
+      <div class="listing-head"><span class="path" id="path"></span><span class="tools"><span><span class="range" id="range"></span><span class="delta" id="delta"></span></span><button type="button" class="view" id="view" aria-pressed="false" hidden></button></span></div>
       <div class="code" id="code" tabindex="0"></div>
     </section>
   </main>
@@ -264,11 +280,11 @@ const UI = {
   ja: { intro: 'はじめに', first: '序', prev: '← 前へ', next: '次へ →', keys: '← → で移動',
         steps: 'ステップ', code: 'コード', reset: 'このステップのハイライトに戻る',
         splitter: '解説とコードの幅', splitterTip: 'ドラッグで幅を変更、ダブルクリックで元に戻す',
-        zoom: 'クリックで拡大', close: '閉じる (Esc)' },
+        zoom: 'クリックで拡大', close: '閉じる (Esc)', split: '左右に並べる' },
   en: { intro: 'Overview', first: '0', prev: '← Back', next: 'Next →', keys: '← → to move',
         steps: 'Steps', code: 'Code', reset: 'Back to this step\'s highlight',
         splitter: 'Width of the narrative and the code', splitterTip: 'Drag to resize, double-click to reset',
-        zoom: 'Click to enlarge', close: 'Close (Esc)' },
+        zoom: 'Click to enlarge', close: 'Close (Esc)', split: 'Side by side' },
 };
 const T = UI[TOUR.lang] || UI.en;
 const FILES = TOUR.files;
@@ -291,6 +307,7 @@ document.getElementById('next').textContent = T.next;
 document.getElementById('splitter').setAttribute('aria-label', T.splitter);
 document.getElementById('splitter').title = T.splitterTip;
 document.getElementById('zoom-close').textContent = T.close;
+document.getElementById('view').textContent = T.split;
 
 function escapeHtml(text) {
   return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -334,13 +351,22 @@ function highlightLines(text, language) {
   return splitLines(html);
 }
 
+const highlighted = {};
+function sides(name) {
+  if (!highlighted[name]) {
+    const file = FILES[name];
+    highlighted[name] = { fresh: highlightLines(file.text, file.lang),
+                          old: file.ops ? highlightLines(file.old, file.lang) : [] };
+  }
+  return highlighted[name];
+}
+
 // {container, numbers}: numbers[i] is the line number ranges use for row i, or 0 for a row without one.
 const rendered = {};
 function renderFile(name) {
   if (rendered[name]) return rendered[name];
   const file = FILES[name];
-  const fresh = highlightLines(file.text, file.lang);
-  const old = file.ops ? highlightLines(file.old, file.lang) : [];
+  const { fresh, old } = sides(name);
   const ops = file.ops || ' '.repeat(fresh.length);
   const container = document.createElement('div');
   if (file.ops) container.className = 'diff';
@@ -365,14 +391,65 @@ function renderFile(name) {
   return rendered[name];
 }
 
+// The same diff side by side. Within each run of changes, the n-th removed line pairs with the n-th
+// added line, and the shorter side is padded with empty cells.
+const renderedSplit = {};
+function renderSplit(name) {
+  if (renderedSplit[name]) return renderedSplit[name];
+  const file = FILES[name];
+  const { fresh, old } = sides(name);
+  const container = document.createElement('div');
+  container.className = 'split';
+  const numbers = [];
+  const cell = (no, content, kind) => '<span class="no">' + (no || '') + '</span><span class="tx'
+    + (no ? (kind ? ' ' + kind : '') : ' none') + '">' + (no ? content || ' ' : ' ') + '</span>';
+  const addRow = (oldNo, newNo, changed) => {
+    const row = document.createElement('div');
+    row.className = 'ln';
+    row.innerHTML = cell(oldNo, old[oldNo - 1], changed ? 'del' : '')
+      + cell(newNo, fresh[newNo - 1], changed ? 'add' : '');
+    container.appendChild(row);
+    numbers.push((file.deleted ? oldNo : newNo) || 0);
+  };
+  const ops = file.ops;
+  let oldNo = 0;
+  let newNo = 0;
+  let i = 0;
+  while (i < ops.length) {
+    if (ops[i] === ' ') {
+      addRow(++oldNo, ++newNo, false);
+      i++;
+      continue;
+    }
+    const removed = [];
+    const added = [];
+    for (; i < ops.length && ops[i] !== ' '; i++) {
+      if (ops[i] === '-') removed.push(++oldNo); else added.push(++newNo);
+    }
+    for (let k = 0; k < Math.max(removed.length, added.length); k++) addRow(removed[k], added[k], true);
+  }
+  renderedSplit[name] = { container, numbers };
+  return renderedSplit[name];
+}
+
+const VIEW_KEY = 'code-tour-diff-view';
+let splitView = false;
+try { splitView = localStorage.getItem(VIEW_KEY) === 'split'; } catch (error) {}
+
 const codeEl = document.getElementById('code');
 let shownFile = null;
+let shownRange = null;
 function show(file, start, end) {
-  const view = renderFile(file);
   const info = FILES[file];
-  if (shownFile !== file) {
+  const split = splitView && Boolean(info.ops);
+  const view = split ? renderSplit(file) : renderFile(file);
+  shownRange = [file, start, end];
+  const viewButton = document.getElementById('view');
+  viewButton.hidden = !info.ops;
+  viewButton.setAttribute('aria-pressed', String(split));
+  if (shownFile !== (split ? 'split:' : '') + file) {
     codeEl.replaceChildren(view.container);
-    shownFile = file;
+    shownFile = (split ? 'split:' : '') + file;
     document.getElementById('path').textContent = info.old_path ? info.old_path + ' → ' + info.path : info.path;
     document.getElementById('delta').innerHTML = info.ops
       ? '<span class="plus">+' + (info.ops.split('+').length - 1) + '</span> <span class="minus">−'
@@ -390,6 +467,12 @@ function show(file, start, end) {
     codeEl.scrollTo({ top: target.offsetTop - codeEl.offsetTop, behavior: smooth ? 'smooth' : 'auto' });
   }
 }
+
+document.getElementById('view').addEventListener('click', () => {
+  splitView = !splitView;
+  try { localStorage.setItem(VIEW_KEY, splitView ? 'split' : 'unified'); } catch (error) {}
+  if (shownRange) show(...shownRange);
+});
 
 function parseRange(text) {
   const [a, b] = text.split('-').map(Number);
