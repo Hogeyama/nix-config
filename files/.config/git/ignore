@@ -15,7 +15,6 @@ Session.vim
 # Claude Code のサンドボックスがリポジトリ直下に置く空のマウントポイント
 /.bash_profile
 /.bashrc
-/.claude/
 /.gitconfig
 /.gitmodules
 /.idea
