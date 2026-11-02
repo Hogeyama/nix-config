@@ -1,6 +1,6 @@
 ---
 name: code-tour
-description: Build a guided code tour as a private claude.ai Artifact. The narrative runs step by step beside the real source files, with the step's lines highlighted, chips that highlight sub-ranges, and links that jump to definitions. Viewers can comment on lines. Use when the user asks for a code tour, a walkthrough of a file, feature or flow, "ツアー", "コードを順に追って説明して", or a replacement for CodeTour or diffity-tour.
+description: Build a guided code tour as a private claude.ai Artifact. The narrative runs step by step beside the real source files, with the step's lines highlighted, chips that highlight sub-ranges, and links that jump to definitions. Viewers can comment on lines. With a base revision, the tour explains a diff instead: each file shows whole, with removed lines interleaved and added lines marked. Use when the user asks for a code tour, a walkthrough of a file, feature or flow, an explanation of a diff, commit, branch or PR, "ツアー", "コードを順に追って説明して", "diff 解説", "この変更を説明して", or a replacement for CodeTour or diffity-tour.
 ---
 
 # Code tour
@@ -19,6 +19,30 @@ The page comes from `assets/template.html`, assembled by `scripts/build.py`, bot
    `<slug>` is a short file name for the tour, such as `addon-tour`. The build embeds the files' full text and checks every range. Fix everything it reports and run it again. Do not publish a tour that failed the check. The check covers line numbers only, so also re-read each body against its highlighted code and fix any sentence the code does not bear out.
 5. **Publish.** For a new tour, call Artifact with `action: "quickstart"` and `intent: "other"`, as the Artifact tool requires for every new artifact. Then publish the built page as it is: `file_path` with `icon: "code"` and a one-sentence `description`. To revise a tour, rebuild to the same `--out` and publish that same `file_path`.
 6. **Reply** with the URL. Say what the tour covers, and that it is a snapshot of the commit shown in its header that will not follow later changes.
+
+## Diff tours
+
+When the question is about a change (a commit, a branch, the working tree, a PR), set `base` in `tour.toml`. The build then reads each file at both sides and shows the whole file as a diff: removed lines interleaved where git diff puts them, added lines marked, and `+N −M` in the header.
+
+```toml
+base = "main"      # the old side: any revision
+head = "HEAD"      # the new side; leave it out to tour the working tree
+
+[files]
+"build.py" = "scripts/build.py"
+"tour.toml" = { path = "assets/example-tour.toml", old = "assets/example-tour.json" }  # renamed since base
+```
+
+- Line numbers are still the file's own, on the new side. A removed line has none: highlight the new lines on both sides of it, and the removed lines between them are highlighted too. For a pure deletion, that means the lines just before and after the gap. A file deleted since `base` keeps its old numbers.
+- Take line numbers from the new side as it is now, exactly as for a plain tour. Read the removed lines with `git diff <base>` or `git show <base>:<path>`.
+- After a successful build, the build lists the changes no step highlights and the changed files under the tour's directory that `files` leaves out. Each of them belongs in a step, or in the overview's list of what the tour leaves out. These notes are not errors; they are there so the narrative accounts for every change.
+
+Diff tours follow the same writing rules, with these differences:
+
+- The overview says what the change is for, what was wrong or missing before it, and lists the changed files in a table with what each change does. The `flow` shows the path the change touches.
+- Order the steps by when the changed code runs, as in a plain tour, not by file or by hunk. Bring in unchanged code only where the reader needs it to follow a change, and say so.
+- In each body, say what the old code did, what the new code does, and why the change takes this shape. Do not restate the added lines; the reader can see them in color.
+- The まとめ gives the change's effect on behavior, what it leaves as it was, and what to check when reviewing it.
 
 ## tour.toml
 
@@ -76,4 +100,4 @@ Write each body as a `'''` literal string, breaking lines between elements. Noth
 
 ## Comments
 
-Viewers comment on lines in the page. Read the comments with `ArtifactComments` `action: "read"` when the user asks. A comment anchored at `#code > div:nth-of-type(1) > div:nth-of-type(N)` is on line N of the file that was being shown. Its `[location]` row quotes that line's text, so confirm the line from it. Answer in the thread. Resolve a thread only after acting on it; leave a question open for the commenter.
+Viewers comment on lines in the page. Read the comments with `ArtifactComments` `action: "read"` when the user asks. A comment anchored at `#code > div:nth-of-type(1) > div:nth-of-type(N)` is on line N of the file that was being shown. Its `[location]` row quotes that line's text, so confirm the line from it. In a diff tour, N counts rows, removed lines included, so it is not the line number; go by the quoted text. Answer in the thread. Resolve a thread only after acting on it; leave a question open for the commenter.

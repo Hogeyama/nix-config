@@ -7,8 +7,11 @@ TOUR_TOML (see assets/example-tour.toml):
   title = "..."
   lang = "ja"  # or "en"
   label = "repo name"  # optional
+  base = "main"  # optional: tour the diff from this revision
+  head = "HEAD"  # optional, with base: the other side (default: the working tree)
   [files]
   key = "path/from/root"
+  renamed = { path = "new/path", old = "old/path" }  # a file renamed since base
   [[steps]]
   title = "..."
   file = "key"
@@ -25,6 +28,14 @@ every problem listed, so a tour never ships a highlight on the wrong lines.
 A "<" inside <code> or a diagram is also reported: the body is inserted as
 HTML, so an unescaped one silently turns into a tag instead of showing.
 
+Diff tours: with "base", each file is shown whole with the lines removed since
+base interleaved and the added ones marked, as git diff would align them.
+Line numbers are still the file's own, on the head side; a removed line has
+none, and is highlighted when it sits between highlighted lines. A file that
+no longer exists at head is shown with its numbers at base. After the check,
+the build lists every change no step highlights and every changed file the
+tour leaves out, so the narrative can account for each of them.
+
 Diagrams: <pre class="d2">...</pre> is rendered here with the d2 command into
 an inline SVG (light and dark themes, following prefers-color-scheme), so d2
 must be on PATH when a tour uses one. <pre class="mermaid">...</pre> is left
@@ -33,10 +44,12 @@ for the page, which renders it in the browser.
 import argparse
 import html
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
 import sys
+import tempfile
 import tomllib
 
 TEMPLATE = Path(__file__).resolve().parents[1] / 'assets/template.html'
@@ -61,6 +74,104 @@ D2 = re.compile(r'''<pre class=(?:"|')d2(?:"|')>(.*?)</pre>''', re.S)
 def git(root, *args):
     result = subprocess.run(['git', '-C', str(root), *args], capture_output=True, text=True)
     return result.stdout.strip() if result.returncode == 0 else None
+
+
+def short_commit(root, rev):
+    """rev's abbreviated commit, or raise ValueError when rev names no commit."""
+    value = git(root, 'rev-parse', '--short', '--verify', '--end-of-options', rev + '^{commit}')
+    if not value:
+        raise ValueError(f'{rev!r} is not a commit in {root}')
+    return value
+
+
+def count_lines(text):
+    """Lines as the page splits them, and as git diff counts them."""
+    if text == '':
+        return 0
+    return len(text.removesuffix('\n').split('\n'))
+
+
+def read_side(root, rev, relative):
+    """The file's text at rev (None: the working tree), or None where it does not exist."""
+    if rev is None:
+        path = root / relative
+        return path.read_text() if path.is_file() else None
+    result = subprocess.run(['git', '-C', str(root), 'show', f'{rev}:./{relative}'], capture_output=True, text=True)
+    return result.stdout if result.returncode == 0 else None
+
+
+def diff_ops(old, new):
+    """One character per row of the whole-file diff: ' ' kept, '-' removed, '+' added."""
+    with tempfile.TemporaryDirectory() as tmp:
+        a, b = Path(tmp, 'a'), Path(tmp, 'b')
+        a.write_text(old)
+        b.write_text(new)
+        result = subprocess.run(['git', 'diff', '--no-index', '--no-color', '--no-ext-diff', '--text',
+                                 '-U1000000000', str(a), str(b)], capture_output=True, text=True)
+    if result.returncode == 0:
+        return ' ' * count_lines(new)
+    if result.returncode != 1:
+        raise ValueError('git diff failed: ' + (result.stderr.strip() or 'no message'))
+    ops, in_hunk = [], False
+    for line in result.stdout.split('\n'):
+        if not in_hunk:
+            in_hunk = line.startswith('@@')
+        elif line[:1] in (' ', '+', '-'):
+            ops.append(line[0])
+    ops = ''.join(ops)
+    if len(ops) - ops.count('+') != count_lines(old) or len(ops) - ops.count('-') != count_lines(new):
+        raise ValueError('could not align the diff with the files')
+    return ops
+
+
+def row_numbers(ops, deleted):
+    """Per row, the line number ranges refer to (0 for a row without one)."""
+    numbers, old, new = [], 0, 0
+    for kind in ops:
+        old += kind != '+'
+        new += kind != '-'
+        if deleted:
+            numbers.append(old if kind != '+' else 0)
+        else:
+            numbers.append(new if kind != '-' else 0)
+    return numbers
+
+
+def load_files(tour, root):
+    """({key: page data}, {key: row numbers}) for every file in the tour."""
+    base, head = tour.get('base'), tour.get('head')
+    if head and not base:
+        raise ValueError('"head" needs "base"')
+    for rev in (base, head):
+        if rev:
+            short_commit(root, rev)
+    files, numbers = {}, {}
+    for key, entry in tour.get('files', {}).items():
+        if isinstance(entry, str):
+            relative = old_relative = entry
+        else:
+            relative = entry.get('path')
+            old_relative = entry.get('old', relative)
+            if not relative:
+                raise ValueError(f'file {key!r}: missing "path"')
+        name = Path(relative).name
+        info = {'path': relative, 'lang': LANGUAGES.get(name) or LANGUAGES.get(Path(relative).suffix, '')}
+        if base is None:
+            text = (root / relative).read_text()
+            info['text'] = text
+            numbers[key] = list(range(1, count_lines(text) + 1))
+        else:
+            new = read_side(root, head, relative)
+            old = read_side(root, base, old_relative)
+            if new is None and old is None:
+                raise ValueError(f'file {key!r}: {relative} exists neither at {base} nor at {head or "the working tree"}')
+            ops = diff_ops(old or '', new or '')
+            info.update(text=new or '', old=old or '', ops=ops, deleted=new is None)
+            if old_relative != relative:
+                info['old_path'] = old_relative
+            numbers[key] = row_numbers(ops, new is None)
+        files[key] = info
+    return files, numbers
 
 
 def parse_range(text):
@@ -114,6 +225,43 @@ def check(tour, lines):
     return problems
 
 
+def row_span(numbers, start, end):
+    """The rows a highlight of lines start-end covers, removed lines between them included."""
+    return numbers.index(start), len(numbers) - 1 - numbers[::-1].index(end)
+
+
+def uncovered(tour, files, numbers):
+    """Every run of changed rows that no step's range reaches, described by its line numbers."""
+    notes = []
+    for key, info in files.items():
+        ops, rows = info.get('ops', ''), numbers[key]
+        spans = [row_span(rows, *step['range']) for step in tour['steps'] if step['file'] == key]
+        for match in re.finditer(r'[+-]+', ops):
+            first, last = match.start(), match.end() - 1
+            if any(a <= last and b >= first for a, b in spans):
+                continue
+            shown = [n for n in rows[first:last + 1] if n]
+            if shown:
+                where = f'L{shown[0]}' + (f'-{shown[-1]}' if shown[-1] != shown[0] else '')
+            else:
+                before = [n for n in rows[:first] if n]
+                where = f'removed after L{before[-1]}' if before else 'removed at the top'
+            notes.append(f'{key} {where} (+{match.group().count("+")} -{match.group().count("-")})')
+    return notes
+
+
+def unlisted(root, tour, files):
+    """Files changed between the two sides that the tour does not list, under the directory its files share."""
+    base, head = tour['base'], tour.get('head')
+    scope = os.path.commonpath([os.path.dirname(info['path']) for info in files.values()]) or '.'
+    changed = set((git(root, 'diff', '--name-only', '--relative', base, *([head] if head else []), '--', scope)
+                   or '').split('\n'))
+    if head is None:
+        changed |= set((git(root, 'ls-files', '--others', '--exclude-standard', '--', scope) or '').split('\n'))
+    listed = {info['path'] for info in files.values()} | {info.get('old_path') for info in files.values()}
+    return scope, sorted(changed - listed - {''})
+
+
 def render_d2(source):
     """An inline <svg> for one d2 diagram, or raise ValueError with d2's message."""
     try:
@@ -142,28 +290,33 @@ def render_diagrams(tour):
     return problems
 
 
+def revision(root, tour, files):
+    """What the header names: HEAD's commit, or the two sides of a diff tour."""
+    head = tour.get('head')
+    end = short_commit(root, head) if head else (git(root, 'rev-parse', '--short', 'HEAD') or 'unknown')
+    paths = ({info['path'] for info in files.values()} | {info.get('old_path') for info in files.values()}) - {None}
+    if not head and git(root, 'status', '--porcelain', '--', *paths):
+        end += '+dirty'
+    return f'{short_commit(root, tour["base"])}..{end}' if tour.get('base') else end
+
+
 def build(tour_path, root, out):
     with open(tour_path, 'rb') as stream:
         tour = tomllib.load(stream)
     root = Path(root).resolve()
-    files, lines = {}, {}
-    for key, relative in tour.get('files', {}).items():
-        path = root / relative
-        text = path.read_text()
-        name = Path(relative).name
-        files[key] = {'path': relative, 'text': text,
-                      'lang': LANGUAGES.get(name) or LANGUAGES.get(Path(relative).suffix, '')}
-        lines[key] = len(text.rstrip('\n').split('\n'))
+    files, numbers = load_files(tour, root)
+    lines = {key: sum(1 for n in rows if n) for key, rows in numbers.items()}
     problems = check(tour, lines)
     if not problems:
         problems = render_diagrams(tour)
     if problems:
         sys.exit('error: the tour has problems:\n  ' + '\n  '.join(problems))
-    commit = git(root, 'rev-parse', '--short', 'HEAD') or 'unknown'
-    if git(root, 'status', '--porcelain', '--', *tour['files'].values()):
-        commit += '+dirty'
+    commit = revision(root, tour, files)
     data = {'title': tour['title'], 'lang': tour.get('lang', 'en'), 'label': tour.get('label', root.name),
             'commit': commit, 'files': files, 'steps': tour['steps']}
+    if tour.get('base'):
+        data['diff'] = {'added': sum(f['ops'].count('+') for f in files.values()),
+                        'removed': sum(f['ops'].count('-') for f in files.values())}
     # Inside <script>: keep the JSON from closing the element or opening a comment.
     payload = json.dumps(data, ensure_ascii=False).replace('</', '<\\/').replace('<!--', '<\\!--')
     page = TEMPLATE.read_text()
@@ -174,9 +327,16 @@ def build(tour_path, root, out):
     Path(out).parent.mkdir(parents=True, exist_ok=True)
     Path(out).write_text(page)
     size = len(page.encode())
-    print(f'wrote {out}: {len(tour["steps"])} steps, {len(files)} files, commit {commit}, {size // 1024} KiB')
+    print(f'wrote {out}: {len(tour["steps"])} steps, {len(files)} files, {"diff" if tour.get("base") else "commit"} {commit}, {size // 1024} KiB')
     if size > 15 * 1024 * 1024:
         print('warning: the page is near the 16MB artifact limit; tour fewer or smaller files.', file=sys.stderr)
+    if tour.get('base'):
+        notes = uncovered(tour, files, numbers)
+        if notes:
+            print('note: changes no step highlights:\n  ' + '\n  '.join(notes))
+        scope, missing = unlisted(root, tour, files)
+        if missing:
+            print(f'note: changed files under {scope}/ the tour does not list:\n  ' + '\n  '.join(missing))
 
 
 def main():
