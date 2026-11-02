@@ -123,11 +123,13 @@ in
       bat
       bind
       btop
+      bubblewrap
       cachix
       cargo
       comma
       commitizen
       crit
+      csvkit
       curl
       (d2.overrideAttrs (old: { buildInputs = [ ]; }))
       dmenu
@@ -178,6 +180,8 @@ in
       maestral
       mercurial
       mo
+      moreutils
+      ndisc6
       neovim-remote
       nix-du
       nix-output-monitor
@@ -208,6 +212,7 @@ in
       simplescreenrecorder
       sqlite
       ssh-to-age
+      tcpdump
       textql
       time
       tldr
