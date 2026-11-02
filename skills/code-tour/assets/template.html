@@ -17,6 +17,10 @@
   --code-no: #a2a9b6;
   --mark: rgba(255, 196, 0, 0.24);
   --mark-edge: #d9a200;
+  --add: rgba(46, 160, 67, 0.13);
+  --add-sign: #1f7a35;
+  --del: rgba(207, 34, 46, 0.11);
+  --del-sign: #b4262f;
   --syn-kw: #7a3e9d;
   --syn-str: #2b6a46;
   --syn-com: #7b8494;
@@ -35,6 +39,7 @@
     --bg: #11141a; --panel: #171b23; --ink: #e2e6ed; --muted: #97a0b1; --rule: #2a303b;
     --accent: #93abff; --accent-soft: #1f2840; --code-bg: #0e1116; --code-no: #4f5868;
     --mark: rgba(255, 196, 0, 0.13); --mark-edge: #c08f12;
+    --add: rgba(63, 185, 80, 0.14); --add-sign: #6fd384; --del: rgba(248, 81, 73, 0.14); --del-sign: #ff8a83;
     --syn-kw: #cfa5ef; --syn-str: #9dd2a0; --syn-com: #7a8396; --syn-fn: #9cb3ff; --syn-num: #eea36c; --syn-built: #7ccfda;
     color-scheme: dark;
   }
@@ -43,6 +48,7 @@
   --bg: #11141a; --panel: #171b23; --ink: #e2e6ed; --muted: #97a0b1; --rule: #2a303b;
   --accent: #93abff; --accent-soft: #1f2840; --code-bg: #0e1116; --code-no: #4f5868;
   --mark: rgba(255, 196, 0, 0.13); --mark-edge: #c08f12;
+  --add: rgba(63, 185, 80, 0.14); --add-sign: #6fd384; --del: rgba(248, 81, 73, 0.14); --del-sign: #ff8a83;
   --syn-kw: #cfa5ef; --syn-str: #9dd2a0; --syn-com: #7a8396; --syn-fn: #9cb3ff; --syn-num: #eea36c; --syn-built: #7ccfda;
   color-scheme: dark;
 }
@@ -169,6 +175,11 @@ dialog.zoom::backdrop { background: rgba(10, 12, 16, 0.6); }
 }
 .listing-head .path { color: var(--ink); overflow-wrap: anywhere; }
 .listing-head .range { color: var(--muted); }
+.listing-head .delta { color: var(--muted); margin-left: 10px; }
+.listing-head .delta .plus { color: var(--add-sign); }
+.listing-head .delta .minus { color: var(--del-sign); }
+.meta .plus { color: var(--add-sign); }
+.meta .minus { color: var(--del-sign); }
 .code {
   flex: 1; min-height: 0; overflow: auto; background: var(--code-bg); border-radius: 0 0 6px 6px;
   font: 400 0.8125rem/1.6 var(--font-mono); padding-block: 8px;
@@ -176,8 +187,17 @@ dialog.zoom::backdrop { background: rgba(10, 12, 16, 0.6); }
 .code .ln { display: grid; grid-template-columns: 4.2em max-content; min-width: 100%; }
 .code .no { color: var(--code-no); text-align: right; padding-right: 1.1em; user-select: none; }
 .code .tx { white-space: pre; padding-right: 24px; }
-.code .ln.hl { background: var(--mark); }
-.code .ln.hl .no { color: var(--ink); box-shadow: inset 3px 0 0 var(--mark-edge); }
+.code .diff .ln { grid-template-columns: 3.4em 3.4em 1.6em max-content; }
+.code .diff .no { padding-right: 0.7em; }
+.code .sg { user-select: none; text-align: center; }
+.code .ln.add { background-color: var(--add); }
+.code .ln.del { background-color: var(--del); }
+.code .ln.add .sg { color: var(--add-sign); }
+.code .ln.del .sg { color: var(--del-sign); }
+/* The step's highlight is laid over the diff colors, so both stay readable. */
+.code .ln.hl { background-image: linear-gradient(var(--mark), var(--mark)); }
+.code .ln.hl .no { color: var(--ink); }
+.code .ln.hl .no:first-child { box-shadow: inset 3px 0 0 var(--mark-edge); }
 .hljs-keyword, .hljs-meta .hljs-keyword { color: var(--syn-kw); }
 .hljs-string, .hljs-subst .hljs-string { color: var(--syn-str); }
 .hljs-comment { color: var(--syn-com); font-style: italic; }
@@ -201,7 +221,8 @@ dialog.zoom::backdrop { background: rgba(10, 12, 16, 0.6); }
     <h1 id="tour-title"></h1>
     <div class="meta">
       <span id="meta-label"></span>
-      <span>commit <b id="meta-commit"></b></span>
+      <span><span id="meta-kind">commit</span> <b id="meta-commit"></b></span>
+      <span id="meta-stat"></span>
       <span id="meta-keys"></span>
     </div>
   </header>
@@ -223,7 +244,7 @@ dialog.zoom::backdrop { background: rgba(10, 12, 16, 0.6); }
     <div class="splitter" id="splitter" role="separator" aria-orientation="vertical" aria-controls="story"
          tabindex="0"></div>
     <section class="listing" id="listing">
-      <div class="listing-head"><span class="path" id="path"></span><span class="range" id="range"></span></div>
+      <div class="listing-head"><span class="path" id="path"></span><span><span class="range" id="range"></span><span class="delta" id="delta"></span></span></div>
       <div class="code" id="code" tabindex="0"></div>
     </section>
   </main>
@@ -235,7 +256,9 @@ dialog.zoom::backdrop { background: rgba(10, 12, 16, 0.6); }
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script>
-// Filled in by scripts/build.py: {title, lang, label, commit, files: {key: {path, lang, text}}, steps}.
+// Filled in by scripts/build.py: {title, lang, label, commit, diff?: {added, removed},
+// files: {key: {path, lang, text, old?, ops?, deleted?, old_path?}}, steps}.
+// A file with ops is shown as a diff: one character per row, ' ' kept, '-' removed (from old), '+' added (from text).
 const TOUR = /*__TOUR__*/;
 const UI = {
   ja: { intro: 'はじめに', first: '序', prev: '← 前へ', next: '次へ →', keys: '← → で移動',
@@ -254,6 +277,11 @@ document.documentElement.lang = TOUR.lang || 'en';
 document.getElementById('tour-title').textContent = TOUR.title;
 document.getElementById('meta-label').textContent = TOUR.label || '';
 document.getElementById('meta-commit').textContent = TOUR.commit || '';
+if (TOUR.diff) {
+  document.getElementById('meta-kind').textContent = 'diff';
+  document.getElementById('meta-stat').innerHTML =
+    '<span class="plus">+' + TOUR.diff.added + '</span> <span class="minus">−' + TOUR.diff.removed + '</span>';
+}
 document.getElementById('meta-keys').textContent = T.keys;
 document.getElementById('progress').setAttribute('aria-label', T.steps);
 document.getElementById('listing').setAttribute('aria-label', T.code);
@@ -292,11 +320,10 @@ function splitLines(html) {
   return lines;
 }
 
-const rendered = {};
-function renderFile(name) {
-  if (rendered[name]) return rendered[name];
-  const text = FILES[name].text.replace(/\n$/, '');
-  const language = FILES[name].lang;
+// Each side is highlighted on its own, so a removed line is colored in the context of the old file.
+function highlightLines(text, language) {
+  if (text === '') return [];
+  text = text.replace(/\n$/, '');
   let html;
   try {
     html = window.hljs && language && hljs.getLanguage(language)
@@ -304,33 +331,60 @@ function renderFile(name) {
   } catch (error) {
     html = escapeHtml(text);
   }
+  return splitLines(html);
+}
+
+// {container, numbers}: numbers[i] is the line number ranges use for row i, or 0 for a row without one.
+const rendered = {};
+function renderFile(name) {
+  if (rendered[name]) return rendered[name];
+  const file = FILES[name];
+  const fresh = highlightLines(file.text, file.lang);
+  const old = file.ops ? highlightLines(file.old, file.lang) : [];
+  const ops = file.ops || ' '.repeat(fresh.length);
   const container = document.createElement('div');
-  splitLines(html).forEach((content, index) => {
+  if (file.ops) container.className = 'diff';
+  const numbers = [];
+  let oldNo = 0;
+  let newNo = 0;
+  for (const kind of ops) {
+    if (kind !== '+') oldNo++;
+    if (kind !== '-') newNo++;
     const row = document.createElement('div');
-    row.className = 'ln';
-    row.dataset.n = index + 1;
-    row.innerHTML = '<span class="no">' + (index + 1) + '</span><span class="tx">' + (content || ' ') + '</span>';
+    row.className = 'ln' + (kind === '+' ? ' add' : kind === '-' ? ' del' : '');
+    const content = kind === '-' ? old[oldNo - 1] : fresh[newNo - 1];
+    const cells = file.ops
+      ? '<span class="no">' + (kind !== '+' ? oldNo : '') + '</span><span class="no">' + (kind !== '-' ? newNo : '')
+        + '</span><span class="sg">' + (kind === '+' ? '+' : kind === '-' ? '−' : '') + '</span>'
+      : '<span class="no">' + newNo + '</span>';
+    row.innerHTML = cells + '<span class="tx">' + (content || ' ') + '</span>';
     container.appendChild(row);
-  });
-  rendered[name] = container;
-  return container;
+    numbers.push(file.deleted ? (kind !== '+' ? oldNo : 0) : (kind !== '-' ? newNo : 0));
+  }
+  rendered[name] = { container, numbers };
+  return rendered[name];
 }
 
 const codeEl = document.getElementById('code');
 let shownFile = null;
 function show(file, start, end) {
+  const view = renderFile(file);
+  const info = FILES[file];
   if (shownFile !== file) {
-    codeEl.replaceChildren(renderFile(file));
+    codeEl.replaceChildren(view.container);
     shownFile = file;
+    document.getElementById('path').textContent = info.old_path ? info.old_path + ' → ' + info.path : info.path;
+    document.getElementById('delta').innerHTML = info.ops
+      ? '<span class="plus">+' + (info.ops.split('+').length - 1) + '</span> <span class="minus">−'
+        + (info.ops.split('-').length - 1) + '</span>' : '';
   }
-  document.getElementById('path').textContent = FILES[file].path;
   document.getElementById('range').textContent = start === end ? 'L' + start : 'L' + start + '–' + end;
-  const rows = codeEl.firstChild.children;
-  for (const row of rows) {
-    const n = Number(row.dataset.n);
-    row.classList.toggle('hl', n >= start && n <= end);
-  }
-  const target = rows[Math.max(0, start - 4)];
+  // Rows from the first line to the last, so removed lines between them are highlighted too.
+  const first = view.numbers.indexOf(start);
+  const last = view.numbers.lastIndexOf(end);
+  const rows = view.container.children;
+  for (let i = 0; i < rows.length; i++) rows[i].classList.toggle('hl', i >= first && i <= last);
+  const target = rows[Math.max(0, first - 3)];
   if (target) {
     const smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     codeEl.scrollTo({ top: target.offsetTop - codeEl.offsetTop, behavior: smooth ? 'smooth' : 'auto' });
