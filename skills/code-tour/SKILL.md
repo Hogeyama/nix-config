@@ -44,7 +44,8 @@ body = '''
 - `title` is the artifact's name: a short noun phrase, never a sentence.
 - `label` is the repository's name, shown in the header. Without it, the header shows the name of the `--root` directory, which is often unhelpful (`workspace`).
 - `files` maps a short key to a path relative to `--root`. Steps and links name files by key. List a file only when a step highlights it or a `ref` links into it, since each one is embedded whole. Name any other file as plain `<code>`.
-- `steps[0]` is the overview; "step 1" below means `steps[1]`. Give the overview an orienting range, such as the module docstring.
+- `steps[0]` is the overview. Give it an orienting range, such as the module docstring.
+- The page numbers steps from 1, so `steps[0]` appears as step 1 (ステップ1) and `steps[n]` as step n+1. When a body refers to another step by number, write the number the page shows, never the array index. A title or "the next step" (次のステップ) is safer still, since it survives inserting or removing a step.
 - Every line number (`range`, `data-focus`, `data-goto`) is the file's own line number: 1-based, inclusive, and never relative to the step.
 
 ### Body HTML
@@ -66,11 +67,11 @@ Write each body as a `'''` literal string, breaking lines between elements. Noth
 
 ## Writing the steps
 
-- **Top-down, in execution order.** Step 1 is the real entry point (a command, a route, a script that calls in). Order the later steps by when the code runs, not by where it sits in the file. Introduce schemas, constants and helpers at the step that first uses them, as a `ref` link or a step of their own, never as a prelude or a detour in the middle of the flow.
+- **Top-down, in execution order.** The first step after the overview is the real entry point (a command, a route, a script that calls in). Order the later steps by when the code runs, not by where it sits in the file. Introduce schemas, constants and helpers at the step that first uses them, as a `ref` link or a step of their own, never as a prelude or a detour in the middle of the flow.
 - **One concept per step.** For a range over about 30 lines, add chips for its parts.
 - **Each body goes transition → explanation → takeaway.** Open with one sentence that ties it to the previous step. Explain why the code is shaped this way (design decisions, trade-offs, edge cases), not what the reader can already see. Close with a `take`: a gotcha, or what to touch to change this. Aim for 150 to 300 words in English, or 300 to 600 characters in Japanese, not counting tags. If a body runs past about 400 words (800 characters), split the step.
 - **Link every symbol whose location you know** with `ref`. Use plain `<code>` for anything you have not located.
-- **Step 0** gives the overview: why the code exists, a `flow` of the path, a table of the moving parts, the configuration or mode the tour assumes, and what it leaves out.
+- **The overview** (`steps[0]`) explains why the code exists and gives a `flow` of the path, a table of the moving parts, the configuration or mode the tour assumes, and what it leaves out.
 - **The last step** is titled "まとめ" (or "Putting it together"). It reuses an earlier range and gives the mental model in two or three sentences, the two or three key design decisions, a table of where to change what, and what to read next.
 
 ## Comments

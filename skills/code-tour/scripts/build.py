@@ -78,7 +78,7 @@ def check(tour, lines):
         if not tour.get(field):
             problems.append(f'missing "{field}"')
     for index, step in enumerate(tour.get('steps', [])):
-        at = f'step {index} ({step.get("title", "untitled")!r})'
+        at = f'step {index + 1} ({step.get("title", "untitled")!r})'
         for field in ('title', 'file', 'range', 'body'):
             if not step.get(field):
                 problems.append(f'{at}: missing "{field}"')
@@ -136,7 +136,7 @@ def render_diagrams(tour):
             try:
                 return "<figure class='diagram'>" + render_d2(html.unescape(match.group(1))) + '</figure>'
             except ValueError as error:
-                problems.append(f'step {index} ({step["title"]!r}): {error}')
+                problems.append(f'step {index + 1} ({step["title"]!r}): {error}')
                 return match.group(0)
         step['body'] = D2.sub(replace, step['body'])
     return problems

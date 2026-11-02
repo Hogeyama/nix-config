@@ -22,7 +22,7 @@ body = '''
 <tr><td><code>workspace.compose.yaml</code></td><td>compose の include（マウント）</td></tr>
 <tr><td><code>images.txt</code>, <code>shell-path.sh</code>, <code>hidden.txt</code></td><td>load-images.py, agent の Bash, agent の Git</td></tr>
 </table></div>
-<p><strong>前提</strong>: リポジトリに <code>.devcontainer/</code> がある repository mode を想定します。ホストコマンド <code>claude-devcontainer</code> で動かす host mode との違いはステップ5で触れます。<code>prepare-dependencies</code> が作る overlay 用ディレクトリと、<code>shell_path</code> の細部は扱いません。</p>
+<p><strong>前提</strong>: リポジトリに <code>.devcontainer/</code> がある repository mode を想定します。ホストコマンド <code>claude-devcontainer</code> で動かす host mode との違いはステップ6で触れます。<code>prepare-dependencies</code> が作る overlay 用ディレクトリと、<code>shell_path</code> の細部は扱いません。</p>
 <p class="take">設定の入口は TOML だけです。compose も proxy も TOML を直接は読まず、このファイルが書いたものだけを読みます。</p>
 '''
 
@@ -38,7 +38,7 @@ body = '''
 <button class="chip" data-focus="28">check-shared-mounts</button>
 </div>
 <p>最初の <code>generate</code> が失敗すると、<code>set -eu</code> によって <code>up</code> 全体が止まります。設定の誤りは、イメージのビルドやコンテナの作成より前に分かります。</p>
-<p><code>setting()</code> は <code>settings.env</code> を <code>sed</code> の1行で読みます。この正規表現は、値が <code>NAME='value'</code> の形で、中に <code>'</code> を含まないことを前提にしています。この前提を守るのが settings.py の検査で、ステップ6とステップ10で出てきます。</p>
+<p><code>setting()</code> は <code>settings.env</code> を <code>sed</code> の1行で読みます。この正規表現は、値が <code>NAME='value'</code> の形で、中に <code>'</code> を含まないことを前提にしています。この前提を守るのが settings.py の検査で、ステップ7とステップ11で出てきます。</p>
 <p><code>check-shared-mounts</code> は <code>pick-networks.py</code> の後に呼ばれます。サブネットを書いた <code>networks.env</code> が揃って、はじめて <code>docker compose config</code> を評価できるからです。</p>
 <p class="take"><code>compose.sh</code> も、compose を実行する前に <code>generate</code> を呼び、<code>up</code> などのときは <code>check-shared-mounts</code> も呼びます。initializeCommand を通らない経路でも同じ検査がかかります。</p>
 '''
@@ -118,7 +118,7 @@ body = '''
 </div>
 <p><a class="ref" data-goto="settings.py:62-72"><code>DEFAULTS</code></a> がスキーマを兼ねています。テーブル名とキーを <code>DEFAULTS</code> と照合し、知らないものは <code>unknown</code> としてエラーにします。綴りを間違えた設定が黙って無視されることはありません。</p>
 <p>型の比較は <code>type(value) is not type(default)</code> です。<code>isinstance</code> を使わないのは、Python では <code>bool</code> が <code>int</code> のサブクラスで、<code>uid = true</code> が通ってしまうからです（161行のコメント）。リストは要素がすべて文字列であることも確かめます。</p>
-<p>すべての文字列で、改行と <code>'</code> を禁止しています。<code>settings.env</code> は <code>NAME='value'</code> の形式で、シングルクォートの中にはエスケープの手段がありません。だから値の入口で、この2文字を止めています。ステップ1の <code>setting()</code> もこの前提に頼っています。</p>
+<p>すべての文字列で、改行と <code>'</code> を禁止しています。<code>settings.env</code> は <code>NAME='value'</code> の形式で、シングルクォートの中にはエスケープの手段がありません。だから値の入口で、この2文字を止めています。ステップ2の <code>setting()</code> もこの前提に頼っています。</p>
 <p>後半は個別の形式です。<code>shared_hidden_paths</code> は相対パスで <code>..</code> を含まないこと、<code>agent.env</code> は compose が設定する名前（<a class="ref" data-goto="settings.py:88-90"><code>RESERVED_ENV</code></a>）を使わないこと、<code>acp.version</code> はタグや範囲ではなく厳密なバージョンであること、などを確かめます。172行で <code>shell_path</code> を検査のためだけに呼んでいるのは、同じ規則を2か所に書かないためです。</p>
 <p class="take">設定項目を増やすときは、<code>DEFAULTS</code> に既定値を足せば型の検査は自動で付きます。形式の検査が要るときだけ、ここに足します。</p>
 '''
