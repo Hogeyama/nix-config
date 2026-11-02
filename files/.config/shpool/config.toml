@@ -9,6 +9,11 @@ prompt_prefix = ""
 
 motd = "never"
 
+# attachしたシェルに既定で渡るのはTERM・DISPLAY・SSH_AUTH_SOCKだけで、
+# WAYLAND_DISPLAYがないとNeovimなどがwl-copyを使えずclipboardに書けない。
+# 既存のセッションには効かないので、作り直す必要がある。
+forward_env = ["WAYLAND_DISPLAY", "XDG_SESSION_TYPE"]
+
 # 既定のCtrl-Space Ctrl-qは、ctrl+qがherdrのprefixなのでshpoolまで届かない。
 [[keybinding]]
 binding = 'Ctrl-\'
