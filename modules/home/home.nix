@@ -799,7 +799,8 @@ in
         mergetool.nvimdiff.trustExitCode = false;
         pull.rebase = true;
         push.autoSetupRemote = true;
-        push.default = "simple";
+        push.default = "current";
+        remote.pushDefault = "origin";
         rebase.autoStash = true;
         rebase.rebaseMerges = "rebase-cousins";
         rebase.updateRefs = true;
