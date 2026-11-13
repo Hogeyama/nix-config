@@ -986,6 +986,34 @@ in
       dofile(os.getenv("HOME") .. "/.config/hypr/main.lua")
     '';
   };
+  # shpoolのdaemonはsocket activationで起動する。attachが自分でdaemonizeすると
+  # umaskが027になり（daemonize crateの既定値）、セッション内のシェルに引き継がれる。
+  # そこで作ったファイルは他ユーザーから読めず、COPYしたコンテナが非rootで読めなくなる。
+  # ユニットはパッケージ同梱のもの（lib/systemd/user/）に合わせ、UMaskだけ足している。
+  systemd.user = {
+    sockets.shpool = {
+      Unit.Description = "Shpool Shell Session Pooler";
+      Socket = {
+        ListenStream = "%t/shpool/shpool.socket";
+        SocketMode = "0600";
+      };
+      Install.WantedBy = [ "sockets.target" ];
+    };
+    services.shpool = {
+      Unit = {
+        Description = "Shpool - Shell Session Pool";
+        Requires = [ "shpool.socket" ];
+      };
+      Service = {
+        Type = "simple";
+        ExecStart = "${pkgs.shpool}/bin/shpool daemon";
+        KillMode = "mixed";
+        TimeoutStopSec = "2s";
+        SendSIGHUP = true;
+        UMask = "0022";
+      };
+    };
+  };
   xdg = {
     # hyprlandにsession変数を渡す
     configFile."uwsm/env".source = "${config.home.sessionVariablesPackage}/etc/profile.d/hm-session-vars.sh";
