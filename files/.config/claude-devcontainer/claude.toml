@@ -1,4 +1,5 @@
 [agent]
+share_projects = true
 
 [agent.env]
 TZ = "Asia/Tokyo"
@@ -12,3 +13,19 @@ shared_base = "cdc"
 
 [codeServer]
 enabled = true
+
+# hostexec: commands on the host, one approval per run.
+[proxy]
+ca = "~/.config/hostexec/ca.pem"
+
+[proxy.hosts."host.docker.internal"]
+routes = ["POST /run", "GET /client"]
+https = 7878
+
+[proxy.hosts."host.docker.internal".inject]
+Authorization = "Bearer ${HOSTEXEC_TOKEN}"
+X-Hostexec-Map = "/workspace=${HOSTEXEC_WORKSPACE}"
+
+# The client, read-only and on PATH.
+[agent.mounts]
+"/usr/bin/hostexec" = "~/repo/hostexec/client/hostexec"
